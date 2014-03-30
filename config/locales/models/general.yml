@@ -1,6 +1,7 @@
 ka:
   models:
     general:
+      records: ჩანაწერი
       _actions:
         save: შენახვა
         cancel: გაუქმება

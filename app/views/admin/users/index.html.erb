@@ -3,4 +3,5 @@
   t.text_field 'username'
   t.text_field 'full_name'
   t.text_field 'formatted_mobile', tag: 'code', i18n: 'mobile'
+  t.paginate records:t('models.general.records')
 end%>

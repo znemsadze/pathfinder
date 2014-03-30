@@ -2,7 +2,7 @@
 class Admin::UsersController < ApplicationController
   def index
     @title=t('pages.admin_users.index.title')
-    @users=Sys::User.desc(:_id)
+    @users=Sys::User.desc(:_id).paginate(page:params[:page], per_page:10)
   end
 
   def new
