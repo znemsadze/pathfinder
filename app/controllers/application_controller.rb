@@ -3,16 +3,14 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :validate_permission
 
+  def render(*args); self.nav; super end
   def current_user; @_curr_user ||= (Sys::User.find(session[:user_id]) rescue nil) if session[:user_id] end
   helper_method :current_user
 
-  def render(*args)
-    nav if self.respond_to?(:nav)
-    super
-  end
+  protected
+  def nav; @nav = {t('pages.site.index.title') => home_url} end
 
   private
-
   def validate_permission
     unless Sys::Permission.has_permission?(current_user, controller_path, action_name)
       if current_user 
