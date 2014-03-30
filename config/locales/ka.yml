@@ -1,5 +1,8 @@
 ka:
   application:
-    author: 'Dimitri Kurashvili <dimakura@gmail.com>'
+    author:
+      name: Dimitri Kurashvili
+      email: dimakura@gmail.com
+      path: http://dimitrikurashvili.com
     name: 'Pathfinder'
     version: '1.0.0'
