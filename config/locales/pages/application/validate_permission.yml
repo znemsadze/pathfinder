@@ -1,0 +1,6 @@
+ka:
+  pages:
+    application:
+      validate_permission:
+        no_permission: არ გაქვთ აღნიშნული მოქმედების შესრულების უფლება
+        login_required: გაიარეთ ავტორიზაცია
