@@ -1,0 +1,8 @@
+ka:
+  pages:
+    admin_users:
+      index:
+        title: მომხმარებლების მართვა
+        new_user: ახალი მომხმარებელი
+      new:
+        user_created: მომხმარებელი შექმნილია

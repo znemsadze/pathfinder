@@ -1,5 +1,12 @@
 ka:
   models:
     sys_user:
-      username: მომხმარებლის სახელი
+      username: მომხმარებელი
       password: პაროლი
+      first_name: სახელი
+      last_name: გვარი
+      full_name: "სახელი, გვარი"
+      mobile: მობილური
+      _actions:
+        new_user: ახალი მომხმარებელი
+        edit_user: მომხმარებლის შეცვლა

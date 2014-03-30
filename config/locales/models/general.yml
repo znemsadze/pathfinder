@@ -1,0 +1,6 @@
+ka:
+  models:
+    general:
+      _actions:
+        save: შენახვა
+        cancel: გაუქმება

@@ -45,7 +45,6 @@ module Sys
       return if pwd.blank?
       self.salt = "#{self.object_id}#{rand 1000}"
       self.hashed_password = User.encrypt_password(self.password, self.salt)
-      self.password_restore_hash = nil
     end
 
     # Authenticate user (even inactive) using given username and password.
