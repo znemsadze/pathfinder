@@ -2,5 +2,5 @@ ka:
   pages:
     application:
       layout:
-        user:
-          not-authenticated: სტუმარი
+        sysadmin: სისადმინი
+        not-authenticated: სტუმარი
