@@ -1,0 +1,5 @@
+ka:
+  models:
+    sys_user:
+      username: მომხმარებლის სახელი
+      password: პაროლი

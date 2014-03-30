@@ -3,6 +3,3 @@ ka:
     site:
       index:
         title: საწყისი
-      login:
-        title: მომხმარებლის ავტორიზაცია
-        action: შესვლა

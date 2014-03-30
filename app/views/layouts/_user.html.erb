@@ -3,6 +3,6 @@
 <%else%>
 <i class="fa fa-user"></i>
 <span class="text-muted"><%= t('pages.application.layout.user.not-authenticated') %></span> |
-<%=link_to t('pages.site.login.action') %>
+<%=link_to t('pages.site.login.action'), login_url %>
 <%end%>
 </div>
