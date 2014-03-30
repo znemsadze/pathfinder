@@ -17,12 +17,12 @@ module Sys
     index({ username: 1 }, { unique: true })
     index(first_name: 1, last_name: 1)
 
-    validates :username, uniqueness: { message: I18n.t('models.sys_user.errors.username_is_taken') }
-    validates :username, username: { message: I18n.t('models.sys_user.errors.illegal_username') }
-    validates :password, confirmation: { message: I18n.t('models.sys_user.errors.password_not_match') }
-    validates :first_name, presence: { message: I18n.t('models.sys_user.errors.empty_first_name') }
-    validates :last_name, presence: { message: I18n.t('models.sys_user.errors.empty_last_name') }
-    validates :mobile, mobile: { message: I18n.t('models.sys_user.errors.illegal_mobile') }
+    validates :username, uniqueness: { message: I18n.t('models.sys_user._errors.username_is_taken') }
+    validates :username, username: { message: I18n.t('models.sys_user._errors.illegal_username') }
+    validates :password, confirmation: { message: I18n.t('models.sys_user._errors.password_not_match') }
+    validates :first_name, presence: { message: I18n.t('models.sys_user._errors.empty_first_name') }
+    validates :last_name, presence: { message: I18n.t('models.sys_user._errors.empty_last_name') }
+    validates :mobile, mobile: { message: I18n.t('models.sys_user._errors.illegal_mobile') }
     validate  :password_definition
 
     before_create :user_before_create
@@ -58,7 +58,7 @@ module Sys
 
     def password_definition
       if hashed_password.blank?
-        errors.add(:password, I18n.t('models.sys_user.errors.empty_password'))
+        errors.add(:password, I18n.t('models.sys_user._errors.empty_password'))
       end
     end
 
