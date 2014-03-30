@@ -2,6 +2,12 @@ ka:
   models:
     general:
       records: ჩანაწერი
+      created_at: შექმნის თარიღი
+      created_at_hint: როდის შეიქმნა ეს ჩანაწერი?
+      updated_at: შეცვლის თარიღი
+      updated_at_hint: ბოლოს როდის შეიცვალა ეს ჩანაწერი?
+      general_properties: ძირითადი
+      system_properties: სისტემური
       _actions:
         save: შენახვა
         cancel: გაუქმება

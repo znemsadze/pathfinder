@@ -5,6 +5,11 @@ class Admin::UsersController < ApplicationController
     @users=Sys::User.desc(:_id).paginate(page:params[:page], per_page:10)
   end
 
+  def show
+    @title=t('models.sys_user._actions.user_properties')
+    @user=Sys::User.find(params[:id])
+  end
+
   def new
     @title=t('models.sys_user._actions.new_user')
     if request.post?
@@ -32,10 +37,8 @@ class Admin::UsersController < ApplicationController
     @nav=super
     @nav[t('pages.admin_users.index.title')]=admin_users_url
     if @user
-      unless @user.new_record? and not action_name=='show'
-        @nav[@user.full_name]=admin_user_url(id:@user.id)
-      end
-      @nav[@title]=nil
+      @nav[@user.full_name]=admin_user_url(id:@user.id) unless @user.new_record?
+      @nav[@title]=nil unless action_name=='show'
     end
   end
 
