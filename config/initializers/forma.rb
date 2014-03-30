@@ -46,7 +46,7 @@ module CommonActions
   end
 
   def edit_action(url, opts = {})
-    icon = opts[:icon] || '/fugue/pencil.png'
+    icon = opts[:icon] || '/icons/pencil.png'
     label = opts[:label] || I18n.t('models.general._actions.edit')
     if respond_to?(:title_action)
       title_action url, opts.merge(icon: icon, label: label)
@@ -57,25 +57,25 @@ module CommonActions
 
   def delete_action(url)
     if respond_to?(:title_action)
-      title_action url, method: 'delete', icon: '/fugue/bin.png', label: I18n.t('models.general._actions.delete'), confirm: I18n.t('models.general._actions.confirm')
+      title_action url, method: 'delete', icon: '/icons/bin.png', label: I18n.t('models.general._actions.delete'), confirm: I18n.t('models.general._actions.confirm')
     else
-      action url, method: 'delete', icon: '/fugue/bin.png', label: I18n.t('models.general._actions.delete'), confirm: I18n.t('models.general._actions.confirm')
+      action url, method: 'delete', icon: '/icons/bin.png', label: I18n.t('models.general._actions.delete'), confirm: I18n.t('models.general._actions.confirm')
     end
   end
 
   def copy_action(url)
     if respond_to?(:title_action)
-      title_action url, icon: '/fugue/documents-text.png', label: I18n.t('models.general._actions.copy')
+      title_action url, icon: '/icons/documents-text.png', label: I18n.t('models.general._actions.copy')
     else
-      action url, icon: '/fugue/documents-text.png', label: I18n.t('models.general._actions.copy')
+      action url, icon: '/icons/documents-text.png', label: I18n.t('models.general._actions.copy')
     end
   end
 
   def plus_action(url)
     if respond_to?(:title_action)
-      title_action url, icon: '/fugue/plus.png', label: I18n.t('models.general._actions.plus')
+      title_action url, icon: '/icons/plus.png', label: I18n.t('models.general._actions.plus')
     else
-      action url, icon: '/fugue/plus.png', label: I18n.t('models.general._actions.plus')
+      action url, icon: '/icons/plus.png', label: I18n.t('models.general._actions.plus')
     end
   end
 end
@@ -104,10 +104,10 @@ end
 
 class Forma::Table
   def edit_action(url, opts = {})
-    item_action url, opts.merge(icon: '/fugue/pencil.png', tooltip: I18n.t('models.general._actions.edit'))
+    item_action url, opts.merge(icon: '/icons/pencil.png', tooltip: I18n.t('models.general._actions.edit'))
   end
 
   def delete_action(url, opts = {})
-    item_action url, opts.merge(method: 'delete', icon: '/fugue/bin.png', tooltip: I18n.t('models.general._actions.delete'), confirm: I18n.t('models.general._actions.confirm'))
+    item_action url, opts.merge(method: 'delete', icon: '/icons/bin.png', tooltip: I18n.t('models.general._actions.delete'), confirm: I18n.t('models.general._actions.confirm'))
   end
 end
