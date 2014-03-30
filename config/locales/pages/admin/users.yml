@@ -6,3 +6,5 @@ ka:
         new_user: ახალი მომხმარებელი
       new:
         user_created: მომხმარებელი შექმნილია
+      edit:
+        user_updated: მომხმარებელი განახლებულია

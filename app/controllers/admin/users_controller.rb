@@ -17,11 +17,24 @@ class Admin::UsersController < ApplicationController
     end
   end
 
+  def edit
+    @title=t('models.sys_user._actions.edit_user')
+    @user=Sys::User.find(params[:id])
+    if request.post?
+      if @user.update_attributes(user_params)
+        redirect_to admin_user_url(id:@user.id), notice: t('pages.admin_users.edit.user_updated')
+      end
+    end
+  end
+
   protected
   def nav
     @nav=super
     @nav[t('pages.admin_users.index.title')]=admin_users_url
     if @user
+      unless @user.new_record? and not action_name=='show'
+        @nav[@user.full_name]=admin_user_url(id:@user.id)
+      end
       @nav[@title]=nil
     end
   end
