@@ -4,7 +4,7 @@ module Sys
     include Mongoid::Document
     include Mongoid::Timestamps
 
-    field :email,                 type: String
+    field :username,              type: String
     field :hashed_password,       type: String
     field :salt,                  type: String
     field :admin,                 type: Mongoid::Boolean
@@ -14,11 +14,11 @@ module Sys
     field :mobile,     type: String
     has_and_belongs_to_many :roles, class_name: 'Sys::Role'
 
-    index({ email: 1 }, { unique: true })
+    index({ username: 1 }, { unique: true })
     index(first_name: 1, last_name: 1)
 
-    validates :email, uniqueness: { message: I18n.t('models.sys_user.errors.email_is_taken') }
-    validates :email, email: { message: I18n.t('models.sys_user.errors.illegal_email') }
+    validates :username, uniqueness: { message: I18n.t('models.sys_user.errors.username_is_taken') }
+    validates :username, username: { message: I18n.t('models.sys_user.errors.illegal_username') }
     validates :password, confirmation: { message: I18n.t('models.sys_user.errors.password_not_match') }
     validates :first_name, presence: { message: I18n.t('models.sys_user.errors.empty_first_name') }
     validates :last_name, presence: { message: I18n.t('models.sys_user.errors.empty_last_name') }
@@ -33,7 +33,7 @@ module Sys
 
     def full_name; "#{first_name} #{last_name}" end
     def self.encrypt_password(password, salt); Digest::SHA1.hexdigest("#{password}dimitri#{salt}") end
-    def self.generate_hash(user); Digest::MD5.hexdigest("#{Time.now}#{rand(20111111)/11.0}#{user.email}") end
+    def self.generate_hash(user); Digest::MD5.hexdigest("#{Time.now}#{rand(20111111)/11.0}#{user.username}") end
     def to_s; self.full_name end
     def formatted_mobile; KA.format_mobile(self.mobile) end
 
@@ -48,9 +48,9 @@ module Sys
       self.password_restore_hash = nil
     end
 
-    # Authenticate user (even inactive) using given email and password.
-    def self.authenticate(email, password)
-      user = User.where(:email => email).first
+    # Authenticate user (even inactive) using given username and password.
+    def self.authenticate(username, password)
+      user = User.where(username:username).first
       user = nil if user and user.hashed_password != User.encrypt_password(password, user.salt)
       user
     end
