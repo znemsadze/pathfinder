@@ -1,14 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- standard header -->
-<%=render partial: 'layouts/head'%>
+<meta name="Author" content="Dimitri Kurashvili [http://robozavr.com/dimakura]">
+<meta name="Keywords" content="GSE,Electricity,Maps,GIS,Android,Mobile">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%if @title.present?%><%=@title%> &mdash; <%end%>pathfinder</title>
+<%= favicon_link_tag('/favicon.png') %>
+<%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+<%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+<%= csrf_meta_tags %>
 </head>
 <body>
 <div id="content">
   <div class="container">
-    <%= nav_menu %>
-    <%= yield %>
+    <%=render partial: 'layouts/user'%>
+    <%=nav_menu %>
+    <%=yield%>
   </div>
 </div>
 </body>
