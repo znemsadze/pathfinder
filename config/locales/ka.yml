@@ -1,0 +1,5 @@
+ka:
+  application:
+    author: 'Dimitri Kurashvili <dimakura@gmail.com>'
+    name: 'Pathfinder'
+    version: '1.0.0'
