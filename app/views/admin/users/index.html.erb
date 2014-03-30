@@ -1,0 +1,5 @@
+<%=table_for @users, title:@title, collapsible:true, icon:'/icons/users.png' do |t|
+  t.title_action admin_new_user_url, label:t('pages.admin_users.index.new_user'), icon:'/icons/user--plus.png'
+  t.text_field :username
+  t.text_field :full_name
+end%>

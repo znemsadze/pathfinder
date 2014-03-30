@@ -2,5 +2,6 @@ ka:
   pages:
     application:
       layout:
-        sysadmin: სისადმინი
         not-authenticated: სტუმარი
+        sysadmin: სისადმინი
+        admin_users: მომხმარებლები
