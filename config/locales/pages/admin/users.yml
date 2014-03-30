@@ -8,3 +8,5 @@ ka:
         user_created: მომხმარებელი შექმნილია
       edit:
         user_updated: მომხმარებელი განახლებულია
+      destroy:
+        user_destroied: მომხმარებელი წაშლილია

@@ -32,6 +32,12 @@ class Admin::UsersController < ApplicationController
     end
   end
 
+  def destroy
+    user=Sys::User.find(params[:id])
+    user.destroy
+    redirect_to admin_users_url, notice: t('pages.admin_users.destroy.user_destroied')
+  end
+
   protected
   def nav
     @nav=super
