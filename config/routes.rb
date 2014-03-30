@@ -3,6 +3,13 @@ Pathfinder::Application.routes.draw do
   scope controller: 'site' do
     get '/', action: 'index', as: 'home'
     match '/login', action: 'login', as: 'login', via: ['get','post']
+    get '/logout', action: 'logout'
+  end
+
+  namespace 'account' do
+    scope '/profile', controller: 'profile' do
+      get '/', action: 'index', as: 'profile'
+    end
   end
 
   namespace 'admin' do

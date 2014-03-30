@@ -1,5 +1,10 @@
 <div id="user-box">
-<%if current_user%>
+<%if current_user.present?%>
+<span class="text-muted"><%=current_user.full_name%></span>
+<span class="label label-info"><i class="fa fa-user"></i> <%=current_user.username%></span>
+<span class="label label-success"><i class="fa fa-phone"></i> <%=current_user.formatted_mobile%></span> |
+<%= link_to t('pages.account_profile.index.action'), account_profile_url%> |
+<%= link_to t('pages.site.logout.action'), logout_url, confirm:t('pages.site.logout.action_confirm')%>
 <%else%>
 <i class="fa fa-user"></i>
 <span class="text-muted"><%= t('pages.application.layout.not-authenticated') %></span> |

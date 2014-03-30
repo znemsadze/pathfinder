@@ -1,0 +1,12 @@
+ka:
+  pages:
+    site:
+      index:
+        title: საწყისი
+      login:
+        title: მომხმარებლის ავტორიზაცია
+        action: შესვლა
+        illegal_login: "არასწორი მომხმარებლის სახელი ან პაროლი: სცადეთ ხელახლა"
+      logout:
+        action: გასვლა
+        action_confirm: ნამდვილად გინდათ გასვლა?
