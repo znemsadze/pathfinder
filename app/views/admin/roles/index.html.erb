@@ -1,5 +1,7 @@
 <%=table_for @roles, title:@title, icon:'/icons/mask.png', collapsible:true do |t|
   t.title_action admin_new_role_url, label: t('pages.admin_roles.index.new_role'), icon: '/icons/plus.png'
-  t.text_field 'name'
+  t.edit_action ->(x){admin_edit_role_url(id:x.id)}
+  t.delete_action ->(x){admin_destroy_role_url(id:x.id)}
+  t.text_field 'name', url: ->(x){admin_role_url(id:x.id)}
   t.text_field 'description', class:'muted'
 end%>
