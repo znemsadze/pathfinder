@@ -17,12 +17,17 @@ class Admin::RolesController < ApplicationController
     end
   end
 
+  def show
+    @title=t('pages.admin_roles.show.title')
+    @role=Sys::Role.find(params[:id])
+  end
+
   protected
   def nav
     @nav=super
     @nav[t('pages.admin_roles.index.title')]=admin_roles_url
     if @role
-      @nav[@role.name]=admin_role_url(id:@user.id) unless @role.new_record?
+      @nav[@role.name]=admin_role_url(id:@role.id) unless @role.new_record?
       @nav[@title]=nil unless action_name=='show'
     end
   end

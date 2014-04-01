@@ -7,3 +7,5 @@ ka:
       new:
         title: ახალი როლი
         role_created: როლი შექმნილია
+      show:
+        title: როლის თვისებები
