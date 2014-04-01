@@ -1,0 +1,9 @@
+ka:
+  pages:
+    admin_roles:
+      index:
+        title: როლების მართვა
+        new_role: ახალი როლი
+      new:
+        title: ახალი როლი
+        role_created: როლი შექმნილია

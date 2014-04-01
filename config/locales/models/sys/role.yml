@@ -1,0 +1,15 @@
+ka:
+  models:
+    sys_role:
+      name: დასახელება
+      description: აღწერილობა
+      _errors:
+        username_is_taken: ასეთი მომხმარებელი უკვე არსებობს
+        empty_first_name: ჩაწერეთ სახელი
+        empty_last_name: ჩაწერეთ გვარი
+        illegal_mobile: არასწორი მობილური
+        empty_password: ჩაწერეთ პაროლი
+      _actions:
+        new_role: ახალი როლი
+        edit_role: მომხმარებლის შეცვლა
+        role_properties: მომხმარებლის თვისებები
