@@ -4,11 +4,7 @@ ka:
       name: დასახელება
       description: აღწერილობა
       _errors:
-        username_is_taken: ასეთი მომხმარებელი უკვე არსებობს
-        empty_first_name: ჩაწერეთ სახელი
-        empty_last_name: ჩაწერეთ გვარი
-        illegal_mobile: არასწორი მობილური
-        empty_password: ჩაწერეთ პაროლი
+        name_required: ჩაწერეთ დასახელება
       _actions:
         new_role: ახალი როლი
         edit_role: მომხმარებლის შეცვლა
