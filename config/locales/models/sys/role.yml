@@ -3,9 +3,11 @@ ka:
     sys_role:
       name: დასახელება
       description: აღწერილობა
+      users: მომხმარებლები
       _errors:
         name_required: ჩაწერეთ დასახელება
       _actions:
         new_role: ახალი როლი
-        edit_role: მომხმარებლის შეცვლა
-        role_properties: მომხმარებლის თვისებები
+        edit_role: როლის შეცვლა
+        role_properties: როლის თვისებები
+        add_user: მომხმარებლის დამატება
