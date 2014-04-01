@@ -1,0 +1,11 @@
+<%if alert%>
+  <div class="alert alert-error page-start flushes">
+    <a class="close" data-dismiss="alert">&times;</a>
+    <%= alert %>
+  </div>
+<%elsif notice%>
+  <div class="alert alert-success page-start flushes">
+    <a class="close" data-dismiss="alert">&times;</a>
+    <%= notice %>
+  </div>
+<%end%>
