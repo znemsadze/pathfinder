@@ -7,3 +7,6 @@ ka:
         personal_data: პერსონალური ინფორმაცია
       change_password:
         title: პაროლის შეცვლა
+      edit:
+        title: პროფილის შეცვლა
+        saved: თქვენი მონაცემები შეცვლილია

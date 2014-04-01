@@ -1,0 +1,8 @@
+<%=forma_for @user, title:@title, icon:'/icons/user.png', collapsible:true do |f|
+  f.text_field 'username', required:true, readonly:true
+  f.text_field 'first_name', required:true, autofocus:true
+  f.text_field 'last_name', required:true
+  f.text_field 'mobile', required:true
+  f.submit t('models.general._actions.edit')
+  f.cancel_button account_profile_url
+end%>
