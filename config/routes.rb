@@ -9,6 +9,8 @@ Pathfinder::Application.routes.draw do
   namespace 'account' do
     scope '/profile', controller: 'profile' do
       get '/', action: 'index', as: 'profile'
+      match '/edit', action: 'edit', as: 'edit_profile', via:[:get,:post]
+      match '/change_password', action: 'change_password', as: 'change_password', via:[:get,:post]
     end
   end
 

@@ -2,4 +2,8 @@ ka:
   pages:
     account_profile:
       index:
+        title: თქვენი პროფილი
         action: პროფილი
+        personal_data: პერსონალური ინფორმაცია
+      change_password:
+        title: პაროლის შეცვლა
