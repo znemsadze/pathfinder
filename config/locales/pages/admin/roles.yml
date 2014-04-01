@@ -9,3 +9,6 @@ ka:
         role_created: როლი შექმნილია
       show:
         title: როლის თვისებები
+      edit:
+        title: როლის შეცვლა
+        role_updated: როლი განახლებულია

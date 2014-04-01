@@ -3,5 +3,5 @@
   t.edit_action ->(x){admin_edit_role_url(id:x.id)}
   t.delete_action ->(x){admin_destroy_role_url(id:x.id)}
   t.text_field 'name', url: ->(x){admin_role_url(id:x.id)}
-  t.text_field 'description', class:'muted'
+  t.text_field 'description', class:'text-muted'
 end%>

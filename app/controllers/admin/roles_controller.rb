@@ -5,6 +5,11 @@ class Admin::RolesController < ApplicationController
     @roles=Sys::Role.desc(:_id).paginate(page:params[:page], per_page:10)
   end
 
+  def show
+    @title=t('pages.admin_roles.show.title')
+    @role=Sys::Role.find(params[:id])
+  end
+
   def new
     @title=t('pages.admin_roles.new.title')
     if request.post?
@@ -17,9 +22,14 @@ class Admin::RolesController < ApplicationController
     end
   end
 
-  def show
-    @title=t('pages.admin_roles.show.title')
+  def edit
+    @title=t('pages.admin_roles.edit.title')
     @role=Sys::Role.find(params[:id])
+    if request.post?
+      if @role.update_attributes(role_params)
+        redirect_to admin_role_url(id:@role.id), notice:t('pages.admin_roles.edit.role_updated')
+      end
+    end
   end
 
   protected
