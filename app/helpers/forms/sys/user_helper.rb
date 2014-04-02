@@ -35,6 +35,7 @@ module Forms::Sys::UserHelper
       f.tab table_opts do |t|
         t.table_field :roles, table:table_opts do |tbl|
           tbl.table do |t|
+            t.delete_action ->(x){admin_user_remove_role_url(id:user.id,role_id:x.id)}
             t.text_field 'name', url:->(x){admin_role_url(id:x.id)}
             t.text_field 'description', class:'text-muted'
           end

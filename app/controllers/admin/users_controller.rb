@@ -38,6 +38,13 @@ class Admin::UsersController < ApplicationController
     redirect_to admin_users_url, notice: t('pages.admin_users.destroy.user_destroied')
   end
 
+  def remove_role
+    user=Sys::User.find(params[:id])
+    role=Sys::Role.find(params[:role_id])
+    user.roles.delete(role)
+    redirect_to admin_user_url(id:user.id, tab:'roles'), notice:t('pages.admin_users.remove_role.role_removed')
+  end
+
   protected
   def nav
     @nav=super
