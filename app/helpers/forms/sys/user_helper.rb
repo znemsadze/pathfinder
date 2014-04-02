@@ -20,7 +20,8 @@ module Forms::Sys::UserHelper
   def sys_user_view(user,opts={})
     title=t('models.sys_user._actions.user_properties')
     icon='/icons/user.png'
-    view_for user, title:title, icon:icon, collapsible:true do |f|
+    tab=case opts[:tab] when 'roles' then 1 when 'sys' then 2 else 0 end
+    view_for user, title:title, icon:icon, collapsible:true, selected_tab:tab do |f|
       f.edit_action admin_edit_user_url(id:user.id)
       f.delete_action admin_destroy_user_url(id:user.id)
       f.tab title: t('models.general.general_properties'), icon:icon do |f|
@@ -30,7 +31,16 @@ module Forms::Sys::UserHelper
         f.boolean_field 'admin', required:true
         f.boolean_field 'active', required:true
       end
-      f.tab title: t('models.general.system_properties'), icon:system_icon do |f|
+      table_opts={title:t('models.sys_user.roles'), icon:'/icons/mask.png'}
+      f.tab table_opts do |t|
+        t.table_field :roles, table:table_opts do |tbl|
+          tbl.table do |t|
+            t.text_field 'name', url:->(x){admin_role_url(id:x.id)}
+            t.text_field 'description', class:'text-muted'
+          end
+        end
+      end
+      f.tab title:t('models.general.system_properties'), icon:system_icon do |f|
         f.timestamps
         f.userstamps
       end
