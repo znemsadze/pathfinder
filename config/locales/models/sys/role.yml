@@ -1,6 +1,7 @@
 ka:
   models:
     sys_role:
+      _model_name: როლი
       name: დასახელება
       description: აღწერილობა
       users: მომხმარებლები
