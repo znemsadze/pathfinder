@@ -44,12 +44,19 @@ class Admin::RolesController < ApplicationController
     if request.post?
       user=Sys::User.where(username:params[:username]).first
       if user
-        user.roles<<@role
+        @role.users<<user
         redirect_to admin_role_url(id:@role.id,tab:'users'), notice:t('pages.admin_roles.add_user.user_added')
       else
         @error=t('pages.admin_roles.add_user.user_not_found')
       end
     end
+  end
+
+  def remove_user
+    role=Sys::Role.find(params[:id])
+    user=Sys::User.find(params[:user_id])
+    role.users.delete(user)
+    redirect_to admin_role_url(id:role.id,tab:'users'), notice:t('pages.admin_roles.remove_user.user_removed')
   end
 
   protected

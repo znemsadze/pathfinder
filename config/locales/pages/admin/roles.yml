@@ -17,3 +17,5 @@ ka:
       add_user:
         user_not_found: მომხმარებელი ვერ მოიძებნა
         user_added: მომხმარებელი დამატებულია
+      remove_user:
+        user_removed: მომხმარებელი წაშლილია
