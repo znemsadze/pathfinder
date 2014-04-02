@@ -8,8 +8,16 @@ module SystemFields
   end
 
   def userstamps
-    text_field(:creator, label: I18n.t('models.general.created_by'), hint: I18n.t('models.general.created_by_hint'), required: true)
-    text_field(:updater, label: I18n.t('models.general.updated_by'), hint: I18n.t('models.general.updated_by_hint'), required: true)
+    #text_field(:creator, label: I18n.t('models.general.created_by'), hint: I18n.t('models.general.created_by_hint'), required: true)
+    #text_field(:updater, label: I18n.t('models.general.updated_by'), hint: I18n.t('models.general.updated_by_hint'), required: true)
+    complex_field label: I18n.t('models.general.created_by'), hint: I18n.t('models.general.created_by_hint'), required: true do |c|
+      c.text_field 'creator.username', tag: 'code'
+      c.text_field 'creator.full_name', empty: false
+    end
+    complex_field label: I18n.t('models.general.updated_by'), hint: I18n.t('models.general.updated_by_hint'), required: true do |c|
+      c.text_field 'updater.username', tag: 'code'
+      c.text_field 'updater.full_name', empty: false
+    end
   end
 
   def organization

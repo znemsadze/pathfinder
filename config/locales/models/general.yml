@@ -6,6 +6,10 @@ ka:
       created_at_hint: როდის შეიქმნა ეს ჩანაწერი?
       updated_at: შეცვლის თარიღი
       updated_at_hint: ბოლოს როდის შეიცვალა ეს ჩანაწერი?
+      created_by: შემქმნელი
+      created_by_hint: "მომხმარებელი, რომელმაც შექმნა ეს ობიექტი"
+      updated_by: შემცვლელი
+      updated_by_hint: "მომხმარებელი, რომელმაც ბოლომ შეცვლა ეს ობიექტი"
       general_properties: ძირითადი
       system_properties: სისტემური
       _actions:

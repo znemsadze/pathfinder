@@ -14,7 +14,7 @@ class Admin::RolesController < ApplicationController
     @title=t('pages.admin_roles.new.title')
     if request.post?
       @role=Sys::Role.new(role_params)
-      if @role.save
+      if @role.save(user:current_user)
         redirect_to admin_role_url(id:@role.id), notice:t('pages.admin_roles.new.role_created')
       end
     else
@@ -43,5 +43,5 @@ class Admin::RolesController < ApplicationController
   end
 
   private
-  def role_params; params.require(:sys_role).permit(:name,:description) end
+  def role_params; params.require(:sys_role).permit(:name,:description).merge(user:current_user) end
 end

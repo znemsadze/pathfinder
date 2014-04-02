@@ -2,6 +2,7 @@
 class Sys::Role
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Sys::Userstamps
 
   field :name, type: String
   field :description, type: String
