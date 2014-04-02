@@ -26,10 +26,16 @@ class Admin::RolesController < ApplicationController
     @title=t('pages.admin_roles.edit.title')
     @role=Sys::Role.find(params[:id])
     if request.post?
-      if @role.update_attributes(role_params)
+      if @role.update_attributes(role_params.merge(user:current_user))
         redirect_to admin_role_url(id:@role.id), notice:t('pages.admin_roles.edit.role_updated')
       end
     end
+  end
+
+  def destroy
+    role=Sys::Role.find(params[:id])
+    role.destroy
+    redirect_to admin_roles_url, notice: t('pages.admin_roles.destroy.role_destroied')
   end
 
   protected
@@ -43,5 +49,5 @@ class Admin::RolesController < ApplicationController
   end
 
   private
-  def role_params; params.require(:sys_role).permit(:name,:description).merge(user:current_user) end
+  def role_params; params.require(:sys_role).permit(:name,:description) end
 end

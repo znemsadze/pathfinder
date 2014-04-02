@@ -12,3 +12,5 @@ ka:
       edit:
         title: როლის შეცვლა
         role_updated: როლი განახლებულია
+      destroy:
+        role_destroied: როლი წაშლილია
