@@ -30,7 +30,7 @@ module Forms::Sys::RoleHelper
             t.title_action admin_role_add_user_url(id:role.id), label: t('models.sys_role._actions.add_user'), icon: '/icons/plus.png'
             t.delete_action ->(x){admin_role_remove_user_url(id:role.id, user_id:x.id)}
             t.text_field 'username', tag:'code'
-            t.text_field 'full_name', url:->(x){admin_user_url(id:role.id)}
+            t.text_field 'full_name', url:->(x){admin_user_url(id:x.id)}
             t.text_field 'formatted_mobile', i18n:'mobile', tag:'code'
           end
         end
