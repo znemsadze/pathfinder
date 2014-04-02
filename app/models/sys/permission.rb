@@ -2,6 +2,7 @@
 class Sys::Permission
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Sys::Userstamps
 
   field :controller, type: String
   field :action, type: String
