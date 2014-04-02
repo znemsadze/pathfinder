@@ -29,6 +29,7 @@ module Forms::Sys::UserHelper
       end
       f.tab title: t('models.general.system_properties'), icon:system_icon do |f|
         f.timestamps
+        f.userstamps
       end
     end
   end
