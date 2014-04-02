@@ -6,7 +6,7 @@ class Account::ProfileController < ApplicationController
     @title=t('pages.account_profile.edit.title')
     @user=current_user
     if request.post?
-      if @user.update_attributes(params.require(:sys_user).permit(:first_name,:last_name,:mobile))
+      if @user.update_attributes(params.require(:sys_user).permit(:first_name,:last_name,:mobile).merge(user:current_user))
         redirect_to account_profile_url, notice: t('pages.account_profile.edit.saved')
       end
     end
