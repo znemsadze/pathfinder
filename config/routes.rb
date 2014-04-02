@@ -28,6 +28,7 @@ Pathfinder::Application.routes.draw do
       match '/new', action: 'new', as: 'new_role', via: ['get','post']
       match '/edit/:id', action: 'edit', as: 'edit_role', via: ['get','post']
       delete '/delete/:id', action: 'destroy', as: 'destroy_role'
+      match '/add_user/:id', action: 'add_user', as: 'role_add_user', via: ['get','post']
     end
   end
 

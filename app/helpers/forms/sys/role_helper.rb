@@ -27,6 +27,7 @@ module Forms::Sys::RoleHelper
       f.tab users_opts do |f|
         f.table_field 'users', table:users_opts do |tbl|
           tbl.table do |t|
+            t.title_action admin_role_add_user_url(id:role.id), label: t('models.sys_role._actions.add_user'), icon: '/icons/plus.png'
             t.text_field 'full_name'
           end
         end

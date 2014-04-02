@@ -38,13 +38,18 @@ class Admin::RolesController < ApplicationController
     redirect_to admin_roles_url, notice: t('pages.admin_roles.destroy.role_destroied')
   end
 
+  def add_user
+    @title=t('models.sys_role._actions.add_user')
+    @role=Sys::Role.find(params[:id])
+  end
+
   protected
   def nav
     @nav=super
     @nav[t('pages.admin_roles.index.title')]=admin_roles_url
     if @role
       @nav[@role.name]=admin_role_url(id:@role.id) unless @role.new_record?
-      @nav[@title]=nil unless action_name=='show'
+      @nav[@title]=request.url unless action_name=='show'
     end
   end
 
