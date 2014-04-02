@@ -4,4 +4,5 @@
   t.delete_action ->(x){admin_destroy_role_url(id:x.id)}
   t.text_field 'name', url: ->(x){admin_role_url(id:x.id)}
   t.text_field 'description', class:'text-muted'
+  t.paginate records:t('models.general.records')
 end%>

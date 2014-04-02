@@ -2,7 +2,7 @@
 class Admin::RolesController < ApplicationController
   def index
     @title=t('pages.admin_roles.index.title')
-    @roles=Sys::Role.desc(:_id).paginate(page:params[:page], per_page:10)
+    @roles=Sys::Role.asc(:name).paginate(page:params[:page], per_page:10)
   end
 
   def show
