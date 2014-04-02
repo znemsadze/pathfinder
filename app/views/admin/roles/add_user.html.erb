@@ -1,5 +1,5 @@
 <h2 class="page-header"><%=@title%></h2>
-<p><%=t('models.sys_role._actions.add_user_descr')%></p>
+<p class="text-muted"><%=t('models.sys_role._actions.add_user_descr')%></p>
 <%=form_tag request.url do%>
   <div class="row">
     <div class="col-sm-6">
@@ -12,6 +12,7 @@
       <div class="form-group">
         <%=label_tag 'username', t('models.sys_user.username')%>
         <%=text_field_tag 'username', params[:username], autofocus:true, class:'form-control'%>
+        <%if @error.present?%><p class="text-danger"><%=@error%></p><%end%>
       </div>
       <div class="form-group">
         <%=submit_tag t('models.general._actions.save'), class:['btn','btn-primary']%>

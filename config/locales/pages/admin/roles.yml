@@ -14,3 +14,6 @@ ka:
         role_updated: როლი განახლებულია
       destroy:
         role_destroied: როლი წაშლილია
+      add_user:
+        user_not_found: მომხმარებელი ვერ მოიძებნა
+        user_added: მომხმარებელი დამატებულია

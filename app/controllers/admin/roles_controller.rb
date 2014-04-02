@@ -41,6 +41,15 @@ class Admin::RolesController < ApplicationController
   def add_user
     @title=t('models.sys_role._actions.add_user')
     @role=Sys::Role.find(params[:id])
+    if request.post?
+      user=Sys::User.where(username:params[:username]).first
+      if user
+        user.roles<<@role
+        redirect_to admin_role_url(id:@role.id,tab:'users'), notice:t('pages.admin_roles.add_user.user_added')
+      else
+        @error=t('pages.admin_roles.add_user.user_not_found')
+      end
+    end
   end
 
   protected
