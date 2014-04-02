@@ -3,6 +3,7 @@ module Sys
   class User
     include Mongoid::Document
     include Mongoid::Timestamps
+    include Sys::Userstamps
 
     field :username,              type: String
     field :hashed_password,       type: String
