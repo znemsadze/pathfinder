@@ -35,5 +35,9 @@ Pathfinder::Application.routes.draw do
     end
   end
 
+  scope controller: 'test' do
+    get '/test', action: 'index', as: 'test'
+  end
+
   root 'site#index'
 end

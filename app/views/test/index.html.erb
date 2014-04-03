@@ -1,0 +1,62 @@
+<div style="position:absolute;left:0;top:0;bottom:0;width:300px;">
+  <div>Marker1: <span id="marker1-data"></span></div>
+  <div>Marker2: <span id="marker2-data"></span></div>
+</div>
+<div style="position:absolute;left:300px;right:0;top:0;bottom:0;">
+  <div id="map-canvas" class="google-map"/>
+</div>
+
+
+<script type="text/javascript">
+  var google_api_key='AIzaSyA-SMUKodB-2pDhnk_c35AEBoNFwsE03Ok';
+
+  function initialize() {
+    var path = [
+      new google.maps.LatLng(42.00, 42.00),
+      new google.maps.LatLng(42.00, 43.00),
+    ];
+
+    var mapOptions = {
+      zoom: 8,
+      center: path[1],
+      mapTypeId: google.maps.MapTypeId.TERRAIN
+    };
+
+    var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+    // var flightPlanCoordinates = [
+    //   new google.maps.LatLng(37.772323, -122.214897),
+    //   new google.maps.LatLng(21.291982, -157.821856),
+    //   new google.maps.LatLng(-18.142599, 178.431),
+    //   new google.maps.LatLng(-27.46758, 153.027892)
+    // ];
+    var flightPath = new google.maps.Polyline({
+      path: path,
+      geodesic: true,
+      strokeColor: '#FF0000',
+      strokeOpacity: 1.0,
+      strokeWeight: 2,
+      editable: true
+    });
+
+    google.maps.event.addListener(flightPath, 'dblclick', function(evt) {
+      if (evt.vertex) {
+        var p = flightPath.getPath();
+        if (p.getLength() > 2) {
+          p.removeAt(evt.vertex);
+        }
+      }
+    });
+
+    flightPath.setMap(map);
+  }
+
+  function loadScript() {
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'https://maps.googleapis.com/maps/api/js?v=3.ex&key='+google_api_key+'&sensor=false&callback=initialize';
+    document.body.appendChild(script);
+  }
+
+  window.onload = loadScript;
+</script>
