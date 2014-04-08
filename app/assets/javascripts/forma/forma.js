@@ -28,10 +28,6 @@
     return labelHTML;
   };
 
-  var generateFieldHTML=function(editorHTML,labelHTML){
-    return ['<div class="forma-group">',labelHTML,editorHTML,'</div>'].join('');
-  };
-
   var generateInputHTML=function(options){
     var idAttr=htmlAttribute('id',options['id']);
     var nameAttr=htmlAttribute('name',options['name'] || id);
@@ -46,6 +42,14 @@
     return ['<input ',attributes,' />'].join('');
   };
 
+  var generateFieldHTML=function(field){
+    var labelHTML=generateLabelHTML(field);
+    var editorHTML=field.editorHTML();
+    var classes=['forma-group',field.required?'required':'optional'].join(' ');
+    var classAttrs=htmlAttribute('class',classes);
+    return ['<div ',classAttrs,'>',labelHTML,editorHTML,'</div>'].join('');
+  };
+
   // 
 
   var textField=function(options){
@@ -53,10 +57,12 @@
     var id=options['id'] || nextId();
     var name=options['name'];
     var label=options['label'] || name;
+    var required=options['required'];
     return {
       id:id,
       label:label,
       name:name,
+      required:required,
       value:null,
       setModel:function(model) {
         this.model=model;
@@ -77,10 +83,11 @@
           htmlElement.value=this.value;
         }
       },
+      editorHTML:function(){
+        return generateInputHTML({id:this.id,name:this.name,value:this.value});
+      },
       toHTML:function() {
-        var editHTML=generateInputHTML({id:id,name:name,value:this.value});
-        var labelHTML=generateLabelHTML(this);
-        return generateFieldHTML(editHTML,labelHTML);
+        return generateFieldHTML(this);
       },
     };
   };

@@ -2,8 +2,8 @@
 
 <script type="text/javascript">
 function initUI() {
-  var txtFirstName=Forma.textField({name:"first_name",label:'სახელი'});
-  var txtLastName=Forma.textField({name:"last_name",label:'გვარი'});
+  var txtFirstName=Forma.textField({name:"first_name",label:'სახელი',required:true});
+  var txtLastName=Forma.textField({name:"last_name",label:'გვარი',required:true});
   txtFirstName.setModel({first_name:'დიმიტრი'});
   txtLastName.setModel({last_name:'ყურაშვილი'});
 

@@ -1,20 +1,24 @@
 $input-border: #aaa;
-$require-color: #f00;
+$require-color: #d00;
 
 .forma-group {
   position: relative;
-  padding: 4px;
+  padding: 0;
   border-left:5px solid transparent;
   label {
-    display:block;
-    padding:2px 5px;
+    background:#eeffdd;
+    padding:3px 4px;
+    width: 150px;
   }
   input[type=text].forma-control {
     border:1px solid $input-border;
-    padding:2px;
+    padding:2px 4px;
+    margin:4px;
     outline:0;
   }
 }
 .forma-group.required {
-  border-left:5px solid $require-color;
+  label {
+    border-left:5px solid $require-color;
+  }
 }
