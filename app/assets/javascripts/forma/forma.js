@@ -42,6 +42,10 @@
     return ['<input ',attributes,' />'].join('');
   };
 
+  var generateValueHTML=function(options){
+    ['<span class="forma-control"></span>']
+  };
+
   var generateFieldHTML=function(field){
     var labelHTML=generateLabelHTML(field);
     var editorHTML=field.editorHTML();
@@ -74,6 +78,8 @@
       name:name,
       required:required,
       value:null,
+      model:null,
+      readonly:readonly,
       setModel:function(model) {
         this.model=model;
         if (model){
@@ -87,18 +93,28 @@
         this.resetField();
       },
       getValue:function(){
-        var htmlElement=document.getElementById(this.id);
-        if (htmlElement) { this.value=htmlElement.value; }
+        if(!this.readonly){
+          var element=$(this.id);
+          if (element) { this.value=element.val(); }
+        }
         return this.value;
       },
       resetField:function() {
-        var htmlElement=document.getElementById(this.id);
-        if (htmlElement) {
-          htmlElement.value=this.value;
+        var element=$('#'+this.id);
+        if (element) {
+          if (this.readonly) {
+            element.html(this.value);
+          } else {
+            element.val(this.value);
+          }
         }
       },
       editorHTML:function(){
-        return generateInputHTML({id:this.id,name:this.name,value:this.value});
+        if (this.readonly) {
+          return generateValueHTML({id:this.id,value:this.value});
+        } else {
+          return generateInputHTML({id:this.id,name:this.name,value:this.value});
+        }
       },
       toHTML:function() {
         return generateFieldHTML(this);
@@ -123,8 +139,8 @@
       toHTML:function(){
         return generateFormHTML(this);
       },
-      showIn:function(id){
-        document.getElementById(id).innerHTML=this.toHTML();
+      showIn:function(selector){
+        $(selector).html(this.toHTML());
       },
     };
     form.setModel(opts['model']);
