@@ -58,13 +58,33 @@
     return ['<div ',classAttrs,'>',labelHTML,editorHTML,'</div>'].join('');
   };
 
-  var generateFormHTML=function(form){
+  var generateFormTitleHTML=function(form) {
+    var titleHTML=[];
+    if (form.title) {
+      titleHTML.push('<div class="forma-title">');
+      if (form.icon) {
+        titleHTML.push('<img src="'+form.icon+'"/>');
+      }
+      titleHTML.push(form.title);
+      titleHTML.push('</div>');
+    }
+    return titleHTML.join('');
+  };
+
+  var generateFormFieldsHTML=function(form){
     var fieldsHTML=['<div class="forma-fields">'];
     for(var i=0,l=form.fields.length;i<l;i++) {
       fieldsHTML.push(form.fields[i].toHTML());
     } 
     fieldsHTML.push('</div>');
     return fieldsHTML.join('');
+  };
+
+  var generateFormHTML=function(form){
+    return [
+      generateFormTitleHTML(form),
+      generateFormFieldsHTML(form),
+    ].join('');
   };
 
   // form elements
@@ -127,15 +147,16 @@
   };
 
   var form=function(opts){
-    var id=nextId();
-    var fields=opts['fields'];
     var form = {
-      id:id,
-      fields:fields,
+      id:nextId(),
+      fields:opts['fields'],
+      title:opts['title'],
+      icon:opts['icon'],
+      saveUrl:opts['saveUrl'],
       model:null,
       setModel:function(model){
         for(var i=0,l=this.fields.length;i<l;i++){
-          var field=fields[i];
+          var field=this.fields[i];
           field.setModel(model);
         }
         this.model=model;
