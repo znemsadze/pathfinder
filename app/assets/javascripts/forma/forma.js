@@ -84,8 +84,8 @@
     var actionsHTML=['<div class="forma-actions">'];
     {
       var classAttr=htmlAttribute('class','submit btn btn-default btn-sm');
-      var onclickAttr=htmlAttribute('onclick','Forma.save(\''+form.id+'\');');
-      var attributes=[classAttr,onclickAttr].join(' ');
+      //var onclickAttr=htmlAttribute('onclick','Forma.saveForm(\''+form.id+'\');');
+      var attributes=[classAttr].join(' ');
       actionsHTML.push('<button ',attributes,'>',form.submit,'</button>');
     }
     actionsHTML.push('</div>');
@@ -94,9 +94,11 @@
 
   var generateFormHTML=function(form){
     return [
+      '<div id="'+form.id+'">',
       generateFormTitleHTML(form),
       generateFormFieldsHTML(form),
       generateActionsHTML(form),
+      '</div>'
     ].join('');
   };
 
@@ -162,7 +164,6 @@
     };
   };
 
-  var _forms={};
   var form=function(opts){
     var form = {
       id:nextId(),
@@ -189,16 +190,13 @@
         return generateFormHTML(this);
       },
       showIn:function(selector){
-        _forms[this.id]=this;
         $(selector).html(this.toHTML());
-      },
-      destroy:function(){
-        _forms[this.id]=null;
-        $(selector).html('');
+        var btn=$('#'+form.id+' .submit');
+        btn.click(form.save);
       },
       save:function(){
         // TODO
-        console.log(this.getModel());
+        console.log(form.getModel());
       },
     };
     form.setModel(opts['model']);
@@ -210,6 +208,5 @@
   container.Forma = {
     form:form,
     textField: textField,
-    save:function(id){ _forms[id].save(); },
   };
 })(window);
