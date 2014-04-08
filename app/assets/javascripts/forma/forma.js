@@ -50,7 +50,16 @@
     return ['<div ',classAttrs,'>',labelHTML,editorHTML,'</div>'].join('');
   };
 
-  // 
+  var generateFormHTML=function(form){
+    var fieldsHTML=['<div class="forma-fields">'];
+    for(var i=0,l=form.fields.length;i<l;i++) {
+      fieldsHTML.push(form.fields[i].toHTML());
+    } 
+    fieldsHTML.push('</div>');
+    return fieldsHTML.join('');
+  };
+
+  // form elements
 
   var textField=function(options){
     if (!options) { options={}; }
@@ -58,6 +67,7 @@
     var name=options['name'];
     var label=options['label'] || name;
     var required=options['required'];
+    var readonly=options['readonly'];
     return {
       id:id,
       label:label,
@@ -66,7 +76,11 @@
       value:null,
       setModel:function(model) {
         this.model=model;
-        this.setValue(model[this.name]);
+        if (model){
+          this.setValue(model[this.name]);
+        } else {
+          this.setValue(null);
+        }
       },
       setValue:function(value) {
         this.value=value;
@@ -94,24 +108,33 @@
 
   var form=function(opts){
     var id=nextId();
-    var titleHTML=(function(title,icon){
-          var titleHTML='';
-          if (title) {
-            // TODO
-          } 
-          return titleHTML;
-        })(opts['title'],opts['icon']);
-    return {
+    var fields=opts['fields'];
+    var form = {
       id:id,
+      fields:fields,
+      model:null,
+      setModel:function(model){
+        for(var i=0,l=this.fields.length;i<l;i++){
+          var field=fields[i];
+          field.setModel(model);
+        }
+        this.model=model;
+      },
       toHTML:function(){
-        // TODO
+        return generateFormHTML(this);
+      },
+      showIn:function(id){
+        document.getElementById(id).innerHTML=this.toHTML();
       },
     };
+    form.setModel(opts['model']);
+    return form;
   };
 
   // PUBLIC API
 
   container.Forma = {
-    textField: textField // (name,options)
+    form:form,
+    textField: textField,
   };
 })(window);

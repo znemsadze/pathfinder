@@ -2,13 +2,15 @@
 
 <script type="text/javascript">
 function initUI() {
-  var txtFirstName=Forma.textField({name:"first_name",label:'სახელი',required:true});
-  var txtLastName=Forma.textField({name:"last_name",label:'გვარი',required:true});
-  txtFirstName.setModel({first_name:'დიმიტრი'});
-  txtLastName.setModel({last_name:'ყურაშვილი'});
+  var model={first_name:'დიმიტრი',last_name:'ყურაშვილი'};
 
-  var formElement=window.document.getElementById('user-form');
-  formElement.innerHTML=txtFirstName.toHTML();
+  var fields=[
+    Forma.textField({name:"first_name",label:'სახელი',required:true}),
+    Forma.textField({name:"last_name",label:'გვარი',required:true})
+  ];
+
+  var form=Forma.form({fields:fields,model:model});
+  form.showIn('user-form');
 };
 window.onload=initUI;
 </script>

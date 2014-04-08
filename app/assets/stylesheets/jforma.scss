@@ -4,21 +4,23 @@ $require-color: #d00;
 .forma-group {
   position: relative;
   padding: 0;
-  border-left:5px solid transparent;
+  border-left:3px solid transparent;
+  margin-bottom:1px;
   label {
     background:#eeffdd;
     padding:3px 4px;
     width: 150px;
+    margin:0;
   }
   input[type=text].forma-control {
     border:1px solid $input-border;
     padding:2px 4px;
-    margin:4px;
+    margin:0;
     outline:0;
   }
 }
 .forma-group.required {
   label {
-    border-left:5px solid $require-color;
+    border-left:3px solid $require-color;
   }
 }
