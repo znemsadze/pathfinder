@@ -11,12 +11,18 @@ $require-color: #d00;
     padding:3px 4px;
     width: 150px;
     margin:0;
+    font-weight: bold;
   }
   input[type=text].forma-control {
     border:1px solid $input-border;
     padding:2px 4px;
     margin:0;
     outline:0;
+  }
+  span.forma-control {
+    border:1px solid transparent;
+    padding:2px 4px;
+    margin:0;
   }
 }
 .forma-group.required {

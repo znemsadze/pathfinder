@@ -43,7 +43,11 @@
   };
 
   var generateValueHTML=function(options){
-    ['<span class="forma-control"></span>']
+    var value=options['value'];
+    var idAttr=htmlAttribute('id',options['id']);
+    var classAttr=htmlAttribute('class','forma-control');
+    var attributes=[idAttr,classAttr].join(' ');
+    return ['<span ',attributes,'>',htmlescape(value),'</span>'].join('');
   };
 
   var generateFieldHTML=function(field){
