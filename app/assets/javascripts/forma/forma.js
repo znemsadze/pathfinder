@@ -80,10 +80,23 @@
     return fieldsHTML.join('');
   };
 
+  var generateActionsHTML=function(form){
+    var actionsHTML=['<div class="forma-actions">'];
+    {
+      var classAttr=htmlAttribute('class','submit btn btn-default btn-sm');
+      var onclickAttr=htmlAttribute('onclick','Forma.save(\''+form.id+'\');');
+      var attributes=[classAttr,onclickAttr].join(' ');
+      actionsHTML.push('<button ',attributes,'>',form.submit,'</button>');
+    }
+    actionsHTML.push('</div>');
+    return actionsHTML.join('');
+  };
+
   var generateFormHTML=function(form){
     return [
       generateFormTitleHTML(form),
       generateFormFieldsHTML(form),
+      generateActionsHTML(form),
     ].join('');
   };
 
@@ -112,13 +125,16 @@
           this.setValue(null);
         }
       },
+      applyModel:function(model) {
+        model[this.name]=this.getValue();
+      },
       setValue:function(value) {
         this.value=value;
         this.resetField();
       },
       getValue:function(){
         if(!this.readonly){
-          var element=$(this.id);
+          var element=$('#'+this.id);
           if (element) { this.value=element.val(); }
         }
         return this.value;
@@ -146,6 +162,7 @@
     };
   };
 
+  var _forms={};
   var form=function(opts){
     var form = {
       id:nextId(),
@@ -153,6 +170,7 @@
       title:opts['title'],
       icon:opts['icon'],
       saveUrl:opts['saveUrl'],
+      submit:opts['submit']||'Submit',
       model:null,
       setModel:function(model){
         for(var i=0,l=this.fields.length;i<l;i++){
@@ -161,11 +179,26 @@
         }
         this.model=model;
       },
+      getModel:function(){
+        for(var i=0,l=this.fields.length;i<l;i++){
+          this.fields[i].applyModel(this.model);
+        }
+        return this.model;
+      },
       toHTML:function(){
         return generateFormHTML(this);
       },
       showIn:function(selector){
+        _forms[this.id]=this;
         $(selector).html(this.toHTML());
+      },
+      destroy:function(){
+        _forms[this.id]=null;
+        $(selector).html('');
+      },
+      save:function(){
+        // TODO
+        console.log(this.getModel());
       },
     };
     form.setModel(opts['model']);
@@ -177,5 +210,6 @@
   container.Forma = {
     form:form,
     textField: textField,
+    save:function(id){ _forms[id].save(); },
   };
 })(window);
