@@ -1,12 +1,25 @@
-<div style="position:absolute;left:0;top:0;bottom:0;width:300px;">
-  <div>Marker1: <span id="marker1-data"></span></div>
-  <div>Marker2: <span id="marker2-data"></span></div>
-</div>
-<div style="position:absolute;left:300px;right:0;top:0;bottom:0;">
-  <div id="map-canvas" class="google-map"/>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-3">
+      <div id="user-form">
+      </div>
+    </div>
+  </div>
 </div>
 
+<script type="text/javascript">
+function initUI() {
+  var txtUsername=Forma.textField("username",{label:'Username'});
+  txtUsername.setModel({username:'dimitri&quot;'});
 
+  var formElement=window.document.getElementById('user-form');
+  formElement.innerHTML=txtUsername.toHTML();
+};
+window.onload=initUI;
+</script>
+
+
+<!--
 <script type="text/javascript">
   var google_api_key='AIzaSyA-SMUKodB-2pDhnk_c35AEBoNFwsE03Ok';
 
@@ -60,3 +73,4 @@
 
   window.onload = loadScript;
 </script>
+-->

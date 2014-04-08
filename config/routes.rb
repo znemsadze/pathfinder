@@ -35,8 +35,10 @@ Pathfinder::Application.routes.draw do
     end
   end
 
-  scope controller: 'test' do
-    get '/test', action: 'index', as: 'test'
+  namespace 'geo' do
+    scope '/map', controller: 'map' do
+      get '/', action: 'index', as: 'map'
+    end
   end
 
   root 'site#index'
