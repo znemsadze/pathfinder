@@ -9,7 +9,14 @@ function initUI() {
     Forma.textField({name:"last_name",label:'გვარი',required:true})
   ];
 
-  var form=Forma.form({title:'მომხმარებლის შეცვლა',icon:'/icons/user--pencil.png',fields:fields,model:model,submit:'შენახვა'});
+  var form=Forma.form({
+    title:'მომხმარებლის შეცვლა',
+    icon:'/icons/user--pencil.png',
+    fields:fields,
+    model:model,
+    submit:'შენახვა',
+    saveUrl:'/api/users/new.json'
+  });
   form.showIn('#user-form');
 };
 window.onload=initUI;

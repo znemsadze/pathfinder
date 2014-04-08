@@ -195,8 +195,8 @@
         btn.click(form.save);
       },
       save:function(){
-        // TODO
-        console.log(form.getModel());
+        var model=form.getModel();
+        // $.post(form.saveUrl,{data:model});
       },
     };
     form.setModel(opts['model']);
