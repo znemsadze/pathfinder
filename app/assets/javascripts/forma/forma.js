@@ -17,14 +17,13 @@
 
   // generation
 
-  var generateLabelHTML=function(label,id){
+  var generateLabelHTML=function(field){
     var labelHTML='';
+    var id=field['id'];
+    var label=field['label'];
+    var required=field['required']
     if (label) {
-      if(id) {
-        labelHTML=['<label for="',id,'">',label,'</label>'].join('');
-      } else {
-        labelHTML=['<label>',label,'</label>'].join('');
-      }
+      labelHTML=['<label ', id ? htmlAttribute("for",id) : '', '>',label,'</label>'].join('');
     }
     return labelHTML;
   };
@@ -80,7 +79,7 @@
       },
       toHTML:function() {
         var editHTML=generateInputHTML({id:id,name:name,value:this.value});
-        var labelHTML=generateLabelHTML(this.label,this.id);
+        var labelHTML=generateLabelHTML(this);
         return generateFieldHTML(editHTML,labelHTML);
       },
     };
