@@ -1,19 +1,14 @@
-<div class="container">
-  <div class="row">
-    <div class="col-sm-3">
-      <div id="user-form">
-      </div>
-    </div>
-  </div>
-</div>
+<div id="user-form"></div>
 
 <script type="text/javascript">
 function initUI() {
-  var txtUsername=Forma.textField("username",{label:'Username'});
-  txtUsername.setModel({username:'dimitri&quot;'});
+  var txtFirstName=Forma.textField({name:"first_name",label:'სახელი'});
+  var txtLastName=Forma.textField({name:"last_name",label:'გვარი'});
+  txtFirstName.setModel({first_name:'დიმიტრი'});
+  txtLastName.setModel({last_name:'ყურაშვილი'});
 
   var formElement=window.document.getElementById('user-form');
-  formElement.innerHTML=txtUsername.toHTML();
+  formElement.innerHTML=txtFirstName.toHTML();
 };
 window.onload=initUI;
 </script>
