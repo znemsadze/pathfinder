@@ -17,10 +17,17 @@ var initializeGoogleMap=function(){
     center: new google.maps.LatLng(defaultCenterLat,defaultCenterLng),
     mapTypeId: google.maps.MapTypeId.TERRAIN
   };
-
   map=new google.maps.Map(mapElement, mapOptions);
-  // html.el(sidebarElement,'p',{id:'test-paragraph',class:'text-muted',style:'font-weight:bold;'},'sometext');
-  forma.faIcon(sidebarElement,'heart');
+
+// TODO: remove code below
+
+  //var link=forma.faIcon('heart');
+
+  var b1=forma.actionButton([forma.faIcon('heart'),' Button1'], function(){ alert('Button1 clicked!'); }, {size:'small'});
+  var b2=forma.actionButton(['Button2'], function(){ alert('Button2 clicked!'); }, {size:'small'});
+  var groups=forma.dropdown([b1,b2]);
+
+  sidebarElement.appendChild(groups);
 };
 
 var loadGoogleMapsAsyncronously=function(){
@@ -52,16 +59,53 @@ module.exports=function(opts){
 },{"./forma":2}],2:[function(require,module,exports){
 var html=require('./html');
 
-var idCounter=0;
-
-var faIcon=function(parent,icon){
-  return html.el(parent,'i',{class:'fa fa-'+icon});
+var faIcon=function(iconName){
+  return html.el('i',{class:'fa fa-'+iconName});
 };
 
+var actionButton=function(text,action_f,opts){
+  opts=opts || {};
+  var classNames;
+  if(opts.type===false){ classNames=[]; }
+  else {
+    opts.type=opts.type||'default';
+    var size=opts.size=='small'?'btn-xs':'btn-sm';
+    classNames=['btn','btn-'+opts.type,size];
+  }
+  var el= html.el('a',{href:'#',class:classNames},text);
+  el.onclick=function(){
+    action_f();
+    return false;
+  }
+  return el;
+};
+
+var actionLink=function(text,action_f,opts){
+  opts=opts || {};
+  opts.type=false; // disable button
+  return actionButton(text,action_f,opts);
+};
+
+var buttonGroup=function(buttons){
+  return html.el('div',{class:'btn-group'},buttons);
+};
+
+var dropdown=function(buttons){
+  var dd=html.el('ul',{class:'dropdown-menu'});
+  
+  return dd;
+};
+
+// icon
 exports.faIcon=faIcon;
+
+// buttons
+exports.actionButton=actionButton;
+exports.actionLink=actionLink;
+exports.buttonGroup=buttonGroup;
+exports.dropdown=dropdown;
 },{"./html":3}],3:[function(require,module,exports){
-var isArray=function(x){ return x && (x instanceof Array); };
-var isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
+var utils=require('./utils');
 
 var dashedToCamelized=function(name){
   var firstToUpper=function(x){return [x.substring(0,1).toUpperCase(),x.substring(1)].join('');};
@@ -73,8 +117,8 @@ var applyAttribute=function(element,attrName,attrValue){
   if('class'===attrName){
 
     // class => className
-
-    element.className=attrValue;
+    if(utils.isArray(attrValue)){ element.className=attrValue.join(' '); }
+    else{ element.className=attrValue; }
   }
   else if('style'===attrName && attrValue){
 
@@ -101,7 +145,7 @@ var createElement=function(tag,attrs,children){
     for(var i=0,l=children.length;i<l;i++){
       var child=children[i];
       if(typeof child==='string'){ element.appendChild(document.createTextNode(child)); }
-      else if(isElement(child)){ element.appendChild(child); }
+      else if(utils.isElement(child)){ element.appendChild(child); }
     }
   }
   return element;
@@ -122,7 +166,7 @@ exports.el=function(){
   var curr_index=0;
 
   // first argument may be a parent
-  if(isElement(arguments[curr_index])){ parent=arguments[curr_index]; curr_index+=1; }
+  if(utils.isElement(arguments[curr_index])){ parent=arguments[curr_index]; curr_index+=1; }
 
   // argument[curr_index] is mandatory 
   tag=arguments[curr_index]; curr_index+=1;
@@ -132,9 +176,9 @@ exports.el=function(){
   if(typeof arguments[curr_index]==='object'){ attrs=arguments[curr_index]; curr_index+=1; }
 
   // getting children
-  if(typeof arguments[curr_index]==='string' || isElement(arguments[curr_index])){
+  if(typeof arguments[curr_index]==='string' || utils.isElement(arguments[curr_index])){
     children=[ arguments[curr_index] ]; curr_index+=1;
-  } else if(isArray(arguments[curr_index])){
+  } else if(utils.isArray(arguments[curr_index])){
     children=arguments[curr_index]; curr_index+=1;
   }
 
@@ -146,8 +190,11 @@ exports.el=function(){
 
   return element;
 };
-},{}],4:[function(require,module,exports){
+},{"./utils":5}],4:[function(require,module,exports){
 require('./application')({
   //apikey:'AIzaSyBAjwtBAWhTjoGcDaas_vs7vmUKgensPbE',
 });
-},{"./application":1}]},{},[4])
+},{"./application":1}],5:[function(require,module,exports){
+exports.isArray=function(x){ return x && (x instanceof Array); };
+exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
+},{}]},{},[4])

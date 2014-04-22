@@ -16,10 +16,17 @@ var initializeGoogleMap=function(){
     center: new google.maps.LatLng(defaultCenterLat,defaultCenterLng),
     mapTypeId: google.maps.MapTypeId.TERRAIN
   };
-
   map=new google.maps.Map(mapElement, mapOptions);
-  // html.el(sidebarElement,'p',{id:'test-paragraph',class:'text-muted',style:'font-weight:bold;'},'sometext');
-  forma.faIcon(sidebarElement,'heart');
+
+// TODO: remove code below
+
+  //var link=forma.faIcon('heart');
+
+  var b1=forma.actionButton([forma.faIcon('heart'),' Button1'], function(){ alert('Button1 clicked!'); }, {size:'small'});
+  var b2=forma.actionButton(['Button2'], function(){ alert('Button2 clicked!'); }, {size:'small'});
+  var groups=forma.dropdown([b1,b2]);
+
+  sidebarElement.appendChild(groups);
 };
 
 var loadGoogleMapsAsyncronously=function(){

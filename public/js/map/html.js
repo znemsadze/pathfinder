@@ -1,5 +1,4 @@
-var isArray=function(x){ return x && (x instanceof Array); };
-var isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
+var utils=require('./utils');
 
 var dashedToCamelized=function(name){
   var firstToUpper=function(x){return [x.substring(0,1).toUpperCase(),x.substring(1)].join('');};
@@ -11,8 +10,8 @@ var applyAttribute=function(element,attrName,attrValue){
   if('class'===attrName){
 
     // class => className
-
-    element.className=attrValue;
+    if(utils.isArray(attrValue)){ element.className=attrValue.join(' '); }
+    else{ element.className=attrValue; }
   }
   else if('style'===attrName && attrValue){
 
@@ -39,7 +38,7 @@ var createElement=function(tag,attrs,children){
     for(var i=0,l=children.length;i<l;i++){
       var child=children[i];
       if(typeof child==='string'){ element.appendChild(document.createTextNode(child)); }
-      else if(isElement(child)){ element.appendChild(child); }
+      else if(utils.isElement(child)){ element.appendChild(child); }
     }
   }
   return element;
@@ -60,7 +59,7 @@ exports.el=function(){
   var curr_index=0;
 
   // first argument may be a parent
-  if(isElement(arguments[curr_index])){ parent=arguments[curr_index]; curr_index+=1; }
+  if(utils.isElement(arguments[curr_index])){ parent=arguments[curr_index]; curr_index+=1; }
 
   // argument[curr_index] is mandatory 
   tag=arguments[curr_index]; curr_index+=1;
@@ -70,9 +69,9 @@ exports.el=function(){
   if(typeof arguments[curr_index]==='object'){ attrs=arguments[curr_index]; curr_index+=1; }
 
   // getting children
-  if(typeof arguments[curr_index]==='string' || isElement(arguments[curr_index])){
+  if(typeof arguments[curr_index]==='string' || utils.isElement(arguments[curr_index])){
     children=[ arguments[curr_index] ]; curr_index+=1;
-  } else if(isArray(arguments[curr_index])){
+  } else if(utils.isArray(arguments[curr_index])){
     children=arguments[curr_index]; curr_index+=1;
   }
 
