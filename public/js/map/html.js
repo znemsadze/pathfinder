@@ -28,7 +28,7 @@ var applyAttribute=function(element,attrName,attrValue){
       }
     }
   }
-  else{ element[attrName]=attrValue; }
+  else{ element.setAttribute(attrName,attrValue); }
 };
 
 var createElement=function(tag,attrs,children){
@@ -66,7 +66,7 @@ exports.el=function(){
   if(typeof tag !== 'string'){ throw "Tag not defined"; }
 
   // getting attributes
-  if(typeof arguments[curr_index]==='object'){ attrs=arguments[curr_index]; curr_index+=1; }
+  if(!utils.isArray(arguments[curr_index]) && typeof arguments[curr_index]==='object'){ attrs=arguments[curr_index]; curr_index+=1; }
 
   // getting children
   if(typeof arguments[curr_index]==='string' || utils.isElement(arguments[curr_index])){

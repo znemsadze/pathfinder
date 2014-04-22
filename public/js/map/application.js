@@ -20,13 +20,12 @@ var initializeGoogleMap=function(){
 
 // TODO: remove code below
 
-  //var link=forma.faIcon('heart');
+  var b1=forma.actionLink([forma.faIcon('heart'),' Button1'], function(){ alert('Button1 clicked!'); });
+  var b2=forma.actionLink(['Button2'], function(){ alert('Button2 clicked!'); });
+  var m1=forma.dropdown(forma.faIcon('plus'),[b1,b2], {size:'small'});
+  //var group=forma.buttonGroup(m1);
 
-  var b1=forma.actionButton([forma.faIcon('heart'),' Button1'], function(){ alert('Button1 clicked!'); }, {size:'small'});
-  var b2=forma.actionButton(['Button2'], function(){ alert('Button2 clicked!'); }, {size:'small'});
-  var groups=forma.dropdown([b1,b2]);
-
-  sidebarElement.appendChild(groups);
+  sidebarElement.appendChild(m1);
 };
 
 var loadGoogleMapsAsyncronously=function(){

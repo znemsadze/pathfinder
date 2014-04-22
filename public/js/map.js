@@ -21,13 +21,12 @@ var initializeGoogleMap=function(){
 
 // TODO: remove code below
 
-  //var link=forma.faIcon('heart');
+  var b1=forma.actionLink([forma.faIcon('heart'),' Button1'], function(){ alert('Button1 clicked!'); });
+  var b2=forma.actionLink(['Button2'], function(){ alert('Button2 clicked!'); });
+  var m1=forma.dropdown(forma.faIcon('plus'),[b1,b2], {size:'small'});
+  //var group=forma.buttonGroup(m1);
 
-  var b1=forma.actionButton([forma.faIcon('heart'),' Button1'], function(){ alert('Button1 clicked!'); }, {size:'small'});
-  var b2=forma.actionButton(['Button2'], function(){ alert('Button2 clicked!'); }, {size:'small'});
-  var groups=forma.dropdown([b1,b2]);
-
-  sidebarElement.appendChild(groups);
+  sidebarElement.appendChild(m1);
 };
 
 var loadGoogleMapsAsyncronously=function(){
@@ -57,22 +56,27 @@ module.exports=function(opts){
   window.onload = onDocumentLoaded;
 };
 },{"./forma":2}],2:[function(require,module,exports){
-var html=require('./html');
+var html=require('./html')
+  , utils=require('./utils');
 
 var faIcon=function(iconName){
   return html.el('i',{class:'fa fa-'+iconName});
 };
 
-var actionButton=function(text,action_f,opts){
-  opts=opts || {};
+var btnClassNames=function(opts){
   var classNames;
-  if(opts.type===false){ classNames=[]; }
+  opts=opts || {};
+  if(opts.type===false){ classNames=[]; }  
   else {
     opts.type=opts.type||'default';
     var size=opts.size=='small'?'btn-xs':'btn-sm';
     classNames=['btn','btn-'+opts.type,size];
   }
-  var el= html.el('a',{href:'#',class:classNames},text);
+  return classNames;
+};
+
+var actionButton=function(text,action_f,opts){
+  var el= html.el('a',{href:'#',class:btnClassNames(opts)},text);
   el.onclick=function(){
     action_f();
     return false;
@@ -90,10 +94,13 @@ var buttonGroup=function(buttons){
   return html.el('div',{class:'btn-group'},buttons);
 };
 
-var dropdown=function(buttons){
-  var dd=html.el('ul',{class:'dropdown-menu'});
-  
-  return dd;
+var dropdown=function(text,buttons,opts){
+  var classes=btnClassNames(opts).concat(['dropdown-toggle']);
+  if(utils.isArray(text)){text=text.push(' ');} else{text=[text,' '];}
+  text.push(html.el('span',{class:'caret'}));
+  var btn=html.el('button',{class:classes,'data-toggle':'dropdown'},text);
+  var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
+  return html.el('div',{class:'btn-group'},[btn,dd]);
 };
 
 // icon
@@ -104,7 +111,7 @@ exports.actionButton=actionButton;
 exports.actionLink=actionLink;
 exports.buttonGroup=buttonGroup;
 exports.dropdown=dropdown;
-},{"./html":3}],3:[function(require,module,exports){
+},{"./html":3,"./utils":5}],3:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -135,7 +142,7 @@ var applyAttribute=function(element,attrName,attrValue){
       }
     }
   }
-  else{ element[attrName]=attrValue; }
+  else{ element.setAttribute(attrName,attrValue); }
 };
 
 var createElement=function(tag,attrs,children){
@@ -173,7 +180,7 @@ exports.el=function(){
   if(typeof tag !== 'string'){ throw "Tag not defined"; }
 
   // getting attributes
-  if(typeof arguments[curr_index]==='object'){ attrs=arguments[curr_index]; curr_index+=1; }
+  if(!utils.isArray(arguments[curr_index]) && typeof arguments[curr_index]==='object'){ attrs=arguments[curr_index]; curr_index+=1; }
 
   // getting children
   if(typeof arguments[curr_index]==='string' || utils.isElement(arguments[curr_index])){
