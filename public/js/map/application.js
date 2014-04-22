@@ -1,5 +1,4 @@
-// var forma=require('./forma');
-var html=require('./html');
+var forma=require('./forma');
 
 var mapElement;
 var sidebarElement;
@@ -19,6 +18,8 @@ var initializeGoogleMap=function(){
   };
 
   map=new google.maps.Map(mapElement, mapOptions);
+  // html.el(sidebarElement,'p',{id:'test-paragraph',class:'text-muted',style:'font-weight:bold;'},'sometext');
+  forma.faIcon(sidebarElement,'heart');
 };
 
 var loadGoogleMapsAsyncronously=function(){

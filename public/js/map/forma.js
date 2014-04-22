@@ -1,5 +1,9 @@
-var html=require('html');
+var html=require('./html');
 
-exports.sayHello=function(){
-  console.log('welcome');
+var idCounter=0;
+
+var faIcon=function(parent,icon){
+  return html.el(parent,'i',{class:'fa fa-'+icon});
 };
+
+exports.faIcon=faIcon;

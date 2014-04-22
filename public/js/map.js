@@ -1,6 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-// var forma=require('./forma');
-var html=require('./html');
+var forma=require('./forma');
 
 var mapElement;
 var sidebarElement;
@@ -20,6 +19,8 @@ var initializeGoogleMap=function(){
   };
 
   map=new google.maps.Map(mapElement, mapOptions);
+  // html.el(sidebarElement,'p',{id:'test-paragraph',class:'text-muted',style:'font-weight:bold;'},'sometext');
+  forma.faIcon(sidebarElement,'heart');
 };
 
 var loadGoogleMapsAsyncronously=function(){
@@ -48,7 +49,17 @@ module.exports=function(opts){
 
   window.onload = onDocumentLoaded;
 };
-},{"./html":2}],2:[function(require,module,exports){
+},{"./forma":2}],2:[function(require,module,exports){
+var html=require('./html');
+
+var idCounter=0;
+
+var faIcon=function(parent,icon){
+  return html.el(parent,'i',{class:'fa fa-'+icon});
+};
+
+exports.faIcon=faIcon;
+},{"./html":3}],3:[function(require,module,exports){
 var isArray=function(x){ return x && (x instanceof Array); };
 var isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
 
@@ -135,8 +146,8 @@ exports.el=function(){
 
   return element;
 };
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 require('./application')({
   //apikey:'AIzaSyBAjwtBAWhTjoGcDaas_vs7vmUKgensPbE',
 });
-},{"./application":1}]},{},[3])
+},{"./application":1}]},{},[4])
