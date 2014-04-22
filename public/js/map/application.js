@@ -18,9 +18,7 @@ var initializeGoogleMap=function(){
     mapTypeId: google.maps.MapTypeId.TERRAIN
   };
 
-  map = new google.maps.Map(mapElement, mapOptions);
-
-  // XXX:
+  map=new google.maps.Map(mapElement, mapOptions);
 };
 
 var loadGoogleMapsAsyncronously=function(){
@@ -28,10 +26,11 @@ var loadGoogleMapsAsyncronously=function(){
   var host='https://maps.googleapis.com/maps/api/js';
   var script = document.createElement('script');
   script.type = 'text/javascript';
-  script.src = host+'?v=3.ex&key='+apikey+'&sensor=false&callback=initializeGoogleMap';
+  if (apikey){ script.src = host+'?v=3.ex&key='+apikey+'&sensor=false&callback=initializeGoogleMap'; }
+  else{ script.src = host+'?v=3.ex&sensor=false&callback=initializeGoogleMap'; }
   document.body.appendChild(script);
   // register callback
-  window.initializeGoogleMap=initializeGoogleMap();
+  window.initializeGoogleMap=initializeGoogleMap;
 };
 
 var onDocumentLoaded=loadGoogleMapsAsyncronously;
