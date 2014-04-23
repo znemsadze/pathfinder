@@ -1,4 +1,5 @@
-var forma=require('./forma');
+var forma=require('./forma')
+  , start=require('./views/start');
 
 var mapElement;
 var sidebarElement;
@@ -52,5 +53,17 @@ var initMap=function(){
 
 var initPagesController=function(){
   // map.setOptions({ draggableCursor: 'crosshair' });
-  // console.log('initialize controller');
+  displayPage(start());
+};
+
+var displayPage=function(page){
+  clearSidebar();
+  sidebarElement.appendChild(page);
+};
+
+var clearSidebar=function(){
+  var children=sidebarElement.children;
+  for(var i=0,l=children.length;i<l;i++){
+    children.removeChild(children[i]);
+  }
 };

@@ -1,5 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var forma=require('./forma');
+var forma=require('./forma')
+  , start=require('./views/start');
 
 var mapElement;
 var sidebarElement;
@@ -53,9 +54,21 @@ var initMap=function(){
 
 var initPagesController=function(){
   // map.setOptions({ draggableCursor: 'crosshair' });
-  // console.log('initialize controller');
+  displayPage(start());
 };
-},{"./forma":5}],2:[function(require,module,exports){
+
+var displayPage=function(page){
+  clearSidebar();
+  sidebarElement.appendChild(page);
+};
+
+var clearSidebar=function(){
+  var children=sidebarElement.children;
+  for(var i=0,l=children.length;i<l;i++){
+    children.removeChild(children[i]);
+  }
+};
+},{"./forma":5,"./views/start":9}],2:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils');
 
@@ -221,19 +234,16 @@ exports.verticalLayout=function(parts,opts){
 
   // padding options
   var padding=[0];
-  if(opts.padding){
+  if(opts&&opts.padding){
     if (typeof opts.padding){ padding=[opts.padding]; }
     else if(utils.isArray(opts.padding)){ padding=opts.padding; }
   }
   childOptions.style='padding:'+padding.map(function(x){ return x+'px'; }).join(' ')+';';
   childOptions.class='vertical-layout-child';
 
-  // main element
+  // main layout element
   var layout=html.el('div',{class:'vertical-layout'});
-
-  for(var i=0,l=parts.length;i<l;i++){
-    html.el(layout,'div',childOptions,parts[i]);
-  }
+  for(var i=0,l=parts.length;i<l;i++){ html.el(layout,'div',childOptions,parts[i]); }
 
   return layout;
 };
@@ -244,4 +254,31 @@ exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanc
 require('./application')({
   //apikey:'AIzaSyBAjwtBAWhTjoGcDaas_vs7vmUKgensPbE',
 });
-},{"./application":1}]},{},[8])
+},{"./application":1}],9:[function(require,module,exports){
+var forma=require('../forma');
+
+// var b1=forma.actionLink([forma.faIcon('heart'),' Button1'], function(){ alert('Button1 clicked!'); });
+// var b2=forma.actionLink(['Button2'], function(){ alert('Button2 clicked!'); });
+// var b3=forma.actionButton('Button3', function(){ alert('Button3 clicked!'); });
+// var dd=forma.dropdown(forma.faIcon('plus'),[b1,b2], {size:'small'});
+// var gr=forma.buttonGroup([dd,b3]);
+// var tb=forma.toolbar([gr]);
+// sidebarElement.appendChild(tb);
+
+module.exports=function(opts){
+  initUI();
+  return layout;
+};
+
+var layout
+  , toolbar
+  , btnNewPoint
+  ;
+
+var initUI=function(){
+  btnNewPoint=forma.actionButton([forma.faIcon('plus'),' New Point'], function(){ alert('New Point clicked!'); });
+  toolbar=forma.toolbar([btnNewPoint]);
+
+  layout=forma.verticalLayout([toolbar]);
+};
+},{"../forma":5}]},{},[8])
