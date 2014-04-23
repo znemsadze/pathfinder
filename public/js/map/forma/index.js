@@ -1,9 +1,6 @@
 var html=require('./html')
+  , icon=require('./icon'),
   , utils=require('./utils');
-
-var faIcon=function(iconName){
-  return html.el('i',{class:'fa fa-'+iconName});
-};
 
 var btnClassNames=function(opts){
   var classNames;
@@ -47,7 +44,7 @@ var dropdown=function(text,buttons,opts){
 };
 
 // icon
-exports.faIcon=faIcon;
+exports.faIcon=icon.faIcon;
 
 // buttons
 exports.actionButton=actionButton;
