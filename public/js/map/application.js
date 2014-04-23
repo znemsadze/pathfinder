@@ -62,6 +62,6 @@ var displayPage=function(page_function,params){
 var clearSidebar=function(){
   var children=sidebarElement.children;
   for(var i=0,l=children.length;i<l;i++){
-    children.removeChild(children[i]);
+    sidebarElement.removeChild(children[i]);
   }
 };
