@@ -39,8 +39,8 @@ var loadingGoogleMapsAsyncronously=function(){
 
 var onGoogleMapLoaded=function(){
   initMap();
-  // displayPage(controllers.main.home);
-  displayPage(controllers.points.new_point);
+  displayPage(controllers.main.home);
+  //displayPage(controllers.points.new_point);
 };
 
 var initMap=function(){
@@ -91,13 +91,15 @@ exports.home=function(request){
   return homeView;
 };
 
-},{"../views":12,"./points_controller":4}],4:[function(require,module,exports){
-var views=require('../views');
+},{"../views":15,"./points_controller":4}],4:[function(require,module,exports){
+var views=require('../views')
+  , models=require('../models')
+  ;
 
 exports.new_point=function(request){
-  var newPointView=views.points.new_point();
   var map=request.map;
   var marker;
+  var point=models.point.create();
 
   var showmarker=function(position){
     if(!marker){ marker=new google.maps.Marker({position:position,map:map}); }
@@ -108,11 +110,16 @@ exports.new_point=function(request){
   google.maps.event.addListener(map,'click',function(evt) {
     var position=evt.latLng;
     showmarker(position);
+
+    point.update_values({lat:position.lat(), lng:position.lng()});
+    point.dump();
+
   });
 
+  var newPointView=views.points.new_point();
   return newPointView;
 };
-},{"../views":12}],5:[function(require,module,exports){
+},{"../models":13,"../views":15}],5:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils');
 
@@ -311,12 +318,59 @@ require('./application')({
   //apikey:'AIzaSyBAjwtBAWhTjoGcDaas_vs7vmUKgensPbE',
 });
 },{"./application":1}],12:[function(require,module,exports){
+var update_values=function(object,fields,values){
+  for(var i=0,l=fields.length;i<l;i++){
+    var fieldName=fields[i];
+    var value=values[fieldName];
+    if (typeof value !== 'undefined'){
+
+      object[fieldName]=value;
+    }
+  }
+};
+
+exports.extend=function(fields){
+  var iterateFields=function(funct){
+    for(var i=0,l=fields.length;i<l;i++){
+      funct(i,fields[i]);
+    }
+  };
+  return {
+    update_values:function(values){
+      if(values){
+        iterateFields(function(index,fieldName){
+          var value=values[fieldName];
+          if (typeof value !== 'undefined') { this[fieldName]=value; }
+        });
+      }
+      return this;
+    },
+    dump:function(){
+      iterateFields(function(index,fieldName){
+        console.log(fieldName+': ' + this[fieldName]);
+      });
+    },
+  };
+};
+},{}],13:[function(require,module,exports){
+var point=require('./point');
+
+exports.point=point;
+},{"./point":14}],14:[function(require,module,exports){
+var activerecord=require('./activerecord');
+
+exports.create=function(values){
+  return activerecord
+    .extend(['name','lat','lng'])
+    .update_values(values);
+};
+},{"./activerecord":12}],15:[function(require,module,exports){
 var main=require('./main');
 var points=require('./points');
 
 exports.main=main;
 exports.points=points;
-},{"./main":14,"./points":15}],13:[function(require,module,exports){
+},{"./main":17,"./points":18}],16:[function(require,module,exports){
 var forma=require('../../forma');
 
 var mModel
@@ -346,15 +400,15 @@ var initUI=function(){
 
   mLayout=forma.verticalLayout([mTitle,mToolbar]);
 };
-},{"../../forma":8}],14:[function(require,module,exports){
+},{"../../forma":8}],17:[function(require,module,exports){
 var home=require('./home');
 
 exports.home=home;
-},{"./home":13}],15:[function(require,module,exports){
+},{"./home":16}],18:[function(require,module,exports){
 var new_point=require('./new_point');
 
 exports.new_point=new_point;
-},{"./new_point":16}],16:[function(require,module,exports){
+},{"./new_point":19}],19:[function(require,module,exports){
 var forma=require('../../forma')
   , html=require('../../forma/html');
 
