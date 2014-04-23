@@ -63,18 +63,20 @@ var clearSidebar=function(){
   }
 };
 },{"./controllers":2}],2:[function(require,module,exports){
-var main=require('./main')
+var main=require('./main_controller')
   ;
 
 // main controller
 exports.home=main.home;
-},{"./main":3}],3:[function(require,module,exports){
+},{"./main_controller":3}],3:[function(require,module,exports){
 var views=require('../views');
 
 exports.home=function(opts){
-  return views.home_page();
+  var homeView=views.main.home();
+  return homeView
 };
-},{"../views":12}],4:[function(require,module,exports){
+
+},{"../views":11}],4:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils');
 
@@ -269,7 +271,11 @@ require('./application')({
   //apikey:'AIzaSyBAjwtBAWhTjoGcDaas_vs7vmUKgensPbE',
 });
 },{"./application":1}],11:[function(require,module,exports){
-var forma=require('../forma');
+var main=require('./main');
+
+exports.main=main;
+},{"./main":13}],12:[function(require,module,exports){
+var forma=require('../../forma');
 
 module.exports=function(){
   initUI();
@@ -290,8 +296,8 @@ var initUI=function(){
 
   layout=forma.verticalLayout([title,toolbar]);
 };
-},{"../forma":7}],12:[function(require,module,exports){
-var home_page=require('./home_page');
+},{"../../forma":7}],13:[function(require,module,exports){
+var home=require('./home');
 
-exports.home_page=home_page;
-},{"./home_page":11}]},{},[10])
+exports.home=home;
+},{"./home":12}]},{},[10])

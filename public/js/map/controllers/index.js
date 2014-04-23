@@ -1,4 +1,4 @@
-var main=require('./main')
+var main=require('./main_controller')
   ;
 
 // main controller

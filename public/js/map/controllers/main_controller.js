@@ -1,5 +1,6 @@
 var views=require('../views');
 
 exports.home=function(opts){
-  return views.home_page();
+  var homeView=views.main.home();
+  return homeView;
 };

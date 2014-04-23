@@ -1,3 +1,3 @@
-var home_page=require('./home_page');
+var main=require('./main');
 
-exports.home_page=home_page;
+exports.main=main;

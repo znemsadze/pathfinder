@@ -1,4 +1,4 @@
-var forma=require('../forma');
+var forma=require('../../forma');
 
 module.exports=function(){
   initUI();
