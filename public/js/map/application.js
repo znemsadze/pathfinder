@@ -10,30 +10,6 @@ var defaultCenterLng;
 var defaultZoom;
 var map;
 
-var initializeGoogleMap=function(){
-  var mapOptions = {
-    zoom: defaultZoom,
-    center: new google.maps.LatLng(defaultCenterLat,defaultCenterLng),
-    mapTypeId: google.maps.MapTypeId.TERRAIN
-  };
-  map=new google.maps.Map(mapElement, mapOptions);
-  map.setOptions({ draggableCursor: 'crosshair' });
-};
-
-var loadGoogleMapsAsyncronously=function(){
-  // loading google maps API v3
-  var host='https://maps.googleapis.com/maps/api/js';
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-  if (apikey){ script.src = host+'?v=3.ex&key='+apikey+'&sensor=false&callback=initializeGoogleMap'; }
-  else{ script.src = host+'?v=3.ex&sensor=false&callback=initializeGoogleMap'; }
-  document.body.appendChild(script);
-  // register callback
-  window.initializeGoogleMap=initializeGoogleMap;
-};
-
-var onDocumentLoaded=loadGoogleMapsAsyncronously;
-
 module.exports=function(opts){
   // sidebar element
   sidebarElement=document.getElementById(opts.sidebarid||'sidebar');
@@ -44,5 +20,37 @@ module.exports=function(opts){
   defaultCenterLng=opts.centerLat||44.801473617553710;
   defaultZoom=opts.startZoom||10;
 
-  window.onload = onDocumentLoaded;
+  // start loading map
+  window.onload=loadingGoogleMapsAsyncronously;
+};
+
+var loadingGoogleMapsAsyncronously=function(){
+  // loading google maps API v3
+  var host='https://maps.googleapis.com/maps/api/js';
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  if (apikey){ script.src = host+'?v=3.ex&key='+apikey+'&sensor=false&callback=onGoogleMapLoaded'; }
+  else{ script.src = host+'?v=3.ex&sensor=false&callback=onGoogleMapLoaded'; }
+  document.body.appendChild(script);
+  // register callback
+  window.onGoogleMapLoaded=onGoogleMapLoaded;
+};
+
+var onGoogleMapLoaded=function(){
+  initMap();
+  initPagesController();
+};
+
+var initMap=function(){
+  var mapOptions = {
+    zoom: defaultZoom,
+    center: new google.maps.LatLng(defaultCenterLat,defaultCenterLng),
+    mapTypeId: google.maps.MapTypeId.TERRAIN
+  };
+  map=new google.maps.Map(mapElement, mapOptions);
+};
+
+var initPagesController=function(){
+  // map.setOptions({ draggableCursor: 'crosshair' });
+  // console.log('initialize controller');
 };
