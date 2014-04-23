@@ -1,7 +1,14 @@
-var views=require('../views');
+var views=require('../views')
+  , points=require('./points_controller')
+  ;
 
 exports.home=function(request){
-  var model=null;
-  var homeView=views.main.home(model);
+  var model;
+  var delegate={
+    onNewPoint:function(){
+      request.displayPage(points.new_point);
+    },
+  };
+  var homeView=views.main.home(model,delegate);
   return homeView;
 };

@@ -63,7 +63,7 @@ var displayPage=function(page_function,params){
 var clearSidebar=function(){
   var children=sidebarElement.children;
   for(var i=0,l=children.length;i<l;i++){
-    children.removeChild(children[i]);
+    sidebarElement.removeChild(children[i]);
   }
 };
 },{"./controllers":2}],2:[function(require,module,exports){
@@ -77,16 +77,31 @@ exports.home=main.home;
 // points controller
 exports.new_point=points.new_point;
 },{"./main_controller":3,"./points_controller":4}],3:[function(require,module,exports){
-var views=require('../views');
+var views=require('../views')
+  , points=require('./points_controller')
+  ;
 
 exports.home=function(request){
-  var model=null;
-  var homeView=views.main.home(model);
+  var model;
+  var delegate={
+    onNewPoint:function(){
+      request.displayPage(points.new_point);
+    },
+  };
+  var homeView=views.main.home(model,delegate);
   return homeView;
 };
 
-},{"../views":12}],4:[function(require,module,exports){
+},{"../views":12,"./points_controller":4}],4:[function(require,module,exports){
 var views=require('../views');
+
+exports.new_point=function(request){
+  var model;
+  var delegate;
+  var newPointView=views.points.new_point(model,delegate);
+  return newPointView;
+};
+
 },{"../views":12}],5:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils');
@@ -290,26 +305,32 @@ exports.points=points;
 },{"./main":14,"./points":15}],13:[function(require,module,exports){
 var forma=require('../../forma');
 
-
-
-module.exports=function(model,delegate){
-  initUI();
-  return layout;
-};
-
-var layout
-  , title
-  , toolbar
-  , btnNewPoint
+var mModel
+  , mDelegate
   ;
 
-var initUI=function(delegate){
-  title=forma.pageTitle('საწყისი');
+module.exports=function(model,delegate){
+  mModel=model;
+  mDelegate=delegate;
 
-  btnNewPoint=forma.actionButton([forma.faIcon('plus'),' ახალი წერტილი'], delegate&&delegate.onNewPoint);
-  toolbar=forma.toolbar([btnNewPoint]);
+  initUI();
 
-  layout=forma.verticalLayout([title,toolbar]);
+  return mLayout;
+};
+
+var mLayout
+  , mTitle
+  , mToolbar
+  , mBtnNewPoint
+  ;
+
+var initUI=function(){
+  mTitle=forma.pageTitle('საწყისი');
+
+  mBtnNewPoint=forma.actionButton([forma.faIcon('plus'),' ახალი წერტილი'], mDelegate&&mDelegate.onNewPoint);
+  mToolbar=forma.toolbar([mBtnNewPoint]);
+
+  mLayout=forma.verticalLayout([mTitle,mToolbar]);
 };
 },{"../../forma":8}],14:[function(require,module,exports){
 var home=require('./home');
