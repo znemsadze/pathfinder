@@ -17,17 +17,6 @@ var initializeGoogleMap=function(){
     mapTypeId: google.maps.MapTypeId.TERRAIN
   };
   map=new google.maps.Map(mapElement, mapOptions);
-
-// TODO: remove code below
-
-  var b1=forma.actionLink([forma.faIcon('heart'),' Button1'], function(){ alert('Button1 clicked!'); });
-  var b2=forma.actionLink(['Button2'], function(){ alert('Button2 clicked!'); });
-  var b3=forma.actionButton('Button3', function(){ alert('Button3 clicked!'); });
-  var dd=forma.dropdown(forma.faIcon('plus'),[b1,b2], {size:'small'});
-  var gr=forma.buttonGroup([dd,b3]);
-  var tb=forma.toolbar([gr]);
-
-  sidebarElement.appendChild(tb);
 };
 
 var loadGoogleMapsAsyncronously=function(){
