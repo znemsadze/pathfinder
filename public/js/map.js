@@ -55,6 +55,7 @@ var initMap=function(){
 var displayPage=function(page_function,params){
   clearSidebar();
   var request={
+    map:map,
     displayPage:displayPage,
     params:params,
   };
@@ -95,6 +96,20 @@ var views=require('../views');
 
 exports.new_point=function(request){
   var newPointView=views.points.new_point();
+  var map=request.map;
+  var marker;
+
+  var showmarker=function(position){
+    if(!marker){ marker=new google.maps.Marker({position:position,map:map}); }
+    else{ marker.setPosition(position); }
+  };
+
+  map.setOptions({draggableCursor:'crosshair'});
+  google.maps.event.addListener(map,'click',function(evt) {
+    var position=evt.latLng;
+    showmarker(position);
+  });
+
   return newPointView;
 };
 },{"../views":12}],5:[function(require,module,exports){
@@ -235,6 +250,10 @@ exports.el=function(){
 exports.pageTitle=function(title,tag){
   return exports.el(tag||'h3',{class:'page-header'},title);
 };
+
+exports.p=function(text,opts){
+  return exports.el('p',opts,text);
+};
 },{"./utils":10}],7:[function(require,module,exports){
 var html=require('./html');
 
@@ -336,20 +355,23 @@ var new_point=require('./new_point');
 
 exports.new_point=new_point;
 },{"./new_point":16}],16:[function(require,module,exports){
-var forma=require('../../forma');
+var forma=require('../../forma')
+  , html=require('../../forma/html');
 
-module.exports=function(model){
+module.exports=function(){
   initUI();
   return mLayout;
 };
 
 var mLayout
   , mTitle
+  , mDescription
   ;
 
 var initUI=function(){
   mTitle=forma.pageTitle('ახალი წერტილი');
-
-  mLayout=forma.verticalLayout([mTitle,]);
+  mDescription=html.p('ახალი წერტილის კოორდინატების მისაღებად დააწკაპეთ რუკაზე',{class:'text-muted'});
+  mLayout=forma.verticalLayout([mTitle,mDescription]);
 };
-},{"../../forma":8}]},{},[11])
+
+},{"../../forma":8,"../../forma/html":6}]},{},[11])

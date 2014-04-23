@@ -54,6 +54,7 @@ var initMap=function(){
 var displayPage=function(page_function,params){
   clearSidebar();
   var request={
+    map:map,
     displayPage:displayPage,
     params:params,
   };

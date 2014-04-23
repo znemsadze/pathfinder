@@ -1,16 +1,18 @@
-var forma=require('../../forma');
+var forma=require('../../forma')
+  , html=require('../../forma/html');
 
-module.exports=function(model){
+module.exports=function(){
   initUI();
   return mLayout;
 };
 
 var mLayout
   , mTitle
+  , mDescription
   ;
 
 var initUI=function(){
   mTitle=forma.pageTitle('ახალი წერტილი');
-
-  mLayout=forma.verticalLayout([mTitle,]);
+  mDescription=html.p('ახალი წერტილის კოორდინატების მისაღებად დააწკაპეთ რუკაზე',{class:'text-muted'});
+  mLayout=forma.verticalLayout([mTitle,mDescription]);
 };
