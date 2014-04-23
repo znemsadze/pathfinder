@@ -39,7 +39,8 @@ var loadingGoogleMapsAsyncronously=function(){
 
 var onGoogleMapLoaded=function(){
   initMap();
-  displayPage(controllers.home);
+  // displayPage(controllers.main.home);
+  displayPage(controllers.points.new_point);
 };
 
 var initMap=function(){
@@ -71,11 +72,8 @@ var main=require('./main_controller')
   , points=require('./points_controller')
   ;
 
-// main controller
-exports.home=main.home;
-
-// points controller
-exports.new_point=points.new_point;
+exports.main=main;
+exports.points=points;
 },{"./main_controller":3,"./points_controller":4}],3:[function(require,module,exports){
 var views=require('../views')
   , points=require('./points_controller')
@@ -96,12 +94,9 @@ exports.home=function(request){
 var views=require('../views');
 
 exports.new_point=function(request){
-  var model;
-  var delegate;
-  var newPointView=views.points.new_point(model,delegate);
+  var newPointView=views.points.new_point();
   return newPointView;
 };
-
 },{"../views":12}],5:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils');
@@ -345,21 +340,16 @@ var forma=require('../../forma');
 
 module.exports=function(model){
   initUI();
-  return layout;
+  return mLayout;
 };
 
-var layout
-  , title
-  , toolbar
+var mLayout
+  , mTitle
   ;
 
 var initUI=function(){
-  title=forma.pageTitle('ახალი წერტილი');
+  mTitle=forma.pageTitle('ახალი წერტილი');
 
-  // btnNewPoint=forma.actionButton([forma.faIcon('plus'),' ახალი წერტილი'], function(){ alert('ახალი წერტილია დასამატებელი!'); });
-  // toolbar=forma.toolbar([btnNewPoint]);
-
-  // layout=forma.verticalLayout([title,toolbar]);
-  layout=forma.verticalLayout([title]);
+  mLayout=forma.verticalLayout([mTitle,]);
 };
 },{"../../forma":8}]},{},[11])
