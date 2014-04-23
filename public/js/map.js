@@ -216,13 +216,7 @@ exports.verticalLayout=page.verticalLayout;
 var html=require('./html')
   , utils=require('./utils');
 
-var page=function(parts){
-  return {
-    parts:function(){ return parts; },
-  };
-};
-
-var verticalLayoutElement=function(parts,opts){
+exports.verticalLayout=function(parts,opts){
   var childOptions={};
 
   // padding options
@@ -238,18 +232,10 @@ var verticalLayoutElement=function(parts,opts){
   var layout=html.el('div',{class:'vertical-layout'});
 
   for(var i=0,l=parts.length;i<l;i++){
-    var part=parts[i];
-    if(part.element){ part=part.element; }
-    html.el(layout,'div',childOptions,part);
+    html.el(layout,'div',childOptions,parts[i]);
   }
 
   return layout;
-};
-
-exports.verticalLayout=function(parts,opts){
-  var p=page(parts);
-  p.element=verticalLayoutElement(parts,opts||{});
-  return p;
 };
 },{"./html":3,"./utils":7}],7:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
