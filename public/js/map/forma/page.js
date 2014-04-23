@@ -23,7 +23,9 @@ var verticalLayoutElement=function(parts,opts){
   var layout=html.el('div',{class:'vertical-layout'});
 
   for(var i=0,l=parts.length;i<l;i++){
-    html.el(layout,'div',childOptions,parts[i]);
+    var part=parts[i];
+    if(part.element){ part=part.element; }
+    html.el(layout,'div',childOptions,part);
   }
 
   return layout;
