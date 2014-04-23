@@ -1,6 +1,10 @@
-var icon=require('./icon')
+var html=require('./html')
+  , icon=require('./icon')
   , button=require('./button')
   , page=require('./page');
+
+// standard html elements
+exports.pageTitle=html.pageTitle
 
 // icon
 exports.faIcon=icon.faIcon;

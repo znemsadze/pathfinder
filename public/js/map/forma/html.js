@@ -83,3 +83,7 @@ exports.el=function(){
 
   return element;
 };
+
+exports.pageTitle=function(title,tag){
+  return exports.el(tag||'h3',{class:'page-header'},title);
+};

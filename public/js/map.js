@@ -202,6 +202,10 @@ exports.el=function(){
 
   return element;
 };
+
+exports.pageTitle=function(title,tag){
+  return exports.el(tag||'h3',{class:'page-header'},title);
+};
 },{"./utils":7}],4:[function(require,module,exports){
 var html=require('./html');
 
@@ -209,9 +213,13 @@ exports.faIcon=function(iconName){
   return html.el('i',{class:'fa fa-'+iconName});
 };
 },{"./html":3}],5:[function(require,module,exports){
-var icon=require('./icon')
+var html=require('./html')
+  , icon=require('./icon')
   , button=require('./button')
   , page=require('./page');
+
+// standard html elements
+exports.pageTitle=html.pageTitle
 
 // icon
 exports.faIcon=icon.faIcon;
@@ -225,7 +233,7 @@ exports.toolbar=button.toolbar;
 
 // page
 exports.verticalLayout=page.verticalLayout;
-},{"./button":2,"./icon":4,"./page":6}],6:[function(require,module,exports){
+},{"./button":2,"./html":3,"./icon":4,"./page":6}],6:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils');
 
@@ -271,14 +279,17 @@ module.exports=function(opts){
 };
 
 var layout
+  , title
   , toolbar
   , btnNewPoint
   ;
 
 var initUI=function(){
-  btnNewPoint=forma.actionButton([forma.faIcon('plus'),' New Point'], function(){ alert('New Point clicked!'); });
+  title=forma.pageTitle('საწყისი');
+
+  btnNewPoint=forma.actionButton([forma.faIcon('plus'),' ახალი წერტილი'], function(){ alert('ახალი წერტილია დასამატებელი!'); });
   toolbar=forma.toolbar([btnNewPoint]);
 
-  layout=forma.verticalLayout([toolbar]);
+  layout=forma.verticalLayout([title,toolbar]);
 };
 },{"../forma":5}]},{},[8])

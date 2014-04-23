@@ -14,13 +14,16 @@ module.exports=function(opts){
 };
 
 var layout
+  , title
   , toolbar
   , btnNewPoint
   ;
 
 var initUI=function(){
-  btnNewPoint=forma.actionButton([forma.faIcon('plus'),' New Point'], function(){ alert('New Point clicked!'); });
+  title=forma.pageTitle('საწყისი');
+
+  btnNewPoint=forma.actionButton([forma.faIcon('plus'),' ახალი წერტილი'], function(){ alert('ახალი წერტილია დასამატებელი!'); });
   toolbar=forma.toolbar([btnNewPoint]);
 
-  layout=forma.verticalLayout([toolbar]);
+  layout=forma.verticalLayout([title,toolbar]);
 };
