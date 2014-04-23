@@ -1,6 +1,6 @@
 var forma=require('../../forma');
 
-module.exports=function(){
+module.exports=function(request){
   initUI();
   return layout;
 };

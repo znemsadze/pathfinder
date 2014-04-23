@@ -76,7 +76,7 @@ exports.home=main.home;
 var views=require('../views');
 
 exports.home=function(request){
-  var homeView=views.main.home();
+  var homeView=views.main.home(request);
   return homeView;
 };
 
@@ -281,7 +281,7 @@ exports.main=main;
 },{"./main":13}],12:[function(require,module,exports){
 var forma=require('../../forma');
 
-module.exports=function(){
+module.exports=function(request){
   initUI();
   return layout;
 };
