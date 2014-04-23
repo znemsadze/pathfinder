@@ -1,4 +1,5 @@
-var html=require('./html');
+var html=require('./html')
+  , utils=require('./utils');
 
 var btnClassNames=function(opts){
   var classNames;
@@ -25,11 +26,15 @@ exports.actionButton=function(text,action_f,opts){
 exports.actionLink=function(text,action_f,opts){
   opts=opts || {};
   opts.type=false; // disable button
-  return actionButton(text,action_f,opts);
+  return this.actionButton(text,action_f,opts);
 };
 
 exports.buttonGroup=function(buttons){
   return html.el('div',{class:'btn-group'},buttons);
+};
+
+exports.toolbar=function(buttons){
+  return html.el('div',{class:'btn-toolbar'},buttons);
 };
 
 exports.dropdown=function(text,buttons,opts){

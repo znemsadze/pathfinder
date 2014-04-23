@@ -23,10 +23,12 @@ var initializeGoogleMap=function(){
 
   var b1=forma.actionLink([forma.faIcon('heart'),' Button1'], function(){ alert('Button1 clicked!'); });
   var b2=forma.actionLink(['Button2'], function(){ alert('Button2 clicked!'); });
-  var m1=forma.dropdown(forma.faIcon('plus'),[b1,b2], {size:'small'});
-  //var group=forma.buttonGroup(m1);
+  var b3=forma.actionButton('Button3', function(){ alert('Button3 clicked!'); });
+  var dd=forma.dropdown(forma.faIcon('plus'),[b1,b2], {size:'small'});
+  var gr=forma.buttonGroup([dd,b3]);
+  var tb=forma.toolbar([gr]);
 
-  sidebarElement.appendChild(m1);
+  sidebarElement.appendChild(tb);
 };
 
 var loadGoogleMapsAsyncronously=function(){
@@ -55,13 +57,9 @@ module.exports=function(opts){
 
   window.onload = onDocumentLoaded;
 };
-},{"./forma":2}],2:[function(require,module,exports){
+},{"./forma":5}],2:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils');
-
-var faIcon=function(iconName){
-  return html.el('i',{class:'fa fa-'+iconName});
-};
 
 var btnClassNames=function(opts){
   var classNames;
@@ -76,7 +74,7 @@ var btnClassNames=function(opts){
   return classNames;
 };
 
-var actionButton=function(text,action_f,opts){
+exports.actionButton=function(text,action_f,opts){
   var el= html.el('a',{href:'#',class:btnClassNames(opts)},text);
   el.onclick=function(){
     action_f();
@@ -85,17 +83,21 @@ var actionButton=function(text,action_f,opts){
   return el;
 };
 
-var actionLink=function(text,action_f,opts){
+exports.actionLink=function(text,action_f,opts){
   opts=opts || {};
   opts.type=false; // disable button
-  return actionButton(text,action_f,opts);
+  return this.actionButton(text,action_f,opts);
 };
 
-var buttonGroup=function(buttons){
+exports.buttonGroup=function(buttons){
   return html.el('div',{class:'btn-group'},buttons);
 };
 
-var dropdown=function(text,buttons,opts){
+exports.toolbar=function(buttons){
+  return html.el('div',{class:'btn-toolbar'},buttons);
+};
+
+exports.dropdown=function(text,buttons,opts){
   var classes=btnClassNames(opts).concat(['dropdown-toggle']);
   if(utils.isArray(text)){text=text.push(' ');} else{text=[text,' '];}
   text.push(html.el('span',{class:'caret'}));
@@ -103,16 +105,7 @@ var dropdown=function(text,buttons,opts){
   var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-
-// icon
-exports.faIcon=faIcon;
-
-// buttons
-exports.actionButton=actionButton;
-exports.actionLink=actionLink;
-exports.buttonGroup=buttonGroup;
-exports.dropdown=dropdown;
-},{"./html":3,"./utils":5}],3:[function(require,module,exports){
+},{"./html":3,"./utils":6}],3:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -198,11 +191,30 @@ exports.el=function(){
 
   return element;
 };
-},{"./utils":5}],4:[function(require,module,exports){
+},{"./utils":6}],4:[function(require,module,exports){
+var html=require('./html');
+
+exports.faIcon=function(iconName){
+  return html.el('i',{class:'fa fa-'+iconName});
+};
+},{"./html":3}],5:[function(require,module,exports){
+var icon=require('./icon')
+  , button=require('./button');
+
+// icon
+exports.faIcon=icon.faIcon;
+
+// buttons
+exports.actionButton=button.actionButton;
+exports.actionLink=button.actionLink;
+exports.buttonGroup=button.buttonGroup;
+exports.dropdown=button.dropdown;
+exports.toolbar=button.toolbar;
+},{"./button":2,"./icon":4}],6:[function(require,module,exports){
+exports.isArray=function(x){ return x && (x instanceof Array); };
+exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
+},{}],7:[function(require,module,exports){
 require('./application')({
   //apikey:'AIzaSyBAjwtBAWhTjoGcDaas_vs7vmUKgensPbE',
 });
-},{"./application":1}],5:[function(require,module,exports){
-exports.isArray=function(x){ return x && (x instanceof Array); };
-exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
-},{}]},{},[4])
+},{"./application":1}]},{},[7])

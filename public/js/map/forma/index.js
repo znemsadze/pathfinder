@@ -9,3 +9,4 @@ exports.actionButton=button.actionButton;
 exports.actionLink=button.actionLink;
 exports.buttonGroup=button.buttonGroup;
 exports.dropdown=button.dropdown;
+exports.toolbar=button.toolbar;
