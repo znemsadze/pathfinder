@@ -1,6 +1,7 @@
 var views=require('../views');
 
 exports.home=function(request){
-  var homeView=views.main.home(request);
+  var model=null;
+  var homeView=views.main.home(model);
   return homeView;
 };
