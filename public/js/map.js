@@ -68,11 +68,15 @@ var clearSidebar=function(){
 };
 },{"./controllers":2}],2:[function(require,module,exports){
 var main=require('./main_controller')
+  , points=require('./points_controller')
   ;
 
 // main controller
 exports.home=main.home;
-},{"./main_controller":3}],3:[function(require,module,exports){
+
+// points controller
+exports.new_point=points.new_point;
+},{"./main_controller":3,"./points_controller":4}],3:[function(require,module,exports){
 var views=require('../views');
 
 exports.home=function(request){
@@ -81,7 +85,9 @@ exports.home=function(request){
   return homeView;
 };
 
-},{"../views":11}],4:[function(require,module,exports){
+},{"../views":12}],4:[function(require,module,exports){
+var views=require('../views');
+},{"../views":12}],5:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils');
 
@@ -101,7 +107,7 @@ var btnClassNames=function(opts){
 exports.actionButton=function(text,action_f,opts){
   var el= html.el('a',{href:'#',class:btnClassNames(opts)},text);
   el.onclick=function(){
-    action_f();
+    if(action_f){ action_f(); }
     return false;
   }
   return el;
@@ -129,7 +135,7 @@ exports.dropdown=function(text,buttons,opts){
   var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":5,"./utils":9}],5:[function(require,module,exports){
+},{"./html":6,"./utils":10}],6:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -219,13 +225,13 @@ exports.el=function(){
 exports.pageTitle=function(title,tag){
   return exports.el(tag||'h3',{class:'page-header'},title);
 };
-},{"./utils":9}],6:[function(require,module,exports){
+},{"./utils":10}],7:[function(require,module,exports){
 var html=require('./html');
 
 exports.faIcon=function(iconName){
   return html.el('i',{class:'fa fa-'+iconName});
 };
-},{"./html":5}],7:[function(require,module,exports){
+},{"./html":6}],8:[function(require,module,exports){
 var html=require('./html')
   , icon=require('./icon')
   , button=require('./button')
@@ -246,7 +252,7 @@ exports.toolbar=button.toolbar;
 
 // page
 exports.verticalLayout=page.verticalLayout;
-},{"./button":4,"./html":5,"./icon":6,"./page":8}],8:[function(require,module,exports){
+},{"./button":5,"./html":6,"./icon":7,"./page":9}],9:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils');
 
@@ -268,21 +274,25 @@ exports.verticalLayout=function(parts,opts){
 
   return layout;
 };
-},{"./html":5,"./utils":9}],9:[function(require,module,exports){
+},{"./html":6,"./utils":10}],10:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 require('./application')({
   //apikey:'AIzaSyBAjwtBAWhTjoGcDaas_vs7vmUKgensPbE',
 });
-},{"./application":1}],11:[function(require,module,exports){
+},{"./application":1}],12:[function(require,module,exports){
 var main=require('./main');
+var points=require('./points');
 
 exports.main=main;
-},{"./main":13}],12:[function(require,module,exports){
+exports.points=points;
+},{"./main":14,"./points":15}],13:[function(require,module,exports){
 var forma=require('../../forma');
 
-module.exports=function(model){
+
+
+module.exports=function(model,delegate){
   initUI();
   return layout;
 };
@@ -293,16 +303,42 @@ var layout
   , btnNewPoint
   ;
 
-var initUI=function(){
+var initUI=function(delegate){
   title=forma.pageTitle('საწყისი');
 
-  btnNewPoint=forma.actionButton([forma.faIcon('plus'),' ახალი წერტილი'], function(){ alert('ახალი წერტილია დასამატებელი!'); });
+  btnNewPoint=forma.actionButton([forma.faIcon('plus'),' ახალი წერტილი'], delegate&&delegate.onNewPoint);
   toolbar=forma.toolbar([btnNewPoint]);
 
   layout=forma.verticalLayout([title,toolbar]);
 };
-},{"../../forma":7}],13:[function(require,module,exports){
+},{"../../forma":8}],14:[function(require,module,exports){
 var home=require('./home');
 
 exports.home=home;
-},{"./home":12}]},{},[10])
+},{"./home":13}],15:[function(require,module,exports){
+var new_point=require('./new_point');
+
+exports.new_point=new_point;
+},{"./new_point":16}],16:[function(require,module,exports){
+var forma=require('../../forma');
+
+module.exports=function(model){
+  initUI();
+  return layout;
+};
+
+var layout
+  , title
+  , toolbar
+  ;
+
+var initUI=function(){
+  title=forma.pageTitle('ახალი წერტილი');
+
+  // btnNewPoint=forma.actionButton([forma.faIcon('plus'),' ახალი წერტილი'], function(){ alert('ახალი წერტილია დასამატებელი!'); });
+  // toolbar=forma.toolbar([btnNewPoint]);
+
+  // layout=forma.verticalLayout([title,toolbar]);
+  layout=forma.verticalLayout([title]);
+};
+},{"../../forma":8}]},{},[11])

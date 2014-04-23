@@ -1,6 +1,8 @@
 var forma=require('../../forma');
 
-module.exports=function(model){
+
+
+module.exports=function(model,delegate){
   initUI();
   return layout;
 };
@@ -11,10 +13,10 @@ var layout
   , btnNewPoint
   ;
 
-var initUI=function(){
+var initUI=function(delegate){
   title=forma.pageTitle('საწყისი');
 
-  btnNewPoint=forma.actionButton([forma.faIcon('plus'),' ახალი წერტილი'], function(){ alert('ახალი წერტილია დასამატებელი!'); });
+  btnNewPoint=forma.actionButton([forma.faIcon('plus'),' ახალი წერტილი'], delegate&&delegate.onNewPoint);
   toolbar=forma.toolbar([btnNewPoint]);
 
   layout=forma.verticalLayout([title,toolbar]);

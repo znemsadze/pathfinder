@@ -17,7 +17,7 @@ var btnClassNames=function(opts){
 exports.actionButton=function(text,action_f,opts){
   var el= html.el('a',{href:'#',class:btnClassNames(opts)},text);
   el.onclick=function(){
-    action_f();
+    if(action_f){ action_f(); }
     return false;
   }
   return el;
