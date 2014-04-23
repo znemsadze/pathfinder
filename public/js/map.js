@@ -69,8 +69,9 @@ var btnClassNames=function(opts){
   if(opts.type===false){ classNames=[]; }  
   else {
     opts.type=opts.type||'default';
-    var size=opts.size=='small'?'btn-xs':'btn-sm';
-    classNames=['btn','btn-'+opts.type,size];
+    // var size=opts.size=='small'?'btn-xs':'btn-sm';
+    // classNames=['btn','btn-'+opts.type,size];
+    classNames=['btn','btn-xs','btn-'+opts.type]
   }
   return classNames;
 };
