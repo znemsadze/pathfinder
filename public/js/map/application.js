@@ -52,7 +52,11 @@ var initMap=function(){
 
 var displayPage=function(page_function,params){
   clearSidebar();
-  sidebarElement.appendChild(page_function(params));
+  var request={
+    displayPage:displayPage,
+    params:params,
+  };
+  sidebarElement.appendChild(page_function(request));
 };
 
 var clearSidebar=function(){

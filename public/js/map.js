@@ -53,7 +53,11 @@ var initMap=function(){
 
 var displayPage=function(page_function,params){
   clearSidebar();
-  sidebarElement.appendChild(page_function(params));
+  var request={
+    displayPage:displayPage,
+    params:params,
+  };
+  sidebarElement.appendChild(page_function(request));
 };
 
 var clearSidebar=function(){
@@ -71,9 +75,9 @@ exports.home=main.home;
 },{"./main_controller":3}],3:[function(require,module,exports){
 var views=require('../views');
 
-exports.home=function(opts){
+exports.home=function(request){
   var homeView=views.main.home();
-  return homeView
+  return homeView;
 };
 
 },{"../views":11}],4:[function(require,module,exports){
