@@ -18,6 +18,7 @@ var initializeGoogleMap=function(){
     mapTypeId: google.maps.MapTypeId.TERRAIN
   };
   map=new google.maps.Map(mapElement, mapOptions);
+  map.setOptions({ draggableCursor: 'crosshair' });
 };
 
 var loadGoogleMapsAsyncronously=function(){
@@ -94,7 +95,7 @@ exports.dropdown=function(text,buttons,opts){
   var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":3,"./utils":6}],3:[function(require,module,exports){
+},{"./html":3,"./utils":7}],3:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -180,7 +181,7 @@ exports.el=function(){
 
   return element;
 };
-},{"./utils":6}],4:[function(require,module,exports){
+},{"./utils":7}],4:[function(require,module,exports){
 var html=require('./html');
 
 exports.faIcon=function(iconName){
@@ -188,7 +189,8 @@ exports.faIcon=function(iconName){
 };
 },{"./html":3}],5:[function(require,module,exports){
 var icon=require('./icon')
-  , button=require('./button');
+  , button=require('./button')
+  , page=require('./page');
 
 // icon
 exports.faIcon=icon.faIcon;
@@ -199,11 +201,51 @@ exports.actionLink=button.actionLink;
 exports.buttonGroup=button.buttonGroup;
 exports.dropdown=button.dropdown;
 exports.toolbar=button.toolbar;
-},{"./button":2,"./icon":4}],6:[function(require,module,exports){
+
+// page
+exports.verticalLayout=page.verticalLayout;
+},{"./button":2,"./icon":4,"./page":6}],6:[function(require,module,exports){
+var html=require('./html')
+  , utils=require('./utils');
+
+var page=function(parts){
+  return {
+    parts:function(){ return parts; },
+  };
+};
+
+var verticalLayoutElement=function(parts,opts){
+  var childOptions={};
+
+  // padding options
+  var padding=[0];
+  if(opts.padding){
+    if (typeof opts.padding){ padding=[opts.padding]; }
+    else if(utils.isArray(opts.padding)){ padding=opts.padding; }
+  }
+  childOptions.style='padding:'+padding.map(function(x){ return x+'px'; }).join(' ')+';';
+  childOptions.class='vertical-layout-child';
+
+  // main element
+  var layout=html.el('div',{class:'vertical-layout'});
+
+  for(var i=0,l=parts.length;i<l;i++){
+    html.el(layout,'div',childOptions,parts[i]);
+  }
+
+  return layout;
+};
+
+exports.verticalLayout=function(parts,opts){
+  var p=page(parts);
+  p.element=verticalLayoutElement(parts,opts||{});
+  return p;
+};
+},{"./html":3,"./utils":7}],7:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 require('./application')({
   //apikey:'AIzaSyBAjwtBAWhTjoGcDaas_vs7vmUKgensPbE',
 });
-},{"./application":1}]},{},[7])
+},{"./application":1}]},{},[8])

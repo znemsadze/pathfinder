@@ -17,6 +17,7 @@ var initializeGoogleMap=function(){
     mapTypeId: google.maps.MapTypeId.TERRAIN
   };
   map=new google.maps.Map(mapElement, mapOptions);
+  map.setOptions({ draggableCursor: 'crosshair' });
 };
 
 var loadGoogleMapsAsyncronously=function(){
