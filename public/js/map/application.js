@@ -1,5 +1,4 @@
-var forma=require('./forma')
-  , start=require('./views/start');
+var controllers=require('./controllers');
 
 var mapElement;
 var sidebarElement;
@@ -39,7 +38,7 @@ var loadingGoogleMapsAsyncronously=function(){
 
 var onGoogleMapLoaded=function(){
   initMap();
-  initPagesController();
+  displayPage(controllers.home);
 };
 
 var initMap=function(){
@@ -51,14 +50,9 @@ var initMap=function(){
   map=new google.maps.Map(mapElement, mapOptions);
 };
 
-var initPagesController=function(){
-  // map.setOptions({ draggableCursor: 'crosshair' });
-  displayPage(start());
-};
-
-var displayPage=function(page){
+var displayPage=function(page_function,params){
   clearSidebar();
-  sidebarElement.appendChild(page);
+  sidebarElement.appendChild(page_function(params));
 };
 
 var clearSidebar=function(){
