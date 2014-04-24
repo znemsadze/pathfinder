@@ -35,13 +35,15 @@ var labeledField=function(name,opts,funct){
 
 var textBasedField=function(name,opts){
   var inputElement;
+  var isNumber=opts.number;
+  var classNames=isNumber?['form-control','text-right']:['form-control'];
 
   var textField=labeledField(name,opts,function(id){
-    var elementProps={id:id,name:name,class:'form-control'};
-    elementProps['type']=(opts&&opts.type)||'text';
-    if(opts&&opts.autofocus){ elementProps['autofocus']='autofocus'; }
-    if(opts&&opts.readonly){ elementProps['readOnly']=true; }
-    if(opts&&opts.placeholder){ elementProps['placeholder']=opts.placeholder; }
+    var elementProps={id:id, name:name, class:classNames};
+    elementProps['type']=(opts.type)||'text';
+    if(opts.autofocus){ elementProps['autofocus']='autofocus'; }
+    if(opts.readonly){ elementProps['readOnly']=true; }
+    if(opts.placeholder){ elementProps['placeholder']=opts.placeholder; }
     inputElement=html.el('input',elementProps);
     return inputElement;
   });
@@ -56,5 +58,10 @@ var textBasedField=function(name,opts){
 
 exports.textField=function(name,opts){
   opts=opts||{}; opts.type='text';
+  return textBasedField(name,opts);
+};
+
+exports.numberField=function(name,opts){
+  opts=opts||{}; opts.type='text'; opts.number=true;
   return textBasedField(name,opts);
 };

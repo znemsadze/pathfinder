@@ -204,13 +204,15 @@ var labeledField=function(name,opts,funct){
 
 var textBasedField=function(name,opts){
   var inputElement;
+  var isNumber=opts.number;
+  var classNames=isNumber?['form-control','text-right']:['form-control'];
 
   var textField=labeledField(name,opts,function(id){
-    var elementProps={id:id,name:name,class:'form-control'};
-    elementProps['type']=(opts&&opts.type)||'text';
-    if(opts&&opts.autofocus){ elementProps['autofocus']='autofocus'; }
-    if(opts&&opts.readonly){ elementProps['readOnly']=true; }
-    if(opts&&opts.placeholder){ elementProps['placeholder']=opts.placeholder; }
+    var elementProps={id:id, name:name, class:classNames};
+    elementProps['type']=(opts.type)||'text';
+    if(opts.autofocus){ elementProps['autofocus']='autofocus'; }
+    if(opts.readonly){ elementProps['readOnly']=true; }
+    if(opts.placeholder){ elementProps['placeholder']=opts.placeholder; }
     inputElement=html.el('input',elementProps);
     return inputElement;
   });
@@ -225,6 +227,11 @@ var textBasedField=function(name,opts){
 
 exports.textField=function(name,opts){
   opts=opts||{}; opts.type='text';
+  return textBasedField(name,opts);
+};
+
+exports.numberField=function(name,opts){
+  opts=opts||{}; opts.type='text'; opts.number=true;
   return textBasedField(name,opts);
 };
 },{"./html":7,"./utils":11}],7:[function(require,module,exports){
@@ -352,6 +359,7 @@ exports.verticalLayout=page.verticalLayout;
 
 // form
 exports.textField=form.textField;
+exports.numberField=form.numberField;
 },{"./button":5,"./form":6,"./html":7,"./icon":8,"./page":10}],10:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils');
@@ -489,8 +497,8 @@ var initUI=function(){
 
 /////////////////////////
 var txt1=forma.textField('name',{label:'წერტილის დასახელება',autofocus:true, placeholder:'დატოვეთ ცარიელი ავტოშევსებისთვის'});
-var txt2=forma.textField('lat',{label:'განედი', readonly: true});
-var txt3=forma.textField('lng',{label:'გრძედი', readonly: true});
+var txt2=forma.numberField('lat',{label:'განედი', readonly: true});
+var txt3=forma.numberField('lng',{label:'გრძედი', readonly: true});
 txt1.setModel(mPoint);
 /////////////////////////
 

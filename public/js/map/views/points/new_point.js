@@ -21,8 +21,8 @@ var initUI=function(){
 
 /////////////////////////
 var txt1=forma.textField('name',{label:'წერტილის დასახელება',autofocus:true, placeholder:'დატოვეთ ცარიელი ავტოშევსებისთვის'});
-var txt2=forma.textField('lat',{label:'განედი', readonly: true});
-var txt3=forma.textField('lng',{label:'გრძედი', readonly: true});
+var txt2=forma.numberField('lat',{label:'განედი', readonly: true});
+var txt3=forma.numberField('lng',{label:'გრძედი', readonly: true});
 txt1.setModel(mPoint);
 /////////////////////////
 
