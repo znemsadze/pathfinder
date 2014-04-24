@@ -1,7 +1,8 @@
 var html=require('./html')
   , icon=require('./icon')
   , button=require('./button')
-  , page=require('./page');
+  , page=require('./page')
+  , form=require('./form');
 
 // standard html elements
 exports.pageTitle=html.pageTitle
@@ -18,3 +19,6 @@ exports.toolbar=button.toolbar;
 
 // page
 exports.verticalLayout=page.verticalLayout;
+
+// form
+exports.textField=form.textField;

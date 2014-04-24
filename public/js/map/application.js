@@ -38,8 +38,8 @@ var loadingGoogleMapsAsyncronously=function(){
 
 var onGoogleMapLoaded=function(){
   initMap();
-  displayPage(controllers.main.home);
-  //displayPage(controllers.points.new_point);
+  //displayPage(controllers.main.home);
+  displayPage(controllers.points.new_point);
 };
 
 var initMap=function(){

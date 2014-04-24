@@ -14,5 +14,8 @@ var mLayout
 var initUI=function(){
   mTitle=forma.pageTitle('ახალი წერტილი');
   mDescription=html.p('ახალი წერტილის კოორდინატის მისაღებად დააწკაპეთ რუკაზე',{class:'text-muted'});
-  mLayout=forma.verticalLayout([mTitle,mDescription]);
+
+var txt1=forma.textField('name',{label:'დასახელება'});
+
+  mLayout=forma.verticalLayout([mTitle,mDescription,txt1]);
 };

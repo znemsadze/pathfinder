@@ -39,8 +39,8 @@ var loadingGoogleMapsAsyncronously=function(){
 
 var onGoogleMapLoaded=function(){
   initMap();
-  displayPage(controllers.main.home);
-  //displayPage(controllers.points.new_point);
+  //displayPage(controllers.main.home);
+  displayPage(controllers.points.new_point);
 };
 
 var initMap=function(){
@@ -91,7 +91,7 @@ exports.home=function(request){
   return homeView;
 };
 
-},{"../views":15,"./points_controller":4}],4:[function(require,module,exports){
+},{"../views":16,"./points_controller":4}],4:[function(require,module,exports){
 var views=require('../views')
   , models=require('../models')
   ;
@@ -119,7 +119,7 @@ exports.new_point=function(request){
   var newPointView=views.points.new_point();
   return newPointView;
 };
-},{"../models":13,"../views":15}],5:[function(require,module,exports){
+},{"../models":14,"../views":16}],5:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils');
 
@@ -167,7 +167,49 @@ exports.dropdown=function(text,buttons,opts){
   var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":6,"./utils":10}],6:[function(require,module,exports){
+},{"./html":7,"./utils":11}],6:[function(require,module,exports){
+var html=require('./html')
+  , utils=require('./utils');
+
+var _id=0;
+var nextid=function(){ return 'forma'+(_id++); }
+var labelText=function(name,opts){
+  var label=opts&&opts.label;
+  if(label===false){ return undefined; }
+  return label||name;
+};
+
+var labeledField=function(name,opts,funct){
+  var fieldId
+    , fieldLabel
+    , fieldElement
+    , labelElement
+    , childElements
+    ;
+
+  fieldId=nextid();
+  fieldElement=funct(fieldId);
+  fieldLabel=labelText(name,opts);
+
+  if (fieldLabel){
+    var labelElement=html.el('label',{'for':nextid},fieldLabel);
+    childElements=[labelElement,fieldElement];
+  }
+  else {
+    childElements=[fieldElement];
+  }
+
+  var mainElement=html.el('div',{class:'form-group'},childElements);
+  return mainElement;
+};
+
+exports.textField=function(name,opts){
+  var textField=labeledField(name,opts,function(){
+    return 'test';
+  });
+  return textField;
+};
+},{"./html":7,"./utils":11}],7:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -261,17 +303,18 @@ exports.pageTitle=function(title,tag){
 exports.p=function(text,opts){
   return exports.el('p',opts,text);
 };
-},{"./utils":10}],7:[function(require,module,exports){
+},{"./utils":11}],8:[function(require,module,exports){
 var html=require('./html');
 
 exports.faIcon=function(iconName){
   return html.el('i',{class:'fa fa-'+iconName});
 };
-},{"./html":6}],8:[function(require,module,exports){
+},{"./html":7}],9:[function(require,module,exports){
 var html=require('./html')
   , icon=require('./icon')
   , button=require('./button')
-  , page=require('./page');
+  , page=require('./page')
+  , form=require('./form');
 
 // standard html elements
 exports.pageTitle=html.pageTitle
@@ -288,7 +331,10 @@ exports.toolbar=button.toolbar;
 
 // page
 exports.verticalLayout=page.verticalLayout;
-},{"./button":5,"./html":6,"./icon":7,"./page":9}],9:[function(require,module,exports){
+
+// form
+exports.textField=form.textField;
+},{"./button":5,"./form":6,"./html":7,"./icon":8,"./page":10}],10:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils');
 
@@ -310,14 +356,14 @@ exports.verticalLayout=function(parts,opts){
 
   return layout;
 };
-},{"./html":6,"./utils":10}],10:[function(require,module,exports){
+},{"./html":7,"./utils":11}],11:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 require('./application')({
   //apikey:'AIzaSyBAjwtBAWhTjoGcDaas_vs7vmUKgensPbE',
 });
-},{"./application":1}],12:[function(require,module,exports){
+},{"./application":1}],13:[function(require,module,exports){
 var update_values=function(object,fields,values){
   for(var i=0,l=fields.length;i<l;i++){
     var fieldName=fields[i];
@@ -352,25 +398,25 @@ exports.extend=function(fields){
     },
   };
 };
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var point=require('./point');
 
 exports.point=point;
-},{"./point":14}],14:[function(require,module,exports){
+},{"./point":15}],15:[function(require,module,exports){
 var activerecord=require('./activerecord');
 
 exports.create=function(values){
   return activerecord
-    .extend(['name','lat','lng'])
+    .extend(['name','type','lat','lng'])
     .update_values(values);
 };
-},{"./activerecord":12}],15:[function(require,module,exports){
+},{"./activerecord":13}],16:[function(require,module,exports){
 var main=require('./main');
 var points=require('./points');
 
 exports.main=main;
 exports.points=points;
-},{"./main":17,"./points":18}],16:[function(require,module,exports){
+},{"./main":18,"./points":19}],17:[function(require,module,exports){
 var forma=require('../../forma');
 
 var mModel
@@ -400,15 +446,15 @@ var initUI=function(){
 
   mLayout=forma.verticalLayout([mTitle,mToolbar]);
 };
-},{"../../forma":8}],17:[function(require,module,exports){
+},{"../../forma":9}],18:[function(require,module,exports){
 var home=require('./home');
 
 exports.home=home;
-},{"./home":16}],18:[function(require,module,exports){
+},{"./home":17}],19:[function(require,module,exports){
 var new_point=require('./new_point');
 
 exports.new_point=new_point;
-},{"./new_point":19}],19:[function(require,module,exports){
+},{"./new_point":20}],20:[function(require,module,exports){
 var forma=require('../../forma')
   , html=require('../../forma/html');
 
@@ -425,7 +471,10 @@ var mLayout
 var initUI=function(){
   mTitle=forma.pageTitle('ახალი წერტილი');
   mDescription=html.p('ახალი წერტილის კოორდინატის მისაღებად დააწკაპეთ რუკაზე',{class:'text-muted'});
-  mLayout=forma.verticalLayout([mTitle,mDescription]);
+
+var txt1=forma.textField('name',{label:'დასახელება'});
+
+  mLayout=forma.verticalLayout([mTitle,mDescription,txt1]);
 };
 
-},{"../../forma":8,"../../forma/html":6}]},{},[11])
+},{"../../forma":9,"../../forma/html":7}]},{},[12])
