@@ -98,12 +98,12 @@ var views=require('../views')
 
 exports.new_point=function(request){
   var map=request.map;
-  var marker;
+  var marker=new google.maps.Marker();
   var point=models.point.create();
 
   var showmarker=function(position){
-    if(!marker){ marker=new google.maps.Marker({position:position,map:map}); }
-    else{ marker.setPosition(position); }
+    marker.setMap(map);
+    marker.setPosition(position);
   };
 
   map.setOptions({draggableCursor:'crosshair'});
@@ -111,7 +111,7 @@ exports.new_point=function(request){
     var position=evt.latLng;
 
     showmarker(position);
-
+    point.update_attributes({lat:position.lat(), lng:position.lng()});
     newPointView.updateLocation({lat:position.lat(), lng:position.lng()});
   });
 
@@ -395,7 +395,7 @@ var iterateFields=function(fields,funct){
   for(var i=0,l=fields.length;i<l;i++){ funct(i,fields[i]);};
 };
 
-var update_values=function(model,fields,values){
+var update_attributes=function(model,fields,values){
   if(values){
     iterateFields(fields,function(index,fieldName){
       var value=values[fieldName];
@@ -406,16 +406,16 @@ var update_values=function(model,fields,values){
 };
 
 exports.extend=function(fields){
-  return {
-    update_values:function(values){
-      return update_values(this,fields,values);
-    },
-    dump:function(){
-      iterateFields(fields,function(index,fieldName){
-        console.log(fieldName+': ' + this[fieldName]);
-      });
-    },
+  var object={};
+  object.update_attributes=function(values){
+    return update_attributes(object,fields,values);
   };
+  object.dump=function(){
+    iterateFields(fields,function(index,fieldName){
+      console.log(fieldName+': ' + object[fieldName]);
+    });
+  };
+  return object;
 };
 },{}],14:[function(require,module,exports){
 var point=require('./point');
@@ -427,7 +427,7 @@ var activerecord=require('./activerecord');
 exports.create=function(values){
   return activerecord
     .extend(['name','type','lat','lng'])
-    .update_values(values);
+    .update_attributes(values);
 };
 },{"./activerecord":13}],16:[function(require,module,exports){
 var main=require('./main');

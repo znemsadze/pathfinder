@@ -4,12 +4,12 @@ var views=require('../views')
 
 exports.new_point=function(request){
   var map=request.map;
-  var marker;
+  var marker=new google.maps.Marker();
   var point=models.point.create();
 
   var showmarker=function(position){
-    if(!marker){ marker=new google.maps.Marker({position:position,map:map}); }
-    else{ marker.setPosition(position); }
+    marker.setMap(map);
+    marker.setPosition(position);
   };
 
   map.setOptions({draggableCursor:'crosshair'});
@@ -17,7 +17,7 @@ exports.new_point=function(request){
     var position=evt.latLng;
 
     showmarker(position);
-
+    point.update_attributes({lat:position.lat(), lng:position.lng()});
     newPointView.updateLocation({lat:position.lat(), lng:position.lng()});
   });
 
