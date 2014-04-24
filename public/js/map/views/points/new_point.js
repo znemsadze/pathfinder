@@ -15,7 +15,8 @@ var initUI=function(){
   mTitle=forma.pageTitle('ახალი წერტილი');
   mDescription=html.p('ახალი წერტილის კოორდინატის მისაღებად დააწკაპეთ რუკაზე',{class:'text-muted'});
 
-var txt1=forma.textField('name',{label:'დასახელება'});
+var txt1=forma.textField('name',{label:'დასახელება',autofocus:true});
+txt1.setValue('დიმიტრი');
 
   mLayout=forma.verticalLayout([mTitle,mDescription,txt1]);
 };

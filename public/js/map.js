@@ -172,7 +172,7 @@ var html=require('./html')
   , utils=require('./utils');
 
 var _id=0;
-var nextid=function(){ return 'forma'+(_id++); }
+var nextid=function(){ return 'frmid-'+(++_id); }
 var labelText=function(name,opts){
   var label=opts&&opts.label;
   if(label===false){ return undefined; }
@@ -192,7 +192,7 @@ var labeledField=function(name,opts,funct){
   fieldLabel=labelText(name,opts);
 
   if (fieldLabel){
-    var labelElement=html.el('label',{'for':nextid},fieldLabel);
+    var labelElement=html.el('label',{'for':fieldId},fieldLabel);
     childElements=[labelElement,fieldElement];
   }
   else {
@@ -203,10 +203,27 @@ var labeledField=function(name,opts,funct){
   return mainElement;
 };
 
+var textBaseField=function(id,name,opts){
+  var elementProps
+    , inputElement
+    ;
+
+  elementProps={id:id,name:name,class:'form-control'};
+  elementProps['type']=(opts&&opts.type)||'text';
+  if(opts&&opts.autofocus){ elementProps['autofocus']='autofocus'; }
+  inputElement=html.el('input',elementProps);
+
+  return inputElement;
+};
+
 exports.textField=function(name,opts){
-  var textField=labeledField(name,opts,function(){
-    return 'test';
+  var inputElement;
+  var textField=labeledField(name,opts,function(id){
+    return inputElement=textBaseField(id,name,opts);
   });
+  textField.getName=function(){ return name; };
+  textField.setValue=function(val){ inputElement.value=val; };
+  textField.getValue=function(){ return inputElement.value; }
   return textField;
 };
 },{"./html":7,"./utils":11}],7:[function(require,module,exports){
@@ -472,7 +489,8 @@ var initUI=function(){
   mTitle=forma.pageTitle('ახალი წერტილი');
   mDescription=html.p('ახალი წერტილის კოორდინატის მისაღებად დააწკაპეთ რუკაზე',{class:'text-muted'});
 
-var txt1=forma.textField('name',{label:'დასახელება'});
+var txt1=forma.textField('name',{label:'დასახელება',autofocus:true});
+txt1.setValue('დიმიტრი');
 
   mLayout=forma.verticalLayout([mTitle,mDescription,txt1]);
 };
