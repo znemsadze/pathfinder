@@ -33,6 +33,11 @@ var labeledField=function(name,opts,funct){
   return mainElement;
 };
 
+var standardActions=function(name,field){
+  field.getName=function(){ return name; };
+  field.setModel=function(model){ field.setValue(utils.fieldValue(model,field.getName())); };
+};
+
 var textBasedField=function(name,opts){
   var inputElement;
   var isNumber=opts.number;
@@ -48,10 +53,9 @@ var textBasedField=function(name,opts){
     return inputElement;
   });
 
-  textField.getName=function(){ return name; };
+  standardActions(name, textField);
   textField.setValue=function(val){ inputElement.value=(val||''); };
   textField.getValue=function(){ return inputElement.value; }
-  textField.setModel=function(model){ this.setValue(utils.fieldValue(model,this.getName())); };
 
   return textField;
 };
@@ -64,4 +68,21 @@ exports.textField=function(name,opts){
 exports.numberField=function(name,opts){
   opts=opts||{}; opts.type='text'; opts.number=true;
   return textBasedField(name,opts);
+};
+
+exports.comboField=function(name,collection,opts){
+  var selectElement;
+  var classNames=['form-control'];
+  var selectField=labeledField(name,opts,function(id){
+    var elementProps={id:id, name:name, class:classNames};
+    var optionElements=[];
+    for(var i=0;i<collection.length;i++){
+      var o=collection[i], k=o[1], v=o[0];
+      var optionElement=html.el('option',{value:k},v);
+      optionElements.push(optionElement);
+    }
+    selectElement=html.el('select',elementProps,optionElements);
+    return selectElement;
+  });
+  return selectField;
 };

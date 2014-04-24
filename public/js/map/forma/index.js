@@ -23,3 +23,4 @@ exports.verticalLayout=page.verticalLayout;
 // form
 exports.textField=form.textField;
 exports.numberField=form.numberField;
+exports.comboField=form.comboField;
