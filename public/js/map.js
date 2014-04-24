@@ -203,28 +203,27 @@ var labeledField=function(name,opts,funct){
   return mainElement;
 };
 
-var textBaseField=function(id,name,opts){
-  var elementProps
-    , inputElement
-    ;
-
-  elementProps={id:id,name:name,class:'form-control'};
-  elementProps['type']=(opts&&opts.type)||'text';
-  if(opts&&opts.autofocus){ elementProps['autofocus']='autofocus'; }
-  inputElement=html.el('input',elementProps);
-
-  return inputElement;
-};
-
-exports.textField=function(name,opts){
+var textBaseField=function(name,opts){
   var inputElement;
+
   var textField=labeledField(name,opts,function(id){
-    return inputElement=textBaseField(id,name,opts);
+    var elementProps={id:id,name:name,class:'form-control'};
+    elementProps['type']=(opts&&opts.type)||'text';
+    if(opts&&opts.autofocus){ elementProps['autofocus']='autofocus'; }
+    inputElement=html.el('input',elementProps);
+    return inputElement;
   });
+
   textField.getName=function(){ return name; };
   textField.setValue=function(val){ inputElement.value=val; };
   textField.getValue=function(){ return inputElement.value; }
+
   return textField;
+};
+
+exports.textField=function(name,opts){
+  opts=opts||{}; opts.type='text';
+  return textBaseField(name,opts);
 };
 },{"./html":7,"./utils":11}],7:[function(require,module,exports){
 var utils=require('./utils');
@@ -376,6 +375,7 @@ exports.verticalLayout=function(parts,opts){
 },{"./html":7,"./utils":11}],11:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
+exports.fieldValue=function(model,name){ return model[name]; };
 },{}],12:[function(require,module,exports){
 require('./application')({
   //apikey:'AIzaSyBAjwtBAWhTjoGcDaas_vs7vmUKgensPbE',
@@ -489,8 +489,8 @@ var initUI=function(){
   mTitle=forma.pageTitle('ახალი წერტილი');
   mDescription=html.p('ახალი წერტილის კოორდინატის მისაღებად დააწკაპეთ რუკაზე',{class:'text-muted'});
 
-var txt1=forma.textField('name',{label:'დასახელება',autofocus:true});
-txt1.setValue('დიმიტრი');
+var txt1=forma.textField('name',{label:'წერტილის დასახელება',autofocus:true});
+txt1.setValue('2000');
 
   mLayout=forma.verticalLayout([mTitle,mDescription,txt1]);
 };

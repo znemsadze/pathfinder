@@ -33,26 +33,25 @@ var labeledField=function(name,opts,funct){
   return mainElement;
 };
 
-var textBaseField=function(id,name,opts){
-  var elementProps
-    , inputElement
-    ;
-
-  elementProps={id:id,name:name,class:'form-control'};
-  elementProps['type']=(opts&&opts.type)||'text';
-  if(opts&&opts.autofocus){ elementProps['autofocus']='autofocus'; }
-  inputElement=html.el('input',elementProps);
-
-  return inputElement;
-};
-
-exports.textField=function(name,opts){
+var textBaseField=function(name,opts){
   var inputElement;
+
   var textField=labeledField(name,opts,function(id){
-    return inputElement=textBaseField(id,name,opts);
+    var elementProps={id:id,name:name,class:'form-control'};
+    elementProps['type']=(opts&&opts.type)||'text';
+    if(opts&&opts.autofocus){ elementProps['autofocus']='autofocus'; }
+    inputElement=html.el('input',elementProps);
+    return inputElement;
   });
+
   textField.getName=function(){ return name; };
   textField.setValue=function(val){ inputElement.value=val; };
   textField.getValue=function(){ return inputElement.value; }
+
   return textField;
+};
+
+exports.textField=function(name,opts){
+  opts=opts||{}; opts.type='text';
+  return textBaseField(name,opts);
 };
