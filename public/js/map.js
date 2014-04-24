@@ -101,18 +101,17 @@ exports.new_point=function(request){
   var marker=new google.maps.Marker();
   var point=models.point.create();
 
-  var showmarker=function(position){
+  var updateMarkerPosition=function(position){
     marker.setMap(map);
     marker.setPosition(position);
   };
 
   map.setOptions({draggableCursor:'crosshair'});
   google.maps.event.addListener(map,'click',function(evt) {
-    var position=evt.latLng;
-
-    showmarker(position);
-    point.update_attributes({lat:position.lat(), lng:position.lng()});
-    newPointView.updateLocation({lat:position.lat(), lng:position.lng()});
+    var newPosition=evt.latLng;
+    updateMarkerPosition(newPosition);
+    point.update_attributes({lat:newPosition.lat(), lng:newPosition.lng()});
+    newPointView.updateLocation({lat:newPosition.lat(), lng:newPosition.lng()});
   });
 
   var newPointView=views.points.new_point({point:point});
