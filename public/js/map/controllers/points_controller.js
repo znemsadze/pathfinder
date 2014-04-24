@@ -15,13 +15,12 @@ exports.new_point=function(request){
   map.setOptions({draggableCursor:'crosshair'});
   google.maps.event.addListener(map,'click',function(evt) {
     var position=evt.latLng;
+
     showmarker(position);
 
-    point.update_values({lat:position.lat(), lng:position.lng()});
-    point.dump();
-
+    newPointView.updateLocation({lat:position.lat(), lng:position.lng()});
   });
 
-  var newPointView=views.points.new_point();
+  var newPointView=views.points.new_point({point:point});
   return newPointView;
 };

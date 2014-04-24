@@ -109,14 +109,13 @@ exports.new_point=function(request){
   map.setOptions({draggableCursor:'crosshair'});
   google.maps.event.addListener(map,'click',function(evt) {
     var position=evt.latLng;
+
     showmarker(position);
 
-    point.update_values({lat:position.lat(), lng:position.lng()});
-    point.dump();
-
+    newPointView.updateLocation({lat:position.lat(), lng:position.lng()});
   });
 
-  var newPointView=views.points.new_point();
+  var newPointView=views.points.new_point({point:point});
   return newPointView;
 };
 },{"../models":14,"../views":16}],5:[function(require,module,exports){
@@ -203,27 +202,30 @@ var labeledField=function(name,opts,funct){
   return mainElement;
 };
 
-var textBaseField=function(name,opts){
+var textBasedField=function(name,opts){
   var inputElement;
 
   var textField=labeledField(name,opts,function(id){
     var elementProps={id:id,name:name,class:'form-control'};
     elementProps['type']=(opts&&opts.type)||'text';
     if(opts&&opts.autofocus){ elementProps['autofocus']='autofocus'; }
+    if(opts&&opts.readonly){ elementProps['readOnly']=true; }
+    if(opts&&opts.placeholder){ elementProps['placeholder']=opts.placeholder; }
     inputElement=html.el('input',elementProps);
     return inputElement;
   });
 
   textField.getName=function(){ return name; };
-  textField.setValue=function(val){ inputElement.value=val; };
+  textField.setValue=function(val){ inputElement.value=(val||''); };
   textField.getValue=function(){ return inputElement.value; }
+  textField.setModel=function(model){ this.setValue(utils.fieldValue(model,this.getName())); };
 
   return textField;
 };
 
 exports.textField=function(name,opts){
   opts=opts||{}; opts.type='text';
-  return textBaseField(name,opts);
+  return textBasedField(name,opts);
 };
 },{"./html":7,"./utils":11}],7:[function(require,module,exports){
 var utils=require('./utils');
@@ -375,41 +377,33 @@ exports.verticalLayout=function(parts,opts){
 },{"./html":7,"./utils":11}],11:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
-exports.fieldValue=function(model,name){ return model[name]; };
+exports.fieldValue=function(object,name){ return object&&object[name]; };
 },{}],12:[function(require,module,exports){
 require('./application')({
   //apikey:'AIzaSyBAjwtBAWhTjoGcDaas_vs7vmUKgensPbE',
 });
 },{"./application":1}],13:[function(require,module,exports){
-var update_values=function(object,fields,values){
-  for(var i=0,l=fields.length;i<l;i++){
-    var fieldName=fields[i];
-    var value=values[fieldName];
-    if (typeof value !== 'undefined'){
+var iterateFields=function(fields,funct){
+  for(var i=0,l=fields.length;i<l;i++){ funct(i,fields[i]);};
+};
 
-      object[fieldName]=value;
-    }
+var update_values=function(model,fields,values){
+  if(values){
+    iterateFields(fields,function(index,fieldName){
+      var value=values[fieldName];
+      if (typeof value!=='undefined'){ model[fieldName]=value; }
+    });
   }
+  return model;
 };
 
 exports.extend=function(fields){
-  var iterateFields=function(funct){
-    for(var i=0,l=fields.length;i<l;i++){
-      funct(i,fields[i]);
-    }
-  };
   return {
     update_values:function(values){
-      if(values){
-        iterateFields(function(index,fieldName){
-          var value=values[fieldName];
-          if (typeof value !== 'undefined') { this[fieldName]=value; }
-        });
-      }
-      return this;
+      return update_values(this,fields,values);
     },
     dump:function(){
-      iterateFields(function(index,fieldName){
+      iterateFields(fields,function(index,fieldName){
         console.log(fieldName+': ' + this[fieldName]);
       });
     },
@@ -475,24 +469,37 @@ exports.new_point=new_point;
 var forma=require('../../forma')
   , html=require('../../forma/html');
 
-module.exports=function(model,delegate){
-  initUI();
-  return mLayout;
-};
-
-var mLayout
+var mPoint
+  , mLayout
   , mTitle
   , mDescription
   ;
+
+module.exports=function(model,delegate){
+  mPoint=model&&model.point;
+
+  initUI();
+
+  return mLayout;
+};
 
 var initUI=function(){
   mTitle=forma.pageTitle('ახალი წერტილი');
   mDescription=html.p('ახალი წერტილის კოორდინატის მისაღებად დააწკაპეთ რუკაზე',{class:'text-muted'});
 
-var txt1=forma.textField('name',{label:'წერტილის დასახელება',autofocus:true});
-txt1.setValue('2000');
+/////////////////////////
+var txt1=forma.textField('name',{label:'წერტილის დასახელება',autofocus:true, placeholder:'დატოვეთ ცარიელი ავტოშევსებისთვის'});
+var txt2=forma.textField('lat',{label:'განედი', readonly: true});
+var txt3=forma.textField('lng',{label:'გრძედი', readonly: true});
+txt1.setModel(mPoint);
+/////////////////////////
 
-  mLayout=forma.verticalLayout([mTitle,mDescription,txt1]);
+  mLayout=forma.verticalLayout([mTitle,mDescription,txt1,txt2,txt3]);
+
+  mLayout.updateLocation=function(position){
+    txt2.setModel(position);
+    txt3.setModel(position);
+  };
 };
 
 },{"../../forma":9,"../../forma/html":7}]},{},[12])

@@ -1,32 +1,24 @@
-var update_values=function(object,fields,values){
-  for(var i=0,l=fields.length;i<l;i++){
-    var fieldName=fields[i];
-    var value=values[fieldName];
-    if (typeof value !== 'undefined'){
+var iterateFields=function(fields,funct){
+  for(var i=0,l=fields.length;i<l;i++){ funct(i,fields[i]);};
+};
 
-      object[fieldName]=value;
-    }
+var update_values=function(model,fields,values){
+  if(values){
+    iterateFields(fields,function(index,fieldName){
+      var value=values[fieldName];
+      if (typeof value!=='undefined'){ model[fieldName]=value; }
+    });
   }
+  return model;
 };
 
 exports.extend=function(fields){
-  var iterateFields=function(funct){
-    for(var i=0,l=fields.length;i<l;i++){
-      funct(i,fields[i]);
-    }
-  };
   return {
     update_values:function(values){
-      if(values){
-        iterateFields(function(index,fieldName){
-          var value=values[fieldName];
-          if (typeof value !== 'undefined') { this[fieldName]=value; }
-        });
-      }
-      return this;
+      return update_values(this,fields,values);
     },
     dump:function(){
-      iterateFields(function(index,fieldName){
+      iterateFields(fields,function(index,fieldName){
         console.log(fieldName+': ' + this[fieldName]);
       });
     },
