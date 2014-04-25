@@ -17,4 +17,8 @@ exports.drawPath=function(map){
       path.getPath().removeAt(evt.vertex,1);
     }
   });
+
+  return {
+    getPath: function(){ return path.getPath(); },
+  };
 };

@@ -1,7 +1,9 @@
-var draw=require('./draw');
+var draw=require('./draw')
+  , ui=require('./ui');
 
 var mapElement;
 var sidebarElement;
+var toolbarElement;
 var apikey;
 var defaultCenterLat;
 var defaultCenterLng;
@@ -13,6 +15,7 @@ var map;
  */
 exports.start=function(opts){
   sidebarElement=document.getElementById((opts&&opts.sidebarid)||'sidebar');
+  toolbarElement=document.getElementById((opts&&opts.toolbarid)||'toolbar');
   mapElement=document.getElementById((opts&&opts.mapid)||'map');
   defaultCenterLat=(opts&&opts.centerLat)||41.693328079546774;
   defaultCenterLng=(opts&&opts.centerLat)||44.801473617553710;
@@ -54,6 +57,18 @@ var initMap=function(){
   //   map.data.revertStyle();
   // });
 
+  var b1=ui.button.actionButton('გზის შენახვა', function(){
+    var path=drawHandle.getPath();
+    var points=[];
+    path.forEach(function(element,index){
+      points.push([element.lat(),element.lng()]);
+    });
+    $.post('/api/geo/new_path',{points:points},function(data) {
+      console.log(data);
+    });
+  });
+  toolbarElement.appendChild(b1);
+
   // draw path
-  draw.drawPath(map);
+  var drawHandle=draw.drawPath(map);
 };
