@@ -41,5 +41,11 @@ Pathfinder::Application.routes.draw do
     end
   end
 
+  namespace 'api' do
+    scope '/geo', controller: 'geo' do
+      post '/new_path', action: 'new_path', as: 'new_path'
+    end
+  end
+
   root 'site#index'
 end

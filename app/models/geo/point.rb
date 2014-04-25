@@ -1,12 +1,9 @@
 # -*- encoding : utf-8 -*-
 class Geo::Point
   include Mongoid::Document
-  include Mongoid::Timestamps
-  include Sys::Userstamps
-
-  field :name, type: String
-  field :lng, type: Float
+  belongs_to :path, class_name:'Geo::Path'
   field :lat, type: Float
-
-  validates :name, presence: {message: I18n.t('models.geo_point._errors.name_required')}
+  field :lng, type: Float
+  validates :lat, presence: {message: 'ჩაწერეთ განედი'}
+  validates :lng, presence: {message: 'ჩაწერეთ გრძედი'}
 end

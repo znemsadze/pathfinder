@@ -1,46 +1,41 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var controllers=require('./controllers');
+var draw=require('./draw')
+  , ui=require('./ui');
 
 var mapElement;
 var sidebarElement;
-
-// google map object and it's parameters
+var toolbarElement;
 var apikey;
 var defaultCenterLat;
 var defaultCenterLng;
 var defaultZoom;
 var map;
 
-module.exports=function(opts){
-  // sidebar element
-  sidebarElement=document.getElementById(opts.sidebarid||'sidebar');
-
-  // map element and default map data
-  mapElement=document.getElementById(opts.mapid||'map');
-  defaultCenterLat=opts.centerLat||41.693328079546774;
-  defaultCenterLng=opts.centerLat||44.801473617553710;
-  defaultZoom=opts.startZoom||10;
-
-  // start loading map
+/**
+ * This function is used to start the application.
+ */
+exports.start=function(opts){
+  sidebarElement=document.getElementById((opts&&opts.sidebarid)||'sidebar');
+  toolbarElement=document.getElementById((opts&&opts.toolbarid)||'toolbar');
+  mapElement=document.getElementById((opts&&opts.mapid)||'map');
+  defaultCenterLat=(opts&&opts.centerLat)||41.693328079546774;
+  defaultCenterLng=(opts&&opts.centerLat)||44.801473617553710;
+  defaultZoom=(opts&&opts.startZoom)||10;
   window.onload=loadingGoogleMapsAsyncronously;
 };
 
 var loadingGoogleMapsAsyncronously=function(){
-  // loading google maps API v3
   var host='https://maps.googleapis.com/maps/api/js';
   var script = document.createElement('script');
   script.type = 'text/javascript';
   if (apikey){ script.src = host+'?v=3.ex&key='+apikey+'&sensor=false&callback=onGoogleMapLoaded'; }
   else{ script.src = host+'?v=3.ex&sensor=false&callback=onGoogleMapLoaded'; }
   document.body.appendChild(script);
-  // register callback
   window.onGoogleMapLoaded=onGoogleMapLoaded;
 };
 
 var onGoogleMapLoaded=function(){
   initMap();
-  //displayPage(controllers.main.home);
-  displayPage(controllers.points.new_point);
 };
 
 var initMap=function(){
@@ -50,74 +45,66 @@ var initMap=function(){
     mapTypeId: google.maps.MapTypeId.TERRAIN
   };
   map=new google.maps.Map(mapElement, mapOptions);
-};
 
-var displayPage=function(page_function,params){
-  clearSidebar();
-  var request={
+  map.data.loadGeoJson('/geo/map.json');
+  map.data.setStyle({
+    strokeColor:'red',
+    strokeOpacity:0.5,
+  });
+  // map.data.addListener('mouseover', function(evt) {
+  //   map.data.overrideStyle(evt.feature,{strokeWeight:10});
+  // });
+  // map.data.addListener('mouseout', function(evt) {
+  //   map.data.revertStyle();
+  // });
+
+  var b1=ui.button.actionButton('გზის შენახვა', function(){
+    var path=drawHandle.getPath();
+    if(path.getLength()>1) {
+      var points=[];
+      path.forEach(function(element,index){
+        points.push([element.lat(),element.lng()]);
+      });
+    }
+    $.post('/api/geo/new_path',{points:points},function(data) {
+      console.log(data);
+    });
+  });
+  toolbarElement.appendChild(b1);
+
+  // draw path
+  var drawHandle=draw.drawPath(map);
+};
+},{"./draw":2,"./ui":6}],2:[function(require,module,exports){
+exports.drawPath=function(map){
+  var path = new google.maps.Polyline({
     map:map,
-    displayPage:displayPage,
-    params:params,
-  };
-  sidebarElement.appendChild(page_function(request));
-};
-
-var clearSidebar=function(){
-  var children=sidebarElement.children;
-  for(var i=0,l=children.length;i<l;i++){
-    sidebarElement.removeChild(children[i]);
-  }
-};
-},{"./controllers":2}],2:[function(require,module,exports){
-var main=require('./main_controller')
-  , points=require('./points_controller')
-  ;
-
-exports.main=main;
-exports.points=points;
-},{"./main_controller":3,"./points_controller":4}],3:[function(require,module,exports){
-var views=require('../views')
-  , points=require('./points_controller')
-  ;
-
-exports.home=function(request){
-  var model;
-  var delegate={
-    onNewPoint:function(){
-      request.displayPage(points.new_point);
-    },
-  };
-  var homeView=views.main.home(model,delegate);
-  return homeView;
-};
-
-},{"../views":16,"./points_controller":4}],4:[function(require,module,exports){
-var views=require('../views')
-  , models=require('../models')
-  ;
-
-exports.new_point=function(request){
-  var map=request.map;
-  var marker=new google.maps.Marker();
-  var point=models.point.create();
-
-  var updateMarkerPosition=function(position){
-    marker.setMap(map);
-    marker.setPosition(position);
-  };
-
-  map.setOptions({draggableCursor:'crosshair'});
-  google.maps.event.addListener(map,'click',function(evt) {
-    var newPosition=evt.latLng;
-    updateMarkerPosition(newPosition);
-    point.update_attributes({lat:newPosition.lat(), lng:newPosition.lng()});
-    newPointView.updateLocation({lat:newPosition.lat(), lng:newPosition.lng()});
+    geodesic:true,
+    strokeColor:'#FF0000',
+    strokeOpacity:1.0,
+    strokeWeight:1,
+    editable:true,
   });
 
-  var newPointView=views.points.new_point({point:point});
-  return newPointView;
+  google.maps.event.addListener(map, 'click', function(evt){
+    path.getPath().push(evt.latLng);
+  });
+
+  google.maps.event.addListener(path, 'dblclick', function(evt){
+    if(typeof evt.vertex==='number'){
+      path.getPath().removeAt(evt.vertex,1);
+    }
+  });
+
+  return {
+    getPath: function(){ return path.getPath(); },
+  };
 };
-},{"../models":14,"../views":16}],5:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
+var app=require('./app');
+
+app.start();
+},{"./app":1}],4:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils');
 
@@ -129,7 +116,7 @@ var btnClassNames=function(opts){
     opts.type=opts.type||'default';
     // var size=opts.size=='small'?'btn-xs':'btn-sm';
     // classNames=['btn','btn-'+opts.type,size];
-    classNames=['btn','btn-xs','btn-'+opts.type]
+    classNames=['btn','btn-sm','btn-'+opts.type]
   }
   return classNames;
 };
@@ -165,96 +152,7 @@ exports.dropdown=function(text,buttons,opts){
   var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":7,"./utils":11}],6:[function(require,module,exports){
-var html=require('./html')
-  , utils=require('./utils');
-
-var _id=0;
-var nextid=function(){ return 'frmid-'+(++_id); }
-var labelText=function(name,opts){
-  var label=opts&&opts.label;
-  if(label===false){ return undefined; }
-  return label||name;
-};
-
-var labeledField=function(name,opts,funct){
-  var fieldId
-    , fieldLabel
-    , fieldElement
-    , labelElement
-    , childElements
-    ;
-
-  fieldId=nextid();
-  fieldElement=funct(fieldId);
-  fieldLabel=labelText(name,opts);
-
-  if (fieldLabel){
-    var labelElement=html.el('label',{'for':fieldId},fieldLabel);
-    childElements=[labelElement,fieldElement];
-  }
-  else {
-    childElements=[fieldElement];
-  }
-
-  var mainElement=html.el('div',{class:'form-group'},childElements);
-  return mainElement;
-};
-
-var standardActions=function(name,field){
-  field.getName=function(){ return name; };
-  field.setModel=function(model){ field.setValue(utils.fieldValue(model,field.getName())); };
-};
-
-var textBasedField=function(name,opts){
-  var inputElement;
-  var isNumber=opts.number;
-  var classNames=isNumber?['form-control','text-right']:['form-control'];
-
-  var textField=labeledField(name,opts,function(id){
-    var elementProps={id:id, name:name, class:classNames};
-    elementProps['type']=(opts.type)||'text';
-    if(opts.autofocus){ elementProps['autofocus']='autofocus'; }
-    if(opts.readonly){ elementProps['readOnly']=true; }
-    if(opts.placeholder){ elementProps['placeholder']=opts.placeholder; }
-    inputElement=html.el('input',elementProps);
-    return inputElement;
-  });
-
-  standardActions(name, textField);
-  textField.setValue=function(val){ inputElement.value=(val||''); };
-  textField.getValue=function(){ return inputElement.value; }
-
-  return textField;
-};
-
-exports.textField=function(name,opts){
-  opts=opts||{}; opts.type='text';
-  return textBasedField(name,opts);
-};
-
-exports.numberField=function(name,opts){
-  opts=opts||{}; opts.type='text'; opts.number=true;
-  return textBasedField(name,opts);
-};
-
-exports.comboField=function(name,collection,opts){
-  var selectElement;
-  var classNames=['form-control'];
-  var selectField=labeledField(name,opts,function(id){
-    var elementProps={id:id, name:name, class:classNames};
-    var optionElements=[];
-    for(var i=0;i<collection.length;i++){
-      var o=collection[i], k=o[1], v=o[0];
-      var optionElement=html.el('option',{value:k},v);
-      optionElements.push(optionElement);
-    }
-    selectElement=html.el('select',elementProps,optionElements);
-    return selectElement;
-  });
-  return selectField;
-};
-},{"./html":7,"./utils":11}],7:[function(require,module,exports){
+},{"./html":5,"./utils":7}],5:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -348,188 +246,13 @@ exports.pageTitle=function(title,tag){
 exports.p=function(text,opts){
   return exports.el('p',opts,text);
 };
-},{"./utils":11}],8:[function(require,module,exports){
-var html=require('./html');
+},{"./utils":7}],6:[function(require,module,exports){
+var button=require('./button')
+  ;
 
-exports.faIcon=function(iconName){
-  return html.el('i',{class:'fa fa-'+iconName});
-};
-},{"./html":7}],9:[function(require,module,exports){
-var html=require('./html')
-  , icon=require('./icon')
-  , button=require('./button')
-  , page=require('./page')
-  , form=require('./form');
-
-// standard html elements
-exports.pageTitle=html.pageTitle
-
-// icon
-exports.faIcon=icon.faIcon;
-
-// buttons
-exports.actionButton=button.actionButton;
-exports.actionLink=button.actionLink;
-exports.buttonGroup=button.buttonGroup;
-exports.dropdown=button.dropdown;
-exports.toolbar=button.toolbar;
-
-// page
-exports.verticalLayout=page.verticalLayout;
-
-// form
-exports.textField=form.textField;
-exports.numberField=form.numberField;
-exports.comboField=form.comboField;
-},{"./button":5,"./form":6,"./html":7,"./icon":8,"./page":10}],10:[function(require,module,exports){
-var html=require('./html')
-  , utils=require('./utils');
-
-exports.verticalLayout=function(parts,opts){
-  var childOptions={};
-
-  // padding options
-  var padding=[0];
-  if(opts&&opts.padding){
-    if (typeof opts.padding){ padding=[opts.padding]; }
-    else if(utils.isArray(opts.padding)){ padding=opts.padding; }
-  }
-  childOptions.style='padding:'+padding.map(function(x){ return x+'px'; }).join(' ')+';';
-  childOptions.class='vertical-layout-child';
-
-  // main layout element
-  var layout=html.el('div',{class:'vertical-layout'});
-  for(var i=0,l=parts.length;i<l;i++){ html.el(layout,'div',childOptions,parts[i]); }
-
-  return layout;
-};
-},{"./html":7,"./utils":11}],11:[function(require,module,exports){
+exports.button=button;
+},{"./button":4}],7:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
 exports.fieldValue=function(object,name){ return object&&object[name]; };
-},{}],12:[function(require,module,exports){
-require('./application')({
-  //apikey:'AIzaSyBAjwtBAWhTjoGcDaas_vs7vmUKgensPbE',
-});
-},{"./application":1}],13:[function(require,module,exports){
-var iterateFields=function(fields,funct){
-  for(var i=0,l=fields.length;i<l;i++){ funct(i,fields[i]);};
-};
-
-var update_attributes=function(model,fields,values){
-  if(values){
-    iterateFields(fields,function(index,fieldName){
-      var value=values[fieldName];
-      if (typeof value!=='undefined'){ model[fieldName]=value; }
-    });
-  }
-  return model;
-};
-
-exports.extend=function(fields){
-  var object={};
-  object.update_attributes=function(values){
-    return update_attributes(object,fields,values);
-  };
-  object.dump=function(){
-    iterateFields(fields,function(index,fieldName){
-      console.log(fieldName+': ' + object[fieldName]);
-    });
-  };
-  return object;
-};
-},{}],14:[function(require,module,exports){
-var point=require('./point');
-
-exports.point=point;
-},{"./point":15}],15:[function(require,module,exports){
-var activerecord=require('./activerecord');
-
-exports.create=function(values){
-  return activerecord
-    .extend(['name','type','lat','lng'])
-    .update_attributes(values);
-};
-},{"./activerecord":13}],16:[function(require,module,exports){
-var main=require('./main');
-var points=require('./points');
-
-exports.main=main;
-exports.points=points;
-},{"./main":18,"./points":19}],17:[function(require,module,exports){
-var forma=require('../../forma');
-
-var mModel
-  , mDelegate
-  ;
-
-module.exports=function(model,delegate){
-  mModel=model;
-  mDelegate=delegate;
-
-  initUI();
-
-  return mLayout;
-};
-
-var mLayout
-  , mTitle
-  , mToolbar
-  , mBtnNewPoint
-  ;
-
-var initUI=function(){
-  mTitle=forma.pageTitle('საწყისი');
-
-  mBtnNewPoint=forma.actionButton([forma.faIcon('plus'),' ახალი წერტილი'], mDelegate&&mDelegate.onNewPoint);
-  mToolbar=forma.toolbar([mBtnNewPoint]);
-
-  mLayout=forma.verticalLayout([mTitle,mToolbar]);
-};
-},{"../../forma":9}],18:[function(require,module,exports){
-var home=require('./home');
-
-exports.home=home;
-},{"./home":17}],19:[function(require,module,exports){
-var new_point=require('./new_point');
-
-exports.new_point=new_point;
-},{"./new_point":20}],20:[function(require,module,exports){
-var forma=require('../../forma')
-  , html=require('../../forma/html');
-
-var mPoint
-  , mLayout
-  , mTitle
-  , mDescription
-  ;
-
-module.exports=function(model,delegate){
-  mPoint=model&&model.point;
-
-  initUI();
-
-  return mLayout;
-};
-
-var initUI=function(){
-  mTitle=forma.pageTitle('ახალი წერტილი');
-  mDescription=html.p('ახალი წერტილის კოორდინატის მისაღებად დააწკაპეთ რუკაზე',{class:'text-muted'});
-
-/////////////////////////
-var txt1=forma.textField('name',{label:'დასახელება',autofocus:true, placeholder:'დატოვეთ ცარიელი ავტოშევსებისთვის'});
-var sel1=forma.comboField('type',[['ქვესადგური',1],['მაღალი ძაბვის ანძა',2],['გზაჯვარედინი',111]], {label:'სახეობა'});
-var txt2=forma.numberField('lat',{label:'განედი', readonly: true});
-var txt3=forma.numberField('lng',{label:'გრძედი', readonly: true});
-txt1.setModel(mPoint);
-/////////////////////////
-
-  mLayout=forma.verticalLayout([mTitle,mDescription,txt1,sel1,txt2,txt3]);
-
-  mLayout.updateLocation=function(position){
-    txt2.setModel(position);
-    txt3.setModel(position);
-  };
-};
-
-},{"../../forma":9,"../../forma/html":7}]},{},[12])
+},{}]},{},[3])
