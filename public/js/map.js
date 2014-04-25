@@ -43,15 +43,40 @@ var initMap=function(){
   };
   map=new google.maps.Map(mapElement, mapOptions);
 
-  // draw polyline
-  draw.polylinedraw(map);
+  // map.data.loadGeoJson('/test.json?v=1');
+  // map.data.setStyle({
+  //   strokeColor:'red',
+  //   strokeOpacity:0.5,
+  // });
+  // map.data.addListener('mouseover', function(evt) {
+  //   map.data.overrideStyle(evt.feature,{strokeWeight:10});
+  // });
+  // map.data.addListener('mouseout', function(evt) {
+  //   map.data.revertStyle();
+  // });
+
+  // draw path
+  draw.drawPath(map);
 };
 },{"./draw":2}],2:[function(require,module,exports){
-var poly=[];
+exports.drawPath=function(map){
+  var path = new google.maps.Polyline({
+    map:map,
+    geodesic:true,
+    strokeColor:'#FF0000',
+    strokeOpacity:1.0,
+    strokeWeight:1,
+    editable:true,
+  });
 
-exports.polylinedraw=function(map){
-  google.maps.event.addListener(map, 'click', function() {
-    console.log('clicked');
+  google.maps.event.addListener(map, 'click', function(evt){
+    path.getPath().push(evt.latLng);
+  });
+
+  google.maps.event.addListener(path, 'dblclick', function(evt){
+    if(typeof evt.vertex==='number'){
+      path.getPath().removeAt(evt.vertex,1);
+    }
   });
 };
 },{}],3:[function(require,module,exports){
