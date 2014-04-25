@@ -46,11 +46,11 @@ var initMap=function(){
   };
   map=new google.maps.Map(mapElement, mapOptions);
 
-  // map.data.loadGeoJson('/test.json?v=1');
-  // map.data.setStyle({
-  //   strokeColor:'red',
-  //   strokeOpacity:0.5,
-  // });
+  map.data.loadGeoJson('/geo/map.json');
+  map.data.setStyle({
+    strokeColor:'red',
+    strokeOpacity:0.5,
+  });
   // map.data.addListener('mouseover', function(evt) {
   //   map.data.overrideStyle(evt.feature,{strokeWeight:10});
   // });
@@ -60,10 +60,12 @@ var initMap=function(){
 
   var b1=ui.button.actionButton('გზის შენახვა', function(){
     var path=drawHandle.getPath();
-    var points=[];
-    path.forEach(function(element,index){
-      points.push([element.lat(),element.lng()]);
-    });
+    if(path.getLength()>1) {
+      var points=[];
+      path.forEach(function(element,index){
+        points.push([element.lat(),element.lng()]);
+      });
+    }
     $.post('/api/geo/new_path',{points:points},function(data) {
       console.log(data);
     });
