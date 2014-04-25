@@ -6,6 +6,7 @@ class Api::GeoController < ApiController
       point=Geo::Point.create(lat:p[0].to_f,lng:p[1].to_f,single:true)
       point.paths << path
     end
+    path.sync_route
     render text:path.id.to_s
   end
 end
