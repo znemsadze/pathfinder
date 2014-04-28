@@ -7,6 +7,6 @@ class Api::GeoController < ApiController
       point.paths << path
     end
     path.sync_route
-    render text:path.id.to_s
+    render json: {id: path.id.to_s}
   end
 end
