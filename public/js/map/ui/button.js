@@ -28,10 +28,9 @@ exports.actionButton=function(text,action_f,opts){
     if(action_f && enabled){ action_f(); }
     return false;
   }
-  el.setEnabled=function(val){
-    enabled=val;
-    ensureClassName(el,'disabled',!enabled);
-  };
+  el.setEnabled=function(val){ enabled=val;ensureClassName(el,'disabled',!enabled); };
+  el.setWaiting=function(val){ el.setEnabled(!val);ensureClassName(el,'waiting',!enabled); };
+
   return el;
 };
 

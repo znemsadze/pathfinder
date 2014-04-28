@@ -72,9 +72,10 @@ var initMap=function(){
   var b1=ui.button.actionButton('გზის შენახვა', function(){
     var path=drawHandle.getPath();
     drawHandle.endEdit();
-    b1.setEnabled(false);
+    b1.setWaiting(true);
     api.savePath(path, function(data){
       loadData(map,data.id);
+      b1.setWaiting(false);
     });
   });
   toolbarElement.appendChild(b1);
@@ -160,10 +161,9 @@ exports.actionButton=function(text,action_f,opts){
     if(action_f && enabled){ action_f(); }
     return false;
   }
-  el.setEnabled=function(val){
-    enabled=val;
-    ensureClassName(el,'disabled',!enabled);
-  };
+  el.setEnabled=function(val){ enabled=val;ensureClassName(el,'disabled',!enabled); };
+  el.setWaiting=function(val){ el.setEnabled(!val);ensureClassName(el,'waiting',!enabled); };
+
   return el;
 };
 
