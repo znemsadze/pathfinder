@@ -57,6 +57,7 @@ var initMap=function(){
   var b1=ui.button.actionButton('გზის შენახვა', function(){
     var path=drawHandle.getPath();
     drawHandle.endEdit();
+    b1.setEnabled(false);
     api.savePath(path, function(data){
       loadData(map,data.id);
     });

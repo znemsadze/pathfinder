@@ -14,12 +14,24 @@ var btnClassNames=function(opts){
   return classNames;
 };
 
+var ensureClassName=function(el,className,classNamePresent){
+  var currentClassNames=el.className.split(' ').filter(function(x){return x!=className;});
+  if(classNamePresent){ currentClassNames.push(className); }
+  el.className=currentClassNames.join(' ');
+};
+
 exports.actionButton=function(text,action_f,opts){
   var el= html.el('a',{href:'#',class:btnClassNames(opts)},text);
+  var enabled=opts&&opts.enabled;
+  if(enabled!==false&&enabled!==true){ enabled=true; }
   el.onclick=function(){
-    if(action_f){ action_f(); }
+    if(action_f && enabled){ action_f(); }
     return false;
   }
+  el.setEnabled=function(val){
+    enabled=val;
+    ensureClassName(el,'disabled',!enabled);
+  };
   return el;
 };
 
