@@ -23,7 +23,7 @@ exports.drawPath=function(map){
     editable:true,
   });
   var paused=false
-    , id=undefined
+    , featureId=undefined
     ;
 
   google.maps.event.addListener(map, 'click', function(evt){
@@ -43,16 +43,20 @@ exports.drawPath=function(map){
   map.data.addListener('mouseout', function(evt) {
     map.data.revertStyle();
   });
+  // map.data.addListener('mousemove', function(evt){
+  //   console.log(evt.feature.getId());
+  // });
   map.data.addListener('dblclick', function(evt) {
     var f=evt.feature;
-    id=f.getId();
+    featureId=f.getId();
     copyFeatureToPath(f,path);
     map.data.remove(f);
+    evt.stop();
   });
 
   return {
-    getPath: function(){ var p=path.getPath(); p.id=id; return p; },
-    restartEdit: function(){ path.getPath().clear(); id=undefined; },
+    getPath: function(){ var p=path.getPath(); p.id=featureId; return p; },
+    restartEdit: function(){ path.getPath().clear(); featureId=undefined; },
     setPaused: function(val){ paused=val; },
     endEdit: function() {
       resetMap(map);
