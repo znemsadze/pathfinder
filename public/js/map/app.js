@@ -1,5 +1,6 @@
 var draw=require('./draw')
-  , ui=require('./ui');
+  , ui=require('./ui')
+  , api=require('./api');
 
 var mapElement;
 var sidebarElement;
@@ -45,11 +46,7 @@ var initMap=function(){
   };
   map=new google.maps.Map(mapElement, mapOptions);
 
-  map.data.loadGeoJson('/geo/map.json');
-  map.data.setStyle({
-    strokeColor:'red',
-    strokeOpacity:0.5,
-  });
+  loadData(map);
   // map.data.addListener('mouseover', function(evt) {
   //   map.data.overrideStyle(evt.feature,{strokeWeight:10});
   // });
@@ -59,18 +56,23 @@ var initMap=function(){
 
   var b1=ui.button.actionButton('გზის შენახვა', function(){
     var path=drawHandle.getPath();
-    if(path.getLength()>1) {
-      var points=[];
-      path.forEach(function(element,index){
-        points.push([element.lat(),element.lng()]);
-      });
-    }
-    $.post('/api/geo/new_path',{points:points},function(data) {
-      console.log(data);
+    drawHandle.endEdit();
+    api.savePath(path, function(data){
+      loadData(map,data.id);
     });
   });
   toolbarElement.appendChild(b1);
 
   // draw path
   var drawHandle=draw.drawPath(map);
+};
+
+var loadData=function(map,id){
+  var url=id? '/geo/map.json?id='+id:'/geo/map.json'
+  console.log(url);
+  map.data.loadGeoJson(url);
+  map.data.setStyle({
+    strokeColor:'red',
+    strokeOpacity:0.5,
+  });
 };

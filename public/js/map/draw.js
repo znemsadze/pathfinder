@@ -1,3 +1,7 @@
+var resetMap=function(map){
+  google.maps.event.clearInstanceListeners(map);
+};
+
 exports.drawPath=function(map){
   var path = new google.maps.Polyline({
     map:map,
@@ -20,5 +24,9 @@ exports.drawPath=function(map){
 
   return {
     getPath: function(){ return path.getPath(); },
+    endEdit: function() {
+      resetMap(map);
+      path.setMap(null);
+    },
   };
 };

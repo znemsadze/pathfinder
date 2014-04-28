@@ -1,6 +1,21 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var BASE_PATH='/api/geo';
+
+exports.savePath=function(path,callback){
+  if(path.getLength()>1) {
+    var points=[];
+    path.forEach(function(element,index){
+      points.push([element.lat(),element.lng()]);
+    });
+    $.post('/api/geo/new_path',{points:points},function(data) {
+      callback(data);
+    });
+  }
+};
+},{}],2:[function(require,module,exports){
 var draw=require('./draw')
-  , ui=require('./ui');
+  , ui=require('./ui')
+  , api=require('./api');
 
 var mapElement;
 var sidebarElement;
@@ -46,11 +61,7 @@ var initMap=function(){
   };
   map=new google.maps.Map(mapElement, mapOptions);
 
-  map.data.loadGeoJson('/geo/map.json');
-  map.data.setStyle({
-    strokeColor:'red',
-    strokeOpacity:0.5,
-  });
+  loadData(map);
   // map.data.addListener('mouseover', function(evt) {
   //   map.data.overrideStyle(evt.feature,{strokeWeight:10});
   // });
@@ -60,14 +71,9 @@ var initMap=function(){
 
   var b1=ui.button.actionButton('გზის შენახვა', function(){
     var path=drawHandle.getPath();
-    if(path.getLength()>1) {
-      var points=[];
-      path.forEach(function(element,index){
-        points.push([element.lat(),element.lng()]);
-      });
-    }
-    $.post('/api/geo/new_path',{points:points},function(data) {
-      console.log(data);
+    drawHandle.endEdit();
+    api.savePath(path, function(data){
+      loadData(map,data.id);
     });
   });
   toolbarElement.appendChild(b1);
@@ -75,7 +81,21 @@ var initMap=function(){
   // draw path
   var drawHandle=draw.drawPath(map);
 };
-},{"./draw":2,"./ui":6}],2:[function(require,module,exports){
+
+var loadData=function(map,id){
+  var url=id? '/geo/map.json?id='+id:'/geo/map.json'
+  console.log(url);
+  map.data.loadGeoJson(url);
+  map.data.setStyle({
+    strokeColor:'red',
+    strokeOpacity:0.5,
+  });
+};
+},{"./api":1,"./draw":3,"./ui":7}],3:[function(require,module,exports){
+var resetMap=function(map){
+  google.maps.event.clearInstanceListeners(map);
+};
+
 exports.drawPath=function(map){
   var path = new google.maps.Polyline({
     map:map,
@@ -98,13 +118,17 @@ exports.drawPath=function(map){
 
   return {
     getPath: function(){ return path.getPath(); },
+    endEdit: function() {
+      resetMap(map);
+      path.setMap(null);
+    },
   };
 };
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 var app=require('./app');
 
 app.start();
-},{"./app":1}],4:[function(require,module,exports){
+},{"./app":2}],5:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils');
 
@@ -152,7 +176,7 @@ exports.dropdown=function(text,buttons,opts){
   var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":5,"./utils":7}],5:[function(require,module,exports){
+},{"./html":6,"./utils":8}],6:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -246,13 +270,13 @@ exports.pageTitle=function(title,tag){
 exports.p=function(text,opts){
   return exports.el('p',opts,text);
 };
-},{"./utils":7}],6:[function(require,module,exports){
+},{"./utils":8}],7:[function(require,module,exports){
 var button=require('./button')
   ;
 
 exports.button=button;
-},{"./button":4}],7:[function(require,module,exports){
+},{"./button":5}],8:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
 exports.fieldValue=function(object,name){ return object&&object[name]; };
-},{}]},{},[3])
+},{}]},{},[4])
