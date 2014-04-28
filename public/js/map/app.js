@@ -47,25 +47,19 @@ var initMap=function(){
   map=new google.maps.Map(mapElement, mapOptions);
 
   loadData(map);
-  // map.data.addListener('mouseover', function(evt) {
-  //   map.data.overrideStyle(evt.feature,{strokeWeight:10});
-  // });
-  // map.data.addListener('mouseout', function(evt) {
-  //   map.data.revertStyle();
-  // });
 
-  var b1=ui.button.actionButton('გზის შენახვა', function(){
+  var btnSavePath=ui.button.actionButton('გზის შენახვა', function(){
     var path=drawHandle.getPath();
-    b1.setWaiting(true);
+    btnSavePath.setWaiting(true);
     drawHandle.setPaused(true);
     api.savePath(path, function(data){
       loadData(map,data.id);
-      b1.setWaiting(false);
+      btnSavePath.setWaiting(false);
       drawHandle.setPaused(false);
       drawHandle.restartEdit();
     });
   });
-  toolbarElement.appendChild(b1);
+  toolbarElement.appendChild(btnSavePath);
 
   // draw path
   var drawHandle=draw.drawPath(map);

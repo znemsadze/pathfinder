@@ -2,6 +2,13 @@ var resetMap=function(map){
   google.maps.event.clearInstanceListeners(map);
 };
 
+// map.data.addListener('mouseover', function(evt) {
+//   map.data.overrideStyle(evt.feature,{strokeWeight:10});
+// });
+// map.data.addListener('mouseout', function(evt) {
+//   map.data.revertStyle();
+// });
+
 exports.drawPath=function(map){
   var path = new google.maps.Polyline({
     map:map,
