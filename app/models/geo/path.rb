@@ -1,20 +1,17 @@
 # -*- encoding : utf-8 -*-
 class Geo::Path
   include Mongoid::Document
-  has_and_belongs_to_many :points, class_name: 'Geo::Point'
   field :startid, type: Moped::BSON::ObjectId
   field :endid, type: Moped::BSON::ObjectId
-  field :length, type: Float
+  field :length, type: Float, default: 0
+  has_and_belongs_to_many :points, class_name: 'Geo::Point'
 
-  def sync_route
-    self.startid=points.first.id
-    self.endid=points.last.id
-    self.length=self.calculateLength
-    self.save
-  end
+  def ordered_points; self.point_ids.map{|x|self.points.find(x)} end
 
-  def calculateLength
-    prev=self.points.first; dist=0
-    points.each{|p| dist+=prev.distance_to(p) if prev!=p }; dist
-  end
+  # def sync_route
+  #   self.startid=points.first.id
+  #   self.endid=points.last.id
+  #   self.length=self.calculateLength
+  #   self.save
+  # end
 end
