@@ -5,4 +5,5 @@ json.features @paths do |path|
     json.type 'LineString'
     json.coordinates path.points.map{|p| [p.lng,p.lat] }
   end
+  json.id path.id.to_s
 end
