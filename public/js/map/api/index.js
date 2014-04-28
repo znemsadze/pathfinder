@@ -6,7 +6,7 @@ exports.savePath=function(path,callback){
     path.forEach(function(element,index){
       points.push([element.lat(),element.lng()]);
     });
-    $.post('/api/geo/new_path',{points:points},function(data) {
+    $.post('/api/geo/new_path',{id:path.id,points:points},function(data) {
       callback(data);
     });
   }

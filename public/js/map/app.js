@@ -71,6 +71,7 @@ var loadData=function(map,id){
   map.data.loadGeoJson(url);
   map.data.setStyle({
     strokeColor:'red',
+    strokeWeight:1,
     strokeOpacity:0.5,
   });
 };
