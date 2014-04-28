@@ -1,17 +1,17 @@
 class Api::GeoController < ApiController
   def new_path
+    path=Geo::Path.create
     points=params[:points].map{|k,v| v}
-    if params[:id].present?
-      path=Geo::Path.find(params[:id])
-      path.points.where(single: true).destroy_all
-    else
-      path=Geo::Path.create
-    end
     points.each do |p|
-      point=Geo::Point.create(lat:p[0].to_f,lng:p[1].to_f,single:true)
-      point.paths << path
+      lat=p[:lat].to_f ; lng=p[:lng].to_f
+      if p[:featureId]
+        point=Geo::Path.find(p[:featureId]).points.where(lat:lat,lng:lng).first
+        point.single=false ; point.save
+      else
+        point=Geo::Point.create(lat:lat,lng:lng,single:true)
+      end
+      path.points<<point
     end
-    path.sync_route
     render json: {id: path.id.to_s}
   end
 end
