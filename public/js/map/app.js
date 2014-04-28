@@ -28,8 +28,9 @@ var loadingGoogleMapsAsyncronously=function(){
   var host='https://maps.googleapis.com/maps/api/js';
   var script = document.createElement('script');
   script.type = 'text/javascript';
-  if (apikey){ script.src = host+'?v=3.ex&key='+apikey+'&sensor=false&callback=onGoogleMapLoaded'; }
-  else{ script.src = host+'?v=3.ex&sensor=false&callback=onGoogleMapLoaded'; }
+  var baseUrl=host+'?v=3.ex&sensor=false&callback=onGoogleMapLoaded&libraries=geometry';
+  if (apikey){ script.src = baseUrl+'&key='+apikey; }
+  else{ script.src = baseUrl; }
   document.body.appendChild(script);
   window.onGoogleMapLoaded=onGoogleMapLoaded;
 };
