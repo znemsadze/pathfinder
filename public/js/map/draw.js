@@ -11,19 +11,23 @@ exports.drawPath=function(map){
     strokeWeight:1,
     editable:true,
   });
+  var paused=false;
 
   google.maps.event.addListener(map, 'click', function(evt){
-    path.getPath().push(evt.latLng);
+    if(!paused){ path.getPath().push(evt.latLng); }
   });
 
   google.maps.event.addListener(path, 'dblclick', function(evt){
-    if(typeof evt.vertex==='number'){
-      path.getPath().removeAt(evt.vertex,1);
-    }
+    if(!paused){
+      if(typeof evt.vertex==='number'){
+        path.getPath().removeAt(evt.vertex,1);
+      }}
   });
 
   return {
     getPath: function(){ return path.getPath(); },
+    restartEdit: function(){ path.getPath().clear(); },
+    setPaused: function(val){ paused=val; },
     endEdit: function() {
       resetMap(map);
       path.setMap(null);

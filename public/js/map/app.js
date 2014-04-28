@@ -56,11 +56,13 @@ var initMap=function(){
 
   var b1=ui.button.actionButton('გზის შენახვა', function(){
     var path=drawHandle.getPath();
-    drawHandle.endEdit();
     b1.setWaiting(true);
+    drawHandle.setPaused(true);
     api.savePath(path, function(data){
       loadData(map,data.id);
       b1.setWaiting(false);
+      drawHandle.setPaused(false);
+      drawHandle.restartEdit();
     });
   });
   toolbarElement.appendChild(b1);
