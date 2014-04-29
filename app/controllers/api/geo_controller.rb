@@ -6,9 +6,8 @@ class Api::GeoController < ApiController
       lat=p['lat'].to_f ; lng=p['lng'].to_f ; featureId=p['featureId']
       if featureId
         point=Geo::Path.find(featureId).points.where(lat:lat,lng:lng).first
-        point.single=false ; point.save
       else
-        point=Geo::Point.create(lat:lat,lng:lng,single:true)
+        point=Geo::Point.create(lat:lat,lng:lng)
       end
       path.points<<point
     end
@@ -25,9 +24,8 @@ class Api::GeoController < ApiController
         point.lat=lat ; point.lng=lng ; point.save
       elsif featureId
         point=Geo::Path.find(featureId).points.where(lat:lat,lng:lng).first
-        point.single=false ; point.save
       else
-        point=Geo::Point.create(lat:lat,lng:lng,single:true)
+        point=Geo::Point.create(lat:lat,lng:lng)
       end
       path.points<<point
     end
