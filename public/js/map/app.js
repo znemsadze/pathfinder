@@ -49,16 +49,34 @@ var initMap=function(){
 
   loadData(map);
 
-  var btnSavePath=ui.button.actionButton('გზის შენახვა', function(){
-    var path=drawHandle.getPath();
+  var pauseEditing=function() {
     btnSavePath.setWaiting(true);
     drawHandle.setPaused(true);
-    api.newPath(path, function(data){
-      loadData(map,data.id);
-      btnSavePath.setWaiting(false);
-      drawHandle.setPaused(false);
-      drawHandle.restartEdit();
-    });
+  };
+  var resumeEditing=function(data){
+    btnSavePath.setWaiting(false);
+    drawHandle.setPaused(false);
+    drawHandle.restartEdit();
+  };
+
+  var btnSavePath=ui.button.actionButton('გზის შენახვა', function(){
+    var path=drawHandle.getPath();
+    var id=path.id;
+    pauseEditing();
+    if(id){
+      var resp=api.editPath(id,path,function(data){
+        loadData(map,data.id);
+        console.log(data);
+        resumeEditing();
+      });
+      if(!resp){ resumeEditing(); }
+    } else {
+      var resp=api.newPath(path, function(data){
+        loadData(map,data.id);
+        resumeEditing();
+      });
+      if(!resp){ resumeEditing(); }
+    }
   });
   toolbarElement.appendChild(btnSavePath);
 

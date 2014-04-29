@@ -4,22 +4,36 @@ var BASE_PATH='/api/geo';
 var pointsFromPath=function(path){
   var points=[];
   path.forEach(function(element,index){
-    points.push({id:element.id,lat:element.lat(),lng:element.lng(),featureId:element.featureId});
+    points.push({
+      id:element.id,
+      lat:element.lat(),
+      lng:element.lng(),
+      featureId:element.featureId
+    });
   });
   return points;
 };
 
 exports.newPath=function(path,callback){
-  if(path.getLength()>1) {
+  if(path.getLength()>1){
     var points=pointsFromPath(path);
     $.post(BASE_PATH+'/new_path',{points:points},function(data) {
       callback(data);
     });
+    return true;
   }
+  return false;
 };
 
 exports.editPath=function(id,path,callback){
-
+  if(path.getLength()>1){
+    var points=pointsFromPath(path);
+    $.post(BASE_PATH+'/edit_path',{id:id,points:points},function(data) {
+      callback(data);
+    });
+    return true;
+  }
+  return false;
 };
 },{}],2:[function(require,module,exports){
 var draw=require('./draw')
@@ -73,16 +87,34 @@ var initMap=function(){
 
   loadData(map);
 
-  var btnSavePath=ui.button.actionButton('გზის შენახვა', function(){
-    var path=drawHandle.getPath();
+  var pauseEditing=function() {
     btnSavePath.setWaiting(true);
     drawHandle.setPaused(true);
-    api.newPath(path, function(data){
-      loadData(map,data.id);
-      btnSavePath.setWaiting(false);
-      drawHandle.setPaused(false);
-      drawHandle.restartEdit();
-    });
+  };
+  var resumeEditing=function(data){
+    btnSavePath.setWaiting(false);
+    drawHandle.setPaused(false);
+    drawHandle.restartEdit();
+  };
+
+  var btnSavePath=ui.button.actionButton('გზის შენახვა', function(){
+    var path=drawHandle.getPath();
+    var id=path.id;
+    pauseEditing();
+    if(id){
+      var resp=api.editPath(id,path,function(data){
+        loadData(map,data.id);
+        console.log(data);
+        resumeEditing();
+      });
+      if(!resp){ resumeEditing(); }
+    } else {
+      var resp=api.newPath(path, function(data){
+        loadData(map,data.id);
+        resumeEditing();
+      });
+      if(!resp){ resumeEditing(); }
+    }
   });
   toolbarElement.appendChild(btnSavePath);
 
@@ -108,7 +140,6 @@ var resetMap=function(map){
 var copyFeatureToPath=function(feature,path){
   var g=feature.getGeometry();
   var ids=feature.getProperty('point_ids').split(',');
-  console.log(ids);
   var ary=g.getArray();
   path.getPath().clear();    
   for(var i=0,l=ary.length;i<l;i++){

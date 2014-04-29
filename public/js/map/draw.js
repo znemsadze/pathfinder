@@ -5,7 +5,6 @@ var resetMap=function(map){
 var copyFeatureToPath=function(feature,path){
   var g=feature.getGeometry();
   var ids=feature.getProperty('point_ids').split(',');
-  console.log(ids);
   var ary=g.getArray();
   path.getPath().clear();    
   for(var i=0,l=ary.length;i<l;i++){

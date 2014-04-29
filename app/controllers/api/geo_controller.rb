@@ -12,6 +12,12 @@ class Api::GeoController < ApiController
       end
       path.points<<point
     end
-    render json: {id: path.id.to_s}
+    render json:{id: path.id.to_s}
+  end
+
+  def edit_path
+    path=Geo::Path.find(params[:id])
+    # TODO:
+    render json:{id:path.id.to_s}
   end
 end
