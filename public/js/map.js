@@ -1,16 +1,25 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var BASE_PATH='/api/geo';
 
-exports.savePath=function(path,callback){
+var pointsFromPath=function(path){
+  var points=[];
+  path.forEach(function(element,index){
+    points.push({id:element.id,lat:element.lat(),lng:element.lng(),featureId:element.featureId});
+  });
+  return points;
+};
+
+exports.newPath=function(path,callback){
   if(path.getLength()>1) {
-    var points=[];
-    path.forEach(function(element,index){
-      points.push({lat:element.lat(),lng:element.lng(),featureId:element.featureId});
-    });
-    $.post('/api/geo/new_path',{id:path.id,points:points},function(data) {
+    var points=pointsFromPath(path);
+    $.post(BASE_PATH+'/new_path',{points:points},function(data) {
       callback(data);
     });
   }
+};
+
+exports.editPath=function(id,path,callback){
+
 };
 },{}],2:[function(require,module,exports){
 var draw=require('./draw')
@@ -68,7 +77,7 @@ var initMap=function(){
     var path=drawHandle.getPath();
     btnSavePath.setWaiting(true);
     drawHandle.setPaused(true);
-    api.savePath(path, function(data){
+    api.newPath(path, function(data){
       loadData(map,data.id);
       btnSavePath.setWaiting(false);
       drawHandle.setPaused(false);
@@ -98,11 +107,14 @@ var resetMap=function(map){
 
 var copyFeatureToPath=function(feature,path){
   var g=feature.getGeometry();
+  var ids=feature.getProperty('point_ids').split(',');
+  console.log(ids);
   var ary=g.getArray();
   path.getPath().clear();    
   for(var i=0,l=ary.length;i<l;i++){
     var p=ary[i];
     var point=new google.maps.LatLng(p.lat(),p.lng());
+    point.id=ids[i];
     path.getPath().push(point);
   }
 };

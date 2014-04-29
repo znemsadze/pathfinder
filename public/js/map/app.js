@@ -53,7 +53,7 @@ var initMap=function(){
     var path=drawHandle.getPath();
     btnSavePath.setWaiting(true);
     drawHandle.setPaused(true);
-    api.savePath(path, function(data){
+    api.newPath(path, function(data){
       loadData(map,data.id);
       btnSavePath.setWaiting(false);
       drawHandle.setPaused(false);
