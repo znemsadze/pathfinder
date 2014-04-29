@@ -8,7 +8,6 @@ class Geo::Path
   def ordered_points; self.point_ids.map{|x|self.points.find(x)} end
 
   # Splits the given path on given point.
-  # Returns a new path or `nil` if split was unsuccessful.
   def split_at(point)
     points=self.ordered_points
     idx=points.index(point)
@@ -19,7 +18,16 @@ class Geo::Path
         p.path_ids.push(new_path.id)
         p.save
       end
-      new_path
+    end
+  end
+
+  # Splits this path on intersection points.
+  def split_intersections
+    points=self.ordered_points
+    points.each_with_index do |p,idx|
+      unless p.single?
+        p.paths.each {|path| path.split_at p if path != self }
+      end
     end
   end
 end
