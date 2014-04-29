@@ -3,6 +3,8 @@ class Geo::Path
   include Mongoid::Document
   has_and_belongs_to_many :points, class_name: 'Geo::Point'
 
+  # Returns ordered array of points in this path.
+  # This method should be used for index-sensitive operations.
   def ordered_points; self.point_ids.map{|x|self.points.find(x)} end
 
   # Splits the given path on given point.
