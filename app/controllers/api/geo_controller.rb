@@ -3,12 +3,8 @@ class Api::GeoController < ApiController
     path=Geo::Path.create
     points=params[:points].map{|k,v| v}
     points.each do |p|
-      lat=p['lat'].to_f ; lng=p['lng'].to_f ; featureId=p['featureId']
-      if featureId
-        point=Geo::Path.find(featureId).points.where(lat:lat,lng:lng).first
-      else
-        point=Geo::Point.create(lat:lat,lng:lng)
-      end
+      lat=p['lat'].to_f ; lng=p['lng'].to_f
+      point=Geo::Point.where(lat:lat,lng:lng).first || Geo::Point.create(lat:lat,lng:lng)
       path.points<<point
     end
     path.split_intersections
