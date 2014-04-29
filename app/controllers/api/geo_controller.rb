@@ -12,6 +12,7 @@ class Api::GeoController < ApiController
       path.points<<point
     end
     path.split_intersections
+    path.join_continuations
     render json:{id: path.id.to_s}
   end
 

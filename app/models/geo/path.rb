@@ -44,4 +44,11 @@ class Geo::Path
       end
     end
   end
+
+  # Join path continuations.
+  def join_continuations
+    points=self.ordered_points
+    self.join_at(points[+0])
+    self.join_at(points[-1])
+  end
 end
