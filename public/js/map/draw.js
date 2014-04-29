@@ -62,7 +62,8 @@ exports.drawPath=function(map){
     if(!paused){
       if(typeof evt.vertex==='number'){
         path.getPath().removeAt(evt.vertex,1);
-      }}
+      }
+    }
   });
 
   map.data.addListener('click', function(evt) {

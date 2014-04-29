@@ -38,7 +38,8 @@ exports.editPath=function(id,path,callback){
 },{}],2:[function(require,module,exports){
 var draw=require('./draw')
   , ui=require('./ui')
-  , api=require('./api');
+  , api=require('./api')
+  ;
 
 var mapElement;
 var sidebarElement;
@@ -75,6 +76,7 @@ var loadingGoogleMapsAsyncronously=function(){
 
 var onGoogleMapLoaded=function(){
   initMap();
+  
 };
 
 var initMap=function(){
@@ -197,7 +199,8 @@ exports.drawPath=function(map){
     if(!paused){
       if(typeof evt.vertex==='number'){
         path.getPath().removeAt(evt.vertex,1);
-      }}
+      }
+    }
   });
 
   map.data.addListener('click', function(evt) {

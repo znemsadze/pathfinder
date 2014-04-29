@@ -1,6 +1,7 @@
 var draw=require('./draw')
   , ui=require('./ui')
-  , api=require('./api');
+  , api=require('./api')
+  ;
 
 var mapElement;
 var sidebarElement;
@@ -37,6 +38,7 @@ var loadingGoogleMapsAsyncronously=function(){
 
 var onGoogleMapLoaded=function(){
   initMap();
+  
 };
 
 var initMap=function(){
