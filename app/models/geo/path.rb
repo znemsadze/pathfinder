@@ -26,7 +26,7 @@ class Geo::Path
     points=self.ordered_points
     points.each_with_index do |p,idx|
       unless p.single?
-        p.paths.each {|path| path.split_at p if path != self }
+        p.paths.each {|path| path.split_at(p) }
       end
     end
   end
