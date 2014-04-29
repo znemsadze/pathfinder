@@ -8,10 +8,19 @@ class Geo::Path
 
   def ordered_points; self.point_ids.map{|x|self.points.find(x)} end
 
-  # def sync_route
-  #   self.startid=points.first.id
-  #   self.endid=points.last.id
-  #   self.length=self.calculateLength
-  #   self.save
-  # end
+  # Splits the given path on given point.
+  # Returns a new path or `nil` if split was unsuccessful.
+  def split_at(point)
+    points=self.ordered_points
+    idx=points.index(point)
+    if idx and idx>0 and idx<points.length-1
+      new_path=Geo::Path.create
+      points[idx..-1].each_with_index do |p,i|
+        p.path_ids.delete(self.id) if i>0
+        p.path_ids.push(new_path.id)
+        p.save
+      end
+      new_path
+    end
+  end
 end
