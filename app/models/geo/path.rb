@@ -30,4 +30,18 @@ class Geo::Path
       end
     end
   end
+
+  # Joins this path if any continuation exists on the given point.
+  def join_at(point)
+    if point.paths.count==2
+      path1=point.paths[0] ; points1=path1.ordered_points
+      path2=point.paths[1] ; points2=path2.ordered_points
+      if (points1[0]==point or points1[-1]==point) and (points2[0]==point or points2[-1]==point)
+        points1=points1.reverse if points1[+0]==point
+        points2=points2.reverse if points2[-1]==point
+        points1.each{|x| x.path_ids=[path1.id];x.save}
+        points2.each{|x| x.path_ids=[path1.id];x.save}
+      end
+    end
+  end
 end
