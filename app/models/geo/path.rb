@@ -39,8 +39,8 @@ class Geo::Path
       if (points1[0]==point or points1[-1]==point) and (points2[0]==point or points2[-1]==point)
         points1=points1.reverse if points1[+0]==point
         points2=points2.reverse if points2[-1]==point
-        points1.each{|x| x.path_ids=[path1.id];x.save}
-        points2.each{|x| x.path_ids=[path1.id];x.save}
+        path1.point_ids=points1.map{|x|x.id} + points2.map{|x|x.id} ; path1.save
+        path2.point_ids=[] ; path2.save
       end
     end
   end
