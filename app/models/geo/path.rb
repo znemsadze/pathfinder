@@ -2,6 +2,7 @@
 class Geo::Path
   include Mongoid::Document
   has_and_belongs_to_many :points, class_name: 'Geo::Point'
+  field :polygon, type: Mongoid::Boolean, default: false
 
   # Returns ordered array of points in this path.
   # This method should be used for index-sensitive operations.
@@ -9,7 +10,7 @@ class Geo::Path
 
   # Splits this path on intersection points.
   def split_intersections
-    points=self.ordered_points
+    self.reload ; points=self.ordered_points
     points.each_with_index do |p,idx|
       unless p.single?
         p.paths.each {|path| path.split_at(p) }
@@ -21,6 +22,7 @@ class Geo::Path
   def join_continuations
     self.reload ; points=self.ordered_points
     a1=join_at(points[+0]) ; a2=join_at(points[-1])
+    self.reload ; self.polygon=(self.point_ids.first == self.point_ids.last) ; self.save
   end
 
   protected
@@ -54,7 +56,8 @@ class Geo::Path
       if (points1[0]==point or points1[-1]==point) and (points2[0]==point or points2[-1]==point)
         points1=points1.reverse if points1[+0]==point
         points2=points2.reverse if points2[-1]==point
-        path1.point_ids=points1.map{|x|x.id} + points2.map{|x|x.id} ; path1.save
+        #path1.point_ids=(points1.map{|x|x.id} + points2.map{|x|x.id}).uniq ; path1.save
+        path1.point_ids=points1[0..-2].map{|x|x.id} + points2.map{|x|x.id} ; path1.save
         path2.point_ids=[] ; path2.save
       end
     end

@@ -99,8 +99,95 @@ class Geo::PathTest < ActiveSupport::TestCase
     path3.join_continuations
     path1.reload ; path2.reload ; path3.reload
 
-    assert_equal 0, path1.points.count
-    assert_equal 0, path2.points.count
-    assert_equal 4, path3.points.count
+    assert_equal 0, path1.ordered_points.count
+    assert_equal 0, path2.ordered_points.count
+    assert_equal 4, path3.ordered_points.count
+  end
+
+  #         5     path1: 4,1,2,3
+  #        /      path2: 4,3
+  #  4<-->3       path3: 3,5
+  #  |    |       path4: 2,6
+  #  1____2
+  #       \
+  #        6
+  test 'cycle join and split' do
+    make_clear_state
+
+    p1=Geo::Point.create(lat: 5,lng: 5)
+    p2=Geo::Point.create(lat:10,lng: 5)
+    p3=Geo::Point.create(lat:10,lng:10)
+    p4=Geo::Point.create(lat: 5,lng:10)
+    p5=Geo::Point.create(lat:15,lng:15)
+    p6=Geo::Point.create(lat:15,lng: 0)
+
+    ps=[p1,p2,p3,p4,p5,p6]
+
+    # path1[4,1,2,3] + path2[3,4] -> path1[] + path2[4,3,2,1,4]
+    path1=Geo::Path.create ; path2=Geo::Path.create
+    path1.points<<p4 ; path1.points<<p1 ; path1.points<<p2 ; path1.points<<p3
+    path2.points<<p3 ; path2.points<<p4
+    path2.split_intersections ; path2.join_continuations
+    path1.reload ; path2.reload
+    assert_equal 0, path1.ordered_points.count
+    assert_equal 5, path2.ordered_points.count
+    path2.reload
+    assert path2.polygon
+
+
+
+    assert_equal [p4,p3,p2,p1,p4].map{|x|x.id.to_s}, path2.ordered_points.map{|x|x.id.to_s}
+    assert_equal 2, Geo::Path.count
+
+# puts '---------------------'
+# Geo::Path.each do |path|
+#   path.reload
+#   path_idx=[path1,path2].index(path)
+#   path_idx+=1 if path_idx
+#   indecies=path.ordered_points.map{|x| ps.index(x)+1}.join(', ')
+#   puts "#{path_idx||'*'}: #{indecies}"
+# end
+# puts '---------------------'
+
+#     # path[4,3,2,1,4] + path3[3,5]
+#     path3=Geo::Path.create
+#     path3.points<<p3 ; path3.points<<p5
+#     path3.split_intersections
+#     path3.join_continuations
+
+
+# puts '---------------------'
+# Geo::Path.each do |path|
+#   path.reload
+#   path_idx=[path1,path2,path3].index(path)
+#   path_idx+=1 if path_idx
+#   indecies=path.ordered_points.map{|x| ps.index(x)+1}.join(', ')
+#   puts "#{path_idx||'*'}: #{indecies}"
+# end
+# puts '---------------------'
+
+#     all_paths.each{|x|x.reload} ; all_points.each{|x|x.reload}
+#     assert_equal 0, path1.ordered_points.count
+
+# puts ''
+# puts Geo::Path.count
+# puts all_points.map{|x|x.id.to_s}.join(' > ')
+
+#     #assert_equal 4, path2.ordered_points.count
+#     assert_equal 2, path3.ordered_points.count
+
+# puts path2.ordered_points.map{|x|x.id.to_s}.join(' > ')
+
+
+    # Geo::Path.destroy_empty
+    # assert_equal 4, Geo::Path.count
+
+
+    # path4.points<<p2 ; path4.points<<p6
+    # path4.join_continuations
+    # path1.reload ; path2.reload ; path3.reload ; path4.reload
+    # assert_equal 0, path1.points.count
+
+
   end
 end
