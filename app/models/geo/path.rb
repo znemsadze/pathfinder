@@ -7,20 +7,6 @@ class Geo::Path
   # This method should be used for index-sensitive operations.
   def ordered_points; self.point_ids.map{|x|self.points.find(x)} end
 
-  # Splits the given path on given point.
-  def split_at(point)
-    points=self.ordered_points
-    idx=points.index(point)
-    if idx and idx>0 and idx<points.length-1
-      new_path=Geo::Path.create
-      points[idx..-1].each_with_index do |p,i|
-        p.path_ids.delete(self.id) if i>0
-        p.path_ids.push(new_path.id)
-        p.save
-      end
-    end
-  end
-
   # Splits this path on intersection points.
   def split_intersections
     points=self.ordered_points
@@ -34,7 +20,23 @@ class Geo::Path
   # Join path continuations.
   def join_continuations
     self.reload ; points=self.ordered_points
-    join_at(points[+0]) ; join_at(points[-1])
+    a1=join_at(points[+0]) ; a2=join_at(points[-1])
+  end
+
+  protected
+
+  # Splits the given path on given point.
+  def split_at(point)
+    points=self.ordered_points
+    idx=points.index(point)
+    if idx and idx>0 and idx<points.length-1
+      new_path=Geo::Path.create
+      points[idx..-1].each_with_index do |p,i|
+        p.path_ids.delete(self.id) if i>0
+        p.path_ids.push(new_path.id)
+        p.save
+      end
+    end
   end
 
   private
