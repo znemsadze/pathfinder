@@ -31,11 +31,24 @@ class Geo::Path
     end
   end
 
+  # Join path continuations.
+  def join_continuations
+    self.reload ; points=self.ordered_points
+    join_at(points[+0]) ; join_at(points[-1])
+  end
+
+  private
+
   # Joins this path if any continuation exists on the given point.
   def join_at(point)
     if point.paths.count==2
-      path1=point.paths[0] ; points1=path1.ordered_points
-      path2=point.paths[1] ; points2=path2.ordered_points
+      if point.paths[0]==self
+        path1=point.paths[0] ; points1=path1.ordered_points
+        path2=point.paths[1] ; points2=path2.ordered_points
+      else
+        path1=point.paths[1] ; points1=path1.ordered_points
+        path2=point.paths[0] ; points2=path2.ordered_points
+      end
       if (points1[0]==point or points1[-1]==point) and (points2[0]==point or points2[-1]==point)
         points1=points1.reverse if points1[+0]==point
         points2=points2.reverse if points2[-1]==point
@@ -43,12 +56,5 @@ class Geo::Path
         path2.point_ids=[] ; path2.save
       end
     end
-  end
-
-  # Join path continuations.
-  def join_continuations
-    points=self.ordered_points
-    self.join_at(points[+0])
-    self.join_at(points[-1])
   end
 end

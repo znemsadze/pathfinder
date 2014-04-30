@@ -70,4 +70,37 @@ class Geo::PathTest < ActiveSupport::TestCase
     assert_equal 4, path1.points.count
     assert_equal 0, path2.points.count
   end
+
+  test 'complex join' do
+    make_clear_state
+
+    path1=Geo::Path.create
+    path2=Geo::Path.create
+    path3=Geo::Path.create
+
+    p1=Geo::Point.create(lat: 40, lng: 40)
+    p2=Geo::Point.create(lat: 50, lng: 40)
+    p3=Geo::Point.create(lat: 40, lng: 30)
+    p4=Geo::Point.create(lat: 50, lng: 30)
+
+    # p1 ___ p2
+    #        |
+    # p3 ___ p4
+
+    path1.points<<p1
+    path1.points<<p2
+
+    path2.points<<p3
+    path2.points<<p4
+
+    path3.points<<p2
+    path3.points<<p4
+
+    path3.join_continuations
+    path1.reload ; path2.reload ; path3.reload
+
+    assert_equal 0, path1.points.count
+    assert_equal 0, path2.points.count
+    assert_equal 4, path3.points.count
+  end
 end
