@@ -3,7 +3,7 @@ class Geo::Path
   include Mongoid::Document
   field :point_ids, type: Array
 
-  def points; Geo::Point.where(:id.in => self.point_ids) end
+  def points; Geo::Point.in(id:self.point_ids) end
 
   def self.new_path(points)
     if points.uniq.size>1

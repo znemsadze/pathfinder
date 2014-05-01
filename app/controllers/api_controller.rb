@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ApiController < ActionController::Base
   protect_from_forgery with: :null_session
   before_filter :set_access_control_headers
