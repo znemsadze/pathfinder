@@ -1,3 +1,3 @@
-var app=require('./app');
-
-app.start();
+require('./application')({
+  //apikey:'AIzaSyBAjwtBAWhTjoGcDaas_vs7vmUKgensPbE',
+});
