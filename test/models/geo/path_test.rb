@@ -31,10 +31,9 @@ class Geo::PathTest < ActiveSupport::TestCase
 
     path1=Geo::Path.new_path(p1)
     path2=Geo::Path.new_path(p2)
-    new_points_count=(p1+p2).uniq.size
 
     assert_equal 2, Geo::Path.count
-    assert_equal new_points_count, Geo::Point.count
+    assert_equal (p1+p2).uniq.size, Geo::Point.count
     assert_equal p1.size, path1.point_ids.count
     assert_equal p2.size, path2.point_ids.count
 
@@ -47,12 +46,13 @@ class Geo::PathTest < ActiveSupport::TestCase
       points=path.point_ids.map{|x| p=Geo::Point.find(x) ; [p.lat,p.lng]}
       assert_equal points.size, result_path.size
       assert_equal result_path, points
-      # end
     end
   end
 
   test 'path joins' do
     p1=[1,1] ; p2=[2,1] ; p3=[3,1] ; p4=[4,1]
+
+    # Correct joins
 
     # p1,p2 + p1,p3 -> p1,p2,p3
     join_path_testing([p1,p2], [p2,p3], [[p1,p2,p3]])
@@ -65,5 +65,21 @@ class Geo::PathTest < ActiveSupport::TestCase
     join_path_testing([p1,p2,p3], [p2,p3,p4], [[p1,p2,p3,p4]])
     # p2,p3,p4 + p1,p2,p3 -> p4,p3,p2,p1
     join_path_testing([p2,p3,p4], [p1,p2,p3], [[p4,p3,p2,p1]])
+
+    # p1,p2,p3,p4 + p2,p3 -> p1,p2,p3,p4
+    join_path_testing([p1,p2,p3,p4], [p2,p3], [[p1,p2,p3,p4]])
+    # p1,p2,p3,p4 + p2,p3,p4 -> p1,p2,p3,p4
+    join_path_testing([p1,p2,p3,p4], [p2,p3,p4], [[p1,p2,p3,p4]])
+    # p1,p2,p3,p4 + p1,p2,p3,p4 -> p1,p2,p3,p4
+    join_path_testing([p1,p2,p3,p4], [p1,p2,p3,p4], [[p1,p2,p3,p4]])
+
+    # Incorrect joins
+
+    # p1,p2,p3 + p2,p3,p1 -> same
+    join_path_testing([p1,p2,p3], [p2,p3,p1], [[p1,p2,p3],[p2,p3,p1]])
+    # p1,p2,p3,p4 + p1,p4 -> same
+    join_path_testing([p1,p2,p3,p4], [p1,p4], [[p1,p2,p3,p4],[p1,p4]])
+    # p1,p2,p3,p4 + p4,p1 -> same
+    join_path_testing([p1,p2,p3,p4], [p4,p1], [[p1,p2,p3,p4],[p4,p1]])
   end
 end
