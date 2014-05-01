@@ -88,7 +88,7 @@ var initMap=function(){
 
 var loadData=function(map,id){
   var url=id? '/geo/map.json?id='+id:'/geo/map.json'
-  console.log(url);
+  // console.log(url);
   map.data.loadGeoJson(url);
   map.data.setStyle({
     strokeColor:'red',
