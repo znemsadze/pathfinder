@@ -3,7 +3,7 @@ class Geo::Point
   include Mongoid::Document
   field :lat, type: Float
   field :lng, type: Float
-  has_and_belongs_to_many :paths, class_name:'Geo::Path'
+  field :path_ids, type: Array
 
-  def single?; self.paths.count<2 end
+  #def single?; path_ids.uniq.size==1 end
 end
