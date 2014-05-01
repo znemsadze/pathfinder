@@ -4,6 +4,4 @@ class Geo::Point
   field :lat, type: Float
   field :lng, type: Float
   field :path_ids, type: Array
-
-  #def single?; path_ids.uniq.size==1 end
 end
