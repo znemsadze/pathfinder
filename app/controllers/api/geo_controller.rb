@@ -8,7 +8,7 @@ class Api::GeoController < ApiController
 
   def edit_path
     # parameter_points=params[:points].map{|k,v| v}
-    # path=Geo::Path.find(params[:id])
+    path=Geo::Path.find(params[:id])
     # points=path.ordered_points ; path.point_ids=[] ; path.save
     # parameter_points.each_with_index do |p,i|
     #   lat=p['lat'].to_f ; lng=p['lng'].to_f
@@ -20,6 +20,6 @@ class Api::GeoController < ApiController
     #   end
     #   path.points<<point
     # end
-    # render json:{id:path.id.to_s}
+    render json:{id:path.id.to_s}
   end
 end
