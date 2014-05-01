@@ -22,16 +22,15 @@ class Geo::Path
     end
   end
 
-  def self.subindecies(a1,a2)
-    [a1.index(a2.first), a1.index(a2.last)]
-  end
-
   def self.join(path1,path2)
     points1=path1.point_ids
     points2=path2.point_ids
     intr=points1&points2
     size=intr.size
     if size>0
+      # analyze intersection: only 2 paths allowed
+      return if intr.select{|x| Geo::Point.find(x).path_ids.count>2}.any?
+
       # first path analization
       i11,i12=subindecies(points1,intr)
       if points1[i11..i12]==intr
@@ -75,4 +74,6 @@ class Geo::Path
       path1
     end
   end
+
+  def self.subindecies(a1,a2); [a1.index(a2.first), a1.index(a2.last)] end
 end
