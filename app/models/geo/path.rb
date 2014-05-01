@@ -2,7 +2,6 @@
 class Geo::Path
   include Mongoid::Document
   has_and_belongs_to_many :points, class_name: 'Geo::Point'
-  field :polygon, type: Mongoid::Boolean, default: false
 
   # Returns ordered array of points in this path.
   # This method should be used for index-sensitive operations.
@@ -21,8 +20,10 @@ class Geo::Path
   # Join path continuations.
   def join_continuations
     self.reload ; points=self.ordered_points
-    a1=join_at(points[+0]) ; a2=join_at(points[-1])
-    self.reload ; self.polygon=(self.point_ids.first == self.point_ids.last) ; self.save
+    p1=points[+0] ; p2=points[-1]
+    unless p1.paths==p2.paths
+      join_at(p1) ; join_at(p2) ; self.save
+    end
   end
 
   protected

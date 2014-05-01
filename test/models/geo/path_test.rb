@@ -123,7 +123,7 @@ class Geo::PathTest < ActiveSupport::TestCase
 
     ps=[p1,p2,p3,p4,p5,p6]
 
-    # path1[4,1,2,3] + path2[3,4] -> path1[] + path2[4,3,2,1,4]
+    # path1[4,1,2,3] + path2[3,4] -> should not join!
     path1=Geo::Path.create ; path2=Geo::Path.create
     path1.points<<p4 ; path1.points<<p1 ; path1.points<<p2 ; path1.points<<p3
     path2.points<<p3 ; path2.points<<p4
@@ -132,11 +132,9 @@ class Geo::PathTest < ActiveSupport::TestCase
     assert_equal 0, path1.ordered_points.count
     assert_equal 5, path2.ordered_points.count
     path2.reload
-    assert path2.polygon
 
-
-
-    assert_equal [p4,p3,p2,p1,p4].map{|x|x.id.to_s}, path2.ordered_points.map{|x|x.id.to_s}
+    assert_equal 4, path2.ordered_points.count
+    assert_equal [p4,p1,p2,p3].map{|x|x.id.to_s}, path2.ordered_points.map{|x|x.id.to_s}
     assert_equal 2, Geo::Path.count
 
 # puts '---------------------'
