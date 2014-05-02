@@ -5,7 +5,7 @@ class Geo::Path
 
   def self.new_path(points)
     if points.uniq.size>1
-      path=Geo::Path.create(point_ids: [])
+      path=Geo::Path.create
       points.each do |p|
         if p.is_a?(Geo::Point)
           point=p
@@ -106,13 +106,13 @@ class Geo::Path
           p.path_ids.push(new_path.id)
           unless p==point
             p.path_ids.delete(pathid)
-            self.point_ids.delete(p.id)
+            path.point_ids.delete(p.id)
           end
           p.save
           new_path.point_ids<<p.id
         end
         new_path.save
-        self.save
+        path.save
       end
     end
   end

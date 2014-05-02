@@ -21,8 +21,7 @@ class Geo::PathTest < ActiveSupport::TestCase
       assert_equal path.point_ids.size, result.size
       result.each_with_index do |corrdinates,j|
         point=Geo::Point.find(path.point_ids[j])
-        assert_equal point.lat, corrdinates[0]
-        assert_equal point.lng, corrdinates[1]
+        assert_equal corrdinates, [point.lat,point.lng], "#{j} corrdinates"
       end
     end
   end
@@ -38,5 +37,8 @@ class Geo::PathTest < ActiveSupport::TestCase
 
     # (p1,p2,p3) + (p2,p4) -> (p1,p2),(p2,p4),(p2,p3)
     splitjoin_testing([[p1,p2,p3],[p2,p4]],[[p1,p2],[p2,p4],[p2,p3]])
+
+    # (p2,p4) + (p1,p2,p3) -> (p1,p2),(p2,p4),(p2,p3)
+    splitjoin_testing([[p2,p4],[p1,p2,p3]],[[p2,p4],[p1,p2],[p2,p3]])
   end
 end
