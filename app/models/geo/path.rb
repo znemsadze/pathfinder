@@ -24,7 +24,7 @@ class Geo::Path
     end
   end
 
-  def points; Geo::Point.in(id:self.point_ids) end
+  def points; self.point_ids.map{|x|Geo::Point.find(x)} end
 
   def edge?(p)
     id=p.is_a?(Geo::Point) ? p.id : p
@@ -70,10 +70,10 @@ class Geo::Path
       addtoend=false
       points2=path2.points
       idx=path2.point_ids.index(point.id)
-      if points2[idx-1].path_ids.contains?(path1.id)
-        new_points=points2[0..idx]
-      else
+      if points2[idx-1].path_ids.include?(path1.id)
         new_points=points2[idx..-1].reverse
+      else
+        new_points=points2[0..idx]
       end
     end
 
