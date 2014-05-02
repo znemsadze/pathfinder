@@ -7,8 +7,7 @@ class Geo::Path
     if points.uniq.size>1
       path=Geo::Path.create
       points.each do |p|
-        if p.is_a?(Geo::Point)
-          point=p
+        if p.is_a?(Geo::Point) then point=p
         else
           if p.is_a?(Hash) then lat,lng=p['lat'],p['lng']
           else lat,lng=p[0],p[1] end
@@ -21,6 +20,32 @@ class Geo::Path
       path.point_ids=path.point_ids.uniq
       path.save
       path
+    end
+  end
+
+  def update_points(points)
+    if points.uniq.size>1
+      existing_points=self.points ; self.point_ids=[]
+      points.each_with_index do |p,i|
+        if p.is_a?(Geo::Point)
+          point=p
+        else
+          if p.is_a?(Hash) then lat,lng=p['lat'],p['lng']
+          else lat,lng=p[0],p[1]
+          end
+          if i==0 or i==points.length-1
+            point=(i==0 ? existing_points.first : existing_points.last)
+            point.lat=lat
+            point.lng=lng
+          else
+            point=Geo::Point.where(lat: lat,lng: lng).first || Geo::Point.new(lat: lat,lng: lng, path_ids: [])
+          end
+        end
+        point.path_ids.push(self.id) unless point.path_ids.include?(self.id)
+        self.point_ids.push(point.id)
+        point.save
+      end
+      self.save
     end
   end
 
