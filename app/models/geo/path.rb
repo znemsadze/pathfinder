@@ -55,18 +55,23 @@ class Geo::Path
     edge2=path2.edge?(point)
 
     if edge2 # second path's edge
-      addtoend=true
       if not edge1
+        addtoend=true
         new_points=[point]
       else
-        idx=path2.point_ids.index(point.id)
-        if idx==0
-          new_points=path2.points
+        idx1=path1.point_ids.index(point.id)
+        idx2=path2.point_ids.index(point.id)
+        if idx1==0 and idx2==0
+          addtoend=true ; new_points=[point]
+        elsif idx1==0
+          addtoend=false ; new_points=path2.points
+        elsif idx2==0
+          addtoend=true ; new_points=path2.points
         else
-          new_points=path2.points.reverse
+          addtoend=false; new_points=path2.points.reverse
         end
       end
-    else # we are in the middle of the secon path
+    else # we are in the middle of the second path
       addtoend=false
       points2=path2.points
       idx=path2.point_ids.index(point.id)
