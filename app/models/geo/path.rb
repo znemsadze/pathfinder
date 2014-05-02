@@ -36,10 +36,10 @@ class Geo::Path
       point=Geo::Point.find(point_id)
       route_count=point.route_count
       if point.path_count>1
-        if route_count==2
+        if route_count<=2
           joinat(point)
         else
-          # TODO:
+          splitat(point)
         end
       end
     end
@@ -93,5 +93,27 @@ class Geo::Path
       path1.point_ids=(new_points.map{|x| x.id}+path1.point_ids).uniq
     end
     path1.save
+  end
+
+  def splitat(point)
+    point.path_ids.each do |pathid|
+      path=Geo::Path.find(pathid)
+      unless path.edge?(point)
+        points=path.points
+        idx=points.index(point)
+        new_path=Geo::Path.create
+        points[idx..-1].each do |p|
+          p.path_ids.push(new_path.id)
+          unless p==point
+            p.path_ids.delete(pathid)
+            self.point_ids.delete(p.id)
+          end
+          p.save
+          new_path.point_ids<<p.id
+        end
+        new_path.save
+        self.save
+      end
+    end
   end
 end
