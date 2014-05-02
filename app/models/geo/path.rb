@@ -87,6 +87,9 @@ class Geo::Path
         idx1=path1.point_ids.index(point.id)
         idx2=path2.point_ids.index(point.id)
         if idx1==0 and idx2==0
+
+#### XXX
+
           addtoend=true ; new_points=[point]
         elsif idx1==0
           addtoend=false ; new_points=path2.points
