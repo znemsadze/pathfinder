@@ -27,7 +27,7 @@ class Geo::Path
   def points; Geo::Point.in(id:self.point_ids) end
 
   def edge?(p)
-    id=p.is_a?(Point) ? p.id : p
+    id=p.is_a?(Geo::Point) ? p.id : p
     point_ids.first==id or point_ids.last==id
   end
 
@@ -50,7 +50,7 @@ class Geo::Path
   def joinat(point)
     # assume route_count == 2
     path1=self
-    path2=Geo::Path.find(point.path_ids.select{|x|x.id!=self.id}.first)
+    path2=Geo::Path.find(point.path_ids.select{|x|x!=self.id}.first)
     edge1=path1.edge?(point)
     edge2=path2.edge?(point)
 
@@ -88,9 +88,9 @@ class Geo::Path
     path2.destroy unless path2.point_ids.any?
 
     if addtoend
-      path1.point_ids=(path1.point_ids+new_points).uniq
+      path1.point_ids=(path1.point_ids+new_points.map{|x| x.id}).uniq
     else
-      path1.point_ids=(new_points+path1.point_ids).uniq
+      path1.point_ids=(new_points.map{|x| x.id}+path1.point_ids).uniq
     end
     path1.save
   end
