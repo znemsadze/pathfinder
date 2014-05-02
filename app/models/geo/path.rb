@@ -68,7 +68,7 @@ class Geo::Path
         elsif idx2==0
           addtoend=true ; new_points=path2.points
         else
-          addtoend=false; new_points=path2.points.reverse
+          addtoend=true; new_points=path2.points.reverse
         end
       end
     else # we are in the middle of the second path
