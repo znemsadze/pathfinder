@@ -143,7 +143,20 @@ class Geo::Path
         end
         new_path.save
         path.save
+        # XXX: delete duplicate paths
+        validate_unique(new_path)
+        validate_unique(path)
       end
+    end
+  end
+
+  def validate_unique(path)
+    if Geo::Path.where(point_ids: path.point_ids).count>1
+      path.points.each do |point|
+        point.path_ids.delete path.id
+        point.save
+      end
+      path.destroy
     end
   end
 end
