@@ -2,7 +2,6 @@
 class Geo::Path
   include Mongoid::Document
   field :point_ids, type: Array, default:[]
-
   def points; Geo::Point.in(id:self.point_ids) end
 
   def self.new_path(points)
@@ -25,59 +24,4 @@ class Geo::Path
       path
     end
   end
-
-  def self.join(path1,path2)
-    points1=path1.point_ids
-    points2=path2.point_ids
-    intr=points1&points2
-    size=intr.size
-    if size>0
-      # analyze intersection: only 2 paths allowed
-      return if intr.select{|x| Geo::Point.find(x).path_ids.count>2}.any?
-
-      # first path analization
-      i11,i12=subindecies(points1,intr)
-      if points1[i11..i12]==intr
-        if i11==0 and i12!=(points1.size-1)
-          points1.reverse! ; intr.reverse!
-          i11,i12=subindecies(points1,intr)
-        end
-      else
-        return
-      end
-
-      # second path analization
-      i21,i22=subindecies(points2,intr)
-      unless points2[i21..i22]==intr
-        points2.reverse!
-        i21,i22=subindecies(points2,intr)
-        return unless points2[i21..i22]==intr
-      else
-        if i22==(points2.size-1) and i21!=0
-          points2.reverse!
-          i21,i22=subindecies(points2,intr)
-        end
-      end
-
-      # final checking results
-      has_first=(i11==0 or i21==0)
-      has_last=(i12==points1.size-1 or i22==points2.size-1)
-      return unless has_first and has_last
-
-      # joining after everything checked
-      new_points=(points1+points2).uniq
-      new_points.each do |p|
-        point=Geo::Point.find(p)
-        point.path_ids.delete(path2.id)
-        point.path_ids.push(path1.id) unless point.path_ids.include?(path1.id)
-        point.save
-      end
-      path1.point_ids=new_points
-      path1.save
-      path2.destroy
-      path1
-    end
-  end
-
-  def self.subindecies(a1,a2); [a1.index(a2.first), a1.index(a2.last)] end
 end
