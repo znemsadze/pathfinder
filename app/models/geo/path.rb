@@ -87,10 +87,12 @@ class Geo::Path
         idx1=path1.point_ids.index(point.id)
         idx2=path2.point_ids.index(point.id)
         if idx1==0 and idx2==0
-
-#### XXX
-
-          addtoend=true ; new_points=[point]
+          canjoin=path2.points.select{|x|x.path_ids.include?(path1.id)}.size==1 #only this point
+          if canjoin
+            addtoend=false ; new_points=path2.points.reverse
+          else
+            return
+          end
         elsif idx1==0
           addtoend=false ; new_points=path2.points
         elsif idx2==0
