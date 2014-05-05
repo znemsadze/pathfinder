@@ -126,7 +126,7 @@ var initMap=function(){
 
 var loadData=function(map,id){
   var url=id? '/geo/map.json?id='+id:'/geo/map.json'
-  console.log(url);
+  // console.log(url);
   map.data.loadGeoJson(url);
   map.data.setStyle({
     strokeColor:'red',
@@ -141,13 +141,11 @@ var resetMap=function(map){
 
 var copyFeatureToPath=function(feature,path){
   var g=feature.getGeometry();
-  var ids=feature.getProperty('point_ids').split(',');
   var ary=g.getArray();
   path.getPath().clear();    
   for(var i=0,l=ary.length;i<l;i++){
     var p=ary[i];
     var point=new google.maps.LatLng(p.lat(),p.lng());
-    point.id=ids[i];
     path.getPath().push(point);
   }
 };
