@@ -56,5 +56,8 @@ class Geo::PathTest < ActiveSupport::TestCase
 
     # (p1,p2,p3,p4) + (p5,p2,p4,p6) -> (p1,p2),(p5,p2),(p2,p3),(p3,p4),(p3,p6)   
     splitjoin_testing([[p1,p2,p3,p4],[p5,p2,p3,p6]],[[p1,p2],[p5,p2],[p2,p3],[p3,p4],[p3,p6]])
+
+    # (p1,p2,p3,p4) + (p1,p4) -> (p1,p2,p3,p4) + (p1,p4)
+    splitjoin_testing([[p1,p2,p3,p4],[p1,p4]],[[p1,p2,p3,p4],[p1,p4]])    
   end
 end
