@@ -101,23 +101,24 @@ var initMap=function(){
   };
 
   var btnSavePath=ui.button.actionButton('გზის შენახვა', function(){
-    var path=drawHandle.getPath();
-    var id=path.id;
+    var path=drawHandle.getPath()
+      , id=path.id
+      , resp
+      ;
     pauseEditing();
     if(id){
-      var resp=api.editPath(id,path,function(data){
+      resp=api.editPath(id,path,function(data){
         loadData(map,data.id);
         console.log(data);
         resumeEditing();
       });
-      if(!resp){ resumeEditing(); }
     } else {
-      var resp=api.newPath(path, function(data){
+      resp=api.newPath(path, function(data){
         loadData(map,data.id);
         resumeEditing();
       });
-      if(!resp){ resumeEditing(); }
     }
+    if(!resp){ resumeEditing(); }
   });
   toolbarElement.appendChild(btnSavePath);
 
@@ -187,9 +188,9 @@ exports.drawPath=function(map){
     icon: {
       path: google.maps.SymbolPath.CIRCLE,
       fillOpacity: 0,
-      strokeOpacity: 1.0,
+      strokeOpacity: 1,
       strokeColor: '#FF0000',
-      strokeWeight: 1, 
+      strokeWeight: 1,
       scale: 5, //pixels
     }
   });

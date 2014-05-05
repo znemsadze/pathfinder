@@ -49,9 +49,9 @@ exports.drawPath=function(map){
     icon: {
       path: google.maps.SymbolPath.CIRCLE,
       fillOpacity: 0,
-      strokeOpacity: 1.0,
+      strokeOpacity: 1,
       strokeColor: '#FF0000',
-      strokeWeight: 1, 
+      strokeWeight: 1,
       scale: 5, //pixels
     }
   });

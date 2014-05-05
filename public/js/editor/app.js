@@ -63,23 +63,24 @@ var initMap=function(){
   };
 
   var btnSavePath=ui.button.actionButton('გზის შენახვა', function(){
-    var path=drawHandle.getPath();
-    var id=path.id;
+    var path=drawHandle.getPath()
+      , id=path.id
+      , resp
+      ;
     pauseEditing();
     if(id){
-      var resp=api.editPath(id,path,function(data){
+      resp=api.editPath(id,path,function(data){
         loadData(map,data.id);
         console.log(data);
         resumeEditing();
       });
-      if(!resp){ resumeEditing(); }
     } else {
-      var resp=api.newPath(path, function(data){
+      resp=api.newPath(path, function(data){
         loadData(map,data.id);
         resumeEditing();
       });
-      if(!resp){ resumeEditing(); }
     }
+    if(!resp){ resumeEditing(); }
   });
   toolbarElement.appendChild(btnSavePath);
 
