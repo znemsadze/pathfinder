@@ -55,6 +55,7 @@ var initMap=function(){
     btnSavePath.setWaiting(true);
     drawHandle.setPaused(true);
   };
+
   var resumeEditing=function(data){
     btnSavePath.setWaiting(false);
     drawHandle.setPaused(false);

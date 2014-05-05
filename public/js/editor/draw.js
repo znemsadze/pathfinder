@@ -32,24 +32,28 @@ var closestPointTo=function(feature,point){
 };
 
 exports.drawPath=function(map){
+  var paused=false
+    , featureId=undefined
+    ;
+
   var path=new google.maps.Polyline({
     map:map,
     geodesic:true,
-    strokeColor:'#FF0000',
+    strokeColor:'#0000FF',
     strokeOpacity:1.0,
     strokeWeight:1,
     editable:true,
   });
-  var paused=false
-    , featureId=undefined
-    ;
-  var featureCircle=new google.maps.Circle({
-    strokeColor: '#FF0000',
-    strokeOpacity: 0.8,
-    strokeWeight: 1,
-    fillColor: '#FF0000',
-    fillOpacity: 0.35,
-    radius: 50,
+
+  var marker = new google.maps.Marker({
+    icon: {
+      path: google.maps.SymbolPath.CIRCLE,
+      fillOpacity: 0,
+      strokeOpacity: 1.0,
+      strokeColor: '#FF0000',
+      strokeWeight: 1, 
+      scale: 5, //pixels
+    }
   });
 
   google.maps.event.addListener(map, 'click', function(evt){
@@ -67,23 +71,23 @@ exports.drawPath=function(map){
   map.data.addListener('click', function(evt) {
     if(!paused){
       var closestPoint=closestPointTo(evt.feature,evt.latLng);
-      closestPoint.featureId=evt.feature.getId();
+      //closestPoint.featureId=evt.feature.getId();
       path.getPath().push(closestPoint);
     }
   });
 
   map.data.addListener('mouseover', function(evt) {
     map.data.overrideStyle(evt.feature,{strokeWeight:10,strokeColor:'green'});
-    featureCircle.setMap(map);
+    marker.setMap(map);
   });
 
   map.data.addListener('mouseout', function(evt) {
     map.data.revertStyle();
-    featureCircle.setMap(null);
+    marker.setMap(null);
   });
 
   map.data.addListener('mousemove', function(evt){
-    featureCircle.setCenter(closestPointTo(evt.feature,evt.latLng));
+    marker.setPosition(closestPointTo(evt.feature,evt.latLng));
   });
 
   map.data.addListener('dblclick', function(evt) {
@@ -95,9 +99,18 @@ exports.drawPath=function(map){
   });
 
   return {
-    getPath: function(){ var p=path.getPath(); p.id=featureId; return p; },
-    restartEdit: function(){ path.getPath().clear(); featureId=undefined; },
-    setPaused: function(val){ paused=val; },
+    getPath: function(){
+      var p=path.getPath();
+      p.id=featureId;
+      return p;
+    },
+    restartEdit: function(){
+      path.getPath().clear();
+      featureId=undefined;
+    },
+    setPaused: function(val){
+      paused=val;
+    },
     endEdit: function() {
       resetMap(map);
       path.setMap(null);
