@@ -45,6 +45,7 @@ Pathfinder::Application.routes.draw do
     scope '/geo', controller: 'geo' do
       post '/new_path',  action: 'new_path',  as: 'new_path'
       post '/edit_path', action: 'edit_path', as: 'edit_path'
+      post '/delete_path', action: 'delete_path', as: 'delete_path'
     end
   end
 

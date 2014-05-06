@@ -14,4 +14,10 @@ class Api::GeoController < ApiController
     path.splitjoin
     render json:{id:path.id.to_s}
   end
+
+  def delete_path
+    path=Geo::Path.find(params[:id])
+    path.destroy
+    render text:'ok'
+  end
 end
