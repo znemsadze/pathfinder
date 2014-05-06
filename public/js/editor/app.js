@@ -82,7 +82,12 @@ var initMap=function(){
     }
     if(!resp){ resumeEditing(); }
   });
+  var btcCancelEdit=ui.button.actionButton('გაუქმება', function(){
+    drawHandle.cancelEdit();
+  });
+
   toolbarElement.appendChild(btnSavePath);
+  toolbarElement.appendChild(btcCancelEdit);
 
   // draw path
   var drawHandle=draw.drawPath(map);

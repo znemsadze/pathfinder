@@ -5,7 +5,7 @@ var resetMap=function(map){
 var copyFeatureToPath=function(feature,path){
   var g=feature.getGeometry();
   var ary=g.getArray();
-  path.getPath().clear();    
+  path.getPath().clear();
   for(var i=0,l=ary.length;i<l;i++){
     var p=ary[i];
     var point=new google.maps.LatLng(p.lat(),p.lng());
@@ -113,6 +113,12 @@ exports.drawPath=function(map){
     },
     setPaused: function(val){
       paused=val;
+    },
+    cancelEdit: function(){
+      if (currentFeature){
+        map.data.add(currentFeature);
+      }
+      this.restartEdit();
     },
     endEdit: function() {
       resetMap(map);
