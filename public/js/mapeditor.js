@@ -119,12 +119,16 @@ var initMap=function(){
       });
     }
     if(!resp){ resumeEditing(); }
-  });
+  }, {type: 'success'});
+  var btnDeletePath=ui.button.actionButton('გზის წაშლა',function(){
+    // TODO: send path to the server
+  }, {type: 'danger'});
   var btcCancelEdit=ui.button.actionButton('გაუქმება', function(){
     drawHandle.cancelEdit();
   });
 
   toolbarElement.appendChild(btnSavePath);
+  toolbarElement.appendChild(btnDeletePath);
   toolbarElement.appendChild(btcCancelEdit);
 
   // draw path
@@ -284,8 +288,6 @@ var btnClassNames=function(opts){
   if(opts.type===false){ classNames=[]; }  
   else {
     opts.type=opts.type||'default';
-    // var size=opts.size=='small'?'btn-xs':'btn-sm';
-    // classNames=['btn','btn-'+opts.type,size];
     classNames=['btn','btn-sm','btn-'+opts.type]
   }
   return classNames;

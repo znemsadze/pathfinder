@@ -81,12 +81,16 @@ var initMap=function(){
       });
     }
     if(!resp){ resumeEditing(); }
-  });
+  }, {type: 'success'});
+  var btnDeletePath=ui.button.actionButton('გზის წაშლა',function(){
+    // TODO: send path to the server
+  }, {type: 'danger'});
   var btcCancelEdit=ui.button.actionButton('გაუქმება', function(){
     drawHandle.cancelEdit();
   });
 
   toolbarElement.appendChild(btnSavePath);
+  toolbarElement.appendChild(btnDeletePath);
   toolbarElement.appendChild(btcCancelEdit);
 
   // draw path
