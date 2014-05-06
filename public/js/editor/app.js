@@ -1,19 +1,19 @@
-var draw=require('./draw')
-  , ui=require('./ui')
+var ui=require('./ui')
   , api=require('./api')
   ;
 
-var mapElement;
-var sidebarElement;
-var toolbarElement;
-var apikey;
-var defaultCenterLat;
-var defaultCenterLng;
-var defaultZoom;
-var map;
+var mapElement
+  , sidebarElement
+  , toolbarElement
+  , apikey
+  , defaultCenterLat
+  , defaultCenterLng
+  , defaultZoom
+  , map
+  ;
 
 /**
- * This function is used to start the application.
+ * Entry point for the application.
  */
 exports.start=function(opts){
   sidebarElement=document.getElementById((opts&&opts.sidebarid)||'sidebar');
@@ -48,62 +48,11 @@ var initMap=function(){
     mapTypeId: google.maps.MapTypeId.TERRAIN
   };
   map=new google.maps.Map(mapElement, mapOptions);
-
   loadData(map);
-
-  var pauseEditing=function() {
-    btnSavePath.setWaiting(true);
-    drawHandle.setPaused(true);
-  };
-
-  var resumeEditing=function(data){
-    btnSavePath.setWaiting(false);
-    drawHandle.setPaused(false);
-    drawHandle.restartEdit();
-  };
-
-  var btnSavePath=ui.button.actionButton('გზის შენახვა', function(){
-    var path=drawHandle.getPath()
-      , id=path.id
-      , resp
-      ;
-    pauseEditing();
-    if(id){
-      resp=api.editPath(id,path,function(data){
-        if(data.id){ loadData(map,data.id); }
-        resumeEditing();
-      });
-    } else {
-      resp=api.newPath(path, function(data){
-        if(data.id){ loadData(map,data.id); }
-        resumeEditing();
-      });
-    }
-    if(!resp){ resumeEditing(); }
-  }, {type: 'success'});
-  var btnDeletePath=ui.button.actionButton('გზის წაშლა',function(){
-    var path=drawHandle.getPath(), id=path.id;
-    if (id){
-      resp=api.deletePath(id,function(data){
-        drawHandle.restartEdit();
-      });
-    }
-  }, {type: 'danger'});
-  var btcCancelEdit=ui.button.actionButton('გაუქმება', function(){
-    drawHandle.cancelEdit();
-  });
-
-  toolbarElement.appendChild(btnSavePath);
-  toolbarElement.appendChild(btnDeletePath);
-  toolbarElement.appendChild(btcCancelEdit);
-
-  // draw path
-  var drawHandle=draw.drawPath(map);
 };
 
 var loadData=function(map,id){
   var url=id? '/geo/map.json?id='+id:'/geo/map.json'
-  // console.log(url);
   map.data.loadGeoJson(url);
   map.data.setStyle({
     strokeColor:'red',

@@ -49,22 +49,22 @@ exports.deletePath=function(id,callback){
   return true;
 };
 },{}],2:[function(require,module,exports){
-var draw=require('./draw')
-  , ui=require('./ui')
+var ui=require('./ui')
   , api=require('./api')
   ;
 
-var mapElement;
-var sidebarElement;
-var toolbarElement;
-var apikey;
-var defaultCenterLat;
-var defaultCenterLng;
-var defaultZoom;
-var map;
+var mapElement
+  , sidebarElement
+  , toolbarElement
+  , apikey
+  , defaultCenterLat
+  , defaultCenterLng
+  , defaultZoom
+  , map
+  ;
 
 /**
- * This function is used to start the application.
+ * Entry point for the application.
  */
 exports.start=function(opts){
   sidebarElement=document.getElementById((opts&&opts.sidebarid)||'sidebar');
@@ -99,62 +99,11 @@ var initMap=function(){
     mapTypeId: google.maps.MapTypeId.TERRAIN
   };
   map=new google.maps.Map(mapElement, mapOptions);
-
   loadData(map);
-
-  var pauseEditing=function() {
-    btnSavePath.setWaiting(true);
-    drawHandle.setPaused(true);
-  };
-
-  var resumeEditing=function(data){
-    btnSavePath.setWaiting(false);
-    drawHandle.setPaused(false);
-    drawHandle.restartEdit();
-  };
-
-  var btnSavePath=ui.button.actionButton('გზის შენახვა', function(){
-    var path=drawHandle.getPath()
-      , id=path.id
-      , resp
-      ;
-    pauseEditing();
-    if(id){
-      resp=api.editPath(id,path,function(data){
-        if(data.id){ loadData(map,data.id); }
-        resumeEditing();
-      });
-    } else {
-      resp=api.newPath(path, function(data){
-        if(data.id){ loadData(map,data.id); }
-        resumeEditing();
-      });
-    }
-    if(!resp){ resumeEditing(); }
-  }, {type: 'success'});
-  var btnDeletePath=ui.button.actionButton('გზის წაშლა',function(){
-    var path=drawHandle.getPath(), id=path.id;
-    if (id){
-      resp=api.deletePath(id,function(data){
-        drawHandle.restartEdit();
-      });
-    }
-  }, {type: 'danger'});
-  var btcCancelEdit=ui.button.actionButton('გაუქმება', function(){
-    drawHandle.cancelEdit();
-  });
-
-  toolbarElement.appendChild(btnSavePath);
-  toolbarElement.appendChild(btnDeletePath);
-  toolbarElement.appendChild(btcCancelEdit);
-
-  // draw path
-  var drawHandle=draw.drawPath(map);
 };
 
 var loadData=function(map,id){
   var url=id? '/geo/map.json?id='+id:'/geo/map.json'
-  // console.log(url);
   map.data.loadGeoJson(url);
   map.data.setStyle({
     strokeColor:'red',
@@ -162,141 +111,11 @@ var loadData=function(map,id){
     strokeOpacity:0.5,
   });
 };
-},{"./api":1,"./draw":3,"./ui":7}],3:[function(require,module,exports){
-var resetMap=function(map){
-  google.maps.event.clearInstanceListeners(map);
-};
-
-var copyFeatureToPath=function(feature,path){
-  var g=feature.getGeometry();
-  var ary=g.getArray();
-  path.getPath().clear();
-  for(var i=0,l=ary.length;i<l;i++){
-    var p=ary[i];
-    var point=new google.maps.LatLng(p.lat(),p.lng());
-    path.getPath().push(point);
-  }
-};
-
-var closestPointTo=function(feature,point){
-  var minDistance
-    , minPoint
-    ;
-  var g=feature.getGeometry();
-  var ary=g.getArray();
-  for(var i=0,l=ary.length;i<l;i++){
-    var p=ary[i];
-    var x=new google.maps.LatLng(p.lat(),p.lng());
-    var distance=google.maps.geometry.spherical.computeDistanceBetween(p,point);
-    if(!minDistance || distance<minDistance){
-      minDistance=distance;
-      minPoint=p;
-    }
-  }
-  return minPoint;
-};
-
-exports.drawPath=function(map){
-  var paused=false
-    , currentFeature=undefined
-    , path=new google.maps.Polyline({
-        map:map,
-        geodesic:true,
-        strokeColor:'#0000FF',
-        strokeOpacity:1.0,
-        strokeWeight:1,
-        editable:true,
-      })
-    , marker = new google.maps.Marker({
-        icon: {
-          path: google.maps.SymbolPath.CIRCLE,
-          fillOpacity: 0,
-          strokeOpacity: 1,
-          strokeColor: '#FF0000',
-          strokeWeight: 1,
-          scale: 5, //pixels
-        }
-      })
-    ;
-
-  google.maps.event.addListener(map, 'click', function(evt){
-    if(!paused){
-      path.getPath().push(evt.latLng);
-    }
-  });
-
-  google.maps.event.addListener(path, 'dblclick', function(evt){
-    if(!paused){
-      if(typeof evt.vertex==='number'){
-        path.getPath().removeAt(evt.vertex,1);
-      }
-    }
-  });
-
-  map.data.addListener('click', function(evt) {
-    if(!paused){
-      var closestPoint=closestPointTo(evt.feature,evt.latLng);
-      path.getPath().push(closestPoint);
-    }
-  });
-
-  map.data.addListener('mouseover', function(evt) {
-    map.data.overrideStyle(evt.feature,{strokeWeight:10,strokeColor:'green'});
-    marker.setMap(map);
-  });
-
-  map.data.addListener('mouseout', function(evt) {
-    map.data.revertStyle();
-    marker.setMap(null);
-  });
-
-  map.data.addListener('mousemove', function(evt){
-    marker.setPosition(closestPointTo(evt.feature,evt.latLng));
-  });
-
-  map.data.addListener('dblclick', function(evt) {
-    if (currentFeature){
-      map.data.add(currentFeature);
-    }
-    currentFeature=evt.feature;
-    copyFeatureToPath(currentFeature,path);
-    map.data.remove(currentFeature);
-    evt.stop();
-  });
-
-  return {
-    getPath: function(){
-      var p=path.getPath();
-      if(currentFeature){
-        p.id=currentFeature.getId();
-      }
-      return p;
-    },
-    restartEdit: function(){
-      path.getPath().clear();
-      path.getPath().id=undefined;
-      currentFeature=undefined;
-    },
-    setPaused: function(val){
-      paused=val;
-    },
-    cancelEdit: function(){
-      if (currentFeature){
-        map.data.add(currentFeature);
-      }
-      this.restartEdit();
-    },
-    endEdit: function() {
-      resetMap(map);
-      path.setMap(null);
-    },
-  };
-};
-},{}],4:[function(require,module,exports){
+},{"./api":1,"./ui":6}],3:[function(require,module,exports){
 var app=require('./app');
 
 app.start();
-},{"./app":2}],5:[function(require,module,exports){
+},{"./app":2}],4:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils')
   ;
@@ -354,7 +173,7 @@ exports.dropdown=function(text,buttons,opts){
   var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":6,"./utils":8}],6:[function(require,module,exports){
+},{"./html":5,"./utils":7}],5:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -448,13 +267,13 @@ exports.pageTitle=function(title,tag){
 exports.p=function(text,opts){
   return exports.el('p',opts,text);
 };
-},{"./utils":8}],7:[function(require,module,exports){
+},{"./utils":7}],6:[function(require,module,exports){
 var button=require('./button')
   ;
 
 exports.button=button;
-},{"./button":5}],8:[function(require,module,exports){
+},{"./button":4}],7:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
 exports.fieldValue=function(object,name){ return object&&object[name]; };
-},{}]},{},[4])
+},{}]},{},[3])
