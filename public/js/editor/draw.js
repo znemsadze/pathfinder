@@ -33,31 +33,31 @@ var closestPointTo=function(feature,point){
 
 exports.drawPath=function(map){
   var paused=false
-    , featureId=undefined
+    , currentFeature=undefined
+    , path=new google.maps.Polyline({
+        map:map,
+        geodesic:true,
+        strokeColor:'#0000FF',
+        strokeOpacity:1.0,
+        strokeWeight:1,
+        editable:true,
+      })
+    , marker = new google.maps.Marker({
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          fillOpacity: 0,
+          strokeOpacity: 1,
+          strokeColor: '#FF0000',
+          strokeWeight: 1,
+          scale: 5, //pixels
+        }
+      })
     ;
 
-  var path=new google.maps.Polyline({
-    map:map,
-    geodesic:true,
-    strokeColor:'#0000FF',
-    strokeOpacity:1.0,
-    strokeWeight:1,
-    editable:true,
-  });
-
-  var marker = new google.maps.Marker({
-    icon: {
-      path: google.maps.SymbolPath.CIRCLE,
-      fillOpacity: 0,
-      strokeOpacity: 1,
-      strokeColor: '#FF0000',
-      strokeWeight: 1,
-      scale: 5, //pixels
-    }
-  });
-
   google.maps.event.addListener(map, 'click', function(evt){
-    if(!paused){ path.getPath().push(evt.latLng); }
+    if(!paused){
+      path.getPath().push(evt.latLng);
+    }
   });
 
   google.maps.event.addListener(path, 'dblclick', function(evt){
@@ -71,7 +71,6 @@ exports.drawPath=function(map){
   map.data.addListener('click', function(evt) {
     if(!paused){
       var closestPoint=closestPointTo(evt.feature,evt.latLng);
-      //closestPoint.featureId=evt.feature.getId();
       path.getPath().push(closestPoint);
     }
   });
@@ -91,22 +90,26 @@ exports.drawPath=function(map){
   });
 
   map.data.addListener('dblclick', function(evt) {
-    var f=evt.feature;
-    featureId=f.getId();
-    copyFeatureToPath(f,path);
-    map.data.remove(f);
+    if (currentFeature){
+      map.data.add(currentFeature);
+    }
+    currentFeature=evt.feature;
+    copyFeatureToPath(currentFeature,path);
+    map.data.remove(currentFeature);
     evt.stop();
   });
 
   return {
     getPath: function(){
       var p=path.getPath();
-      p.id=featureId;
+      if(currentFeature){
+        p.id=currentFeature.getId();
+      }
       return p;
     },
     restartEdit: function(){
       path.getPath().clear();
-      featureId=undefined;
+      currentFeature=undefined;
     },
     setPaused: function(val){
       paused=val;
