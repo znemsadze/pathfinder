@@ -70,13 +70,12 @@ var initMap=function(){
     pauseEditing();
     if(id){
       resp=api.editPath(id,path,function(data){
-        loadData(map,data.id);
-        //console.log(data);
+        if(data.id){ loadData(map,data.id); }
         resumeEditing();
       });
     } else {
       resp=api.newPath(path, function(data){
-        loadData(map,data.id);
+        if(data.id){ loadData(map,data.id); }
         resumeEditing();
       });
     }

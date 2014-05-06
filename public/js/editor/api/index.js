@@ -18,6 +18,8 @@ exports.newPath=function(path,callback){
     var points=pointsFromPath(path);
     $.post(BASE_PATH+'/new_path',{points:points},function(data){
       if(callback){ callback(data); }
+    }).fail(function(err){
+      if(callback){ callback(err); }
     });
     return true;
   }
@@ -29,6 +31,8 @@ exports.editPath=function(id,path,callback){
     var points=pointsFromPath(path);
     $.post(BASE_PATH+'/edit_path',{id:id,points:points},function(data){
       if(callback){ callback(data); }
+    }).fail(function(err){
+      if(callback){ callback(err); }
     });
     return true;
   }
@@ -38,6 +42,8 @@ exports.editPath=function(id,path,callback){
 exports.deletePath=function(id,callback){
   $.post(BASE_PATH+'/delete_path',{id:id},function(data){
     if(callback){ callback(data); }
-  });
+  }).fail(function(err){
+    if(callback){ callback(err); }
+  });;
   return true;
 };
