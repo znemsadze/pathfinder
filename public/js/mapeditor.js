@@ -51,16 +51,14 @@ exports.deletePath=function(id,callback){
 },{}],2:[function(require,module,exports){
 var ui=require('./ui')
   , api=require('./api')
+  , router=require('./router')
+  , pages=require('./pages')
   ;
 
-var mapElement
-  , sidebarElement
-  , toolbarElement
-  , apikey
-  , defaultCenterLat
-  , defaultCenterLng
-  , defaultZoom
-  , map
+var mapElement, sidebarElement, toolbarElement
+  , defaultCenterLat, defaultCenterLng, defaultZoom
+  , apikey, map
+  , app
   ;
 
 /**
@@ -89,7 +87,7 @@ var loadingGoogleMapsAsyncronously=function(){
 
 var onGoogleMapLoaded=function(){
   initMap();
-  
+  initRouter();
 };
 
 var initMap=function(){
@@ -99,10 +97,10 @@ var initMap=function(){
     mapTypeId: google.maps.MapTypeId.TERRAIN
   };
   map=new google.maps.Map(mapElement, mapOptions);
-  loadData(map);
+  loadMapData(map);
 };
 
-var loadData=function(map,id){
+var loadMapData=function(map,id){
   var url=id? '/geo/map.json?id='+id:'/geo/map.json'
   map.data.loadGeoJson(url);
   map.data.setStyle({
@@ -111,11 +109,84 @@ var loadData=function(map,id){
     strokeOpacity:0.5,
   });
 };
-},{"./api":1,"./ui":6}],3:[function(require,module,exports){
+
+// router
+
+var initRouter=function(){
+  // create application
+  app=router.initApplication({map:map,toolbar:toolbarElement,sidebar:sidebarElement});
+
+  // adding pages to the application
+  app.addPage('root', pages.home());
+
+  // start with root page
+  app.openPage('root');
+};
+},{"./api":1,"./pages":5,"./router":6,"./ui":9}],3:[function(require,module,exports){
 var app=require('./app');
 
 app.start();
 },{"./app":2}],4:[function(require,module,exports){
+module.exports=function(){
+  return 'start page';
+};
+},{}],5:[function(require,module,exports){
+var home=require('./home')
+  ;
+
+exports.home=home;
+},{"./home":4}],6:[function(require,module,exports){
+var map
+  , sidebar
+  , toolbar
+  , currentPage
+  , pages={}
+  ;
+
+exports.initApplication=function(opts){
+  map=opts.map;
+  toolbar=opts.toolbar;
+  sidebar=opts.sidebar;
+  return {
+    addPage: addPage,
+    openPage: openPage,
+  };
+};
+
+var addPage=function(name,page){
+  pages[name]=page;
+};
+
+var openPage=function(name,params){
+  // exiting currently open page
+  if(currentPage){
+    if(currentPage.onPause){
+      var resp=currentPage.onPause();
+      if(resp===false){ return; }
+    }
+    if(currentPage.onExit){
+      currentPage.onExit();
+    }
+  }
+
+  // clear sidebar
+  sidebar.innerText='';
+
+  // opening new page
+  currentPage=pages[name];
+  if(currentPage){
+    currentPage.params=params;
+    if(currentPage.onEnter){
+      var pageLayout=currentPage.onEnter();
+      sidebad.appendChild(pageLayout);
+    }
+    if(currentPage.onStart){
+      currentPage.onStart();
+    }
+  }
+};
+
+},{}],7:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils')
   ;
@@ -173,7 +244,7 @@ exports.dropdown=function(text,buttons,opts){
   var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":5,"./utils":7}],5:[function(require,module,exports){
+},{"./html":8,"./utils":10}],8:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -267,12 +338,12 @@ exports.pageTitle=function(title,tag){
 exports.p=function(text,opts){
   return exports.el('p',opts,text);
 };
-},{"./utils":7}],6:[function(require,module,exports){
+},{"./utils":10}],9:[function(require,module,exports){
 var button=require('./button')
   ;
 
 exports.button=button;
-},{"./button":4}],7:[function(require,module,exports){
+},{"./button":7}],10:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
 exports.fieldValue=function(object,name){ return object&&object[name]; };

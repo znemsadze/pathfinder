@@ -1,15 +1,13 @@
 var ui=require('./ui')
   , api=require('./api')
+  , router=require('./router')
+  , pages=require('./pages')
   ;
 
-var mapElement
-  , sidebarElement
-  , toolbarElement
-  , apikey
-  , defaultCenterLat
-  , defaultCenterLng
-  , defaultZoom
-  , map
+var mapElement, sidebarElement, toolbarElement
+  , defaultCenterLat, defaultCenterLng, defaultZoom
+  , apikey, map
+  , app
   ;
 
 /**
@@ -38,7 +36,7 @@ var loadingGoogleMapsAsyncronously=function(){
 
 var onGoogleMapLoaded=function(){
   initMap();
-  
+  initRouter();
 };
 
 var initMap=function(){
@@ -48,10 +46,10 @@ var initMap=function(){
     mapTypeId: google.maps.MapTypeId.TERRAIN
   };
   map=new google.maps.Map(mapElement, mapOptions);
-  loadData(map);
+  loadMapData(map);
 };
 
-var loadData=function(map,id){
+var loadMapData=function(map,id){
   var url=id? '/geo/map.json?id='+id:'/geo/map.json'
   map.data.loadGeoJson(url);
   map.data.setStyle({
@@ -59,4 +57,17 @@ var loadData=function(map,id){
     strokeWeight:1,
     strokeOpacity:0.5,
   });
+};
+
+// router
+
+var initRouter=function(){
+  // create application
+  app=router.initApplication({map:map,toolbar:toolbarElement,sidebar:sidebarElement});
+
+  // adding pages to the application
+  app.addPage('root', pages.home());
+
+  // start with root page
+  app.openPage('root');
 };
