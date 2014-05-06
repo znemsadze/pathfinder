@@ -51,6 +51,7 @@ class Geo::Path
   end
 
   def points; self.point_ids.map{|x|Geo::Point.find(x)} end
+  def neighbours; points.map{|x|x.path_ids}.flatten.uniq end
 
   def edge?(p)
     id=p.is_a?(Geo::Point) ? p.id : p

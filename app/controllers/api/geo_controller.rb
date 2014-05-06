@@ -4,7 +4,7 @@ class Api::GeoController < ApiController
     parameter_points=params[:points].map{|k,v| [v['lat'].to_f,v['lng'].to_f]}
     path=Geo::Path.new_path(parameter_points)
     path.splitjoin
-    render json:{id: path.id.to_s}
+    render json:{id:path.neighbours.join(',')}
   end
 
   def edit_path
@@ -12,7 +12,7 @@ class Api::GeoController < ApiController
     path=Geo::Path.find(params[:id])
     path.update_points(parameter_points)
     path.splitjoin
-    render json:{id:path.id.to_s}
+    render json:{id:path.neighbours.join(',')}
   end
 
   def delete_path
