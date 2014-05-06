@@ -128,8 +128,20 @@ var app=require('./app');
 app.start();
 },{"./app":2}],4:[function(require,module,exports){
 module.exports=function(){
-  return 'start page';
+  return {
+    onEnter: function(){
+      console.log('home#onEnter');
+
+      var el=document.createElement('h1');
+      el.setAttribute('class','text-danger');
+      el.textContent='home page';
+
+      return el;
+    },
+  };
 };
+
+
 },{}],5:[function(require,module,exports){
 var home=require('./home')
   ;
@@ -178,7 +190,7 @@ var openPage=function(name,params){
     currentPage.params=params;
     if(currentPage.onEnter){
       var pageLayout=currentPage.onEnter();
-      sidebad.appendChild(pageLayout);
+      sidebar.appendChild(pageLayout);
     }
     if(currentPage.onStart){
       currentPage.onStart();

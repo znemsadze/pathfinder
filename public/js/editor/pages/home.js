@@ -1,3 +1,14 @@
 module.exports=function(){
-  return 'start page';
+  return {
+    onEnter: function(){
+      console.log('home#onEnter');
+
+      var el=document.createElement('h1');
+      el.setAttribute('class','text-danger');
+      el.textContent='home page';
+
+      return el;
+    },
+  };
 };
+

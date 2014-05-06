@@ -40,7 +40,7 @@ var openPage=function(name,params){
     currentPage.params=params;
     if(currentPage.onEnter){
       var pageLayout=currentPage.onEnter();
-      sidebad.appendChild(pageLayout);
+      sidebar.appendChild(pageLayout);
     }
     if(currentPage.onStart){
       currentPage.onStart();
