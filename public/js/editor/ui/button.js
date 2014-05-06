@@ -1,5 +1,6 @@
 var html=require('./html')
-  , utils=require('./utils');
+  , utils=require('./utils')
+  ;
 
 var btnClassNames=function(opts){
   var classNames;

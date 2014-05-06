@@ -16,8 +16,8 @@ var pointsFromPath=function(path){
 exports.newPath=function(path,callback){
   if(path.getLength()>1){
     var points=pointsFromPath(path);
-    $.post(BASE_PATH+'/new_path',{points:points},function(data) {
-      callback(data);
+    $.post(BASE_PATH+'/new_path',{points:points},function(data){
+      if(callback){ callback(data); }
     });
     return true;
   }
@@ -27,10 +27,17 @@ exports.newPath=function(path,callback){
 exports.editPath=function(id,path,callback){
   if(path.getLength()>1){
     var points=pointsFromPath(path);
-    $.post(BASE_PATH+'/edit_path',{id:id,points:points},function(data) {
-      callback(data);
+    $.post(BASE_PATH+'/edit_path',{id:id,points:points},function(data){
+      if(callback){ callback(data); }
     });
     return true;
   }
   return false;
+};
+
+exports.deletePath=function(id,callback){
+  $.post(BASE_PATH+'/delete_path',{id:id},function(data){
+    if(callback){ callback(data); }
+  });
+  return true;
 };

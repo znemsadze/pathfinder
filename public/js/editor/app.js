@@ -83,7 +83,13 @@ var initMap=function(){
     if(!resp){ resumeEditing(); }
   }, {type: 'success'});
   var btnDeletePath=ui.button.actionButton('გზის წაშლა',function(){
-    // TODO: send path to the server
+    var path=drawHandle.getPath(), id=path.id;
+    if (id){
+      resp=api.deletePath(id,function(data){
+        // TODO:
+        console.log(data);
+      });
+    }
   }, {type: 'danger'});
   var btcCancelEdit=ui.button.actionButton('გაუქმება', function(){
     drawHandle.cancelEdit();

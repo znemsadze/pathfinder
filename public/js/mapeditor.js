@@ -17,8 +17,8 @@ var pointsFromPath=function(path){
 exports.newPath=function(path,callback){
   if(path.getLength()>1){
     var points=pointsFromPath(path);
-    $.post(BASE_PATH+'/new_path',{points:points},function(data) {
-      callback(data);
+    $.post(BASE_PATH+'/new_path',{points:points},function(data){
+      if(callback){ callback(data); }
     });
     return true;
   }
@@ -28,12 +28,19 @@ exports.newPath=function(path,callback){
 exports.editPath=function(id,path,callback){
   if(path.getLength()>1){
     var points=pointsFromPath(path);
-    $.post(BASE_PATH+'/edit_path',{id:id,points:points},function(data) {
-      callback(data);
+    $.post(BASE_PATH+'/edit_path',{id:id,points:points},function(data){
+      if(callback){ callback(data); }
     });
     return true;
   }
   return false;
+};
+
+exports.deletePath=function(id,callback){
+  $.post(BASE_PATH+'/delete_path',{id:id},function(data){
+    if(callback){ callback(data); }
+  });
+  return true;
 };
 },{}],2:[function(require,module,exports){
 var draw=require('./draw')
@@ -121,7 +128,13 @@ var initMap=function(){
     if(!resp){ resumeEditing(); }
   }, {type: 'success'});
   var btnDeletePath=ui.button.actionButton('გზის წაშლა',function(){
-    // TODO: send path to the server
+    var path=drawHandle.getPath(), id=path.id;
+    if (id){
+      resp=api.deletePath(id,function(data){
+        // TODO:
+        console.log(data);
+      });
+    }
   }, {type: 'danger'});
   var btcCancelEdit=ui.button.actionButton('გაუქმება', function(){
     drawHandle.cancelEdit();
@@ -280,7 +293,8 @@ var app=require('./app');
 app.start();
 },{"./app":2}],5:[function(require,module,exports){
 var html=require('./html')
-  , utils=require('./utils');
+  , utils=require('./utils')
+  ;
 
 var btnClassNames=function(opts){
   var classNames;
