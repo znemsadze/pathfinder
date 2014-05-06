@@ -71,7 +71,7 @@ var initMap=function(){
     if(id){
       resp=api.editPath(id,path,function(data){
         loadData(map,data.id);
-        console.log(data);
+        //console.log(data);
         resumeEditing();
       });
     } else {

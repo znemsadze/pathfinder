@@ -77,7 +77,7 @@ class Geo::Path
   def joinat(point)
     # assume route_count == 2
     path1=self
-    path2=Geo::Path.find(point.path_ids.select{|x|x!=self.id}.first)
+    path2=Geo::Path.find(point.path_ids.select{|x|x!=self.id}.first) rescue return
     edge1=path1.edge?(point)
     edge2=path2.edge?(point)
 

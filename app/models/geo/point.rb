@@ -11,10 +11,12 @@ class Geo::Point
   def neighbours
     points=[]
     self.path_ids.each do |path_id|
-      path=Geo::Path.find(path_id)
-      idx=path.point_ids.index(self.id)
-      points<<path.point_ids[idx-1] if (idx>0)
-      points<<path.point_ids[idx+1] if (idx<path.point_ids.size-1)
+      path=Geo::Path.find(path_id) rescue nil
+      if path
+        idx=path.point_ids.index(self.id)
+        points<<path.point_ids[idx-1] if (idx>0)
+        points<<path.point_ids[idx+1] if (idx<path.point_ids.size-1)
+      end
     end
     points.uniq
   end
