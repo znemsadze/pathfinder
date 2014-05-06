@@ -86,8 +86,7 @@ var initMap=function(){
     var path=drawHandle.getPath(), id=path.id;
     if (id){
       resp=api.deletePath(id,function(data){
-        // TODO:
-        console.log(data);
+        drawHandle.restartEdit();
       });
     }
   }, {type: 'danger'});

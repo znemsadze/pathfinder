@@ -131,8 +131,7 @@ var initMap=function(){
     var path=drawHandle.getPath(), id=path.id;
     if (id){
       resp=api.deletePath(id,function(data){
-        // TODO:
-        console.log(data);
+        drawHandle.restartEdit();
       });
     }
   }, {type: 'danger'});
@@ -270,6 +269,7 @@ exports.drawPath=function(map){
     },
     restartEdit: function(){
       path.getPath().clear();
+      path.getPath().id=undefined;
       currentFeature=undefined;
     },
     setPaused: function(val){

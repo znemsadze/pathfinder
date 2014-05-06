@@ -109,6 +109,7 @@ exports.drawPath=function(map){
     },
     restartEdit: function(){
       path.getPath().clear();
+      path.getPath().id=undefined;
       currentFeature=undefined;
     },
     setPaused: function(val){
