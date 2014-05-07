@@ -9,11 +9,11 @@ exports.vertical=function(opts){
     , childElements=[]
     ;
 
-  if(opts.parent){ layout=el(opts.parent,'div',{class:'vertical-layout'}); }
-  else { layout=el('div',{class:'vertical-layout'}); }
+  if(opts.parent){ layout=html.el(opts.parent,'div',{class:'vertical-layout'}); }
+  else { layout=html.el('div',{class:'vertical-layout'}); }
 
-  var addToLayout=function(element){
-    var childElement=html.el(layout,'div',child);
+  var addToLayout=function(child){
+    var childElement=html.el(layout,'div',[child]);
     childElements.push(childElement);
   };
 
@@ -25,7 +25,6 @@ exports.vertical=function(opts){
   }
 
   layout.add=addToLayout;
-  // layout.childCount=function(){ return childElement.length; };
 
   return layout;
 };

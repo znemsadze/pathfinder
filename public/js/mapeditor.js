@@ -130,20 +130,23 @@ app.start();
 var ui=require('../ui')
   ;
 
+var titleElement=ui.html.pageTitle('საწყისი');
+
 module.exports=function(){
   return {
     onEnter: function(){
       console.log('home#onEnter');
 
-      var el=document.createElement('h1');
-      el.setAttribute('class','text-danger');
-      el.textContent='home page';
+      var layout=ui.layout.vertical({
+        children: [
+          titleElement,
+        ]
+      });
 
-      return el;
+      return layout;
     },
   };
 };
-
 
 },{"../ui":9}],5:[function(require,module,exports){
 var home=require('./home')
@@ -356,11 +359,14 @@ exports.p=function(text,opts){
 },{"./utils":11}],9:[function(require,module,exports){
 var button=require('./button')
   , layout=require('./layout')
+  , html=require('./html')
   ;
 
+exports.html=html;
 exports.button=button;
 exports.layout=layout;
-},{"./button":7,"./layout":10}],10:[function(require,module,exports){
+
+},{"./button":7,"./html":8,"./layout":10}],10:[function(require,module,exports){
 var html=require('./html')
  ;
 
@@ -372,11 +378,11 @@ exports.vertical=function(opts){
     , childElements=[]
     ;
 
-  if(opts.parent){ layout=el(opts.parent,'div',{class:'vertical-layout'}); }
-  else { layout=el('div',{class:'vertical-layout'}); }
+  if(opts.parent){ layout=html.el(opts.parent,'div',{class:'vertical-layout'}); }
+  else { layout=html.el('div',{class:'vertical-layout'}); }
 
-  var addToLayout=function(element){
-    var childElement=html.el(layout,'div',child);
+  var addToLayout=function(child){
+    var childElement=html.el(layout,'div',[child]);
     childElements.push(childElement);
   };
 
@@ -388,7 +394,6 @@ exports.vertical=function(opts){
   }
 
   layout.add=addToLayout;
-  // layout.childCount=function(){ return childElement.length; };
 
   return layout;
 };

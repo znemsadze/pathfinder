@@ -1,17 +1,20 @@
 var ui=require('../ui')
   ;
 
+var titleElement=ui.html.pageTitle('საწყისი');
+
 module.exports=function(){
   return {
     onEnter: function(){
       console.log('home#onEnter');
 
-      var el=document.createElement('h1');
-      el.setAttribute('class','text-danger');
-      el.textContent='home page';
+      var layout=ui.layout.vertical({
+        children: [
+          titleElement,
+        ]
+      });
 
-      return el;
+      return layout;
     },
   };
 };
-
