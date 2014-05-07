@@ -7,6 +7,8 @@ var map
   , uiInitialized=false
   , titleElement=ui.html.pageTitle('საწყისი')
   , toolbar=ui.button.toolbar([])
+  , pathToolbar=ui.button.toolbar([])
+  , pathInfo=ui.html.p('',{style:'margin:8px 0;'})
   , selectedFeatures=[]
   ;
 
@@ -19,6 +21,7 @@ module.exports=function(){
 
       map=self.map;
       initMap();
+      resetPathInfo();
 
       return layout;
     },
@@ -40,6 +43,8 @@ var initUI=function(self){
     children: [
       titleElement,
       toolbar,
+      pathInfo,
+      pathToolbar,
     ]
   });
 
@@ -53,12 +58,25 @@ var isSelected=function(f){
 var addSelection=function(f){
   map.data.overrideStyle(f,{strokeWeight:5,strokeColor:'#00AA00'});
   selectedFeatures.push(f);
+  resetPathInfo();
 };
 
 var removeSelection=function(f){
   var idx=selectedFeatures.indexOf(f);
   selectedFeatures.splice(idx,1);
   map.data.revertStyle(f);
+  resetPathInfo();
+};
+
+var resetPathInfo=function(){
+  var size=selectedFeatures.length;
+  if(size===0){
+    pathInfo.setHtml('მონიშნეთ გზა მასზე ინფორმაციის მისაღებად.');
+  } else if (size===1){
+    pathInfo.setHtml('მონიშნული გზის სიგძრეა: <code>'+geo.calcFeatureDistance(map,selectedFeatures).toFixed(3)+'</code> კმ');
+  } else {
+    pathInfo.setHtml('მონიშნულია '+size+' გზა, საერთო სიგრძით: <code>'+geo.calcFeatureDistance(map,selectedFeatures).toFixed(3)+'</code> კმ');
+  }
 };
 
 var initMap=function(){

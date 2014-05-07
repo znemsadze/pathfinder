@@ -161,6 +161,27 @@ exports.closestFeaturePoint=function(feature,point){
   }
   return minPoint;
 };
+
+exports.calcFeatureDistance=function(map,feature){
+  if(feature instanceof Array){
+    var fullDistance=0;
+    for(var p=0,q=feature.length;p<q;p++){
+      fullDistance+=exports.calcFeatureDistance(map,feature[p]);
+    }
+    return fullDistance;
+  }
+  var g=feature.getGeometry()
+    , dist=0
+    , ary=g.getArray()
+    , p0=ary[0]
+    ;
+  for(var i=0,l=ary.length;i<l;i++){
+    var p=ary[i];
+    dist+=google.maps.geometry.spherical.computeDistanceBetween(p0,p);
+    p0=p;
+  }
+  return dist/1000;
+};
 },{}],5:[function(require,module,exports){
 var ui=require('../ui')
   , geo=require('./geo')
@@ -171,6 +192,8 @@ var map
   , uiInitialized=false
   , titleElement=ui.html.pageTitle('საწყისი')
   , toolbar=ui.button.toolbar([])
+  , pathToolbar=ui.button.toolbar([])
+  , pathInfo=ui.html.p('',{style:'margin:8px 0;'})
   , selectedFeatures=[]
   ;
 
@@ -183,6 +206,7 @@ module.exports=function(){
 
       map=self.map;
       initMap();
+      resetPathInfo();
 
       return layout;
     },
@@ -204,6 +228,8 @@ var initUI=function(self){
     children: [
       titleElement,
       toolbar,
+      pathInfo,
+      pathToolbar,
     ]
   });
 
@@ -217,12 +243,25 @@ var isSelected=function(f){
 var addSelection=function(f){
   map.data.overrideStyle(f,{strokeWeight:5,strokeColor:'#00AA00'});
   selectedFeatures.push(f);
+  resetPathInfo();
 };
 
 var removeSelection=function(f){
   var idx=selectedFeatures.indexOf(f);
   selectedFeatures.splice(idx,1);
   map.data.revertStyle(f);
+  resetPathInfo();
+};
+
+var resetPathInfo=function(){
+  var size=selectedFeatures.length;
+  if(size===0){
+    pathInfo.setHtml('მონიშნეთ გზა მასზე ინფორმაციის მისაღებად.');
+  } else if (size===1){
+    pathInfo.setHtml('მონიშნული გზის სიგძრეა: <code>'+geo.calcFeatureDistance(map,selectedFeatures).toFixed(3)+'</code> კმ');
+  } else {
+    pathInfo.setHtml('მონიშნულია '+size+' გზა, საერთო სიგრძით: <code>'+geo.calcFeatureDistance(map,selectedFeatures).toFixed(3)+'</code> კმ');
+  }
 };
 
 var initMap=function(){
@@ -590,7 +629,10 @@ exports.pageTitle=function(title,tag){
 };
 
 exports.p=function(text,opts){
-  return exports.el('p',opts||{},text);
+  var p=exports.el('p',opts||{},text);
+  p.setText=function(text){ p.innerText=text; };
+  p.setHtml=function(html){ p.innerHTML=html; }
+  return p; 
 };
 },{"./utils":13}],11:[function(require,module,exports){
 var button=require('./button')

@@ -32,3 +32,24 @@ exports.closestFeaturePoint=function(feature,point){
   }
   return minPoint;
 };
+
+exports.calcFeatureDistance=function(map,feature){
+  if(feature instanceof Array){
+    var fullDistance=0;
+    for(var p=0,q=feature.length;p<q;p++){
+      fullDistance+=exports.calcFeatureDistance(map,feature[p]);
+    }
+    return fullDistance;
+  }
+  var g=feature.getGeometry()
+    , dist=0
+    , ary=g.getArray()
+    , p0=ary[0]
+    ;
+  for(var i=0,l=ary.length;i<l;i++){
+    var p=ary[i];
+    dist+=google.maps.geometry.spherical.computeDistanceBetween(p0,p);
+    p0=p;
+  }
+  return dist/1000;
+};
