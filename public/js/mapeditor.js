@@ -118,11 +118,12 @@ var initRouter=function(){
 
   // adding pages to the application
   app.addPage('root', pages.home());
+  app.addPage('new_path', pages.new_path());
 
   // start with root page
   app.openPage('root');
 };
-},{"./api":1,"./pages":5,"./router":6,"./ui":9}],3:[function(require,module,exports){
+},{"./api":1,"./pages":5,"./router":7,"./ui":10}],3:[function(require,module,exports){
 var app=require('./app');
 
 app.start();
@@ -130,38 +131,90 @@ app.start();
 var ui=require('../ui')
   ;
 
-var titleElement=ui.html.pageTitle('საწყისი');
-var toolbar=ui.button.toolbar([]);
+var layout
+  , uiInitialized=false
+  , titleElement=ui.html.pageTitle('საწყისი')
+  , toolbar=ui.button.toolbar([])
+  ;
 
 module.exports=function(){
   return {
     onEnter: function(){
-      console.log('home#onEnter');
+      var self=this;
 
-      var btnNewPath=ui.button.actionButton('New Path', function(){
-        console.log('open new path page');
-      }, {icon:'plus'});
-
-      toolbar.addButton(btnNewPath);
-
-      var layout=ui.layout.vertical({
-        children: [
-          titleElement,
-          toolbar,
-        ]
-      });
+      if (!uiInitialized){
+        initUI(self);
+      }
 
       return layout;
     },
   };
 };
 
-},{"../ui":9}],5:[function(require,module,exports){
+var initUI=function(self){
+  var btnNewPath=ui.button.actionButton('ახალი გზა', function(){
+    self.openPage('new_path');
+  }, {icon:'plus'});
+
+  toolbar.addButton(btnNewPath);
+
+  layout=ui.layout.vertical({
+    children: [
+      titleElement,
+      toolbar,
+    ]
+  });
+
+  uiInitialized=true;
+};
+},{"../ui":10}],5:[function(require,module,exports){
 var home=require('./home')
+  , new_path=require('./new_path')
   ;
 
 exports.home=home;
-},{"./home":4}],6:[function(require,module,exports){
+exports.new_path=new_path;
+},{"./home":4,"./new_path":6}],6:[function(require,module,exports){
+var ui=require('../ui')
+  ;
+
+var layout
+  , uiInitialized=false
+  , titleElement=ui.html.pageTitle('ახალი გზის დამატება')
+  , toolbar=ui.button.toolbar([])
+  , desriptionElement=ui.html.p('ახალი გზის გასავლებად გამოიყენეთ თქვენი მაუსი. რედაქტირების დასრულების შემდეგ დააჭირეთ შენახვის ღილაკს.',{style:'margin-top:8px;'})
+  ;
+
+module.exports=function(){
+  return {
+    onEnter: function(){
+      var self=this;
+
+      if(!uiInitialized){ initUI(self); }
+
+      return layout;
+    },
+  };
+};
+
+var initUI=function(self){
+  var btnBack=ui.button.actionButton('უკან', function(){
+    self.openPage('root');
+  }, {icon:'arrow-left'});
+
+  toolbar.addButton(btnBack);
+
+  layout=ui.layout.vertical({
+    children: [
+      titleElement,
+      toolbar,
+      desriptionElement,
+    ]
+  });
+
+  uiInitialized=true;
+};
+},{"../ui":10}],7:[function(require,module,exports){
 var map
   , sidebar
   , toolbar
@@ -180,6 +233,7 @@ exports.initApplication=function(opts){
 };
 
 var addPage=function(name,page){
+  page.openPage=openPage;
   pages[name]=page;
 };
 
@@ -212,7 +266,7 @@ var openPage=function(name,params){
   }
 };
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils')
   ;
@@ -282,7 +336,7 @@ exports.dropdown=function(text,buttons,opts){
   var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":8,"./utils":11}],8:[function(require,module,exports){
+},{"./html":9,"./utils":12}],9:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -374,9 +428,9 @@ exports.pageTitle=function(title,tag){
 };
 
 exports.p=function(text,opts){
-  return exports.el('p',opts,text);
+  return exports.el('p',opts||{},text);
 };
-},{"./utils":11}],9:[function(require,module,exports){
+},{"./utils":12}],10:[function(require,module,exports){
 var button=require('./button')
   , layout=require('./layout')
   , html=require('./html')
@@ -386,7 +440,7 @@ exports.html=html;
 exports.button=button;
 exports.layout=layout;
 
-},{"./button":7,"./html":8,"./layout":10}],10:[function(require,module,exports){
+},{"./button":8,"./html":9,"./layout":11}],11:[function(require,module,exports){
 var html=require('./html')
  ;
 
@@ -418,7 +472,7 @@ exports.vertical=function(opts){
   return layout;
 };
 
-},{"./html":8}],11:[function(require,module,exports){
+},{"./html":9}],12:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
 exports.fieldValue=function(object,name){ return object&&object[name]; };

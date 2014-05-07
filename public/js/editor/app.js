@@ -67,6 +67,7 @@ var initRouter=function(){
 
   // adding pages to the application
   app.addPage('root', pages.home());
+  app.addPage('new_path', pages.new_path());
 
   // start with root page
   app.openPage('root');

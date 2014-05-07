@@ -89,5 +89,5 @@ exports.pageTitle=function(title,tag){
 };
 
 exports.p=function(text,opts){
-  return exports.el('p',opts,text);
+  return exports.el('p',opts||{},text);
 };

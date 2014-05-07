@@ -16,6 +16,7 @@ exports.initApplication=function(opts){
 };
 
 var addPage=function(name,page){
+  page.openPage=openPage;
   pages[name]=page;
 };
 
