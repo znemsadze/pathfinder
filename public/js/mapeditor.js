@@ -127,6 +127,9 @@ var app=require('./app');
 
 app.start();
 },{"./app":2}],4:[function(require,module,exports){
+var ui=require('../ui')
+  ;
+
 module.exports=function(){
   return {
     onEnter: function(){
@@ -142,7 +145,7 @@ module.exports=function(){
 };
 
 
-},{}],5:[function(require,module,exports){
+},{"../ui":9}],5:[function(require,module,exports){
 var home=require('./home')
   ;
 
@@ -256,7 +259,7 @@ exports.dropdown=function(text,buttons,opts){
   var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":8,"./utils":10}],8:[function(require,module,exports){
+},{"./html":8,"./utils":11}],8:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -350,12 +353,47 @@ exports.pageTitle=function(title,tag){
 exports.p=function(text,opts){
   return exports.el('p',opts,text);
 };
-},{"./utils":10}],9:[function(require,module,exports){
+},{"./utils":11}],9:[function(require,module,exports){
 var button=require('./button')
+  , layout=require('./layout')
   ;
 
 exports.button=button;
-},{"./button":7}],10:[function(require,module,exports){
+exports.layout=layout;
+},{"./button":7,"./layout":10}],10:[function(require,module,exports){
+var html=require('./html')
+ ;
+
+/**
+ * Vertical layout.
+ */
+exports.vertical=function(opts){
+  var layout
+    , childElements=[]
+    ;
+
+  if(opts.parent){ layout=el(opts.parent,'div',{class:'vertical-layout'}); }
+  else { layout=el('div',{class:'vertical-layout'}); }
+
+  var addToLayout=function(element){
+    var childElement=html.el(layout,'div',child);
+    childElements.push(childElement);
+  };
+
+  if(opts.children){
+    var children=opts.children;
+    for(var i=0, l=children.length; i<l; i++){
+      addToLayout(children[i]);
+    }
+  }
+
+  layout.add=addToLayout;
+  // layout.childCount=function(){ return childElement.length; };
+
+  return layout;
+};
+
+},{"./html":8}],11:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
 exports.fieldValue=function(object,name){ return object&&object[name]; };

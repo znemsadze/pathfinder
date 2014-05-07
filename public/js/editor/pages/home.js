@@ -1,3 +1,6 @@
+var ui=require('../ui')
+  ;
+
 module.exports=function(){
   return {
     onEnter: function(){
