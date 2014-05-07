@@ -7,9 +7,11 @@ var map
   , uiInitialized=false
   , titleElement=ui.html.pageTitle('საწყისი')
   , toolbar=ui.button.toolbar([])
-  , pathToolbar=ui.button.toolbar([])
   , pathInfo=ui.html.p('',{style:'margin:8px 0;'})
   , selectedFeatures=[]
+  , pathToolbar=ui.button.toolbar([])
+  , btnDeletePath
+  , btnEditPath
   ;
 
 module.exports=function(){
@@ -36,6 +38,14 @@ var initUI=function(self){
   var btnNewPath=ui.button.actionButton('ახალი გზა', function(){
     self.openPage('new_path');
   }, {icon:'plus'});
+
+  btnDeletePath=ui.button.actionButton('წაშლა', function(){
+    alert('implement!');
+  }, {icon: 'trash-o', type: 'danger'});
+
+  btnEditPath=ui.button.actionButton('შეცვლა', function(){
+    // TODO: 
+  }, {icon: 'pencil', type: 'warning'});
 
   toolbar.addButton(btnNewPath);
 
@@ -69,13 +79,17 @@ var removeSelection=function(f){
 };
 
 var resetPathInfo=function(){
+  pathToolbar.clearButtons();
   var size=selectedFeatures.length;
   if(size===0){
     pathInfo.setHtml('მონიშნეთ გზა მასზე ინფორმაციის მისაღებად.');
   } else if (size===1){
     pathInfo.setHtml('მონიშნული გზის სიგძრეა: <code>'+geo.calcFeatureDistance(map,selectedFeatures).toFixed(3)+'</code> კმ');
+    pathToolbar.addButton(btnEditPath);
+    pathToolbar.addButton(btnDeletePath);
   } else {
-    pathInfo.setHtml('მონიშნულია '+size+' გზა, საერთო სიგრძით: <code>'+geo.calcFeatureDistance(map,selectedFeatures).toFixed(3)+'</code> კმ');
+    pathInfo.setHtml('მონიშნულია <strong>'+size+'</strong> გზა, საერთო სიგრძით: <code>'+geo.calcFeatureDistance(map,selectedFeatures).toFixed(3)+'</code> კმ');
+    pathToolbar.addButton(btnDeletePath);
   }
 };
 

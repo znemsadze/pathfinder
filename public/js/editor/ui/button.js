@@ -56,6 +56,9 @@ exports.toolbar=function(buttons){
   toolbar.addButton=function(button){
     toolbar.appendChild(button);
   };
+  toolbar.clearButtons=function(){
+    toolbar.innerHTML='';
+  };
   return toolbar;
 };
 
