@@ -50,6 +50,11 @@ class Geo::Path
     end
   end
 
+  def destroy_path
+    self.points.each{|x| x.path_ids.delete(self.id); x.save }
+    self.destroy
+  end
+
   def points; self.point_ids.map{|x|Geo::Point.find(x)} end
   def neighbours; points.map{|x|x.path_ids}.flatten.uniq end
 

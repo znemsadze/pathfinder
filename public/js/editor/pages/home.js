@@ -57,7 +57,7 @@ var initUI=function(self){
   }, {icon: 'trash-o', type: 'danger'});
 
   btnEditPath=ui.button.actionButton('შეცვლა', function(){
-    // TODO: 
+    // TODO
   }, {icon: 'pencil', type: 'warning'});
 
   toolbar.addButton(btnNewPath);
