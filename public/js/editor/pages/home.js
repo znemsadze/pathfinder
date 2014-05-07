@@ -1,4 +1,5 @@
 var ui=require('../ui')
+  , api=require('../api')
   , geo=require('./geo')
   ;
 
@@ -12,12 +13,14 @@ var map
   , pathToolbar=ui.button.toolbar([])
   , btnDeletePath
   , btnEditPath
+  , notLocked
   ;
 
 module.exports=function(){
   return {
     onEnter: function(){
       var self=this;
+      notLocked=true;
 
       if (!uiInitialized){ initUI(self); }
 
@@ -36,11 +39,21 @@ module.exports=function(){
 
 var initUI=function(self){
   var btnNewPath=ui.button.actionButton('ახალი გზა', function(){
-    self.openPage('new_path');
+    if(notLocked){ self.openPage('new_path'); }
   }, {icon:'plus'});
 
   btnDeletePath=ui.button.actionButton('წაშლა', function(){
-    alert('implement!');
+    if(notLocked){
+      var ids=selectedFeatures.map(function(x){return x.getId();}).join(',');
+      notLocked=api.deletePath(ids,function(){
+        for(var i=0,l=selectedFeatures.length;i<l;i++){
+          map.data.remove(selectedFeatures[i]);
+        }
+        selectedFeatures=[];
+        resetPathInfo();
+        notLocked=true;
+      });
+    }
   }, {icon: 'trash-o', type: 'danger'});
 
   btnEditPath=ui.button.actionButton('შეცვლა', function(){
