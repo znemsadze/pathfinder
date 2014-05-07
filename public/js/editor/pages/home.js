@@ -39,7 +39,9 @@ module.exports=function(){
 
 var initUI=function(self){
   var btnNewPath=ui.button.actionButton('ახალი გზა', function(){
-    if(notLocked){ self.openPage('new_path'); }
+    if(notLocked){
+      self.openPage('new_path');
+    }
   }, {icon:'plus'});
 
   btnDeletePath=ui.button.actionButton('წაშლა', function(){
@@ -57,7 +59,9 @@ var initUI=function(self){
   }, {icon: 'trash-o', type: 'danger'});
 
   btnEditPath=ui.button.actionButton('შეცვლა', function(){
-    // TODO
+    if(notLocked){
+      self.openPage('edit_path', {feature: selectedFeatures[0]});
+    }
   }, {icon: 'pencil', type: 'warning'});
 
   toolbar.addButton(btnNewPath);
