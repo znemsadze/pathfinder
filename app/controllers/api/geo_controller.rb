@@ -16,9 +16,8 @@ class Api::GeoController < ApiController
   end
 
   def delete_path
-    path=Geo::Path.find(params[:id])
-    path.points.each{|x| x.path_ids.delete(path.id); x.save }
-    path.destroy
+    path=Geo::Path.in(id: params[:id].split(','))
+    path.each{|x| x.destroy_path }
     render text:'ok'
   end
 end

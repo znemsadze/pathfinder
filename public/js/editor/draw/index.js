@@ -1,3 +1,6 @@
+
+// TEST file -- should be changed!
+
 var resetMap=function(map){
   google.maps.event.clearInstanceListeners(map);
 };

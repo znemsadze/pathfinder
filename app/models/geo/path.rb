@@ -50,6 +50,11 @@ class Geo::Path
     end
   end
 
+  def destroy_path
+    self.points.each{|x| x.path_ids.delete(self.id); x.save }
+    self.destroy
+  end
+
   def points; self.point_ids.map{|x|Geo::Point.find(x)} end
   def neighbours; points.map{|x|x.path_ids}.flatten.uniq end
 
@@ -64,7 +69,7 @@ class Geo::Path
       route_count=point.route_count
       if point.path_count>1
         if route_count<=2
-          joinat(point)
+          #joinat(point)
         else
           splitat(point)
         end

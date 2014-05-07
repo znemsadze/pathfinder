@@ -1,19 +1,17 @@
-var draw=require('./draw')
-  , ui=require('./ui')
+var ui=require('./ui')
   , api=require('./api')
+  , router=require('./router')
+  , pages=require('./pages')
   ;
 
-var mapElement;
-var sidebarElement;
-var toolbarElement;
-var apikey;
-var defaultCenterLat;
-var defaultCenterLng;
-var defaultZoom;
-var map;
+var mapElement, sidebarElement, toolbarElement
+  , defaultCenterLat, defaultCenterLng, defaultZoom
+  , apikey, map
+  , app
+  ;
 
 /**
- * This function is used to start the application.
+ * Entry point for the application.
  */
 exports.start=function(opts){
   sidebarElement=document.getElementById((opts&&opts.sidebarid)||'sidebar');
@@ -38,7 +36,7 @@ var loadingGoogleMapsAsyncronously=function(){
 
 var onGoogleMapLoaded=function(){
   initMap();
-  
+  initRouter();
 };
 
 var initMap=function(){
@@ -48,66 +46,29 @@ var initMap=function(){
     mapTypeId: google.maps.MapTypeId.TERRAIN
   };
   map=new google.maps.Map(mapElement, mapOptions);
-
-  loadData(map);
-
-  var pauseEditing=function() {
-    btnSavePath.setWaiting(true);
-    drawHandle.setPaused(true);
+  map.loadData=function(id){
+    var url=id ? '/geo/map.json?id='+id : '/geo/map.json';
+    map.data.loadGeoJson(url);
   };
-
-  var resumeEditing=function(data){
-    btnSavePath.setWaiting(false);
-    drawHandle.setPaused(false);
-    drawHandle.restartEdit();
-  };
-
-  var btnSavePath=ui.button.actionButton('გზის შენახვა', function(){
-    var path=drawHandle.getPath()
-      , id=path.id
-      , resp
-      ;
-    pauseEditing();
-    if(id){
-      resp=api.editPath(id,path,function(data){
-        if(data.id){ loadData(map,data.id); }
-        resumeEditing();
-      });
-    } else {
-      resp=api.newPath(path, function(data){
-        if(data.id){ loadData(map,data.id); }
-        resumeEditing();
-      });
-    }
-    if(!resp){ resumeEditing(); }
-  }, {type: 'success'});
-  var btnDeletePath=ui.button.actionButton('გზის წაშლა',function(){
-    var path=drawHandle.getPath(), id=path.id;
-    if (id){
-      resp=api.deletePath(id,function(data){
-        drawHandle.restartEdit();
-      });
-    }
-  }, {type: 'danger'});
-  var btcCancelEdit=ui.button.actionButton('გაუქმება', function(){
-    drawHandle.cancelEdit();
-  });
-
-  toolbarElement.appendChild(btnSavePath);
-  toolbarElement.appendChild(btnDeletePath);
-  toolbarElement.appendChild(btcCancelEdit);
-
-  // draw path
-  var drawHandle=draw.drawPath(map);
-};
-
-var loadData=function(map,id){
-  var url=id? '/geo/map.json?id='+id:'/geo/map.json'
-  // console.log(url);
-  map.data.loadGeoJson(url);
   map.data.setStyle({
-    strokeColor:'red',
+    strokeColor:'#FF0000',
     strokeWeight:1,
     strokeOpacity:0.5,
   });
+  map.loadData();
+};
+
+// router
+
+var initRouter=function(){
+  // create application
+  app=router.initApplication({map:map,toolbar:toolbarElement,sidebar:sidebarElement});
+
+  // adding pages to the application
+  app.addPage('root', pages.home());
+  app.addPage('new_path', pages.new_path());
+  app.addPage('edit_path', pages.edit_path());
+
+  // start with root page
+  app.openPage('root');
 };
