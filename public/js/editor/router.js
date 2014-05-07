@@ -37,6 +37,9 @@ var openPage=function(name,params){
 
   // opening new page
   currentPage=pages[name];
+
+  currentPage.map=map;
+
   if(currentPage){
     currentPage.params=params;
     if(currentPage.onEnter){

@@ -97,17 +97,16 @@ var initMap=function(){
     mapTypeId: google.maps.MapTypeId.TERRAIN
   };
   map=new google.maps.Map(mapElement, mapOptions);
-  loadMapData(map);
-};
-
-var loadMapData=function(map,id){
-  var url=id? '/geo/map.json?id='+id:'/geo/map.json'
-  map.data.loadGeoJson(url);
+  map.loadData=function(id){
+    var url=id ? '/geo/map.json?id='+id : '/geo/map.json';
+    map.data.loadGeoJson(url);
+  };
   map.data.setStyle({
-    strokeColor:'red',
+    strokeColor:'#FF0000',
     strokeWeight:1,
     strokeOpacity:0.5,
   });
+  map.loadData();
 };
 
 // router
@@ -123,11 +122,44 @@ var initRouter=function(){
   // start with root page
   app.openPage('root');
 };
-},{"./api":1,"./pages":5,"./router":7,"./ui":10}],3:[function(require,module,exports){
+},{"./api":1,"./pages":6,"./router":8,"./ui":11}],3:[function(require,module,exports){
 var app=require('./app');
 
 app.start();
 },{"./app":2}],4:[function(require,module,exports){
+exports.resetMap=function(map){
+  google.maps.event.clearInstanceListeners(map);
+};
+
+exports.copyFeatureToPath=function(feature,path){
+  var g=feature.getGeometry();
+  var ary=g.getArray();
+  path.getPath().clear();
+  for(var i=0,l=ary.length;i<l;i++){
+    var p=ary[i];
+    var point=new google.maps.LatLng(p.lat(),p.lng());
+    path.getPath().push(point);
+  }
+};
+
+exports.closestFeaturePoint=function(feature,point){
+  var minDistance
+    , minPoint
+    ;
+  var g=feature.getGeometry();
+  var ary=g.getArray();
+  for(var i=0,l=ary.length;i<l;i++){
+    var p=ary[i];
+    var x=new google.maps.LatLng(p.lat(),p.lng());
+    var distance=google.maps.geometry.spherical.computeDistanceBetween(p,point);
+    if(!minDistance || distance<minDistance){
+      minDistance=distance;
+      minPoint=p;
+    }
+  }
+  return minPoint;
+};
+},{}],5:[function(require,module,exports){
 var ui=require('../ui')
   ;
 
@@ -167,22 +199,27 @@ var initUI=function(self){
 
   uiInitialized=true;
 };
-},{"../ui":10}],5:[function(require,module,exports){
+},{"../ui":11}],6:[function(require,module,exports){
 var home=require('./home')
   , new_path=require('./new_path')
   ;
 
 exports.home=home;
 exports.new_path=new_path;
-},{"./home":4,"./new_path":6}],6:[function(require,module,exports){
+},{"./home":5,"./new_path":7}],7:[function(require,module,exports){
 var ui=require('../ui')
+  , api=require('../api')
+  , geo=require('./geo')
   ;
 
-var layout
+var map
+  , layout
   , uiInitialized=false
   , titleElement=ui.html.pageTitle('ახალი გზის დამატება')
   , toolbar=ui.button.toolbar([])
   , desriptionElement=ui.html.p('ახალი გზის გასავლებად გამოიყენეთ თქვენი მაუსი. რედაქტირების დასრულების შემდეგ დააჭირეთ შენახვის ღილაკს.',{style:'margin-top:8px;'})
+  , canEdit=true
+  , path
   ;
 
 module.exports=function(){
@@ -191,6 +228,10 @@ module.exports=function(){
       var self=this;
 
       if(!uiInitialized){ initUI(self); }
+
+      canEdit=true;
+      map=self.map;
+      initMap();
 
       return layout;
     },
@@ -202,7 +243,17 @@ var initUI=function(self){
     self.openPage('root');
   }, {icon:'arrow-left'});
 
+  var btnSave=ui.button.actionButton('გზის შენახვა', function(){
+    canEdit=!api.newPath(path.getPath(), function(data){
+      path.setMap(null);
+      map.loadData(data.id);
+      //self.openPage('root');
+      //console.log(data);
+    });
+  }, {icon:'save', type:'success'});
+
   toolbar.addButton(btnBack);
+  toolbar.addButton(btnSave);
 
   layout=ui.layout.vertical({
     children: [
@@ -214,7 +265,44 @@ var initUI=function(self){
 
   uiInitialized=true;
 };
-},{"../ui":10}],7:[function(require,module,exports){
+
+var initMap=function(){
+  path=new google.maps.Polyline({
+    map:map,
+    geodesic:true,
+    strokeColor:'#0000FF',
+    strokeOpacity:1.0,
+    strokeWeight:1,
+    editable:true,
+  });
+
+  // , marker = new google.maps.Marker({
+  //   icon: {
+  //     path: google.maps.SymbolPath.CIRCLE,
+  //     fillOpacity: 0,
+  //     strokeOpacity: 1,
+  //     strokeColor: '#FF0000',
+  //     strokeWeight: 1,
+  //     scale: 10, //pixels
+  //   }
+  // })
+  // ;
+
+  google.maps.event.addListener(map, 'click', function(evt){
+    if(canEdit){
+      path.getPath().push(evt.latLng);
+    }
+  });
+
+  google.maps.event.addListener(path, 'dblclick', function(evt){
+    if(canEdit){
+      if(typeof evt.vertex==='number'){
+        path.getPath().removeAt(evt.vertex,1);
+      }
+    }
+  });
+};
+},{"../api":1,"../ui":11,"./geo":4}],8:[function(require,module,exports){
 var map
   , sidebar
   , toolbar
@@ -254,6 +342,9 @@ var openPage=function(name,params){
 
   // opening new page
   currentPage=pages[name];
+
+  currentPage.map=map;
+
   if(currentPage){
     currentPage.params=params;
     if(currentPage.onEnter){
@@ -266,7 +357,7 @@ var openPage=function(name,params){
   }
 };
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils')
   ;
@@ -336,7 +427,7 @@ exports.dropdown=function(text,buttons,opts){
   var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":9,"./utils":12}],9:[function(require,module,exports){
+},{"./html":10,"./utils":13}],10:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -430,7 +521,7 @@ exports.pageTitle=function(title,tag){
 exports.p=function(text,opts){
   return exports.el('p',opts||{},text);
 };
-},{"./utils":12}],10:[function(require,module,exports){
+},{"./utils":13}],11:[function(require,module,exports){
 var button=require('./button')
   , layout=require('./layout')
   , html=require('./html')
@@ -440,7 +531,7 @@ exports.html=html;
 exports.button=button;
 exports.layout=layout;
 
-},{"./button":8,"./html":9,"./layout":11}],11:[function(require,module,exports){
+},{"./button":9,"./html":10,"./layout":12}],12:[function(require,module,exports){
 var html=require('./html')
  ;
 
@@ -472,7 +563,7 @@ exports.vertical=function(opts){
   return layout;
 };
 
-},{"./html":9}],12:[function(require,module,exports){
+},{"./html":10}],13:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
 exports.fieldValue=function(object,name){ return object&&object[name]; };

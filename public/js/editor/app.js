@@ -46,17 +46,16 @@ var initMap=function(){
     mapTypeId: google.maps.MapTypeId.TERRAIN
   };
   map=new google.maps.Map(mapElement, mapOptions);
-  loadMapData(map);
-};
-
-var loadMapData=function(map,id){
-  var url=id? '/geo/map.json?id='+id:'/geo/map.json'
-  map.data.loadGeoJson(url);
+  map.loadData=function(id){
+    var url=id ? '/geo/map.json?id='+id : '/geo/map.json';
+    map.data.loadGeoJson(url);
+  };
   map.data.setStyle({
-    strokeColor:'red',
+    strokeColor:'#FF0000',
     strokeWeight:1,
     strokeOpacity:0.5,
   });
+  map.loadData();
 };
 
 // router
