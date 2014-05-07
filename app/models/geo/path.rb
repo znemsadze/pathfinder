@@ -69,7 +69,7 @@ class Geo::Path
       route_count=point.route_count
       if point.path_count>1
         if route_count<=2
-          joinat(point)
+          #joinat(point)
         else
           splitat(point)
         end

@@ -10,6 +10,7 @@ var map
   , uiInitialized=false
   , toolbar=ui.button.toolbar([])
   , titleElement=ui.html.pageTitle('გზის შეცვლა')
+  , desriptionElement=ui.html.p('გზის შესაცვლელად გამოიყენეთ თქვენი მაუსი.',{style:'margin-top:8px;'})
   , notLocked
   ;
 
@@ -55,6 +56,7 @@ var initUI=function(self){
     children: [
       titleElement,
       toolbar,
+      desriptionElement,
     ]
   });
 
