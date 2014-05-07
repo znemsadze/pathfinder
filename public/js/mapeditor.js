@@ -131,15 +131,23 @@ var ui=require('../ui')
   ;
 
 var titleElement=ui.html.pageTitle('საწყისი');
+var toolbar=ui.button.toolbar([]);
 
 module.exports=function(){
   return {
     onEnter: function(){
       console.log('home#onEnter');
 
+      var btnNewPath=ui.button.actionButton('New Path', function(){
+        console.log('open new path page');
+      }, {icon:'plus'});
+
+      toolbar.addButton(btnNewPath);
+
       var layout=ui.layout.vertical({
         children: [
           titleElement,
+          toolbar,
         ]
       });
 
@@ -212,8 +220,9 @@ var html=require('./html')
 var btnClassNames=function(opts){
   var classNames;
   opts=opts || {};
-  if(opts.type===false){ classNames=[]; }  
-  else {
+  if(opts.type===false){
+    classNames=[]; // plain link!
+  } else {
     opts.type=opts.type||'default';
     classNames=['btn','btn-sm','btn-'+opts.type]
   }
@@ -227,7 +236,14 @@ var ensureClassName=function(el,className,classNamePresent){
 };
 
 exports.actionButton=function(text,action_f,opts){
-  var el= html.el('a',{href:'#',class:btnClassNames(opts)},text);
+  var children = utils.isArray(text) ? text : [text];
+
+  if(opts.icon){
+    var icon=html.el('i',{class:'fa fa-'+opts.icon});
+    children=[icon,' '].concat(children);
+  }
+
+  var el= html.el('a',{href:'#',class:btnClassNames(opts)},children);
   var enabled=opts&&opts.enabled;
   if(enabled!==false&&enabled!==true){ enabled=true; }
   el.onclick=function(){
@@ -251,7 +267,11 @@ exports.buttonGroup=function(buttons){
 };
 
 exports.toolbar=function(buttons){
-  return html.el('div',{class:'btn-toolbar'},buttons);
+  var toolbar=html.el('div',{class:'btn-toolbar'},buttons)
+  toolbar.addButton=function(button){
+    toolbar.appendChild(button);
+  };
+  return toolbar;
 };
 
 exports.dropdown=function(text,buttons,opts){
