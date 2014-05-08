@@ -319,8 +319,14 @@ var ui=require('../ui')
   , geo=require('./geo')
   ;
 
+var MAIN=0    // main page
+  , CONFIRM=1 // confirm page
+  ;
+
 var map
   , layout
+  , page1
+  , page2
   , uiInitialized=false
   , titleElement=ui.html.pageTitle('საწყისი')
   , toolbar=ui.button.toolbar([])
@@ -330,6 +336,9 @@ var map
   , btnDeletePath
   , btnEditPath
   , notLocked
+  , confirmTitle=ui.html.p('საჭიროა დასტური',{class: 'page-header', style: 'font-weight:bold; font-size: 1.2em;'})
+  , confirmText=ui.html.p('დაადასტურეთ, რომ ნამდვილად გინდათ მონიშნული გზ(ებ)ის წაშლა?',{class: 'text-danger'})
+  , toolbar2=ui.button.toolbar([])
   ;
 
 module.exports=function(){
@@ -338,11 +347,16 @@ module.exports=function(){
       var self=this;
       notLocked=true;
 
-      if (!uiInitialized){ initUI(self); }
+      if (!uiInitialized){
+        initUI(self);
+        layout=ui.layout.card({children: [page1,page2]});
+      }
 
       map=self.map;
       initMap();
       resetPathInfo();
+
+      openPage(MAIN);
 
       return layout;
     },
@@ -354,6 +368,13 @@ module.exports=function(){
 };
 
 var initUI=function(self){
+  initPage1(self);
+  initPage2(self);
+  uiInitialized=true;
+};
+
+
+var initPage1=function(self){
   var btnNewPath=ui.button.actionButton('ახალი გზა', function(){
     if(notLocked){
       self.openPage('new_path');
@@ -362,15 +383,7 @@ var initUI=function(self){
 
   btnDeletePath=ui.button.actionButton('წაშლა', function(){
     if(notLocked){
-      var ids=selectedFeatures.map(function(x){return x.getId();}).join(',');
-      notLocked=api.deletePath(ids,function(){
-        for(var i=0,l=selectedFeatures.length;i<l;i++){
-          map.data.remove(selectedFeatures[i]);
-        }
-        selectedFeatures=[];
-        resetPathInfo();
-        notLocked=true;
-      });
+      openPage(CONFIRM);
     }
   }, {icon: 'trash-o', type: 'danger'});
 
@@ -382,7 +395,7 @@ var initUI=function(self){
 
   toolbar.addButton(btnNewPath);
 
-  layout=ui.layout.vertical({
+  page1=ui.layout.vertical({
     children: [
       titleElement,
       toolbar,
@@ -390,12 +403,43 @@ var initUI=function(self){
       pathToolbar,
     ]
   });
+};
 
-  uiInitialized=true;
+var initPage2=function(self){
+  var btnCancel=ui.button.actionButton('გაუქმება', function(){
+    openPage(MAIN);
+  });
+
+  var btnConfirm=ui.button.actionButton('ვადასტურებ', function(){
+    var ids=selectedFeatures.map(function(x){return x.getId();}).join(',');
+    notLocked=!api.deletePath(ids,function(){
+      for(var i=0,l=selectedFeatures.length;i<l;i++){
+        map.data.remove(selectedFeatures[i]);
+      }
+      selectedFeatures=[];
+      resetPathInfo();
+      notLocked=true;
+    });
+  },{icon:'warning', type: 'danger'});
+
+  toolbar2.addButton(btnConfirm);
+  toolbar2.addButton(btnCancel);
+
+  page2=ui.layout.vertical({
+    children: [
+      confirmTitle,
+      confirmText,
+      toolbar2
+    ]
+  });
+};
+
+var openPage=function(idx){
+  layout.showAt(idx);
 };
 
 var isSelected=function(f){
-  return selectedFeatures.indexOf(f) !== -1;
+  return selectedFeatures.indexOf(f)!==-1;
 };
 
 var addSelection=function(f){
@@ -424,6 +468,7 @@ var resetPathInfo=function(){
     pathInfo.setHtml('მონიშნულია <strong>'+size+'</strong> გზა, საერთო სიგრძით: <code>'+geo.calcFeatureDistance(map,selectedFeatures).toFixed(3)+'</code> კმ');
     pathToolbar.addButton(btnDeletePath);
   }
+  openPage(MAIN);
 };
 
 var initMap=function(){
@@ -658,7 +703,7 @@ var ensureClassName=function(el,className,classNamePresent){
 exports.actionButton=function(text,action_f,opts){
   var children = utils.isArray(text) ? text : [text];
 
-  if(opts.icon){
+  if(opts&&opts.icon){
     var icon=html.el('i',{class:'fa fa-'+opts.icon});
     children=[icon,' '].concat(children);
   }
@@ -726,12 +771,13 @@ var applyAttribute=function(element,attrName,attrValue){
     // styles
 
     var styles=attrValue.split(';');
+
     for(var i=0,l=styles.length;i<l;i++) {
       var styleInfo=styles[i];
       if(styleInfo && styleInfo.length>0){
         var colonIndex=styleInfo.indexOf(':');
-        var styleName=dashedToCamelized(styleInfo.substring(0,colonIndex));
-        var styleValue=styleInfo.substring(colonIndex+1);
+        var styleName=dashedToCamelized(styleInfo.substring(0,colonIndex)).trim();
+        var styleValue=styleInfo.substring(colonIndex+1).trim();
         element.style[styleName]=styleValue;
       }
     }
@@ -845,6 +891,45 @@ exports.vertical=function(opts){
   return layout;
 };
 
+/**
+ * Card layout.
+ */
+exports.card=function(opts){
+  var layout
+    , childElements=[]
+    , selectedIndex
+    ;
+
+  if(opts.parent){ layout=html.el(opts.parent,'div',{class:'card-layout'}); }
+  else{ layout=html.el('div',{class:'card-layout'}); }
+
+  var addToLayout=function(child){
+    childElements.push(child);
+    if(!selectedIndex){ select(0); }
+  };
+
+  var select=function(idx){
+    if(idx!==selectedIndex) {
+      var oldElement=childElements[selectedIndex];
+      if(oldElement){ layout.removeChild(oldElement); }
+      var newElement=childElements[idx];
+      layout.appendChild(newElement);
+      selectedIndex=idx;
+    }
+  };
+
+  if(opts.children){
+    var children=opts.children;
+    for(var i=0, l=children.length; i<l; i++){
+      addToLayout(children[i]);
+    }
+  }
+
+  layout.add=addToLayout;
+  layout.showAt=select;
+
+  return layout;
+};
 },{"./html":11}],14:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
