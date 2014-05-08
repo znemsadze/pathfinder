@@ -67,72 +67,11 @@ class Geo::Path
     self.point_ids.each do |point_id|
       point=Geo::Point.find(point_id)
       route_count=point.route_count
-      if point.path_count>1
-        if route_count<=2
-          #joinat(point)
-        else
-          splitat(point)
-        end
-      end
+      splitat(point) if (point.path_count>1 and route_count>2)
     end
   end
 
   private
-
-  def joinat(point)
-    # assume route_count == 2
-    path1=self
-    path2=Geo::Path.find(point.path_ids.select{|x|x!=self.id}.first) rescue return
-    edge1=path1.edge?(point)
-    edge2=path2.edge?(point)
-
-    if edge2 # second path's edge
-      if not edge1
-        addtoend=true
-        new_points=[point]
-      else
-        canjoin=path2.points.select{|x|x.path_ids.include?(path1.id)}.size==1 #only this point
-        return unless canjoin
-        idx1=path1.point_ids.index(point.id)
-        idx2=path2.point_ids.index(point.id)
-        if idx1==0 and idx2==0
-          addtoend=false ; new_points=path2.points.reverse
-        elsif idx1==0
-          addtoend=false ; new_points=path2.points
-        elsif idx2==0
-          addtoend=true ; new_points=path2.points
-        else
-          addtoend=true; new_points=path2.points.reverse
-        end
-      end
-    else # we are in the middle of the second path
-      addtoend=false
-      points2=path2.points
-      idx=path2.point_ids.index(point.id)
-      if points2[idx-1].path_ids.include?(path1.id)
-        new_points=points2[idx..-1].reverse
-      else
-        new_points=points2[0..idx]
-      end
-    end
-
-    new_points.each do |point|
-      point.path_ids.delete(path2.id)
-      point.path_ids.push(path1.id) unless point.path_ids.include?(path1.id)
-      point.save
-      path2.point_ids.delete(point.id)
-      path2.save
-    end
-
-    path2.destroy unless path2.point_ids.any?
-
-    if addtoend
-      path1.point_ids=(path1.point_ids+new_points.map{|x| x.id}).uniq
-    else
-      path1.point_ids=(new_points.map{|x| x.id}+path1.point_ids).uniq
-    end
-    path1.save
-  end
 
   def splitat(point)
     point.path_ids.each do |pathid|
@@ -152,7 +91,7 @@ class Geo::Path
         end
         new_path.save
         path.save
-        # XXX: delete duplicate paths
+        # delete duplicate paths
         validate_unique(new_path)
         validate_unique(path)
       end
