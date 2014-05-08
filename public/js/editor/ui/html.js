@@ -18,12 +18,13 @@ var applyAttribute=function(element,attrName,attrValue){
     // styles
 
     var styles=attrValue.split(';');
+
     for(var i=0,l=styles.length;i<l;i++) {
       var styleInfo=styles[i];
       if(styleInfo && styleInfo.length>0){
         var colonIndex=styleInfo.indexOf(':');
-        var styleName=dashedToCamelized(styleInfo.substring(0,colonIndex));
-        var styleValue=styleInfo.substring(colonIndex+1);
+        var styleName=dashedToCamelized(styleInfo.substring(0,colonIndex)).trim();
+        var styleValue=styleInfo.substring(colonIndex+1).trim();
         element.style[styleName]=styleValue;
       }
     }
