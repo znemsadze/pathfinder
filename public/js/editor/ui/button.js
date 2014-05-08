@@ -23,7 +23,7 @@ var ensureClassName=function(el,className,classNamePresent){
 exports.actionButton=function(text,action_f,opts){
   var children = utils.isArray(text) ? text : [text];
 
-  if(opts.icon){
+  if(opts&&opts.icon){
     var icon=html.el('i',{class:'fa fa-'+opts.icon});
     children=[icon,' '].concat(children);
   }
