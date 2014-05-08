@@ -1,3 +1,14 @@
-<div>
-  <p><%=link_to 'რუკა', geo_map_url, data: { no_turbolink: true }%></p>
+<%if current_user%>
+<div class="row">
+  <div class="col-sm-6">
+    <a class="btn btn-default" href="<%=geo_map_url%>" data-no-turbolink>
+      <i class="fa fa-globe"></i>
+      ობიექტების ნახვა და რედაქტირება
+    </a>
+  </div>
 </div>
+<%else%>
+<div class="well">
+  პროგრამაში სამუშაოდ, გაიარეთ <%=link_to 'ავტორიზაცია', login_url%>.
+</div>
+<%end%>
