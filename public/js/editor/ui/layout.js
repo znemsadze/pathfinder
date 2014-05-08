@@ -28,3 +28,43 @@ exports.vertical=function(opts){
 
   return layout;
 };
+
+/**
+ * Card layout.
+ */
+exports.card=function(opts){
+  var layout
+    , childElements=[]
+    , selectedIndex
+    ;
+
+  if(opts.parent){ layout=html.el(opts.parent,'div',{class:'card-layout'}); }
+  else{ layout=html.el('div',{class:'card-layout'}); }
+
+  var addToLayout=function(child){
+    childElements.push(child);
+    if(!selectedIndex){ select(0); }
+  };
+
+  var select=function(idx){
+    if(idx!==selectedIndex) {
+      var oldElement=childElements[selectedIndex];
+      if(oldElement){ layout.removeChild(oldElement); }
+      var newElement=childElements[idx];
+      layout.appendChild(newElement);
+      selectedIndex=idx;
+    }
+  };
+
+  if(opts.children){
+    var children=opts.children;
+    for(var i=0, l=children.length; i<l; i++){
+      addToLayout(children[i]);
+    }
+  }
+
+  layout.add=addToLayout;
+  layout.showAt=select;
+
+  return layout;
+};
