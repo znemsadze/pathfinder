@@ -142,7 +142,6 @@ var map
   , titleElement=ui.html.pageTitle('გზის შეცვლა')
   , desriptionElement=ui.html.p('გზის შესაცვლელად გამოიყენეთ თქვენი მაუსი. რედაქტირების დასრულების შემდეგ დააჭირეთ შენახვის ღილაკს.',{style:'margin-top:8px;'})
   , notLocked
-  , editForm
   ;
 
 module.exports=function(){
@@ -184,8 +183,6 @@ var initUI=function(self){
 
   toolbar.addButton(btnBack);
   toolbar.addButton(btnSave);
-
-  editForm=ui.form();
 
   layout=ui.layout.vertical({
     children: [
@@ -557,10 +554,10 @@ var initUI=function(self){
   toolbar.addButton(btnBack);
   toolbar.addButton(btnSave);
 
-  var roadTypes=[{id: 1, text:'საცალფეხო'},{id:2, text: 'გრუნტის'}];
+  var typeCombo=ui.form.comboField('type', {label: 'გზის სახეობა', collection_url: '/geo/pathtype.json', text_property:'name'});
 
-  form=ui.form.create({},[
-    ui.form.comboField('type',roadTypes, {label: 'გზის სახეობა'})
+  form=ui.form.create({}, [
+    typeCombo,
   ]);
 
   layout=ui.layout.vertical({
@@ -800,19 +797,33 @@ exports.textField=function(name,opts){
   return textField;
 };
 
-exports.comboField=function(name,collection,opts){
+exports.comboField=function(name,opts){
   var _select;
 
   var comboField=labeledField(opts&&opts.label,function(){
     var attributes={class:'form-control'};
     if(opts&&opts.autofocus){ attributes.autofocus=true; }
     _select=html.el('select',attributes);
-    for(var i=0,l=collection.length;i<l;i++){
-      var val=collection[i];
-      html.el(_select,'option',val.text);
-    }
     return _select;
   });
+
+  comboField.setCollection=function(collection){
+    _select.innerHtml='';
+    for(var i=0,l=collection.length;i<l;i++){
+      var val=collection[i];
+      var text=opts&&opts.text_property ? val[opts.text_property] : val.text;
+      var id=opts&&opts.id_property ? val[opts.id_property] : val.id;
+      html.el(_select,'option',{value: id},text);
+    }
+  };
+
+  if(opts&&opts.collection){ comboField.setCollection(opts.collection); }
+  if(opts&&opts.collection_url){
+    $.get(opts.collection_url, function(data){
+      comboField.setCollection(data);
+    });
+  }
+
 
   return comboField;
 };

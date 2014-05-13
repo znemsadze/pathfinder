@@ -12,7 +12,6 @@ var map
   , titleElement=ui.html.pageTitle('გზის შეცვლა')
   , desriptionElement=ui.html.p('გზის შესაცვლელად გამოიყენეთ თქვენი მაუსი. რედაქტირების დასრულების შემდეგ დააჭირეთ შენახვის ღილაკს.',{style:'margin-top:8px;'})
   , notLocked
-  , editForm
   ;
 
 module.exports=function(){
@@ -54,8 +53,6 @@ var initUI=function(self){
 
   toolbar.addButton(btnBack);
   toolbar.addButton(btnSave);
-
-  editForm=ui.form();
 
   layout=ui.layout.vertical({
     children: [

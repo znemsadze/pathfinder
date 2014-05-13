@@ -34,19 +34,33 @@ exports.textField=function(name,opts){
   return textField;
 };
 
-exports.comboField=function(name,collection,opts){
+exports.comboField=function(name,opts){
   var _select;
 
   var comboField=labeledField(opts&&opts.label,function(){
     var attributes={class:'form-control'};
     if(opts&&opts.autofocus){ attributes.autofocus=true; }
     _select=html.el('select',attributes);
-    for(var i=0,l=collection.length;i<l;i++){
-      var val=collection[i];
-      html.el(_select,'option',val.text);
-    }
     return _select;
   });
+
+  comboField.setCollection=function(collection){
+    _select.innerHtml='';
+    for(var i=0,l=collection.length;i<l;i++){
+      var val=collection[i];
+      var text=opts&&opts.text_property ? val[opts.text_property] : val.text;
+      var id=opts&&opts.id_property ? val[opts.id_property] : val.id;
+      html.el(_select,'option',{value: id},text);
+    }
+  };
+
+  if(opts&&opts.collection){ comboField.setCollection(opts.collection); }
+  if(opts&&opts.collection_url){
+    $.get(opts.collection_url, function(data){
+      comboField.setCollection(data);
+    });
+  }
+
 
   return comboField;
 };

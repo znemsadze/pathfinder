@@ -51,10 +51,10 @@ var initUI=function(self){
   toolbar.addButton(btnBack);
   toolbar.addButton(btnSave);
 
-  var roadTypes=[{id: 1, text:'საცალფეხო'},{id:2, text: 'გრუნტის'}];
+  var typeCombo=ui.form.comboField('type', {label: 'გზის სახეობა', collection_url: '/geo/pathtype.json', text_property:'name'});
 
-  form=ui.form.create({},[
-    ui.form.comboField('type',roadTypes, {label: 'გზის სახეობა'})
+  form=ui.form.create({}, [
+    typeCombo,
   ]);
 
   layout=ui.layout.vertical({
