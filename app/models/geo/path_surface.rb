@@ -10,7 +10,7 @@ class Geo::PathSurface
   validates :name, presence: {message: 'ჩაწერეთ დასახელება'}
   validates :type, presence: {message: 'აარჩიეთ გზის სახეობა'}
 
-  def self.numerate
+  def self.numerate(type)
     # offset=0
     # Geo::PathType.ne(order_by: nil).asc(:order_by).each_with_index do |t,idx|
     #   offset=idx+1 ; t.order_by=offset ; t.save
@@ -39,4 +39,6 @@ class Geo::PathSurface
     #   self.save
     # end
   end
+
+  def to_s; "#{self.type.name} > #{self.name}" end
 end

@@ -6,16 +6,16 @@ class Geo::PathSurfacesController < ApplicationController
   end
 
   def new
-    # @title='გზის ახალი სახეობა'
-    # if request.post?
-    #   @type=Geo::PathType.new(type_params)
-    #   if @type.save(user:current_user)
-    #     redirect_to geo_path_types_url, notice: 'სახეობა დამატებულია'
-    #     Geo::PathType.numerate
-    #   end
-    # else
-    #   @type=Geo::PathType.new
-    # end
+    @title='გზის ახალი საფარი'
+    if request.post?
+      @surface=Geo::PathSurface.new(surface_params)
+      if @surface.save(user:current_user)
+        Geo::PathSurface.numerate(@surface.type)
+        redirect_to geo_path_surface_url(id: @surface.id), notice: 'საფარი დამატებულია'
+      end
+    else
+      @surface=Geo::PathSurface.new
+    end
   end
 
   def edit
@@ -65,5 +65,5 @@ class Geo::PathSurfacesController < ApplicationController
   end
 
   private
-  def type_params; params.require(:geo_path_surface).permit(:name, :type_id) end
+  def surface_params; params.require(:geo_path_surface).permit(:name, :type_id) end
 end

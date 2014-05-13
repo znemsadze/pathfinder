@@ -1,0 +1,6 @@
+ka:
+  models:
+    geo_path_surface:
+      name: დასახელება
+      type: გზის სახეობა
+      order_by: '#'
