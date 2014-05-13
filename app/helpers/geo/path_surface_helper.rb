@@ -21,8 +21,10 @@ module Geo::PathSurfaceHelper
       f.edit_action geo_edit_path_surface_url(id:surface.id)
       f.delete_action geo_delete_path_surface_url(id:surface.id)
       f.tab title: 'ძირითადი', icon: '/icons/car.png' do |f|
-        f.text_field 'type', required: true, url: geo_path_type_url(id:surface.type_id)
-        f.text_field 'order_by', required: true, tag: 'strong'
+        f.complex_field required: true, i18n: 'order_by' do |c|
+          c.text_field 'type', after: '&mdash;'.html_safe, url: geo_path_type_url(id:surface.type_id)
+          c.text_field 'order_by', tag: 'strong'
+        end
         f.text_field 'name', required: true
       end
       f.tab title: 'სისტემური', icon: '/icons/traffic-cone.png' do |f|
