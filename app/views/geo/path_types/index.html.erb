@@ -1,6 +1,7 @@
 <%=table_for @types, title:@title, collapsible: true, icon: '/icons/road.png' do |t|
   t.title_action geo_new_path_type_url, label: 'ახალი სახეობა', icon: '/icons/plus.png'
-  t.item_action ->(x){geo_edit_path_type_url(id:x.id)}, icon: '/icons/pencil.png'
+  t.edit_action ->(x){geo_edit_path_type_url(id:x.id)}
+  t.delete_action ->(x){geo_delete_path_type_url(id:x.id)}
   t.text_field 'order_by', tag: 'strong'
   t.text_field 'name', url: ->(x){geo_path_type_url(id:x.id)}
 end%>

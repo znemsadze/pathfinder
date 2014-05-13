@@ -14,6 +14,7 @@ module Geo::PathTypeHelper
   def pathtype_view(type)
     view_for type, title: 'სახეობის თვისება', icon: '/icons/road.png', collapsible: true do |f|
       f.edit_action geo_edit_path_type_url(id:type.id)
+      f.delete_action geo_delete_path_type_url(id:type.id)
       f.tab title: 'ძირითადი', icon: '/icons/road.png' do |f|
         f.text_field 'order_by', required: true, tag: 'strong'
         f.text_field 'name', required: true

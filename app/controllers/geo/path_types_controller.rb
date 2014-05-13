@@ -33,11 +33,21 @@ class Geo::PathTypesController < ApplicationController
     @type=Geo::PathType.find(params[:id])
   end
 
+  def delete
+    type=Geo::PathType.find(params[:id])
+    type.destroy
+    Geo::PathType.numerate
+    redirect_to geo_path_types_url, notice: 'გზის სახეობა წაშლილია'
+  end
+
   protected
   def nav
     @nav=super
     @nav['გზის სახეობები']=geo_path_types_url
     if @type
+      if 'edit'==action_name
+        @nav[@type.name]=geo_path_type_url(id:@type.id)
+      end
       @nav[@title]=nil
     end
   end
