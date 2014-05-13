@@ -46,7 +46,9 @@ var initUI=function(self){
       path.setMap(null);
       map.loadData(data.id);
       self.openPage('root');
+      btnSave.setWaiting(false);
     });
+    btnSave.setWaiting(!notLocked);
   }, {icon:'save', type:'success'});
 
   toolbar.addButton(btnBack);
