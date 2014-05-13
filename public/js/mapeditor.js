@@ -557,8 +557,10 @@ var initUI=function(self){
   toolbar.addButton(btnBack);
   toolbar.addButton(btnSave);
 
+  var roadTypes=[{id: 1, text:'საცალფეხო'},{id:2, text: 'გრუნტის'}];
+
   form=ui.form.create({},[
-    ui.form.textField('name',{label: 'დასახელება', autofocus:true})
+    ui.form.comboField('type',roadTypes, {label: 'გზის სახეობა'})
   ]);
 
   layout=ui.layout.vertical({
@@ -780,21 +782,46 @@ var labeledField=function(label,callback){
 exports.textField=function(name,opts){
   var _innerElement;
 
-  var textField=labeledField(opts.label,function(){
+  var textField=labeledField(opts&&opts.label,function(){
     var attributes={type:'text', class:'form-control'};
     if(opts&&opts.autofocus){ attributes.autofocus=true; }
     _innerElement=html.el('input', attributes);
     return _innerElement;
   });
 
+  textField.getValue=function(){
+    return _innerElement.value;
+  };
+
+  textField.setValue=function(val){
+    _innerElement.value=val;
+  };
+
   return textField;
+};
+
+exports.comboField=function(name,collection,opts){
+  var _select;
+
+  var comboField=labeledField(opts&&opts.label,function(){
+    var attributes={class:'form-control'};
+    if(opts&&opts.autofocus){ attributes.autofocus=true; }
+    _select=html.el('select',attributes);
+    for(var i=0,l=collection.length;i<l;i++){
+      var val=collection[i];
+      html.el(_select,'option',val.text);
+    }
+    return _select;
+  });
+
+  return comboField;
 };
 },{"../html":14}],12:[function(require,module,exports){
 var html=require('../html')
   ;
 
 module.exports=function(model,fields,opts){
-  var _model=model
+  var _model=model||{}
     , _fields=fields||[]
     , form=html.el('div')
     ;
@@ -824,7 +851,7 @@ var form=require('./form')
 
 exports.create=form;
 exports.textField=field.textField;
-
+exports.comboField=field.comboField;
 },{"./field":11,"./form":12}],14:[function(require,module,exports){
 var utils=require('./utils');
 

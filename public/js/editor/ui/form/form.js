@@ -2,7 +2,7 @@ var html=require('../html')
   ;
 
 module.exports=function(model,fields,opts){
-  var _model=model
+  var _model=model||{}
     , _fields=fields||[]
     , form=html.el('div')
     ;

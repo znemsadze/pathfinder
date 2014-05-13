@@ -51,8 +51,10 @@ var initUI=function(self){
   toolbar.addButton(btnBack);
   toolbar.addButton(btnSave);
 
+  var roadTypes=[{id: 1, text:'საცალფეხო'},{id:2, text: 'გრუნტის'}];
+
   form=ui.form.create({},[
-    ui.form.textField('name',{label: 'დასახელება', autofocus:true})
+    ui.form.comboField('type',roadTypes, {label: 'გზის სახეობა'})
   ]);
 
   layout=ui.layout.vertical({

@@ -4,3 +4,4 @@ var form=require('./form')
 
 exports.create=form;
 exports.textField=field.textField;
+exports.comboField=field.comboField;
