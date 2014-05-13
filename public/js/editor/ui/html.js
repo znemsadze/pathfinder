@@ -28,7 +28,7 @@ var applyAttribute=function(element,attrName,attrValue){
         element.style[styleName]=styleValue;
       }
     }
-  }
+  } else if('autofocus'===attrName && attrValue){ element.autofocus=true; }
   else{ element.setAttribute(attrName,attrValue); }
 };
 

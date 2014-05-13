@@ -12,6 +12,7 @@ var map
   , desriptionElement=ui.html.p('ახალი გზის გასავლებად გამოიყენეთ თქვენი მაუსი. რედაქტირების დასრულების შემდეგ დააჭირეთ შენახვის ღილაკს.',{style:'margin-top:8px;'})
   , canEdit=true
   , path
+  , form
   ;
 
 module.exports=function(){
@@ -50,11 +51,16 @@ var initUI=function(self){
   toolbar.addButton(btnBack);
   toolbar.addButton(btnSave);
 
+  form=ui.form.create({},[
+    ui.form.textField('name',{label: 'დასახელება', autofocus:true})
+  ]);
+
   layout=ui.layout.vertical({
     children: [
       titleElement,
       toolbar,
       desriptionElement,
+      form
     ]
   });
 

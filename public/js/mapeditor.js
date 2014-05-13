@@ -123,7 +123,7 @@ var initRouter=function(){
   // start with root page
   app.openPage('root');
 };
-},{"./api":1,"./pages":7,"./router":9,"./ui":12}],3:[function(require,module,exports){
+},{"./api":1,"./pages":7,"./router":9,"./ui":15}],3:[function(require,module,exports){
 var app=require('./app');
 
 app.start();
@@ -142,6 +142,7 @@ var map
   , titleElement=ui.html.pageTitle('გზის შეცვლა')
   , desriptionElement=ui.html.p('გზის შესაცვლელად გამოიყენეთ თქვენი მაუსი. რედაქტირების დასრულების შემდეგ დააჭირეთ შენახვის ღილაკს.',{style:'margin-top:8px;'})
   , notLocked
+  , editForm
   ;
 
 module.exports=function(){
@@ -183,6 +184,8 @@ var initUI=function(self){
 
   toolbar.addButton(btnBack);
   toolbar.addButton(btnSave);
+
+  editForm=ui.form();
 
   layout=ui.layout.vertical({
     children: [
@@ -259,7 +262,7 @@ var initMap=function(){
   });
 };
 
-},{"../api":1,"../ui":12,"./geo":5}],5:[function(require,module,exports){
+},{"../api":1,"../ui":15,"./geo":5}],5:[function(require,module,exports){
 exports.resetMap=function(map){
   google.maps.event.clearInstanceListeners(map);
   google.maps.event.clearInstanceListeners(map.data);
@@ -491,7 +494,7 @@ var initMap=function(){
   });
 };
 
-},{"../api":1,"../ui":12,"./geo":5}],7:[function(require,module,exports){
+},{"../api":1,"../ui":15,"./geo":5}],7:[function(require,module,exports){
 var home=require('./home')
   , new_path=require('./new_path')
   , edit_path=require('./edit_path')
@@ -515,6 +518,7 @@ var map
   , desriptionElement=ui.html.p('ახალი გზის გასავლებად გამოიყენეთ თქვენი მაუსი. რედაქტირების დასრულების შემდეგ დააჭირეთ შენახვის ღილაკს.',{style:'margin-top:8px;'})
   , canEdit=true
   , path
+  , form
   ;
 
 module.exports=function(){
@@ -553,11 +557,16 @@ var initUI=function(self){
   toolbar.addButton(btnBack);
   toolbar.addButton(btnSave);
 
+  form=ui.form.create({},[
+    ui.form.textField('name',{label: 'დასახელება', autofocus:true})
+  ]);
+
   layout=ui.layout.vertical({
     children: [
       titleElement,
       toolbar,
       desriptionElement,
+      form
     ]
   });
 
@@ -624,7 +633,7 @@ var initMap=function(){
     }
   });
 };
-},{"../api":1,"../ui":12,"./geo":5}],9:[function(require,module,exports){
+},{"../api":1,"../ui":15,"./geo":5}],9:[function(require,module,exports){
 var map
   , sidebar
   , toolbar
@@ -752,7 +761,71 @@ exports.dropdown=function(text,buttons,opts){
   var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":11,"./utils":14}],11:[function(require,module,exports){
+},{"./html":14,"./utils":17}],11:[function(require,module,exports){
+var html=require('../html')
+  ;
+
+var labeledField=function(label,callback){
+  var fieldElement=html.el('div',{class: 'input-group'})
+    , innerFieldElement=callback()
+    ;
+  if (label){
+    var labelElement=html.el('label',[label]);
+    fieldElement.appendChild(labelElement);
+  }
+  fieldElement.appendChild(innerFieldElement);
+  return fieldElement;
+};
+
+exports.textField=function(name,opts){
+  var _innerElement;
+
+  var textField=labeledField(opts.label,function(){
+    var attributes={type:'text', class:'form-control'};
+    if(opts&&opts.autofocus){ attributes.autofocus=true; }
+    _innerElement=html.el('input', attributes);
+    return _innerElement;
+  });
+
+  return textField;
+};
+},{"../html":14}],12:[function(require,module,exports){
+var html=require('../html')
+  ;
+
+module.exports=function(model,fields,opts){
+  var _model=model
+    , _fields=fields||[]
+    , form=html.el('div')
+    ;
+
+  for(var i=0, l=_fields.length; i<l; i++){
+    var f=_fields[i];
+    form.appendChild(f);
+  }
+
+  var getModel=function(){
+    return _model;
+  }
+
+  var setModel=function(model){
+    _model=model;
+  };
+
+  form.getModel=getModel;
+  form.setModel=setModel;
+  return form;
+};
+
+},{"../html":14}],13:[function(require,module,exports){
+var form=require('./form')
+  , field=require('./field')
+  ;
+
+exports.create=form;
+exports.textField=field.textField;
+
+},{"./field":11,"./form":12}],14:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -783,7 +856,7 @@ var applyAttribute=function(element,attrName,attrValue){
         element.style[styleName]=styleValue;
       }
     }
-  }
+  } else if('autofocus'===attrName && attrValue){ element.autofocus=true; }
   else{ element.setAttribute(attrName,attrValue); }
 };
 
@@ -851,17 +924,18 @@ exports.p=function(text,opts){
   return p; 
 };
 
-},{"./utils":14}],12:[function(require,module,exports){
+},{"./utils":17}],15:[function(require,module,exports){
 var button=require('./button')
   , layout=require('./layout')
   , html=require('./html')
+  , form=require('./form')
   ;
 
 exports.html=html;
 exports.button=button;
 exports.layout=layout;
-
-},{"./button":10,"./html":11,"./layout":13}],13:[function(require,module,exports){
+exports.form=form;
+},{"./button":10,"./form":13,"./html":14,"./layout":16}],16:[function(require,module,exports){
 var html=require('./html')
  ;
 
@@ -932,7 +1006,7 @@ exports.card=function(opts){
 
   return layout;
 };
-},{"./html":11}],14:[function(require,module,exports){
+},{"./html":14}],17:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
 exports.fieldValue=function(object,name){ return object&&object[name]; };
