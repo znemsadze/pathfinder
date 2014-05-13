@@ -11,13 +11,13 @@ class Geo::PathSurface
   validates :type, presence: {message: 'აარჩიეთ გზის სახეობა'}
 
   def self.numerate(type)
-    # offset=0
-    # Geo::PathType.ne(order_by: nil).asc(:order_by).each_with_index do |t,idx|
-    #   offset=idx+1 ; t.order_by=offset ; t.save
-    # end
-    # Geo::PathType.where(order_by: nil).each_with_index do |t,idx|
-    #   t.order_by=idx+offset+1 ; t.save
-    # end
+    offset=0
+    Geo::PathSurface.where(type: type).ne(order_by: nil).asc(:order_by).each_with_index do |t,idx|
+      offset=idx+1 ; t.order_by=offset ; t.save
+    end
+    Geo::PathSurface.where(type: type, order_by: nil).each_with_index do |t,idx|
+      t.order_by=idx+offset+1 ; t.save
+    end
   end
 
   def up

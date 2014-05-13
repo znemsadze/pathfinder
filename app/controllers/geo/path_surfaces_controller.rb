@@ -29,15 +29,15 @@ class Geo::PathSurfacesController < ApplicationController
   end
 
   def show
-    # @title='გზის სახეობის თვისებები'
-    # @type=Geo::PathType.find(params[:id])
+    @title='გზის საფარის თვისებები'
+    @surface=Geo::PathSurface.find(params[:id])
   end
 
   def delete
-    # type=Geo::PathType.find(params[:id])
-    # type.destroy
-    # Geo::PathType.numerate
-    # redirect_to geo_path_types_url, notice: 'გზის სახეობა წაშლილია'
+    surface=Geo::PathSurface.find(params[:id]); type=surface.type
+    surface.destroy
+    Geo::PathSurface.numerate(type)
+    redirect_to geo_path_surfaces_url, notice: 'გზის საფარი წაშლილია'
   end
 
   def up
@@ -56,12 +56,10 @@ class Geo::PathSurfacesController < ApplicationController
   def nav
     @nav=super
     @nav['გზის საფარი']=geo_path_surfaces_url
-    # if @type
-    #   if 'edit'==action_name
-    #     @nav[@type.name]=geo_path_type_url(id:@type.id)
-    #   end
-    #   @nav[@title]=nil
-    # end
+    if @surface
+      @nav[@surface.name]=geo_path_surface_url(id:@surface.id) if 'edit'==action_name
+      @nav[@title]=nil
+    end
   end
 
   private
