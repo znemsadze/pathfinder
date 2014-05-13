@@ -7,5 +7,11 @@ class Geo::PathType
   field :name, type: String
   field :order_by, type: Integer
   validates :name, presence: {message: 'ჩაწერეთ დასახელება'}
-  after_save :on_after_save
+
+  def self.numerate
+    Geo::PathType.asc(:order_by,:_id).each_with_index do |t,idx|
+      t.order_by=idx+1
+      t.save
+    end
+  end
 end

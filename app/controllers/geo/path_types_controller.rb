@@ -10,9 +10,21 @@ class Geo::PathTypesController < ApplicationController
     if request.post?
       @type=Geo::PathType.new(type_params)
       if @type.save
+        redirect_to geo_path_types_url, notice: 'სახეობა დამატებულია'
+        Geo::PathType.numerate
       end
     else
       @type=Geo::PathType.new
+    end
+  end
+
+  def edit
+    @title='გზის სახეობის რედაქტირება'
+    @type=Geo::PathType.find(params[:id])
+    if request.post?
+      @type.update_attributes(type_params)
+      redirect_to geo_path_type_url(id:@type.id), notice: 'სახეობა შეცვლილია'
+      Geo::PathType.numerate
     end
   end
 
