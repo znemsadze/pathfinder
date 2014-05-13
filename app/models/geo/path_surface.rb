@@ -21,23 +21,19 @@ class Geo::PathSurface
   end
 
   def up
-    # if self.order_by>1
-    #   type=Geo::PathType.where(order_by:self.order_by-1).first
-    #   type.order_by=self.order_by
-    #   type.save
-    #   self.order_by=self.order_by-1
-    #   self.save
-    # end
+    if self.order_by>1
+      surface=Geo::PathSurface.where(type: self.type, order_by:self.order_by-1).first
+      surface.order_by=self.order_by ; surface.save
+      surface.order_by=self.order_by-1 ; surface.save
+    end
   end
 
   def down
-    # if self.order_by<Geo::PathType.count
-    #   type=Geo::PathType.where(order_by:self.order_by+1).first
-    #   type.order_by=self.order_by
-    #   type.save
-    #   self.order_by=self.order_by+1
-    #   self.save
-    # end
+    if self.order_by<Geo::PathSurface.where(type: self.type).count
+      surface=Geo::PathSurface.where(type: self.type, order_by:self.order_by+1).first
+      surface.order_by=self.order_by ; surface.save
+      surface.order_by=surface.order_by+1 ; self.save
+    end
   end
 
   def to_s; "#{self.type.name} > #{self.name}" end
