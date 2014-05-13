@@ -1,4 +1,6 @@
 <%=table_for @surfaces, title: @title, icon: '/icons/car.png', collapsible: true do |t|
   t.title_action geo_new_path_surface_url, label: 'ახალი საფარი', icon: '/icons/car--plus.png'
+  t.edit_action ->(x){geo_edit_path_surface_url(id:x.id)}
+  t.delete_action ->(x){geo_delete_path_surface_url(id:x.id)}
   t.text_field 'name'
 end%>

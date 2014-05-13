@@ -19,13 +19,13 @@ class Geo::PathSurfacesController < ApplicationController
   end
 
   def edit
-    # @title='გზის სახეობის რედაქტირება'
-    # @type=Geo::PathType.find(params[:id])
-    # if request.post?
-    #   @type.update_attributes(type_params.merge(user:current_user))
-    #   redirect_to geo_path_type_url(id:@type.id), notice: 'სახეობა შეცვლილია'
-    #   Geo::PathType.numerate
-    # end
+    @title='გზის საფარის რედაქტირება'
+    @surface=Geo::PathSurface.find(params[:id])
+    if request.post?
+      @surface.update_attributes(surface_params.merge(user:current_user))
+      redirect_to geo_path_surface_url(id:@surface.id), notice: 'საფარი შეცვლილია'
+      Geo::PathSurface.numerate(@surface.type)
+    end
   end
 
   def show
