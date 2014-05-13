@@ -3,8 +3,8 @@
   t.title_action geo_new_path_type_url, label: 'ახალი სახეობა', icon: '/icons/plus.png'
   t.edit_action ->(x){geo_edit_path_type_url(id:x.id)}
   t.delete_action ->(x){geo_delete_path_type_url(id:x.id)}
-  t.item_action ->(x){geo_up_path_type_url(id:x.id)}, icon: '/icons/arrow-090.png', method:'post'
-  t.item_action ->(x){geo_down_path_type_url(id:x.id)}, icon: '/icons/arrow-270.png', method:'post'
+  t.item_action ->(x){geo_up_path_type_url(id:x.id)}, icon: '/icons/arrow-090.png', method:'post', condition:->(x){x.order_by>1}
+  t.item_action ->(x){geo_down_path_type_url(id:x.id)}, icon: '/icons/arrow-270.png', method:'post', condition:->(x){x.order_by<count}
   t.text_field 'order_by', tag: 'strong'
   t.text_field 'name', url: ->(x){geo_path_type_url(id:x.id)}
 end%>
