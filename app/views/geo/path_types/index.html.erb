@@ -1,0 +1,4 @@
+<%=table_for @types, title:@title, collapsible: true, icon: '/icons/road.png' do |t|
+  t.title_action geo_new_path_type_url, label: 'ახალი სახეობა', icon: '/icons/plus.png'
+  t.text_field 'name'
+end%>

@@ -39,6 +39,12 @@ Pathfinder::Application.routes.draw do
     scope '/map', controller: 'map' do
       get '/', action: 'index', as: 'map'
     end
+    scope '/pathtype', controller: 'path_types' do
+      get '/', action: 'index', as: 'path_types'
+      get '/show/:id', action: 'show', as: 'path_type'
+      match '/new', action: 'new', as: 'new_path_type', via: ['get','post']
+      match '/edit/:id', action: 'edit', as: 'edit_path_type', via: ['get', 'post']
+    end
   end
 
   namespace 'api' do
