@@ -24,7 +24,7 @@ class Geo::PathSurface
     if self.order_by>1
       surface=Geo::PathSurface.where(type: self.type, order_by:self.order_by-1).first
       surface.order_by=self.order_by ; surface.save
-      surface.order_by=self.order_by-1 ; surface.save
+      self.order_by=self.order_by-1 ; self.save
     end
   end
 
@@ -32,7 +32,7 @@ class Geo::PathSurface
     if self.order_by<Geo::PathSurface.where(type: self.type).count
       surface=Geo::PathSurface.where(type: self.type, order_by:self.order_by+1).first
       surface.order_by=self.order_by ; surface.save
-      surface.order_by=surface.order_by+1 ; self.save
+      self.order_by=self.order_by+1 ; self.save
     end
   end
 
