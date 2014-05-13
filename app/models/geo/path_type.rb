@@ -9,9 +9,12 @@ class Geo::PathType
   validates :name, presence: {message: 'ჩაწერეთ დასახელება'}
 
   def self.numerate
-    Geo::PathType.asc(:order_by,:_id).each_with_index do |t,idx|
-      t.order_by=idx+1
-      t.save
+    offset=0
+    Geo::PathType.ne(order_by: nil).asc(:order_by).each_with_index do |t,idx|
+      offset=idx+1 ; t.order_by=offset ; t.save
+    end
+    Geo::PathType.where(order_by: nil).each_with_index do |t,idx|
+      t.order_by=idx+offset+1 ; t.save
     end
   end
 end
