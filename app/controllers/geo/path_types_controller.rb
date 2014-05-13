@@ -9,7 +9,7 @@ class Geo::PathTypesController < ApplicationController
     @title='გზის ახალი სახეობა'
     if request.post?
       @type=Geo::PathType.new(type_params)
-      if @type.save
+      if @type.save(user:current_user)
         redirect_to geo_path_types_url, notice: 'სახეობა დამატებულია'
         Geo::PathType.numerate
       end
@@ -22,10 +22,15 @@ class Geo::PathTypesController < ApplicationController
     @title='გზის სახეობის რედაქტირება'
     @type=Geo::PathType.find(params[:id])
     if request.post?
-      @type.update_attributes(type_params)
+      @type.update_attributes(type_params.merge(user:current_user))
       redirect_to geo_path_type_url(id:@type.id), notice: 'სახეობა შეცვლილია'
       Geo::PathType.numerate
     end
+  end
+
+  def show
+    @title='გზის სახეობის თვისებები'
+    @type=Geo::PathType.find(params[:id])
   end
 
   protected
