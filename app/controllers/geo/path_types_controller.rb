@@ -40,6 +40,18 @@ class Geo::PathTypesController < ApplicationController
     redirect_to geo_path_types_url, notice: 'გზის სახეობა წაშლილია'
   end
 
+  def up
+    type=Geo::PathType.find(params[:id])
+    type.up
+    redirect_to geo_path_types_url, notice: 'ნუმერაცია შეცვლილია'
+  end
+
+  def down
+    type=Geo::PathType.find(params[:id])
+    type.down
+    redirect_to geo_path_types_url, notice: 'ნუმერაცია შეცვლილია'
+  end
+
   protected
   def nav
     @nav=super

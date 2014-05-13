@@ -45,6 +45,8 @@ Pathfinder::Application.routes.draw do
       match '/new', action: 'new', as: 'new_path_type', via: ['get','post']
       match '/edit/:id', action: 'edit', as: 'edit_path_type', via: ['get', 'post']
       delete '/delete/:id', action: 'delete', as: 'delete_path_type'
+      post '/up/:id', action: 'up', as: 'up_path_type'
+      post '/down/:id', action: 'down', as: 'down_path_type'
     end
   end
 
