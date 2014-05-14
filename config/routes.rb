@@ -57,6 +57,15 @@ Pathfinder::Application.routes.draw do
       post '/up/:id', action: 'up', as: 'up_path_surface'
       post '/down/:id', action: 'down', as: 'down_path_surface'
     end
+    scope '/pathdetail', controller: 'path_details' do
+      get '/', action: 'index', as: 'path_details'
+      get '/show/:id', action: 'show', as: 'path_detail'
+      match '/new', action: 'new', as: 'new_path_detail', via: ['get','post']
+      match '/edit/:id', action: 'edit', as: 'edit_path_detail', via: ['get', 'post']
+      delete '/delete/:id', action: 'delete', as: 'delete_path_detail'
+      post '/up/:id', action: 'up', as: 'up_path_detail'
+      post '/down/:id', action: 'down', as: 'down_path_detail'
+    end
   end
 
   namespace 'api' do
