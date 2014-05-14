@@ -2,22 +2,22 @@
 class Geo::PathDetailsController < ApplicationController
   def index
     @title='გზის დეტალები'
-    @surfaces=Geo::PathDetail.asc(:surface_id, :order_by)
+    @details=Geo::PathDetail.asc(:surface_id, :order_by)
   end
 
-  # def new
-  #   @title='გზის ახალი დეტალი'
-  #   if request.post?
-  #     detail_params=params.require(:geo_path_detail).permit(:name, :surface_id)
-  #     @details=Geo::PathDetail.new(detail_params)
-  #     if @details.save(user:current_user)
-  #       Geo::PathDetail.numerate(@detail.surface)
-  #       redirect_to geo_path_surface_url(id: @surface.id), notice: 'საფარი დამატებულია'
-  #     end
-  #   else
-  #     @surface=Geo::PathSurface.new(type_id: params[:type_id])
-  #   end
-  # end
+  def new
+    @title='გზის ახალი დეტალი'
+    if request.post?
+      detail_params=params.require(:geo_path_detail).permit(:surface_id, :name)
+      @detail=Geo::PathDetail.new(detail_params)
+      if @detail.save(user:current_user)
+        Geo::PathDetail.numerate(@detail.surface)
+        redirect_to geo_path_detail_url(id: @detail.id), notice: 'გზის დეტალი დამატებულია'
+      end
+    else
+      @detail=Geo::PathDetail.new(surface_id: params[:surface_id])
+    end
+  end
 
   # def edit
   #   @title='გზის საფარის რედაქტირება'
