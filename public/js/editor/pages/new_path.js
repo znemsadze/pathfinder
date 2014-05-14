@@ -8,8 +8,6 @@ var map
   , layout
   , uiInitialized=false
   , titleElement=ui.html.pageTitle('ახალი გზის დამატება')
-  , toolbar=ui.button.toolbar([])
-  , desriptionElement=ui.html.p('ახალი გზის გასავლებად გამოიყენეთ თქვენი მაუსი. რედაქტირების დასრულების შემდეგ დააჭირეთ შენახვის ღილაკს.',{style:'margin-top:8px;'})
   , canEdit=true
   , path
   , form
@@ -35,35 +33,30 @@ module.exports=function(){
 };
 
 var initUI=function(self){
-  var btnBack=ui.button.actionButton('უკან', function(){
-    path.setMap(null);
-    self.openPage('root');
-  }, {icon:'arrow-left'});
-
-  var btnSave=ui.button.actionButton('გზის შენახვა', function(){
+  var saveAction={label: 'გზის შენახვა', icon:'save', type:'success', action: function(){
     canEdit=!api.newPath(path.getPath(), function(data){
       path.setMap(null);
       map.loadData(data.id);
       self.openPage('root');
     });
-  }, {icon:'save', type:'success'});
-
-  toolbar.addButton(btnBack);
-  toolbar.addButton(btnSave);
+  }};
+  var cancelAction={label:'გაუმება', icon:'times-circle',action: function(){
+    path.setMap(null);
+    self.openPage('root');
+  }};
 
   var typeCombo=ui.form.comboField('type', {label: 'გზის სახეობა', collection_url: '/geo/pathtype.json', text_property: 'name'});
   var surfaceCombo=ui.form.comboField('surface', {label: 'გზის საფარი', collection_url: '/geo/pathsurface.json', text_property: 'name', parent_combo: typeCombo, parent_key: 'type_id'});
   var detailsCombo=ui.form.comboField('detail', {label: 'საფარის დეტალები', collection_url: '/geo/pathdetail.json', text_property: 'name', parent_combo: surfaceCombo, parent_key: 'surface_id'});
 
   var fields=[typeCombo, surfaceCombo, detailsCombo,];
+  var actions=[saveAction,cancelAction];
 
-  form=ui.form.create(fields);
+  form=ui.form.create(fields,{actions: actions});
 
   layout=ui.layout.vertical({
     children: [
       titleElement,
-      toolbar,
-      desriptionElement,
       form
     ]
   });

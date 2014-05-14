@@ -511,8 +511,6 @@ var map
   , layout
   , uiInitialized=false
   , titleElement=ui.html.pageTitle('ახალი გზის დამატება')
-  , toolbar=ui.button.toolbar([])
-  , desriptionElement=ui.html.p('ახალი გზის გასავლებად გამოიყენეთ თქვენი მაუსი. რედაქტირების დასრულების შემდეგ დააჭირეთ შენახვის ღილაკს.',{style:'margin-top:8px;'})
   , canEdit=true
   , path
   , form
@@ -538,35 +536,30 @@ module.exports=function(){
 };
 
 var initUI=function(self){
-  var btnBack=ui.button.actionButton('უკან', function(){
-    path.setMap(null);
-    self.openPage('root');
-  }, {icon:'arrow-left'});
-
-  var btnSave=ui.button.actionButton('გზის შენახვა', function(){
+  var saveAction={label: 'გზის შენახვა', icon:'save', type:'success', action: function(){
     canEdit=!api.newPath(path.getPath(), function(data){
       path.setMap(null);
       map.loadData(data.id);
       self.openPage('root');
     });
-  }, {icon:'save', type:'success'});
-
-  toolbar.addButton(btnBack);
-  toolbar.addButton(btnSave);
+  }};
+  var cancelAction={label:'გაუმება', icon:'times-circle',action: function(){
+    path.setMap(null);
+    self.openPage('root');
+  }};
 
   var typeCombo=ui.form.comboField('type', {label: 'გზის სახეობა', collection_url: '/geo/pathtype.json', text_property: 'name'});
   var surfaceCombo=ui.form.comboField('surface', {label: 'გზის საფარი', collection_url: '/geo/pathsurface.json', text_property: 'name', parent_combo: typeCombo, parent_key: 'type_id'});
   var detailsCombo=ui.form.comboField('detail', {label: 'საფარის დეტალები', collection_url: '/geo/pathdetail.json', text_property: 'name', parent_combo: surfaceCombo, parent_key: 'surface_id'});
 
   var fields=[typeCombo, surfaceCombo, detailsCombo,];
+  var actions=[saveAction,cancelAction];
 
-  form=ui.form.create(fields);
+  form=ui.form.create(fields,{actions: actions});
 
   layout=ui.layout.vertical({
     children: [
       titleElement,
-      toolbar,
-      desriptionElement,
       form
     ]
   });
@@ -885,33 +878,49 @@ exports.comboField=function(name,opts){
 };
 },{"../html":14}],12:[function(require,module,exports){
 var html=require('../html')
+  , button=require('../button')
   ;
 
 module.exports=function(fields,opts){
   var _model={}
     , _fields=fields||[]
-    , form=html.el('div')
+    , _form=html.el('div')
+    , _toolbar=button.toolbar()
     ;
+
+  // place fields
 
   for(var i=0, l=_fields.length; i<l; i++){
     var f=_fields[i];
-    form.appendChild(f);
+    _form.appendChild(f);
   }
 
-  var getModel=function(){
+  // model fields
+
+  _form.getModel=function(){
     return _model;
   }
 
-  var setModel=function(model){
+  _form.setModel=function(model){
     _model=model;
   };
 
-  form.getModel=getModel;
-  form.setModel=setModel;
-  return form;
+  // actions
+
+  _form.appendChild(_toolbar);
+  var actions=opts&&opts.actions;
+  if (actions){
+    for(var i=0,l=actions.length;i<l;i++){
+      var action=actions[i];
+      var btn=button.actionButton(action.label,action.action,{icon:action.icon, type:action.type});
+      _toolbar.addButton(btn);
+    }
+  }
+
+  return _form;
 };
 
-},{"../html":14}],13:[function(require,module,exports){
+},{"../button":10,"../html":14}],13:[function(require,module,exports){
 var form=require('./form')
   , field=require('./field')
   ;
