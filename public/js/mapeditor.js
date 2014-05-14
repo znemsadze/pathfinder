@@ -14,10 +14,12 @@ var pointsFromPath=function(path){
   return points;
 };
 
-exports.newPath=function(path,callback){
+exports.newPath=function(model,callback){
+  var path=model.path;
   if(path.getLength()>1){
     var points=pointsFromPath(path);
-    $.post(BASE_PATH+'/new_path',{points:points},function(data){
+    var params={points:points, type_id:model.type_id, surface_id:model.surface_id, detail_id:model.detail_id};
+    $.post(BASE_PATH+'/new_path',params,function(data){
       if(callback){ callback(data); }
     }).fail(function(err){
       if(callback){ callback(err); }
@@ -537,7 +539,8 @@ module.exports=function(){
 
 var initUI=function(self){
   var saveAction={label: 'გზის შენახვა', icon:'save', type:'success', action: function(){
-    canEdit=!api.newPath(path.getPath(), function(data){
+    var model=form.getModel(); model.path=path.getPath();
+    canEdit=!api.newPath(model, function(data){
       path.setMap(null);
       map.loadData(data.id);
       self.openPage('root');
@@ -548,9 +551,9 @@ var initUI=function(self){
     self.openPage('root');
   }};
 
-  var typeCombo=ui.form.comboField('type', {label: 'გზის სახეობა', collection_url: '/geo/pathtype.json', text_property: 'name'});
-  var surfaceCombo=ui.form.comboField('surface', {label: 'გზის საფარი', collection_url: '/geo/pathsurface.json', text_property: 'name', parent_combo: typeCombo, parent_key: 'type_id'});
-  var detailsCombo=ui.form.comboField('detail', {label: 'საფარის დეტალები', collection_url: '/geo/pathdetail.json', text_property: 'name', parent_combo: surfaceCombo, parent_key: 'surface_id'});
+  var typeCombo=ui.form.comboField('type_id', {label: 'გზის სახეობა', collection_url: '/geo/pathtype.json', text_property: 'name'});
+  var surfaceCombo=ui.form.comboField('surface_id', {label: 'გზის საფარი', collection_url: '/geo/pathsurface.json', text_property: 'name', parent_combo: typeCombo, parent_key: 'type_id'});
+  var detailsCombo=ui.form.comboField('detail_id', {label: 'საფარის დეტალები', collection_url: '/geo/pathdetail.json', text_property: 'name', parent_combo: surfaceCombo, parent_key: 'surface_id'});
 
   var fields=[typeCombo, surfaceCombo, detailsCombo,];
   var actions=[saveAction,cancelAction];
@@ -771,6 +774,10 @@ var labeledField=function(label,callback){
   return fieldElement;
 };
 
+var applyModelForSimpleField=function(field,model){
+  model[field.getName()]=field.getValue();
+};
+
 exports.textField=function(name,opts){
   var _innerElement;
 
@@ -781,13 +788,10 @@ exports.textField=function(name,opts){
     return _innerElement;
   });
 
-  textField.getValue=function(){
-    return _innerElement.value;
-  };
-
-  textField.setValue=function(val){
-    _innerElement.value=val;
-  };
+  textField.getName=function(){return name;}
+  textField.getValue=function(){ return _innerElement.value; };
+  textField.setValue=function(val){ _innerElement.value=val; };
+  textField.applyModel=function(model){ applyModelForSimpleField(textField,model); }
 
   return textField;
 };
@@ -810,8 +814,10 @@ exports.comboField=function(name,opts){
   });
 
   comboField.childCombos=[];
-  comboField.getValue=function(){return _select.value;};
-  comboField.setValue=function(val){_select.value=val;}
+  comboField.getName=function(){ return name; }
+  comboField.getValue=function(){ return _select.value; };
+  comboField.setValue=function(val){ _select.value=val; }
+  comboField.applyModel=function(model){ applyModelForSimpleField(comboField,model); }
 
   // manage collections
 
@@ -898,6 +904,9 @@ module.exports=function(fields,opts){
   // model fields
 
   _form.getModel=function(){
+    for(var i=0, l=_fields.length; i<l; i++){
+      _fields[i].applyModel(_model);
+    }
     return _model;
   }
 

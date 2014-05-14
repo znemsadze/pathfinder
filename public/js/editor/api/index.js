@@ -13,10 +13,12 @@ var pointsFromPath=function(path){
   return points;
 };
 
-exports.newPath=function(path,callback){
+exports.newPath=function(model,callback){
+  var path=model.path;
   if(path.getLength()>1){
     var points=pointsFromPath(path);
-    $.post(BASE_PATH+'/new_path',{points:points},function(data){
+    var params={points:points, type_id:model.type_id, surface_id:model.surface_id, detail_id:model.detail_id};
+    $.post(BASE_PATH+'/new_path',params,function(data){
       if(callback){ callback(data); }
     }).fail(function(err){
       if(callback){ callback(err); }

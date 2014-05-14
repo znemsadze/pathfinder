@@ -13,6 +13,10 @@ var labeledField=function(label,callback){
   return fieldElement;
 };
 
+var applyModelForSimpleField=function(field,model){
+  model[field.getName()]=field.getValue();
+};
+
 exports.textField=function(name,opts){
   var _innerElement;
 
@@ -23,13 +27,10 @@ exports.textField=function(name,opts){
     return _innerElement;
   });
 
-  textField.getValue=function(){
-    return _innerElement.value;
-  };
-
-  textField.setValue=function(val){
-    _innerElement.value=val;
-  };
+  textField.getName=function(){return name;}
+  textField.getValue=function(){ return _innerElement.value; };
+  textField.setValue=function(val){ _innerElement.value=val; };
+  textField.applyModel=function(model){ applyModelForSimpleField(textField,model); }
 
   return textField;
 };
@@ -52,8 +53,10 @@ exports.comboField=function(name,opts){
   });
 
   comboField.childCombos=[];
-  comboField.getValue=function(){return _select.value;};
-  comboField.setValue=function(val){_select.value=val;}
+  comboField.getName=function(){ return name; }
+  comboField.getValue=function(){ return _select.value; };
+  comboField.setValue=function(val){ _select.value=val; }
+  comboField.applyModel=function(model){ applyModelForSimpleField(comboField,model); }
 
   // manage collections
 
