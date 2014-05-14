@@ -8,6 +8,7 @@ class Geo::PathSurfacesController < ApplicationController
   def new
     @title='გზის ახალი საფარი'
     if request.post?
+      surface_params=params.require(:geo_path_surface).permit(:name, :type_id)
       @surface=Geo::PathSurface.new(surface_params)
       if @surface.save(user:current_user)
         Geo::PathSurface.numerate(@surface.type)
@@ -22,6 +23,7 @@ class Geo::PathSurfacesController < ApplicationController
     @title='გზის საფარის რედაქტირება'
     @surface=Geo::PathSurface.find(params[:id])
     if request.post?
+      surface_params=params.require(:geo_path_surface).permit(:name)
       @surface.update_attributes(surface_params.merge(user:current_user))
       redirect_to geo_path_surface_url(id:@surface.id), notice: 'საფარი შეცვლილია'
       Geo::PathSurface.numerate(@surface.type)
@@ -63,7 +65,4 @@ class Geo::PathSurfacesController < ApplicationController
       @nav[@title]=nil
     end
   end
-
-  private
-  def surface_params; params.require(:geo_path_surface).permit(:name, :type_id) end
 end
