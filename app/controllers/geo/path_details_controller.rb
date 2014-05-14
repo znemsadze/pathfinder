@@ -30,10 +30,10 @@ class Geo::PathDetailsController < ApplicationController
     end
   end
 
-  # def show
-  #   @title='გზის საფარის თვისებები'
-  #   @surface=Geo::PathSurface.find(params[:id])
-  # end
+  def show
+    @title='გზის დეტალის თვისებები'
+    @surface=Geo::PathDetail.find(params[:id])
+  end
 
   def delete
     detail=Geo::PathDetail.find(params[:id]); surface=detail.surface

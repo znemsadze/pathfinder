@@ -3,4 +3,5 @@ ka:
     geo_path_detail:
       name: დასახელება
       surface: გზის საფარი
+      type: გზის სახეობა
       order_by: '#'
