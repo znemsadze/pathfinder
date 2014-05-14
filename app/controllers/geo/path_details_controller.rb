@@ -46,15 +46,15 @@ class Geo::PathDetailsController < ApplicationController
     end
   end
 
-  # def up
-  #   surface=Geo::PathSurface.find(params[:id]) ; surface.up
-  #   redirect_to geo_path_surfaces_url, notice: 'ნუმერაცია შეცვლილია'
-  # end
+  def up
+    detail=Geo::PathDetail.find(params[:id]) ; detail.up
+    redirect_to geo_path_details_url, notice: 'ნუმერაცია შეცვლილია'
+  end
 
-  # def down
-  #   surface=Geo::PathSurface.find(params[:id]) ; surface.down
-  #   redirect_to geo_path_surfaces_url, notice: 'ნუმერაცია შეცვლილია'
-  # end
+  def down
+    detail=Geo::PathDetail.find(params[:id]) ; detail.down
+    redirect_to geo_path_details_url, notice: 'ნუმერაცია შეცვლილია'
+  end
 
   protected
   def nav
