@@ -19,16 +19,16 @@ class Geo::PathDetailsController < ApplicationController
     end
   end
 
-  # def edit
-  #   @title='გზის საფარის რედაქტირება'
-  #   @surface=Geo::PathSurface.find(params[:id])
-  #   if request.post?
-  #     surface_params=params.require(:geo_path_surface).permit(:name)
-  #     @surface.update_attributes(surface_params.merge(user:current_user))
-  #     redirect_to geo_path_surface_url(id:@surface.id), notice: 'საფარი შეცვლილია'
-  #     Geo::PathSurface.numerate(@surface.type)
-  #   end
-  # end
+  def edit
+    @title='გზის დეტალის რედაქტირება'
+    @detail=Geo::PathDetail.find(params[:id])
+    if request.post?
+      detail_params=params.require(:geo_path_detail).permit(:name)
+      @detail.update_attributes(detail_params.merge(user:current_user))
+      redirect_to geo_path_detail_url(id:@surface.id), notice: 'დეტალი შეცვლილია'
+      Geo::PathDetail.numerate(@detail.type)
+    end
+  end
 
   # def show
   #   @title='გზის საფარის თვისებები'
@@ -60,9 +60,9 @@ class Geo::PathDetailsController < ApplicationController
   def nav
     @nav=super
     @nav['გზის დეტალები']=geo_path_details_url
-    # if @surface
-    #   @nav[@surface.name]=geo_path_surface_url(id:@surface.id) if 'edit'==action_name
-    #   @nav[@title]=nil
-    # end
+    if @detail
+      @nav[@detail.name]=geo_path_detail_url(id:@detail.id) if 'edit'==action_name
+      @nav[@title]=nil
+    end
   end
 end
