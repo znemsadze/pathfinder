@@ -56,8 +56,9 @@ var initUI=function(self){
     label: 'გზის საფარი', collection_url: '/geo/pathsurface.json', text_property: 'name',
     parent_combo: typeCombo, parent_key: 'type_id'
   });
+  var 
 
-  form=ui.form.create({}, [
+  form=ui.form.create([
     typeCombo,
     surfaceCombo,
   ]);
