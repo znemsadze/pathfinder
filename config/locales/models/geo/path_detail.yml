@@ -1,0 +1,6 @@
+ka:
+  models:
+    geo_path_detail:
+      name: დასახელება
+      surface: გზის საფარი
+      order_by: '#'
