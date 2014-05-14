@@ -11,13 +11,23 @@ module Geo::PathTypeHelper
     end
   end
 
-  def pathtype_view(type)
-    view_for type, title: 'სახეობის თვისება', icon: '/icons/road.png', collapsible: true do |f|
+  def pathtype_view(type,opts={})
+    idx=case opts[:tab] when 'sys' then 2 when 'surfaces' then 1 else 0 end
+    view_for type, title: "გზის სახეობა: #{type.name}", icon: '/icons/road.png', collapsible: true, selected_tab: idx do |f|
       f.edit_action geo_edit_path_type_url(id:type.id)
       f.delete_action geo_delete_path_type_url(id:type.id)
       f.tab title: 'ძირითადი', icon: '/icons/road.png' do |f|
         f.text_field 'order_by', required: true, tag: 'strong'
         f.text_field 'name', required: true
+      end
+      f.tab title: "საფარი &mdash; <strong>#{type.surfaces.count}</strong>".html_safe, icon: '/icons/car.png' do |f|
+        f.table_field 'surfaces', table:{ title: 'გზის საფარი', icon: '/icons/car.png'} do |fld|
+          fld.table do |t|
+            t.title_action geo_new_path_surface_url(type_id:type.id),label: 'ახალი საფარი', icon: '/icons/plus.png'
+            t.text_field 'order_by', tag: 'strong'
+            t.text_field 'name', url: ->(x){geo_path_surface_url(id:x.id)}
+          end
+        end
       end
       f.tab title: 'სისტემური', icon: '/icons/traffic-cone.png' do |f|
         f.timestamps

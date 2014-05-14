@@ -6,6 +6,7 @@ class Geo::PathType
 
   field :name, type: String
   field :order_by, type: Integer
+  has_many :surfaces, class_name: 'Geo::PathSurface'
   validates :name, presence: {message: 'ჩაწერეთ დასახელება'}
 
   def self.numerate

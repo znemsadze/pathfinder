@@ -14,7 +14,7 @@ class Geo::PathSurfacesController < ApplicationController
         redirect_to geo_path_surface_url(id: @surface.id), notice: 'საფარი დამატებულია'
       end
     else
-      @surface=Geo::PathSurface.new
+      @surface=Geo::PathSurface.new(type_id: params[:type_id])
     end
   end
 
