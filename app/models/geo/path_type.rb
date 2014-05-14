@@ -39,5 +39,6 @@ class Geo::PathType
     end
   end
 
+  def can_delete?; self.surfaces.empty? end
   def to_s; self.name end
 end

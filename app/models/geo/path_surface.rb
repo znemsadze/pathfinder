@@ -36,5 +36,6 @@ class Geo::PathSurface
     end
   end
 
+  def can_delete?; true end
   def to_s; "#{self.type.name} > #{self.name}" end
 end
