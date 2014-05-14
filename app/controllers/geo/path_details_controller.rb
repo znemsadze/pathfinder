@@ -25,14 +25,14 @@ class Geo::PathDetailsController < ApplicationController
     if request.post?
       detail_params=params.require(:geo_path_detail).permit(:name)
       @detail.update_attributes(detail_params.merge(user:current_user))
-      redirect_to geo_path_detail_url(id:@surface.id), notice: 'დეტალი შეცვლილია'
-      Geo::PathDetail.numerate(@detail.type)
+      redirect_to geo_path_detail_url(id:@detail.id), notice: 'დეტალი შეცვლილია'
+      # Geo::PathDetail.numerate(@detail.surface)
     end
   end
 
   def show
     @title='გზის დეტალის თვისებები'
-    @surface=Geo::PathDetail.find(params[:id])
+    @detail=Geo::PathDetail.find(params[:id])
   end
 
   def delete
