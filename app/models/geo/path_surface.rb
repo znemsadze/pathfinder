@@ -7,6 +7,7 @@ class Geo::PathSurface
   field :name, type: String
   field :order_by, type: Integer
   belongs_to :type, class_name: 'Geo::PathType'
+  has_many :details, class_name: 'Geo::PathDetail'
   validates :name, presence: {message: 'ჩაწერეთ დასახელება'}
   validates :type, presence: {message: 'აარჩიეთ გზის სახეობა'}
 
@@ -36,6 +37,5 @@ class Geo::PathSurface
     end
   end
 
-  def can_delete?; true end
-  def to_s; "#{self.type.name} > #{self.name}" end
+  def can_delete?; self.details.empty? end
 end
