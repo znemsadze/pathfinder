@@ -7,7 +7,7 @@ class Geo::PathSurface
   field :name, type: String
   field :order_by, type: Integer
   belongs_to :type, class_name: 'Geo::PathType'
-  has_many :details, class_name: 'Geo::PathDetail'
+  has_many :details, class_name: 'Geo::PathDetail', order: 'order_by ASC'
   validates :name, presence: {message: 'ჩაწერეთ დასახელება'}
   validates :type, presence: {message: 'აარჩიეთ გზის სახეობა'}
 
