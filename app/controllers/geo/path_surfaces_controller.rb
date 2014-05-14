@@ -35,9 +35,13 @@ class Geo::PathSurfacesController < ApplicationController
 
   def delete
     surface=Geo::PathSurface.find(params[:id]); type=surface.type
-    surface.destroy
-    Geo::PathSurface.numerate(type)
-    redirect_to geo_path_surfaces_url, notice: 'გზის საფარი წაშლილია'
+    if surface.can_delete?
+      surface.destroy
+      Geo::PathSurface.numerate(type)
+      redirect_to geo_path_surfaces_url, notice: 'გზის საფარი წაშლილია'
+    else
+      redirect_to geo_path_surface_url(id:surface.id), alert: 'წაშლა დაუშვებელია: დამოკიდებული ობიექტები'
+    end
   end
 
   def up

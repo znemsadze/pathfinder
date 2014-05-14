@@ -35,9 +35,13 @@ class Geo::PathTypesController < ApplicationController
 
   def delete
     type=Geo::PathType.find(params[:id])
-    type.destroy
-    Geo::PathType.numerate
-    redirect_to geo_path_types_url, notice: 'გზის სახეობა წაშლილია'
+    if type.can_delete?
+      type.destroy
+      Geo::PathType.numerate
+      redirect_to geo_path_types_url, notice: 'გზის სახეობა წაშლილია'
+    else
+      redirect_to geo_path_type_url(id:type.id), alert: 'წაშლა დაუშვებელია: დამოკიდებული ობიექტები'
+    end
   end
 
   def up
