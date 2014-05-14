@@ -27,6 +27,7 @@ module Geo::PathSurfaceHelper
       f.tab title: "დეტალები &mdash; <strong>#{surface.details.count}</strong>".html_safe, icon: '/icons/magnifier.png' do |f|
         f.table_field 'details', table: {title: 'გზის საფარის დეტალები', icon: '/icons/magnifier.png'} do |f|
           f.table do |t|
+            t.title_action geo_new_path_detail_url(surface_id: surface.id), label:'დეტალის დამატება', icon: '/icons/magnifier--plus.png'
             t.text_field 'order_by', tag: 'strong'
             t.text_field 'name', url: ->(x){geo_path_detail_url(id:x.id)}
           end
