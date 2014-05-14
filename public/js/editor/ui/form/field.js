@@ -2,7 +2,7 @@ var html=require('../html')
   ;
 
 var labeledField=function(label,callback){
-  var fieldElement=html.el('div',{class: 'input-group'})
+  var fieldElement=html.el('div',{class: 'form-group'})
     , innerFieldElement=callback()
     ;
   if (label){
@@ -35,7 +35,11 @@ exports.textField=function(name,opts){
 };
 
 exports.comboField=function(name,opts){
-  var _select;
+  var _select
+    , _change_listeners=[]
+    ;
+
+  // basic combo field
 
   var comboField=labeledField(opts&&opts.label,function(){
     var attributes={class:'form-control'};
@@ -43,6 +47,8 @@ exports.comboField=function(name,opts){
     _select=html.el('select',attributes);
     return _select;
   });
+
+  // manage collections
 
   comboField.setCollection=function(collection){
     _select.innerHtml='';
@@ -54,13 +60,29 @@ exports.comboField=function(name,opts){
     }
   };
 
-  if(opts&&opts.collection){ comboField.setCollection(opts.collection); }
-  if(opts&&opts.collection_url){
+  if(opts&&opts.collection){
+    comboField.setCollection(opts.collection);
+  } else if(opts&&opts.collection_url){
     $.get(opts.collection_url, function(data){
       comboField.setCollection(data);
     });
   }
 
+  // register listeners
+
+  comboField.addChangeListener=function(funct){
+    _change_listeners.push(funct);
+  };
+
+  comboField.removeChangeListener=function(funct){
+    // TODO: write remove listener code
+  };
+
+  comboField.onchange=function(evt){
+    for(var i=0,l=_change_listeners.length;i<l;i++){
+      _change_listeners[i](evt);
+    }
+  };
 
   return comboField;
 };
