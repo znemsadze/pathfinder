@@ -51,6 +51,7 @@ exports.comboField=function(name,opts){
     return _select;
   });
 
+  comboField.childCombos=[];
   comboField.getValue=function(){return _select.value;};
   comboField.setValue=function(val){_select.value=val;}
 
@@ -99,10 +100,19 @@ exports.comboField=function(name,opts){
 
   // parent combo listener
 
+  comboField.redisplay=function(){
+    comboField.setCollection(_collection);
+    var childCombos=comboField.childCombos;
+    for(var i=0,l=childCombos.length;i<l;i++){
+      var combo=childCombos[i];
+      combo.redisplay();
+    }
+  };
+
   if(_parent_combo){
+    _parent_combo.childCombos.push(comboField);
     _parent_combo.addChangeListener(function(){
-      // simply "redisplay" collection
-      comboField.setCollection(_collection);
+      comboField.redisplay();
     });
   }
 

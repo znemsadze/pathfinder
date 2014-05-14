@@ -555,16 +555,12 @@ var initUI=function(self){
   toolbar.addButton(btnSave);
 
   var typeCombo=ui.form.comboField('type', {label: 'გზის სახეობა', collection_url: '/geo/pathtype.json', text_property: 'name'});
-  var surfaceCombo=ui.form.comboField('surface', {
-    label: 'გზის საფარი', collection_url: '/geo/pathsurface.json', text_property: 'name',
-    parent_combo: typeCombo, parent_key: 'type_id'
-  });
-  var 
+  var surfaceCombo=ui.form.comboField('surface', {label: 'გზის საფარი', collection_url: '/geo/pathsurface.json', text_property: 'name', parent_combo: typeCombo, parent_key: 'type_id'});
+  var detailsCombo=ui.form.comboField('detail', {label: 'საფარის დეტალები', collection_url: '/geo/pathdetail.json', text_property: 'name', parent_combo: surfaceCombo, parent_key: 'surface_id'});
 
-  form=ui.form.create([
-    typeCombo,
-    surfaceCombo,
-  ]);
+  var fields=[typeCombo, surfaceCombo, detailsCombo,];
+
+  form=ui.form.create(fields);
 
   layout=ui.layout.vertical({
     children: [
@@ -820,6 +816,7 @@ exports.comboField=function(name,opts){
     return _select;
   });
 
+  comboField.childCombos=[];
   comboField.getValue=function(){return _select.value;};
   comboField.setValue=function(val){_select.value=val;}
 
@@ -868,10 +865,19 @@ exports.comboField=function(name,opts){
 
   // parent combo listener
 
+  comboField.redisplay=function(){
+    comboField.setCollection(_collection);
+    var childCombos=comboField.childCombos;
+    for(var i=0,l=childCombos.length;i<l;i++){
+      var combo=childCombos[i];
+      combo.redisplay();
+    }
+  };
+
   if(_parent_combo){
+    _parent_combo.childCombos.push(comboField);
     _parent_combo.addChangeListener(function(){
-      // simply "redisplay" collection
-      comboField.setCollection(_collection);
+      comboField.redisplay();
     });
   }
 
