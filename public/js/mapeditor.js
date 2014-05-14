@@ -554,10 +554,15 @@ var initUI=function(self){
   toolbar.addButton(btnBack);
   toolbar.addButton(btnSave);
 
-  var typeCombo=ui.form.comboField('type', {label: 'გზის სახეობა', collection_url: '/geo/pathtype.json', text_property:'name'});
+  var typeCombo=ui.form.comboField('type', {label: 'გზის სახეობა', collection_url: '/geo/pathtype.json', text_property: 'name'});
+  var surfaceCombo=ui.form.comboField('surface', {
+    label: 'გზის საფარი', collection_url: '/geo/pathsurface.json', text_property: 'name',
+    parent_combo: typeCombo, parent_key: 'type_id'
+  });
 
   form=ui.form.create({}, [
     typeCombo,
+    surfaceCombo,
   ]);
 
   layout=ui.layout.vertical({
@@ -765,7 +770,7 @@ var html=require('../html')
   ;
 
 var labeledField=function(label,callback){
-  var fieldElement=html.el('div',{class: 'input-group'})
+  var fieldElement=html.el('div',{class: 'form-group'})
     , innerFieldElement=callback()
     ;
   if (label){
@@ -798,7 +803,14 @@ exports.textField=function(name,opts){
 };
 
 exports.comboField=function(name,opts){
-  var _select;
+  var _select
+    , _change_listeners=[]
+    , _collection
+    , _parent_combo=opts&&opts.parent_combo
+    , _parent_key=(opts&&opts.parent_key)||'parent_id'
+    ;
+
+  // basic combo field
 
   var comboField=labeledField(opts&&opts.label,function(){
     var attributes={class:'form-control'};
@@ -807,23 +819,60 @@ exports.comboField=function(name,opts){
     return _select;
   });
 
+  comboField.getValue=function(){return _select.value;};
+  comboField.setValue=function(val){_select.value=val;}
+
+  // manage collections
+
   comboField.setCollection=function(collection){
-    _select.innerHtml='';
-    for(var i=0,l=collection.length;i<l;i++){
-      var val=collection[i];
-      var text=opts&&opts.text_property ? val[opts.text_property] : val.text;
-      var id=opts&&opts.id_property ? val[opts.id_property] : val.id;
-      html.el(_select,'option',{value: id},text);
+    _select.innerText='';
+    _collection=collection;
+    if(_collection){
+      var filtered=_collection.filter(function(x){
+        if(!_parent_combo){ return true; }
+        return x[_parent_key]==_parent_combo.getValue();
+      });
+      for(var i=0,l=filtered.length;i<l;i++){
+        var val=filtered[i];
+        var text=opts&&opts.text_property ? val[opts.text_property] : val.text;
+        var id=opts&&opts.id_property ? val[opts.id_property] : val.id;
+        html.el(_select,'option',{value: id},text);
+      }
     }
   };
 
-  if(opts&&opts.collection){ comboField.setCollection(opts.collection); }
-  if(opts&&opts.collection_url){
+  if(opts&&opts.collection){
+    comboField.setCollection(opts.collection);
+  } else if(opts&&opts.collection_url){
     $.get(opts.collection_url, function(data){
       comboField.setCollection(data);
     });
   }
 
+  // register listeners
+
+  comboField.addChangeListener=function(funct){
+    _change_listeners.push(funct);
+  };
+
+  comboField.removeChangeListener=function(funct){
+    // TODO: write remove listener code
+  };
+
+  comboField.onchange=function(evt){
+    for(var i=0,l=_change_listeners.length;i<l;i++){
+      _change_listeners[i](evt);
+    }
+  };
+
+  // parent combo listener
+
+  if(_parent_combo){
+    _parent_combo.addChangeListener(function(){
+      // simply "redisplay" collection
+      comboField.setCollection(_collection);
+    });
+  }
 
   return comboField;
 };

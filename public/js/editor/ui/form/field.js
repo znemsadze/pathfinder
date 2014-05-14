@@ -37,6 +37,9 @@ exports.textField=function(name,opts){
 exports.comboField=function(name,opts){
   var _select
     , _change_listeners=[]
+    , _collection
+    , _parent_combo=opts&&opts.parent_combo
+    , _parent_key=(opts&&opts.parent_key)||'parent_id'
     ;
 
   // basic combo field
@@ -48,15 +51,25 @@ exports.comboField=function(name,opts){
     return _select;
   });
 
+  comboField.getValue=function(){return _select.value;};
+  comboField.setValue=function(val){_select.value=val;}
+
   // manage collections
 
   comboField.setCollection=function(collection){
-    _select.innerHtml='';
-    for(var i=0,l=collection.length;i<l;i++){
-      var val=collection[i];
-      var text=opts&&opts.text_property ? val[opts.text_property] : val.text;
-      var id=opts&&opts.id_property ? val[opts.id_property] : val.id;
-      html.el(_select,'option',{value: id},text);
+    _select.innerText='';
+    _collection=collection;
+    if(_collection){
+      var filtered=_collection.filter(function(x){
+        if(!_parent_combo){ return true; }
+        return x[_parent_key]==_parent_combo.getValue();
+      });
+      for(var i=0,l=filtered.length;i<l;i++){
+        var val=filtered[i];
+        var text=opts&&opts.text_property ? val[opts.text_property] : val.text;
+        var id=opts&&opts.id_property ? val[opts.id_property] : val.id;
+        html.el(_select,'option',{value: id},text);
+      }
     }
   };
 
@@ -83,6 +96,15 @@ exports.comboField=function(name,opts){
       _change_listeners[i](evt);
     }
   };
+
+  // parent combo listener
+
+  if(_parent_combo){
+    _parent_combo.addChangeListener(function(){
+      // simply "redisplay" collection
+      comboField.setCollection(_collection);
+    });
+  }
 
   return comboField;
 };
