@@ -4,9 +4,7 @@
   t.delete_action ->(x){geo_delete_path_surface_url(id:x.id)}
   t.item_action ->(x){geo_up_path_surface_url(id:x.id)}, icon: '/icons/arrow-090.png', method:'post', condition:->(x){x.order_by>1}
   t.item_action ->(x){geo_down_path_surface_url(id:x.id)}, icon: '/icons/arrow-270.png', method:'post', condition:->(x){x.order_by<Geo::PathSurface.where(type:x.type).count}
-  t.complex_field i18n: 'order_by' do |c|
-    c.text_field 'type.name', after: '&mdash;'.html_safe
-    c.text_field 'order_by', tag: 'strong'
-  end
+  t.text_field 'order_by', tag: 'strong'
   t.text_field 'name', url: ->(x){geo_path_surface_url(id:x.id)}
+  t.text_field 'type.name', i18n: 'type'
 end%>
