@@ -538,6 +538,7 @@ module.exports=function(){
       var self=this;
 
       if(!uiInitialized){ initUI(self); }
+      form.setModel({});
 
       canEdit=true;
       map=self.map;
@@ -949,7 +950,9 @@ module.exports=function(fields,opts){
 
   _form.setModel=function(model){
     for(var i=0, l=_fields.length; i<l; i++){
-      _fields[i].setModel(_model);
+      var fld=_fields[i];
+      fld.setModel(model);
+      if(typeof fld.redisplay === 'function'){fld.redisplay();} // for parent combo fields
     }
     _model=model;
   };

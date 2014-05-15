@@ -19,6 +19,7 @@ module.exports=function(){
       var self=this;
 
       if(!uiInitialized){ initUI(self); }
+      form.setModel({});
 
       canEdit=true;
       map=self.map;
