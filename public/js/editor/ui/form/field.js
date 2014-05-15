@@ -155,7 +155,7 @@ exports.textArea=function(name, opts){
 
   textarea.getName=function(){return name;}
   textarea.getValue=function(){ return _innerElement.value; };
-  textarea.setValue=function(val){ _innerElement.value=val; };
+  textarea.setValue=function(val){ _innerElement.value=(val||''); };
   textarea.applyModel=function(model){ applyModelForSimpleField(textarea,model); }
   textarea.setModel=function(model){ setModelForSimpleField(textarea,model); }
 

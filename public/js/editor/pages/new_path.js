@@ -52,8 +52,9 @@ var initUI=function(self){
   var typeCombo=ui.form.comboField('type_id', {label: 'გზის სახეობა', collection_url: '/geo/pathtype.json', text_property: 'name'});
   var surfaceCombo=ui.form.comboField('surface_id', {label: 'გზის საფარი', collection_url: '/geo/pathsurface.json', text_property: 'name', parent_combo: typeCombo, parent_key: 'type_id'});
   var detailsCombo=ui.form.comboField('detail_id', {label: 'საფარის დეტალები', collection_url: '/geo/pathdetail.json', text_property: 'name', parent_combo: surfaceCombo, parent_key: 'surface_id'});
+  var descriptionText=ui.form.textArea('description', {label: 'შენიშვნები'});
 
-  var fields=[typeCombo, surfaceCombo, detailsCombo,];
+  var fields=[typeCombo, surfaceCombo, detailsCombo,descriptionText];
   var actions=[saveAction,cancelAction];
 
   form=ui.form.create(fields,{actions: actions});
