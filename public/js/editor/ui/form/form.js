@@ -22,6 +22,7 @@ module.exports=function(fields,opts){
     for(var i=0, l=_fields.length; i<l; i++){
       _fields[i].applyModel(_model);
     }
+    _model.errors={};
     return _model;
   }
 
