@@ -1,8 +1,9 @@
 var html=require('../html')
   ;
 
-var labeledField=function(label,callback){
+var standardField=function(label,callback){
   var fieldElement=html.el('div',{class: 'form-group'})
+    , errorElement=html.el('div',{class: 'text-danger'})
     , innerFieldElement=callback()
     ;
   if (label){
@@ -10,6 +11,15 @@ var labeledField=function(label,callback){
     fieldElement.appendChild(labelElement);
   }
   fieldElement.appendChild(innerFieldElement);
+  fieldElement.appendChild(errorElement);
+
+  fieldElement.setError=function(text){
+    errorElement.innerText=text;
+  };
+  fieldElement.clearError=function(){
+    errorElement.innerText='';
+  };
+
   return fieldElement;
 };
 
@@ -17,10 +27,19 @@ var applyModelForSimpleField=function(field,model){
   model[field.getName()]=field.getValue();
 };
 
+var setModelForSimpleField=function(field,model){
+  field.setValue(model[field.getName()]);
+  if (model.errors&&model.errors[field.getName()]){
+    field.setError(model.errors[field.getName()]);
+  } else {
+    field.clearError();
+  }
+};
+
 exports.textField=function(name,opts){
   var _innerElement;
 
-  var textField=labeledField(opts&&opts.label,function(){
+  var textField=standardField(opts&&opts.label,function(){
     var attributes={type:'text', class:'form-control'};
     if(opts&&opts.autofocus){ attributes.autofocus=true; }
     _innerElement=html.el('input', attributes);
@@ -31,6 +50,7 @@ exports.textField=function(name,opts){
   textField.getValue=function(){ return _innerElement.value; };
   textField.setValue=function(val){ _innerElement.value=val; };
   textField.applyModel=function(model){ applyModelForSimpleField(textField,model); }
+  textField.setModel=function(model){ setModelForSimpleField(textField,model); }
 
   return textField;
 };
@@ -45,7 +65,7 @@ exports.comboField=function(name,opts){
 
   // basic combo field
 
-  var comboField=labeledField(opts&&opts.label,function(){
+  var comboField=standardField(opts&&opts.label,function(){
     var attributes={class:'form-control'};
     if(opts&&opts.autofocus){ attributes.autofocus=true; }
     _select=html.el('select',attributes);
@@ -57,6 +77,7 @@ exports.comboField=function(name,opts){
   comboField.getValue=function(){ return _select.value; };
   comboField.setValue=function(val){ _select.value=val; }
   comboField.applyModel=function(model){ applyModelForSimpleField(comboField,model); }
+  comboField.setModel=function(model){ setModelForSimpleField(comboField,model); }
 
   // manage collections
 

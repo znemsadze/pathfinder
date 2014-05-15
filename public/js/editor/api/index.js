@@ -13,11 +13,25 @@ var pointsFromPath=function(path){
   return points;
 };
 
+var addError=function(model,field,message){
+  if(!field){ field='_toplevel'; }
+  if(!model.errors){ model.errors={}; }
+  if(!model.errors[field]){ model.errors[field]=[]; }
+  model.errors[field].push(message);
+};
+
 exports.newPath=function(model,callback){
-  var path=model.path;
+  var path=model.path
+    , detail_id=model.detail_id
+    ;
+
   if(path.getLength()>1){
+    if(!detail_id){
+      addError(model,'detail_id','აარჩიეთ საფარის დეტალი');
+      return false;
+    }
     var points=pointsFromPath(path);
-    var params={points:points, type_id:model.type_id, surface_id:model.surface_id, detail_id:model.detail_id};
+    var params={points:points, detail_id:detail_id};
     $.post(BASE_PATH+'/new_path',params,function(data){
       if(callback){ callback(data); }
     }).fail(function(err){

@@ -14,11 +14,25 @@ var pointsFromPath=function(path){
   return points;
 };
 
+var addError=function(model,field,message){
+  if(!field){ field='_toplevel'; }
+  if(!model.errors){ model.errors={}; }
+  if(!model.errors[field]){ model.errors[field]=[]; }
+  model.errors[field].push(message);
+};
+
 exports.newPath=function(model,callback){
-  var path=model.path;
+  var path=model.path
+    , detail_id=model.detail_id
+    ;
+
   if(path.getLength()>1){
+    if(!detail_id){
+      addError(model,'detail_id','აარჩიეთ საფარის დეტალი');
+      return false;
+    }
     var points=pointsFromPath(path);
-    var params={points:points, type_id:model.type_id, surface_id:model.surface_id, detail_id:model.detail_id};
+    var params={points:points, detail_id:detail_id};
     $.post(BASE_PATH+'/new_path',params,function(data){
       if(callback){ callback(data); }
     }).fail(function(err){
@@ -539,12 +553,14 @@ module.exports=function(){
 
 var initUI=function(self){
   var saveAction={label: 'გზის შენახვა', icon:'save', type:'success', action: function(){
-    var model=form.getModel(); model.path=path.getPath();
-    canEdit=!api.newPath(model, function(data){
+    form.clearErrors(); var model=form.getModel(); model.path=path.getPath();
+    var sent=api.newPath(model, function(data){
       path.setMap(null);
       map.loadData(data.id);
       self.openPage('root');
     });
+    if(!sent){ form.setModel(model); }
+    canEdit= !sent;
   }};
   var cancelAction={label:'გაუმება', icon:'times-circle',action: function(){
     path.setMap(null);
@@ -762,8 +778,9 @@ exports.dropdown=function(text,buttons,opts){
 var html=require('../html')
   ;
 
-var labeledField=function(label,callback){
+var standardField=function(label,callback){
   var fieldElement=html.el('div',{class: 'form-group'})
+    , errorElement=html.el('div',{class: 'text-danger'})
     , innerFieldElement=callback()
     ;
   if (label){
@@ -771,6 +788,15 @@ var labeledField=function(label,callback){
     fieldElement.appendChild(labelElement);
   }
   fieldElement.appendChild(innerFieldElement);
+  fieldElement.appendChild(errorElement);
+
+  fieldElement.setError=function(text){
+    errorElement.innerText=text;
+  };
+  fieldElement.clearError=function(){
+    errorElement.innerText='';
+  };
+
   return fieldElement;
 };
 
@@ -778,10 +804,19 @@ var applyModelForSimpleField=function(field,model){
   model[field.getName()]=field.getValue();
 };
 
+var setModelForSimpleField=function(field,model){
+  field.setValue(model[field.getName()]);
+  if (model.errors&&model.errors[field.getName()]){
+    field.setError(model.errors[field.getName()]);
+  } else {
+    field.clearError();
+  }
+};
+
 exports.textField=function(name,opts){
   var _innerElement;
 
-  var textField=labeledField(opts&&opts.label,function(){
+  var textField=standardField(opts&&opts.label,function(){
     var attributes={type:'text', class:'form-control'};
     if(opts&&opts.autofocus){ attributes.autofocus=true; }
     _innerElement=html.el('input', attributes);
@@ -792,6 +827,7 @@ exports.textField=function(name,opts){
   textField.getValue=function(){ return _innerElement.value; };
   textField.setValue=function(val){ _innerElement.value=val; };
   textField.applyModel=function(model){ applyModelForSimpleField(textField,model); }
+  textField.setModel=function(model){ setModelForSimpleField(textField,model); }
 
   return textField;
 };
@@ -806,7 +842,7 @@ exports.comboField=function(name,opts){
 
   // basic combo field
 
-  var comboField=labeledField(opts&&opts.label,function(){
+  var comboField=standardField(opts&&opts.label,function(){
     var attributes={class:'form-control'};
     if(opts&&opts.autofocus){ attributes.autofocus=true; }
     _select=html.el('select',attributes);
@@ -818,6 +854,7 @@ exports.comboField=function(name,opts){
   comboField.getValue=function(){ return _select.value; };
   comboField.setValue=function(val){ _select.value=val; }
   comboField.applyModel=function(model){ applyModelForSimpleField(comboField,model); }
+  comboField.setModel=function(model){ setModelForSimpleField(comboField,model); }
 
   // manage collections
 
@@ -911,7 +948,16 @@ module.exports=function(fields,opts){
   }
 
   _form.setModel=function(model){
+    for(var i=0, l=_fields.length; i<l; i++){
+      _fields[i].setModel(_model);
+    }
     _model=model;
+  };
+
+  _form.clearErrors=function(){
+    for(var i=0, l=_fields.length; i<l; i++){
+      _fields[i].clearError();
+    }
   };
 
   // actions

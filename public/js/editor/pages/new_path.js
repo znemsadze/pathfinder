@@ -34,12 +34,14 @@ module.exports=function(){
 
 var initUI=function(self){
   var saveAction={label: 'გზის შენახვა', icon:'save', type:'success', action: function(){
-    var model=form.getModel(); model.path=path.getPath();
-    canEdit=!api.newPath(model, function(data){
+    form.clearErrors(); var model=form.getModel(); model.path=path.getPath();
+    var sent=api.newPath(model, function(data){
       path.setMap(null);
       map.loadData(data.id);
       self.openPage('root');
     });
+    if(!sent){ form.setModel(model); }
+    canEdit= !sent;
   }};
   var cancelAction={label:'გაუმება', icon:'times-circle',action: function(){
     path.setMap(null);
