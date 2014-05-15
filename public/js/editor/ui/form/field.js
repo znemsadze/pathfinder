@@ -39,7 +39,7 @@ var setModelForSimpleField=function(field,model){
 exports.textField=function(name,opts){
   var _innerElement;
 
-  var textField=standardField(opts&&opts.label,function(){
+  var textField=standardField(opts&&opts.label, function(){
     var attributes={type:'text', class:'form-control'};
     if(opts&&opts.autofocus){ attributes.autofocus=true; }
     _innerElement=html.el('input', attributes);
@@ -141,4 +141,23 @@ exports.comboField=function(name,opts){
   }
 
   return comboField;
+};
+
+exports.textArea=function(name, opts){
+  var _innerElement;
+
+  var textarea=standardField(opts&&opts.label, function(){
+    var rows=(opts&&opts.rows)||3;
+    var attributes={class:'form-control',rows:rows};
+    _innerElement=html.el('textarea', attributes);
+    return _innerElement;
+  });
+
+  textarea.getName=function(){return name;}
+  textarea.getValue=function(){ return _innerElement.value; };
+  textarea.setValue=function(val){ _innerElement.value=val; };
+  textarea.applyModel=function(model){ applyModelForSimpleField(textarea,model); }
+  textarea.setModel=function(model){ setModelForSimpleField(textarea,model); }
+
+  return textarea;
 };
