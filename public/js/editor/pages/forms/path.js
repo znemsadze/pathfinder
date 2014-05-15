@@ -16,6 +16,6 @@ exports.form=function(opts){
   var fields=[typeCombo, surfaceCombo, detailsCombo,descriptionText];
   var actions=[saveAction,cancelAction];
 
-  var form=ui.form.create(fields,{actions: actions});
+  var form=ui.form.create(fields,{actions: actions, load_url:'/api/geo/path'});
   return form;
 };

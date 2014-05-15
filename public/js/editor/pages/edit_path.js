@@ -1,4 +1,5 @@
 var ui=require('../ui')
+  , forms=require('./forms')
   , api=require('../api')
   , geo=require('./geo')
   ;
@@ -6,21 +7,23 @@ var ui=require('../ui')
 var map
   , feature
   , path
+  // ui elements
+  , form
   , layout
   , uiInitialized=false
-  , toolbar=ui.button.toolbar([])
   , titleElement=ui.html.pageTitle('გზის შეცვლა')
-  , desriptionElement=ui.html.p('გზის შესაცვლელად გამოიყენეთ თქვენი მაუსი. რედაქტირების დასრულების შემდეგ დააჭირეთ შენახვის ღილაკს.',{style:'margin-top:8px;'})
-  , notLocked
+  , canEdit
   ;
 
 module.exports=function(){
   return {
     onEnter: function(){
       var self=this;
-      notLocked=true;
+      var id=self.params.feature.getId();
+      canEdit=true;
 
       if (!uiInitialized){ initUI(self); }
+      form.loadModel(id);
 
       map=self.map;
       feature=self.params.feature;
@@ -35,30 +38,29 @@ module.exports=function(){
 };
 
 var initUI=function(self){
-  var btnBack=ui.button.actionButton('უკან', function(){
-    path.setMap(null);
-    map.data.add(feature);
-    self.openPage('root');
-  }, {icon:'arrow-left'});
-
-  var btnSave=ui.button.actionButton('გზის შენახვა', function(){
-    notLocked=!api.editPath(feature.getId(),path.getPath(), function(data){
+  var saveAction=function(){
+    form.clearErrors(); var model=form.getModel(); model.path=path.getPath();
+    var sent=!api.editPath(feature.getId(), model, function(data){
       path.setMap(null);
       map.loadData(data.id);
       self.openPage('root');
-      btnSave.setWaiting(false);
     });
-    btnSave.setWaiting(!notLocked);
-  }, {icon:'save', type:'success'});
+    canEdit= !sent;
+    if(!sent){ form.setModel(model); }
+  };
 
-  toolbar.addButton(btnBack);
-  toolbar.addButton(btnSave);
+  var cancelAction=function(){
+    path.setMap(null);
+    map.data.add(feature);
+    self.openPage('root');
+  };
+
+  form=forms.path.form({save_action:saveAction, cancel_action: cancelAction});
 
   layout=ui.layout.vertical({
     children: [
       titleElement,
-      toolbar,
-      desriptionElement,
+      form
     ]
   });
 
@@ -92,7 +94,7 @@ var initMap=function(){
   map.data.remove(feature);
 
   var extendPath=function(evt){
-    if(notLocked){
+    if(canEdit){
       path.getPath().push(evt.latLng);
     }
   };
@@ -101,7 +103,7 @@ var initMap=function(){
   google.maps.event.addListener(marker, 'click', extendPath);
 
   google.maps.event.addListener(path, 'dblclick', function(evt){
-    if(notLocked){
+    if(canEdit){
       if(typeof evt.vertex==='number'){
         path.getPath().removeAt(evt.vertex,1);
       }
@@ -109,21 +111,21 @@ var initMap=function(){
   });
 
   map.data.addListener('mouseover', function(evt) {
-    if(notLocked){
+    if(canEdit){
       map.data.overrideStyle(evt.feature,{strokeWeight:10,strokeColor:'#00FF00'});
       marker.setMap(map);
     }
   });
 
   map.data.addListener('mouseout', function(evt) {
-    if(notLocked){
+    if(canEdit){
       map.data.revertStyle();
       marker.setMap(null);
     }
   });
 
   map.data.addListener('mousemove', function(evt){
-    if(notLocked){
+    if(canEdit){
       marker.setPosition(geo.closestFeaturePoint(evt.feature,evt.latLng));
     }
   });

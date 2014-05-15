@@ -5,7 +5,7 @@ var html=require('../html')
 module.exports=function(fields,opts){
   var _model={}
     , _fields=fields||[]
-    , _form=html.el('div')
+    , _form=html.el('div',{class:'form'})
     , _toolbar=button.toolbar()
     ;
 
@@ -38,6 +38,15 @@ module.exports=function(fields,opts){
   _form.clearErrors=function(){
     for(var i=0, l=_fields.length; i<l; i++){
       _fields[i].clearError();
+    }
+  };
+
+  _form.loadModel=function(id){
+    if(opts&&opts.load_url){
+      $.get([opts.load_url, '?id=', id].join(''), function(data){
+        console.log(data);
+        _form.setModel(data);
+      });
     }
   };
 
