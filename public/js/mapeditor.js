@@ -196,7 +196,7 @@ module.exports=function(){
 var initUI=function(self){
   var saveAction=function(){
     form.clearErrors(); var model=form.getModel(); model.path=path.getPath();
-    var sent=!api.editPath(feature.getId(), model, function(data){
+    var sent=api.editPath(feature.getId(), model, function(data){
       path.setMap(null);
       map.loadData(data.id);
       self.openPage('root');
@@ -869,6 +869,7 @@ exports.comboField=function(name,opts){
     , _collection
     , _parent_combo=opts&&opts.parent_combo
     , _parent_key=(opts&&opts.parent_key)||'parent_id'
+    , _value
     ;
 
   // basic combo field
@@ -883,7 +884,7 @@ exports.comboField=function(name,opts){
   comboField.childCombos=[];
   comboField.getName=function(){ return name; }
   comboField.getValue=function(){ return _select.value; };
-  comboField.setValue=function(val){ _select.value=val; }
+  comboField.setValue=function(val){ _select.value=val; _value=val; }
   comboField.applyModel=function(model){ applyModelForSimpleField(comboField,model); }
   comboField.setModel=function(model){ setModelForSimpleField(comboField,model); }
 
@@ -935,6 +936,7 @@ exports.comboField=function(name,opts){
 
   comboField.redisplay=function(){
     comboField.setCollection(_collection);
+    comboField.setValue(_value);
     var childCombos=comboField.childCombos;
     for(var i=0,l=childCombos.length;i<l;i++){
       var combo=childCombos[i];

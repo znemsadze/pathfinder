@@ -40,7 +40,7 @@ module.exports=function(){
 var initUI=function(self){
   var saveAction=function(){
     form.clearErrors(); var model=form.getModel(); model.path=path.getPath();
-    var sent=!api.editPath(feature.getId(), model, function(data){
+    var sent=api.editPath(feature.getId(), model, function(data){
       path.setMap(null);
       map.loadData(data.id);
       self.openPage('root');
