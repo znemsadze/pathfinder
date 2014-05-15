@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Api::GeoController < ApiController
+  def path; @path=Geo::Path.find(params[:id]) end
+
   def new_path
     parameter_points=params[:points].map{|k,v| [v['lat'].to_f,v['lng'].to_f]}
     path=Geo::Path.new_path(parameter_points,params)
