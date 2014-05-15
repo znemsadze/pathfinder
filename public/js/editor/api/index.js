@@ -23,6 +23,7 @@ var addError=function(model,field,message){
 exports.newPath=function(model,callback){
   var path=model.path
     , detail_id=model.detail_id
+    , description=model.description
     ;
 
   if(path.getLength()>1){
@@ -31,7 +32,7 @@ exports.newPath=function(model,callback){
       return false;
     }
     var points=pointsFromPath(path);
-    var params={points:points, detail_id:detail_id};
+    var params={points:points, detail_id:detail_id, description:description};
     $.post(BASE_PATH+'/new_path',params,function(data){
       if(callback){ callback(data); }
     }).fail(function(err){
