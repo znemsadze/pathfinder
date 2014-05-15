@@ -140,7 +140,7 @@ var initRouter=function(){
   // start with root page
   app.openPage('root');
 };
-},{"./api":1,"./pages":7,"./router":9,"./ui":15}],3:[function(require,module,exports){
+},{"./api":1,"./pages":9,"./router":11,"./ui":17}],3:[function(require,module,exports){
 var app=require('./app');
 
 app.start();
@@ -276,7 +276,34 @@ var initMap=function(){
   });
 };
 
-},{"../api":1,"../ui":15,"./geo":5}],5:[function(require,module,exports){
+},{"../api":1,"../ui":17,"./geo":7}],5:[function(require,module,exports){
+var path=require('./path')
+  ;
+
+exports.path=path;
+},{"./path":6}],6:[function(require,module,exports){
+var ui=require('../../ui')
+  ;
+
+exports.form=function(opts){
+  var save_f=opts.save_action;
+  var cancel_f=opts.cancel_action;
+
+  var saveAction={label: 'გზის შენახვა', icon:'save', type:'success', action: save_f};
+  var cancelAction={label:'გაუმება', icon:'times-circle', action: cancel_f};
+
+  var typeCombo=ui.form.comboField('type_id', {label: 'გზის სახეობა', collection_url: '/geo/pathtype.json', text_property: 'name'});
+  var surfaceCombo=ui.form.comboField('surface_id', {label: 'გზის საფარი', collection_url: '/geo/pathsurface.json', text_property: 'name', parent_combo: typeCombo, parent_key: 'type_id'});
+  var detailsCombo=ui.form.comboField('detail_id', {label: 'საფარის დეტალები', collection_url: '/geo/pathdetail.json', text_property: 'name', parent_combo: surfaceCombo, parent_key: 'surface_id'});
+  var descriptionText=ui.form.textArea('description', {label: 'შენიშვნები'});
+
+  var fields=[typeCombo, surfaceCombo, detailsCombo,descriptionText];
+  var actions=[saveAction,cancelAction];
+
+  var form=ui.form.create(fields,{actions: actions});
+  return form;
+};
+},{"../../ui":17}],7:[function(require,module,exports){
 exports.resetMap=function(map){
   google.maps.event.clearInstanceListeners(map);
   google.maps.event.clearInstanceListeners(map.data);
@@ -332,7 +359,7 @@ exports.calcFeatureDistance=function(map,feature){
   }
   return dist/1000;
 };
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var ui=require('../ui')
   , api=require('../api')
   , geo=require('./geo')
@@ -508,7 +535,7 @@ var initMap=function(){
   });
 };
 
-},{"../api":1,"../ui":15,"./geo":5}],7:[function(require,module,exports){
+},{"../api":1,"../ui":17,"./geo":7}],9:[function(require,module,exports){
 var home=require('./home')
   , new_path=require('./new_path')
   , edit_path=require('./edit_path')
@@ -517,19 +544,21 @@ var home=require('./home')
 exports.home=home;
 exports.new_path=new_path;
 exports.edit_path=edit_path;
-},{"./edit_path":4,"./home":6,"./new_path":8}],8:[function(require,module,exports){
+},{"./edit_path":4,"./home":8,"./new_path":10}],10:[function(require,module,exports){
 var ui=require('../ui')
+  , forms=require('./forms')
   , api=require('../api')
   , geo=require('./geo')
   ;
 
 var map
   , marker
+  , path
+  // ui elements
   , layout
   , uiInitialized=false
   , titleElement=ui.html.pageTitle('ახალი გზის დამატება')
   , canEdit=true
-  , path
   , form
   ;
 
@@ -554,7 +583,7 @@ module.exports=function(){
 };
 
 var initUI=function(self){
-  var saveAction={label: 'გზის შენახვა', icon:'save', type:'success', action: function(){
+  var saveAction=function(){
     form.clearErrors(); var model=form.getModel(); model.path=path.getPath();
     var sent=api.newPath(model, function(data){
       path.setMap(null);
@@ -563,28 +592,16 @@ var initUI=function(self){
     });
     if(!sent){ form.setModel(model); }
     canEdit= !sent;
-  }};
-  var cancelAction={label:'გაუმება', icon:'times-circle',action: function(){
+  };
+
+  var cancelAction=function(){
     path.setMap(null);
     self.openPage('root');
-  }};
+  };
 
-  var typeCombo=ui.form.comboField('type_id', {label: 'გზის სახეობა', collection_url: '/geo/pathtype.json', text_property: 'name'});
-  var surfaceCombo=ui.form.comboField('surface_id', {label: 'გზის საფარი', collection_url: '/geo/pathsurface.json', text_property: 'name', parent_combo: typeCombo, parent_key: 'type_id'});
-  var detailsCombo=ui.form.comboField('detail_id', {label: 'საფარის დეტალები', collection_url: '/geo/pathdetail.json', text_property: 'name', parent_combo: surfaceCombo, parent_key: 'surface_id'});
-  var descriptionText=ui.form.textArea('description', {label: 'შენიშვნები'});
+  form=forms.path.form({save_action:saveAction, cancel_action: cancelAction});
 
-  var fields=[typeCombo, surfaceCombo, detailsCombo,descriptionText];
-  var actions=[saveAction,cancelAction];
-
-  form=ui.form.create(fields,{actions: actions});
-
-  layout=ui.layout.vertical({
-    children: [
-      titleElement,
-      form
-    ]
-  });
+  layout=ui.layout.vertical({children: [ titleElement, form ] });
 
   uiInitialized=true;
 };
@@ -649,7 +666,7 @@ var initMap=function(){
     }
   });
 };
-},{"../api":1,"../ui":15,"./geo":5}],9:[function(require,module,exports){
+},{"../api":1,"../ui":17,"./forms":5,"./geo":7}],11:[function(require,module,exports){
 var map
   , sidebar
   , toolbar
@@ -704,7 +721,7 @@ var openPage=function(name,params){
   }
 };
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils')
   ;
@@ -777,7 +794,7 @@ exports.dropdown=function(text,buttons,opts){
   var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":14,"./utils":17}],11:[function(require,module,exports){
+},{"./html":16,"./utils":19}],13:[function(require,module,exports){
 var html=require('../html')
   ;
 
@@ -875,6 +892,7 @@ exports.comboField=function(name,opts){
         var id=opts&&opts.id_property ? val[opts.id_property] : val.id;
         html.el(_select,'option',{value: id},text);
       }
+      comboField.onchange();
     }
   };
 
@@ -941,7 +959,7 @@ exports.textArea=function(name, opts){
 
   return textarea;
 };
-},{"../html":14}],12:[function(require,module,exports){
+},{"../html":16}],14:[function(require,module,exports){
 var html=require('../html')
   , button=require('../button')
   ;
@@ -1000,7 +1018,7 @@ module.exports=function(fields,opts){
   return _form;
 };
 
-},{"../button":10,"../html":14}],13:[function(require,module,exports){
+},{"../button":12,"../html":16}],15:[function(require,module,exports){
 var form=require('./form')
   , field=require('./field')
   ;
@@ -1009,7 +1027,7 @@ exports.create=form;
 exports.textField=field.textField;
 exports.comboField=field.comboField;
 exports.textArea=field.textArea;
-},{"./field":11,"./form":12}],14:[function(require,module,exports){
+},{"./field":13,"./form":14}],16:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -1108,7 +1126,7 @@ exports.p=function(text,opts){
   return p; 
 };
 
-},{"./utils":17}],15:[function(require,module,exports){
+},{"./utils":19}],17:[function(require,module,exports){
 var button=require('./button')
   , layout=require('./layout')
   , html=require('./html')
@@ -1119,7 +1137,7 @@ exports.html=html;
 exports.button=button;
 exports.layout=layout;
 exports.form=form;
-},{"./button":10,"./form":13,"./html":14,"./layout":16}],16:[function(require,module,exports){
+},{"./button":12,"./form":15,"./html":16,"./layout":18}],18:[function(require,module,exports){
 var html=require('./html')
  ;
 
@@ -1190,7 +1208,7 @@ exports.card=function(opts){
 
   return layout;
 };
-},{"./html":14}],17:[function(require,module,exports){
+},{"./html":16}],19:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
 exports.fieldValue=function(object,name){ return object&&object[name]; };
