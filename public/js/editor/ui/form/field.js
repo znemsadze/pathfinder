@@ -95,6 +95,7 @@ exports.comboField=function(name,opts){
         var id=opts&&opts.id_property ? val[opts.id_property] : val.id;
         html.el(_select,'option',{value: id},text);
       }
+      comboField.onchange();
     }
   };
 
