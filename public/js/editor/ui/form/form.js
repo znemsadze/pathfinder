@@ -44,7 +44,6 @@ module.exports=function(fields,opts){
   _form.loadModel=function(id){
     if(opts&&opts.load_url){
       $.get([opts.load_url, '?id=', id].join(''), function(data){
-        console.log(data);
         _form.setModel(data);
       });
     }

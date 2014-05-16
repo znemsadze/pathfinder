@@ -76,12 +76,15 @@ exports.comboField=function(name,opts){
   comboField.childCombos=[];
   comboField.getName=function(){ return name; }
   comboField.getValue=function(){
-    var val=_select.value||_value;
-    if (!val){ val=collection[0]; }
-    return val;
+    return _select.value;
   };
   comboField.setValue=function(val){
-    _select.value=val;
+    var selectedVal=val;
+    if(!selectedVal){
+      var x=currentCollection()[0];
+      if(x){ selectedVal=getId(x); }
+    }
+    _select.value=selectedVal;
     _value=val;
   }
   comboField.applyModel=function(model){ applyModelForSimpleField(comboField,model); }
@@ -89,21 +92,25 @@ exports.comboField=function(name,opts){
 
   // manage collections
 
+  var getId=function(val){ return (opts&&opts.id_property ? val[opts.id_property] : val.id); };
+  var getText=function(val){ return (opts&&opts.text_property ? val[opts.text_property] : val.text); }
+  var currentCollection=function(){
+    return _collection ? _collection.filter(function(x){
+      if(!_parent_combo){ return true; }
+      return x[_parent_key]==_parent_combo.getValue();
+    }) : [];
+  };
+
   comboField.setCollection=function(collection){
     _select.innerText='';
     _collection=collection;
     if(_collection){
-      var filtered=_collection.filter(function(x){
-        if(!_parent_combo){ return true; }
-        return x[_parent_key]==_parent_combo.getValue();
-      });
+      var filtered=currentCollection();
       for(var i=0,l=filtered.length;i<l;i++){
         var val=filtered[i];
-        var text=opts&&opts.text_property ? val[opts.text_property] : val.text;
-        var id=opts&&opts.id_property ? val[opts.id_property] : val.id;
-        html.el(_select,'option',{value: id},text);
+        html.el(_select,'option',{value: getId(val)},getText(val));
       }
-      comboField.onchange();
+      //comboField.redisplay();
     }
   };
 
