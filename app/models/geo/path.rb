@@ -81,7 +81,7 @@ class Geo::Path
       unless path.edge?(point)
         points=path.points
         idx=points.index(point)
-        new_path=Geo::Path.create(detail:self.detail, description:self.description)
+        new_path=Geo::Path.create(detail:path.detail, description:path.description)
         points[idx..-1].each do |p|
           p.path_ids.push(new_path.id)
           unless p==point
