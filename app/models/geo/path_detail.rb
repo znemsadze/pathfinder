@@ -36,5 +36,5 @@ class Geo::PathDetail
     end
   end
 
-  def can_delete?; true end
+  def can_delete?; Geo::Path.where(detail:self).count==0 end
 end
