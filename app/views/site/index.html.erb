@@ -2,16 +2,16 @@
 <div class="row">
   <!-- main column -->
   <div class="col-sm-6">
-    <p>
+    <h3 class="page-header">
+      <i class="fa fa-road"></i>
+      გზების მართვა
+    </h3>
       <a class="btn btn-default" href="<%=geo_map_url%>" data-no-turbolink>
-        <i class="fa fa-globe"></i> ობიექტების ნახვა და რედაქტირება
-      </a>
-    </p>
-    <p>
+        <i class="fa fa-pencil"></i> გზების შეცვლა
+      </a> |
       <%=link_to 'გზის სახეობები', geo_path_types_url %> |
       <%=link_to 'გზის საფარი', geo_path_surfaces_url %> |
       <%=link_to 'გზის დეტალები', geo_path_details_url %>
-    </p>
   </div>
 
 </div>
