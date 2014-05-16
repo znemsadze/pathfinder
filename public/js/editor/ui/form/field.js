@@ -75,8 +75,15 @@ exports.comboField=function(name,opts){
 
   comboField.childCombos=[];
   comboField.getName=function(){ return name; }
-  comboField.getValue=function(){ return _select.value; };
-  comboField.setValue=function(val){ _select.value=val; _value=val; }
+  comboField.getValue=function(){
+    var val=_select.value||_value;
+    if (!val){ val=collection[0]; }
+    return val;
+  };
+  comboField.setValue=function(val){
+    _select.value=val;
+    _value=val;
+  }
   comboField.applyModel=function(model){ applyModelForSimpleField(comboField,model); }
   comboField.setModel=function(model){ setModelForSimpleField(comboField,model); }
 
