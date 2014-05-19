@@ -18,6 +18,7 @@ gem 'bootstrap-will_paginate'
 gem 'ka'
 
 gem 'libxml-ruby'
+gem 'rubyzip'
 
 gem 'prawn'
 gem 'prawn_rails'
