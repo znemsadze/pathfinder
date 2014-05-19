@@ -7,8 +7,8 @@ class Objects::Tower
   field :kmlid, type: String
   field :name, type: String
 
-  def self.extract_from_kml(file)
-    parser=XML::Parser.file file
+  def self.extract_from_kml(xml)
+    parser=XML::Parser.string xml
     doc=parser.parse ; root=doc.child
     kmlns="kml:#{KMLNS}"
     placemarks=doc.child.find '//kml:Placemark',kmlns

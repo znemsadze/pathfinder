@@ -9,9 +9,11 @@ class Objects::TowerTest < ActiveSupport::TestCase
   test 'parsing KML file' do
     clear_db
     assert_equal 0, Objects::Tower.count
-    Objects::Tower.extract_from_kml kmlpath('towers.kml')
+
+    xml=File.read(kmlpath('towers.kml'))
+    Objects::Tower.extract_from_kml xml
     assert_equal 194, Objects::Tower.count
-    Objects::Tower.extract_from_kml kmlpath('towers.kml')
+    Objects::Tower.extract_from_kml xml
     assert_equal 194, Objects::Tower.count
   end
 end
