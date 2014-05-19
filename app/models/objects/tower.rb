@@ -3,6 +3,7 @@ require 'xml'
 class Objects::Tower
   include Mongoid::Document
   include Objects::Coordinate
+  include Objects::Kml
 
   field :kmlid, type: String
   field :name, type: String
@@ -16,7 +17,7 @@ class Objects::Tower
       id=placemark.attributes['id']
       name=placemark.find('./kml:name',kmlns).first.content
       coord=placemark.find('./kml:Point/kml:coordinates',kmlns).first.content
-      obj=Objects::Tower.where(kmlid:id).first || Objects::Tower.new(kmlid:id)
+      obj=Objects::Tower.where(kmlid:id).first || Objects::Tower.create(kmlid:id)
       obj.name=name ; obj.set_coordinate(coord)
       obj.save
     end

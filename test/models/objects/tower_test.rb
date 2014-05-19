@@ -3,7 +3,6 @@ require 'test_helper'
 
 class Objects::TowerTest < ActiveSupport::TestCase
   def clear_db; make_clear_state end
-
   def kmlpath(file); "#{Rails.root}/test/data/#{file}" end
 
   test 'parsing KML file' do
