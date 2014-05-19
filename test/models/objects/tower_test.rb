@@ -11,9 +11,9 @@ class Objects::TowerTest < ActiveSupport::TestCase
     assert_equal 0, Objects::Tower.count
 
     xml=File.read(kmlpath('towers.kml'))
-    Objects::Tower.extract_from_kml xml
+    Objects::Tower.from_kml xml
     assert_equal 194, Objects::Tower.count
-    Objects::Tower.extract_from_kml xml
+    Objects::Tower.from_kml xml
     assert_equal 194, Objects::Tower.count
   end
 end

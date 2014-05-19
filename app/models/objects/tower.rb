@@ -7,7 +7,7 @@ class Objects::Tower
   field :kmlid, type: String
   field :name, type: String
 
-  def self.extract_from_kml(xml)
+  def self.from_kml(xml)
     parser=XML::Parser.string xml
     doc=parser.parse ; root=doc.child
     kmlns="kml:#{KMLNS}"

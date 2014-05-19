@@ -14,7 +14,7 @@ class Objects::TowersController < ApplicationController
         zip_file.each do |entry|
           if 'kml'==entry.name[-3..-1]
             kml=entry.get_input_stream.read
-            Objects::Tower.extract_from_kml(kml)
+            Objects::Tower.from_kml(kml)
           end
         end
       end

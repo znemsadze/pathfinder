@@ -13,7 +13,6 @@ module Objects::Coordinate
     self.lng=coords[0] ; self.lat=coords[1] ; self.alt=coords[2]
   end
 
-  def coordinates; "#{self.lat} x #{self.lng}" end
   def position_latitude; self.lat end
   def position_longitude; self.lng end
 end
