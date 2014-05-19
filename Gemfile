@@ -17,6 +17,8 @@ gem 'forma', '~>0.1'
 gem 'bootstrap-will_paginate'
 gem 'ka'
 
+gem 'libxml-ruby'
+
 gem 'prawn'
 gem 'prawn_rails'
 gem 'axlsx_rails'
