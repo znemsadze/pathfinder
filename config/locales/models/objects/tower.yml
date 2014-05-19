@@ -4,3 +4,6 @@ ka:
       kmlid: kmlID
       name: დასახელება
       coordinates: კოორდინატები
+      lat: განედი
+      lng: გრძედი
+      position: მდებარეობა

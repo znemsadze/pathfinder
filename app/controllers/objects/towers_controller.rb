@@ -22,6 +22,11 @@ class Objects::TowersController < ApplicationController
     end
   end
 
+  def show
+    @title='ანძის თვისებები'
+    @tower=Objects::Tower.find(params[:id])
+  end
+
   protected
   def nav
     @nav=super

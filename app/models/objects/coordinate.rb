@@ -14,4 +14,6 @@ module Objects::Coordinate
   end
 
   def coordinates; "#{self.lat} x #{self.lng}" end
+  def position_latitude; self.lat end
+  def position_longitude; self.lng end
 end

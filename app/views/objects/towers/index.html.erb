@@ -1,6 +1,7 @@
 <%=table_for @towers, title: @title, icon: '/icons/tower.png', collapsible: true do |t|
   t.title_action objects_upload_towers_url, label: 'მონაცემების ატვირთვა', icon: '/icons/upload-cloud.png'
-  t.text_field 'kmlid', tag: 'code'
+  t.item_action ->(x){objects_tower_url(id:x.id)}, icon: '/icons/eye.png'
+  t.text_field 'kmlid', tag: 'code', url: ->(x){objects_tower_url(id:x.id)}
   t.text_field 'name'
   t.complex_field i18n: 'coordinates' do |t|
     t.text_field 'lat', tag: 'code', after: '&times'.html_safe

@@ -1,0 +1,7 @@
+<%=view_for @tower, title: @title, icon: '/icons/tower.png', collapsible: true do |f|
+  f.text_field 'kmlid', tag: 'code'
+  f.text_field 'name'
+  f.text_field 'lat'
+  f.text_field 'lng'
+  f.map_field 'position'
+end%>
