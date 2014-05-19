@@ -2,15 +2,23 @@
 require 'xml'
 class Objects::Tower
   include Mongoid::Document
+  include Objects::Coordinate
 
   field :kmlid, type: String
   field :name, type: String
-  field :description, type: String
-  field :styleUrl, type: String
-  filed :lng, type: Float
-  field :lat, type: Float
 
-  def self.extract_from_kml(file_name)
-
+  def self.extract_from_kml(file)
+    parser=XML::Parser.file file
+    doc=parser.parse ; root=doc.child
+    kmlns="kml:#{KMLNS}"
+    placemarks=doc.child.find '//kml:Placemark',kmlns
+    placemarks.each do |placemark|
+      id=placemark.attributes['id']
+      name=placemark.find('./kml:name',kmlns).first.content
+      coord=placemark.find('./kml:Point/kml:coordinates',kmlns).first.content
+      obj=Objects::Tower.where(kmlid:id).first || Objects::Tower.new(kmlid:id)
+      obj.name=name ; obj.set_coordinate(coord)
+      obj.save
+    end
   end
 end
