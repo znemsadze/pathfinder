@@ -1,0 +1,15 @@
+<h2 class="page-header"><%=@title%></h2>
+
+<div class="text-muted" style="margin-bottom:16px;">
+  ანძების შესახებ ინფორმაცია უნდა იყოს მოცემული KMZ ფაილის სახით.
+</div>
+
+<%=form_tag request.url, multipart: true do%>
+  <div class="form-group">
+    <label>აარჩიეთ ფაილი:</label>
+    <%=file_field_tag 'data'%>
+  </div>
+  <div>
+    <button class="btn btn-primary" type="submit">შენახვა</button>
+  </div>
+<%end%>

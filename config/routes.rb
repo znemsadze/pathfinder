@@ -35,6 +35,14 @@ Pathfinder::Application.routes.draw do
     end
   end
 
+  namespace 'objects' do
+    scope '/towers', controller: 'towers' do
+      get '/', action: 'index', as: 'towers'
+      get '/show/:id', action: 'show', as: 'tower'
+      match '/upload', action: 'upload', via: ['get','post'], as: 'upload_towers'
+    end
+  end
+
   namespace 'geo' do
     scope '/map', controller: 'map' do
       get '/', action: 'index', as: 'map'

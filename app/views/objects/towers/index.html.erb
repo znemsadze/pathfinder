@@ -1,0 +1,10 @@
+<%=table_for @towers, title: @title, icon: '/icons/tower.png', collapsible: true do |t|
+  t.title_action objects_upload_towers_url, label: 'მონაცემების ატვირთვა', icon: '/icons/upload-cloud.png'
+  t.text_field 'kmlid', tag: 'code'
+  t.text_field 'name'
+  t.complex_field i18n: 'coordinates' do |t|
+    t.text_field 'lat', tag: 'code', after: '&times'.html_safe
+    t.text_field 'lng', tag: 'code'
+  end
+  t.paginate records: 'ჩანაწერი'
+end%>

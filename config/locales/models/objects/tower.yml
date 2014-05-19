@@ -1,0 +1,6 @@
+ka:
+  models:
+    objects_tower:
+      kmlid: kmlID
+      name: დასახელება
+      coordinates: კოორდინატები
