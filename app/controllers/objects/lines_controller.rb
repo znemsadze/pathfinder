@@ -4,7 +4,7 @@ require 'zip'
 class Objects::LinesController < ApplicationController
   def index
     @title='ხაზები'
-    @towers=Objects::Line.asc(:kmlid).paginate(per_page:10, page: params[:page])
+    @lines=Objects::Line.asc(:kmlid).paginate(per_page:10, page: params[:page])
   end
 
   def upload
@@ -18,13 +18,13 @@ class Objects::LinesController < ApplicationController
           end
         end
       end
-      redirect_to objects_towers_url, notice: 'მონაცემები ატვირთულია'
+      redirect_to objects_lines_url, notice: 'მონაცემები ატვირთულია'
     end
   end
 
   def show
     @title='ხაზის თვისებები'
-    @tower=Objects::Line.find(params[:id])
+    @line=Objects::Line.find(params[:id])
   end
 
   protected
