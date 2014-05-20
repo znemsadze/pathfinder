@@ -42,7 +42,7 @@ Pathfinder::Application.routes.draw do
       match '/upload', action: 'upload', via: ['get','post'], as: 'upload_towers'
     end
     scope '/lines', controller: 'lines' do
-      get '/', action: 'index', as: 'line'
+      get '/', action: 'index', as: 'lines'
       get '/show/:id', action: 'show', as: 'line'
       match '/upload', action: 'upload', via: ['get','post'], as: 'upload_lines'
     end
