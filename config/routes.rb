@@ -88,6 +88,9 @@ Pathfinder::Application.routes.draw do
       post '/edit_path', action: 'edit_path', as: 'edit_path'
       post '/delete_path', action: 'delete_path', as: 'delete_path'
     end
+    scope '/objects', controller: 'objects' do
+      get '/all', action: 'all', as: 'all_objects'
+    end
   end
 
   root 'site#index'

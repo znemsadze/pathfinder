@@ -124,7 +124,8 @@ var initMap=function(){
   };
   map=new google.maps.Map(mapElement, mapOptions);
   map.loadData=function(id){
-    var url=id ? '/geo/map.json?id='+id : '/geo/map.json';
+    //var url=id ? '/geo/map.json?id='+id : '/geo/map.json';
+    var url='/api/objects/all.json';
     map.data.loadGeoJson(url);
   };
   map.data.setStyle({
