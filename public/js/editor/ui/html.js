@@ -86,7 +86,9 @@ exports.el=function(){
 };
 
 exports.pageTitle=function(title,tag){
-  return exports.el(tag||'h3',{class:'page-header'},title);
+  var el=exports.el(tag||'h3',{class:'page-header'},title);
+  el.setTitle=function(title){ el.innerText=title; };
+  return el;
 };
 
 exports.p=function(text,opts){

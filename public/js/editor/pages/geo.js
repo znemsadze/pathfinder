@@ -58,8 +58,14 @@ exports.calcFeatureDistance=function(map,feature){
 
 // feature description
 
-var typeName=function(type){
+exports.getType=function(f){ return f.getProperty('class'); };
+exports.isLine=function(f){ return 'Objects::Line'==exports.getType(f); }
+exports.isPath=function(f){ return 'Objects::Path'==exports.getType(f); }
+
+exports.typeName=function(type){
   if('Objects::Line'===type){ return 'გადამცემი ხაზი'; }
+  else if('Objects::Path'==type){ return 'გზა'; }
+  return type;
 };
 
 var lineDescription=function(map,f){
@@ -76,7 +82,7 @@ exports.featureDescription=function(map,f){
     ;
 
   var texts=['<div class="panel panel-default">'];
-  texts.push('<div class="panel-heading"><h4 style="margin:0;padding:0;">',typeName(type),'</h4></div>');
+  texts.push('<div class="panel-heading"><h4 style="margin:0;padding:0;">',exports.typeName(type),'</h4></div>');
   if('Objects::Line'===type){ bodyDescription=lineDescription(map,f); }
   texts.push('<div class="panel-body">',bodyDescription,'</div>');
   texts.push('</div>');

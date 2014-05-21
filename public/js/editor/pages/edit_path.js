@@ -4,30 +4,36 @@ var ui=require('../ui')
   , geo=require('./geo')
   ;
 
-var map
-  , feature
-  , path
-  // ui elements
-  , form
-  , layout
-  , uiInitialized=false
+var self, canEdit
+  , map, feature, featureType, marker, path
+  , form, layout, uiInitialized=false
   , titleElement=ui.html.pageTitle('გზის შეცვლა')
-  , canEdit
   ;
+
+var isNewMode=function(){ return !feature; };
+
+var resetTitle=function(){
+  var type=self.params.type;
+  if(isNewMode()){
+    titleElement.setTitle('ახალი: '+geo.typeName(type));
+  } else{
+    titleElement.setTitle('შეცვლა: '+geo.typeName(type));
+  }
+};
 
 module.exports=function(){
   return {
     onEnter: function(){
-      var self=this;
-      var id=self.params.feature.getId();
-      canEdit=true;
+      self=this;
 
       if (!uiInitialized){ initUI(self); }
-      form.loadModel(id);
+      canEdit=true;
+      // form.loadModel(id);
 
       map=self.map;
       feature=self.params.feature;
       initMap();
+      resetTitle();
 
       return layout;
     },
@@ -39,31 +45,25 @@ module.exports=function(){
 
 var initUI=function(self){
   var saveAction=function(){
-    form.clearErrors(); var model=form.getModel(); model.path=path.getPath();
-    var sent=api.editPath(feature.getId(), model, function(data){
-      path.setMap(null);
-      map.loadData(data.id);
-      self.openPage('root');
-    });
-    canEdit= !sent;
-    if(!sent){ form.setModel(model); }
+    // form.clearErrors(); var model=form.getModel(); model.path=path.getPath();
+    // var sent=api.editPath(feature.getId(), model, function(data){
+    //   path.setMap(null);
+    //   map.loadData(data.id);
+    //   self.openPage('root');
+    // });
+    // canEdit= !sent;
+    // if(!sent){ form.setModel(model); }
   };
 
   var cancelAction=function(){
     path.setMap(null);
-    map.data.add(feature);
+    if(feature){ map.data.add(feature); }
     self.openPage('root');
   };
 
-  form=forms.path.form({save_action:saveAction, cancel_action: cancelAction});
+  form=forms.path.form({save_action:saveAction, cancel_action:cancelAction});
 
-  layout=ui.layout.vertical({
-    children: [
-      titleElement,
-      form
-    ]
-  });
-
+  layout=ui.layout.vertical({ children: [ titleElement, form ] });
   uiInitialized=true;
 };
 
@@ -78,20 +78,22 @@ var initMap=function(){
     });
     marker = new google.maps.Marker({
       icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        fillOpacity: 0,
-        strokeOpacity: 1,
-        strokeColor: '#FF0000',
-        strokeWeight: 1,
-        scale: 10, //pixels
+        path:google.maps.SymbolPath.CIRCLE,
+        fillOpacity:0,
+        strokeOpacity:1,
+        strokeColor:'#FF0000',
+        strokeWeight:1,
+        scale:10, //pixels
       }
     });
   }
   path.getPath().clear();
   path.setMap(map);
 
-  geo.copyFeatureToPath(feature,path);
-  map.data.remove(feature);
+  if(!isNewMode()){
+    geo.copyFeatureToPath(feature,path);
+    map.data.remove(feature);
+  }
 
   var extendPath=function(evt){
     if(canEdit){
@@ -110,23 +112,33 @@ var initMap=function(){
     }
   });
 
-  map.data.addListener('mouseover', function(evt) {
-    if(canEdit){
-      map.data.overrideStyle(evt.feature,{strokeWeight:10,strokeColor:'#00FF00'});
-      marker.setMap(map);
-    }
-  });
+  var type=self.params.type;
 
-  map.data.addListener('mouseout', function(evt) {
-    if(canEdit){
-      map.data.revertStyle();
-      marker.setMap(null);
-    }
-  });
+  if('Objects::Path'===type){
+    map.data.addListener('mouseover', function(evt) {
+      if(canEdit){
+        if(geo.isPath(evt.feature)){
+          map.data.overrideStyle(evt.feature,{strokeWeight:10,strokeColor:'#00FF00'});
+          marker.setMap(map);
+        }
+      }
+    });
 
-  map.data.addListener('mousemove', function(evt){
-    if(canEdit){
-      marker.setPosition(geo.closestFeaturePoint(evt.feature,evt.latLng));
-    }
-  });
+    map.data.addListener('mouseout', function(evt) {
+      if(canEdit){
+        if(geo.isPath(evt.feature)){
+          map.data.revertStyle();
+          marker.setMap(null);
+        }
+      }
+    });
+
+    map.data.addListener('mousemove', function(evt){
+      if(canEdit){
+        if(geo.isPath(evt.feature)){
+          marker.setPosition(geo.closestFeaturePoint(evt.feature,evt.latLng));
+        }
+      }
+    });
+  }
 };

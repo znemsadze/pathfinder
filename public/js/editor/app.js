@@ -85,14 +85,10 @@ var initMap=function(){
 // router
 
 var initRouter=function(){
-  // create application
   app=router.initApplication({map:map,toolbar:toolbarElement,sidebar:sidebarElement});
 
-  // adding pages to the application
   app.addPage('root', pages.home());
-  app.addPage('new_path', pages.new_path());
   app.addPage('edit_path', pages.edit_path());
 
-  // start with root page
   app.openPage('root');
 };

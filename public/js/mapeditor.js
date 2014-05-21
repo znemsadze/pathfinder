@@ -162,18 +162,14 @@ var initMap=function(){
 // router
 
 var initRouter=function(){
-  // create application
   app=router.initApplication({map:map,toolbar:toolbarElement,sidebar:sidebarElement});
 
-  // adding pages to the application
   app.addPage('root', pages.home());
-  app.addPage('new_path', pages.new_path());
   app.addPage('edit_path', pages.edit_path());
 
-  // start with root page
   app.openPage('root');
 };
-},{"./api":1,"./pages":9,"./router":11,"./ui":17}],3:[function(require,module,exports){
+},{"./api":1,"./pages":9,"./router":10,"./ui":16}],3:[function(require,module,exports){
 var app=require('./app');
 
 app.start();
@@ -184,30 +180,36 @@ var ui=require('../ui')
   , geo=require('./geo')
   ;
 
-var map
-  , feature
-  , path
-  // ui elements
-  , form
-  , layout
-  , uiInitialized=false
+var self, canEdit
+  , map, feature, featureType, marker, path
+  , form, layout, uiInitialized=false
   , titleElement=ui.html.pageTitle('გზის შეცვლა')
-  , canEdit
   ;
+
+var isNewMode=function(){ return !feature; };
+
+var resetTitle=function(){
+  var type=self.params.type;
+  if(isNewMode()){
+    titleElement.setTitle('ახალი: '+geo.typeName(type));
+  } else{
+    titleElement.setTitle('შეცვლა: '+geo.typeName(type));
+  }
+};
 
 module.exports=function(){
   return {
     onEnter: function(){
-      var self=this;
-      var id=self.params.feature.getId();
-      canEdit=true;
+      self=this;
 
       if (!uiInitialized){ initUI(self); }
-      form.loadModel(id);
+      canEdit=true;
+      // form.loadModel(id);
 
       map=self.map;
       feature=self.params.feature;
       initMap();
+      resetTitle();
 
       return layout;
     },
@@ -219,31 +221,25 @@ module.exports=function(){
 
 var initUI=function(self){
   var saveAction=function(){
-    form.clearErrors(); var model=form.getModel(); model.path=path.getPath();
-    var sent=api.editPath(feature.getId(), model, function(data){
-      path.setMap(null);
-      map.loadData(data.id);
-      self.openPage('root');
-    });
-    canEdit= !sent;
-    if(!sent){ form.setModel(model); }
+    // form.clearErrors(); var model=form.getModel(); model.path=path.getPath();
+    // var sent=api.editPath(feature.getId(), model, function(data){
+    //   path.setMap(null);
+    //   map.loadData(data.id);
+    //   self.openPage('root');
+    // });
+    // canEdit= !sent;
+    // if(!sent){ form.setModel(model); }
   };
 
   var cancelAction=function(){
     path.setMap(null);
-    map.data.add(feature);
+    if(feature){ map.data.add(feature); }
     self.openPage('root');
   };
 
-  form=forms.path.form({save_action:saveAction, cancel_action: cancelAction});
+  form=forms.path.form({save_action:saveAction, cancel_action:cancelAction});
 
-  layout=ui.layout.vertical({
-    children: [
-      titleElement,
-      form
-    ]
-  });
-
+  layout=ui.layout.vertical({ children: [ titleElement, form ] });
   uiInitialized=true;
 };
 
@@ -258,20 +254,22 @@ var initMap=function(){
     });
     marker = new google.maps.Marker({
       icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        fillOpacity: 0,
-        strokeOpacity: 1,
-        strokeColor: '#FF0000',
-        strokeWeight: 1,
-        scale: 10, //pixels
+        path:google.maps.SymbolPath.CIRCLE,
+        fillOpacity:0,
+        strokeOpacity:1,
+        strokeColor:'#FF0000',
+        strokeWeight:1,
+        scale:10, //pixels
       }
     });
   }
   path.getPath().clear();
   path.setMap(map);
 
-  geo.copyFeatureToPath(feature,path);
-  map.data.remove(feature);
+  if(!isNewMode()){
+    geo.copyFeatureToPath(feature,path);
+    map.data.remove(feature);
+  }
 
   var extendPath=function(evt){
     if(canEdit){
@@ -290,28 +288,38 @@ var initMap=function(){
     }
   });
 
-  map.data.addListener('mouseover', function(evt) {
-    if(canEdit){
-      map.data.overrideStyle(evt.feature,{strokeWeight:10,strokeColor:'#00FF00'});
-      marker.setMap(map);
-    }
-  });
+  var type=self.params.type;
 
-  map.data.addListener('mouseout', function(evt) {
-    if(canEdit){
-      map.data.revertStyle();
-      marker.setMap(null);
-    }
-  });
+  if('Objects::Path'===type){
+    map.data.addListener('mouseover', function(evt) {
+      if(canEdit){
+        if(geo.isPath(evt.feature)){
+          map.data.overrideStyle(evt.feature,{strokeWeight:10,strokeColor:'#00FF00'});
+          marker.setMap(map);
+        }
+      }
+    });
 
-  map.data.addListener('mousemove', function(evt){
-    if(canEdit){
-      marker.setPosition(geo.closestFeaturePoint(evt.feature,evt.latLng));
-    }
-  });
+    map.data.addListener('mouseout', function(evt) {
+      if(canEdit){
+        if(geo.isPath(evt.feature)){
+          map.data.revertStyle();
+          marker.setMap(null);
+        }
+      }
+    });
+
+    map.data.addListener('mousemove', function(evt){
+      if(canEdit){
+        if(geo.isPath(evt.feature)){
+          marker.setPosition(geo.closestFeaturePoint(evt.feature,evt.latLng));
+        }
+      }
+    });
+  }
 };
 
-},{"../api":1,"../ui":17,"./forms":5,"./geo":7}],5:[function(require,module,exports){
+},{"../api":1,"../ui":16,"./forms":5,"./geo":7}],5:[function(require,module,exports){
 var path=require('./path')
   ;
 
@@ -338,7 +346,7 @@ exports.form=function(opts){
   var form=ui.form.create(fields,{actions: actions, load_url:'/api/geo/path'});
   return form;
 };
-},{"../../ui":17}],7:[function(require,module,exports){
+},{"../../ui":16}],7:[function(require,module,exports){
 exports.resetMap=function(map){
   google.maps.event.clearInstanceListeners(map);
   google.maps.event.clearInstanceListeners(map.data);
@@ -399,8 +407,14 @@ exports.calcFeatureDistance=function(map,feature){
 
 // feature description
 
-var typeName=function(type){
+exports.getType=function(f){ return f.getProperty('class'); };
+exports.isLine=function(f){ return 'Objects::Line'==exports.getType(f); }
+exports.isPath=function(f){ return 'Objects::Path'==exports.getType(f); }
+
+exports.typeName=function(type){
   if('Objects::Line'===type){ return 'გადამცემი ხაზი'; }
+  else if('Objects::Path'==type){ return 'გზა'; }
+  return type;
 };
 
 var lineDescription=function(map,f){
@@ -417,7 +431,7 @@ exports.featureDescription=function(map,f){
     ;
 
   var texts=['<div class="panel panel-default">'];
-  texts.push('<div class="panel-heading"><h4 style="margin:0;padding:0;">',typeName(type),'</h4></div>');
+  texts.push('<div class="panel-heading"><h4 style="margin:0;padding:0;">',exports.typeName(type),'</h4></div>');
   if('Objects::Line'===type){ bodyDescription=lineDescription(map,f); }
   texts.push('<div class="panel-body">',bodyDescription,'</div>');
   texts.push('</div>');
@@ -439,14 +453,13 @@ var map
   , page1
   , page2
   , uiInitialized=false
-  , titleElement=ui.html.pageTitle('საწყისი')
   , toolbar=ui.button.toolbar([])
   , featureInfo=ui.html.p('',{style:'margin:16px 0;'})
   , selectedFeature
   , secondaryToolbar=ui.button.toolbar([])
   , btnDelete
   , btnEdit
-  , notLocked
+  , locked
   , confirmTitle=ui.html.p('საჭიროა დასტური',{class: 'page-header', style: 'font-weight:bold; font-size: 1.2em;'})
   , confirmText=ui.html.p('დაადასტურეთ, რომ ნამდვილად გინდათ მონიშნული გზ(ებ)ის წაშლა?',{class: 'text-danger'})
   , toolbar2=ui.button.toolbar([])
@@ -456,7 +469,7 @@ module.exports=function(){
   return {
     onEnter: function(){
       var self=this;
-      notLocked=true;
+      locked=false;
 
       if (!uiInitialized){
         initUI(self);
@@ -486,21 +499,20 @@ var initUI=function(self){
 
 var initPage1=function(self){
   var btnNewPath=ui.button.actionButton('ახალი გზა', function(){
-    if(notLocked){
-      self.openPage('new_path');
-    }
+    if(!locked){ self.openPage('edit_path',{type:'Objects::Path'}); }
   }, {icon:'plus'});
 
   btnDelete=ui.button.actionButton('წაშლა', function(){
-    if(notLocked){ openPage(CONFIRM); }
+    if(!locked){ openPage(CONFIRM); }
   }, {icon: 'trash-o', type: 'danger'});
 
   btnEdit=ui.button.actionButton('შეცვლა', function(){
-    //if(notLocked){ self.openPage('edit_path', {feature: selectedFeature}); }
+    //if(!locked){ self.openPage('edit_path', {feature: selectedFeature}); }
   }, {icon: 'pencil', type: 'warning'});
 
   toolbar.addButton(btnNewPath);
 
+  var titleElement=ui.html.pageTitle('საწყისი');
   page1=ui.layout.vertical({
     children: [
       titleElement,
@@ -518,21 +530,24 @@ var initPage2=function(self){
 
   var btnConfirm=ui.button.actionButton('ვადასტურებ', function(){
     // var ids=selectedFeatures.map(function(x){return x.getId();}).join(',');
-    // notLocked=!api.deletePath(ids,function(){
+    // var resp=api.deletePath(ids,function(){
     //   for(var i=0,l=selectedFeatures.length;i<l;i++){
     //     map.data.remove(selectedFeatures[i]);
     //   }
     //   selectedFeatures=[];
     //   resetPathInfo();
-    //   notLocked=true;
+    //   locked=false;
     // });
+    // locked=resp;
   },{icon:'warning', type: 'danger'});
 
   toolbar2.addButton(btnConfirm);
   toolbar2.addButton(btnCancel);
 
+  var titleElement=ui.html.pageTitle('საწყისი');
   page2=ui.layout.vertical({
     children: [
+      titleElement,
       confirmTitle,
       confirmText,
       toolbar2
@@ -586,138 +601,14 @@ var changeSelection=function(f){
   resetPathInfo();
 };
 
-},{"../api":1,"../ui":17,"./geo":7}],9:[function(require,module,exports){
+},{"../api":1,"../ui":16,"./geo":7}],9:[function(require,module,exports){
 var home=require('./home')
-  , new_path=require('./new_path')
   , edit_path=require('./edit_path')
   ;
 
 exports.home=home;
-exports.new_path=new_path;
 exports.edit_path=edit_path;
-},{"./edit_path":4,"./home":8,"./new_path":10}],10:[function(require,module,exports){
-var ui=require('../ui')
-  , forms=require('./forms')
-  , api=require('../api')
-  , geo=require('./geo')
-  ;
-
-var map
-  , marker
-  , path
-  // ui elements
-  , layout
-  , uiInitialized=false
-  , titleElement=ui.html.pageTitle('ახალი გზის დამატება')
-  , canEdit=true
-  , form
-  ;
-
-module.exports=function(){
-  return {
-    onEnter: function(){
-      var self=this;
-
-      if(!uiInitialized){ initUI(self); }
-      form.setModel({});
-
-      canEdit=true;
-      map=self.map;
-      initMap();
-
-      return layout;
-    },
-    onExit: function() {
-      geo.resetMap(map);
-    },
-  };
-};
-
-var initUI=function(self){
-  var saveAction=function(){
-    form.clearErrors(); var model=form.getModel(); model.path=path.getPath();
-    var sent=api.newPath(model, function(data){
-      path.setMap(null);
-      map.loadData(data.id);
-      self.openPage('root');
-    });
-    if(!sent){ form.setModel(model); }
-    canEdit= !sent;
-  };
-
-  var cancelAction=function(){
-    path.setMap(null);
-    self.openPage('root');
-  };
-
-  form=forms.path.form({save_action:saveAction, cancel_action: cancelAction});
-
-  layout=ui.layout.vertical({children: [ titleElement, form ] });
-
-  uiInitialized=true;
-};
-
-var initMap=function(){
-  if(!path) {
-    path=new google.maps.Polyline({
-      geodesic:true,
-      strokeColor:'#0000FF',
-      strokeOpacity:1.0,
-      strokeWeight:1,
-      editable:true,
-    });
-    marker = new google.maps.Marker({
-      icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        fillOpacity: 0,
-        strokeOpacity: 1,
-        strokeColor: '#FF0000',
-        strokeWeight: 1,
-        scale: 10, //pixels
-      }
-    });
-  }
-  path.getPath().clear();
-  path.setMap(map);
-
-  var extendPath=function(evt){
-    if(canEdit){
-      path.getPath().push(evt.latLng);
-    }
-  };
-
-  google.maps.event.addListener(map, 'click', extendPath);
-  google.maps.event.addListener(marker, 'click', extendPath);
-
-  google.maps.event.addListener(path, 'dblclick', function(evt){
-    if(canEdit){
-      if(typeof evt.vertex==='number'){
-        path.getPath().removeAt(evt.vertex,1);
-      }
-    }
-  });
-
-  map.data.addListener('mouseover', function(evt) {
-    if(canEdit){
-      map.data.overrideStyle(evt.feature,{strokeWeight:10,strokeColor:'#00FF00'});
-      marker.setMap(map);
-    }
-  });
-
-  map.data.addListener('mouseout', function(evt) {
-    if(canEdit){
-      map.data.revertStyle();
-      marker.setMap(null);
-    }
-  });
-
-  map.data.addListener('mousemove', function(evt){
-    if(canEdit){
-      marker.setPosition(geo.closestFeaturePoint(evt.feature,evt.latLng));
-    }
-  });
-};
-},{"../api":1,"../ui":17,"./forms":5,"./geo":7}],11:[function(require,module,exports){
+},{"./edit_path":4,"./home":8}],10:[function(require,module,exports){
 var map
   , sidebar
   , toolbar
@@ -772,7 +663,7 @@ var openPage=function(name,params){
   }
 };
 
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils')
   ;
@@ -845,7 +736,7 @@ exports.dropdown=function(text,buttons,opts){
   var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":16,"./utils":19}],13:[function(require,module,exports){
+},{"./html":15,"./utils":18}],12:[function(require,module,exports){
 var html=require('../html')
   ;
 
@@ -1026,7 +917,7 @@ exports.textArea=function(name, opts){
 
   return textarea;
 };
-},{"../html":16}],14:[function(require,module,exports){
+},{"../html":15}],13:[function(require,module,exports){
 var html=require('../html')
   , button=require('../button')
   ;
@@ -1093,7 +984,7 @@ module.exports=function(fields,opts){
   return _form;
 };
 
-},{"../button":12,"../html":16}],15:[function(require,module,exports){
+},{"../button":11,"../html":15}],14:[function(require,module,exports){
 var form=require('./form')
   , field=require('./field')
   ;
@@ -1102,7 +993,7 @@ exports.create=form;
 exports.textField=field.textField;
 exports.comboField=field.comboField;
 exports.textArea=field.textArea;
-},{"./field":13,"./form":14}],16:[function(require,module,exports){
+},{"./field":12,"./form":13}],15:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -1191,7 +1082,9 @@ exports.el=function(){
 };
 
 exports.pageTitle=function(title,tag){
-  return exports.el(tag||'h3',{class:'page-header'},title);
+  var el=exports.el(tag||'h3',{class:'page-header'},title);
+  el.setTitle=function(title){ el.innerText=title; };
+  return el;
 };
 
 exports.p=function(text,opts){
@@ -1201,7 +1094,7 @@ exports.p=function(text,opts){
   return p; 
 };
 
-},{"./utils":19}],17:[function(require,module,exports){
+},{"./utils":18}],16:[function(require,module,exports){
 var button=require('./button')
   , layout=require('./layout')
   , html=require('./html')
@@ -1212,7 +1105,7 @@ exports.html=html;
 exports.button=button;
 exports.layout=layout;
 exports.form=form;
-},{"./button":12,"./form":15,"./html":16,"./layout":18}],18:[function(require,module,exports){
+},{"./button":11,"./form":14,"./html":15,"./layout":17}],17:[function(require,module,exports){
 var html=require('./html')
  ;
 
@@ -1283,7 +1176,7 @@ exports.card=function(opts){
 
   return layout;
 };
-},{"./html":16}],19:[function(require,module,exports){
+},{"./html":15}],18:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
 exports.fieldValue=function(object,name){ return object&&object[name]; };
