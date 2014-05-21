@@ -19,7 +19,7 @@ exports.start=function(opts){
   mapElement=document.getElementById((opts&&opts.mapid)||'map');
   defaultCenterLat=(opts&&opts.centerLat)||42.3;
   defaultCenterLng=(opts&&opts.centerLat)||43.8;
-  defaultZoom=(opts&&opts.startZoom)||8;
+  defaultZoom=(opts&&opts.startZoom)||7;
   window.onload=loadingGoogleMapsAsyncronously;
 };
 
@@ -43,8 +43,9 @@ var initMap=function(){
   var mapOptions = {
     zoom: defaultZoom,
     center: new google.maps.LatLng(defaultCenterLat,defaultCenterLng),
-    mapTypeId: google.maps.MapTypeId.TERRAIN
+    mapTypeId: google.maps.MapTypeId.ROADMAP
   };
+
   map=new google.maps.Map(mapElement, mapOptions);
 
   map.loadData=function(id){
@@ -52,14 +53,18 @@ var initMap=function(){
     map.data.loadGeoJson(url);
   };
 
-  map.data.setStyle(function(feature) {
-    var className=feature.getProperty('class');
-    var name=feature.getProperty('name');
+  map.data.setStyle(function(f) {
+    var className=f.getProperty('class');
+    var name=f.getProperty('name');
     if ('Objects::Line'==className){
+      var strokeColor, strokeWeight;
+      if(f.selected){ strokeColor='#00AA00'; strokeWeight=5; }
+      else if(f.hovered){ strokeColor='#00FF00'; strokeWeight=10; }
+      else{ strokeColor='#FF0000'; strokeWeight=1; }
       return {
-        strokeColor:'#0000FF',
-        strokeWeight:1,
-        strokeOpacity:0.5,
+        strokeColor: strokeColor,
+        strokeWeight: strokeWeight,
+        strokeOpacity: 0.5,
         title: name,
       };
     } else if ('Objects::Tower'==className){

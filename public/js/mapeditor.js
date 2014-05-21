@@ -96,7 +96,7 @@ exports.start=function(opts){
   mapElement=document.getElementById((opts&&opts.mapid)||'map');
   defaultCenterLat=(opts&&opts.centerLat)||42.3;
   defaultCenterLng=(opts&&opts.centerLat)||43.8;
-  defaultZoom=(opts&&opts.startZoom)||8;
+  defaultZoom=(opts&&opts.startZoom)||7;
   window.onload=loadingGoogleMapsAsyncronously;
 };
 
@@ -120,8 +120,9 @@ var initMap=function(){
   var mapOptions = {
     zoom: defaultZoom,
     center: new google.maps.LatLng(defaultCenterLat,defaultCenterLng),
-    mapTypeId: google.maps.MapTypeId.TERRAIN
+    mapTypeId: google.maps.MapTypeId.ROADMAP
   };
+
   map=new google.maps.Map(mapElement, mapOptions);
 
   map.loadData=function(id){
@@ -129,14 +130,18 @@ var initMap=function(){
     map.data.loadGeoJson(url);
   };
 
-  map.data.setStyle(function(feature) {
-    var className=feature.getProperty('class');
-    var name=feature.getProperty('name');
+  map.data.setStyle(function(f) {
+    var className=f.getProperty('class');
+    var name=f.getProperty('name');
     if ('Objects::Line'==className){
+      var strokeColor, strokeWeight;
+      if(f.selected){ strokeColor='#00AA00'; strokeWeight=5; }
+      else if(f.hovered){ strokeColor='#00FF00'; strokeWeight=10; }
+      else{ strokeColor='#FF0000'; strokeWeight=1; }
       return {
-        strokeColor:'#0000FF',
-        strokeWeight:1,
-        strokeOpacity:0.5,
+        strokeColor: strokeColor,
+        strokeWeight: strokeWeight,
+        strokeOpacity: 0.5,
         title: name,
       };
     } else if ('Objects::Tower'==className){
@@ -407,7 +412,7 @@ var map
   , titleElement=ui.html.pageTitle('საწყისი')
   , toolbar=ui.button.toolbar([])
   , pathInfo=ui.html.p('',{style:'margin:8px 0;'})
-  , selectedFeatures=[]
+  , selectedFeature
   , pathToolbar=ui.button.toolbar([])
   , btnDeletePath
   , btnEditPath
@@ -437,7 +442,7 @@ module.exports=function(){
       return layout;
     },
     onExit: function() {
-      selectedFeatures=[];
+      selectedFeature=null;
       geo.resetMap(map);
     },
   };
@@ -458,15 +463,11 @@ var initPage1=function(self){
   }, {icon:'plus'});
 
   btnDeletePath=ui.button.actionButton('წაშლა', function(){
-    if(notLocked){
-      openPage(CONFIRM);
-    }
+    if(notLocked){ openPage(CONFIRM); }
   }, {icon: 'trash-o', type: 'danger'});
 
   btnEditPath=ui.button.actionButton('შეცვლა', function(){
-    if(notLocked){
-      self.openPage('edit_path', {feature: selectedFeatures[0]});
-    }
+    if(notLocked){ self.openPage('edit_path', {feature: selectedFeature}); }
   }, {icon: 'pencil', type: 'warning'});
 
   toolbar.addButton(btnNewPath);
@@ -487,15 +488,15 @@ var initPage2=function(self){
   });
 
   var btnConfirm=ui.button.actionButton('ვადასტურებ', function(){
-    var ids=selectedFeatures.map(function(x){return x.getId();}).join(',');
-    notLocked=!api.deletePath(ids,function(){
-      for(var i=0,l=selectedFeatures.length;i<l;i++){
-        map.data.remove(selectedFeatures[i]);
-      }
-      selectedFeatures=[];
-      resetPathInfo();
-      notLocked=true;
-    });
+    // var ids=selectedFeatures.map(function(x){return x.getId();}).join(',');
+    // notLocked=!api.deletePath(ids,function(){
+    //   for(var i=0,l=selectedFeatures.length;i<l;i++){
+    //     map.data.remove(selectedFeatures[i]);
+    //   }
+    //   selectedFeatures=[];
+    //   resetPathInfo();
+    //   notLocked=true;
+    // });
   },{icon:'warning', type: 'danger'});
 
   toolbar2.addButton(btnConfirm);
@@ -510,38 +511,15 @@ var initPage2=function(self){
   });
 };
 
-var openPage=function(idx){
-  layout.showAt(idx);
-};
-
-var isSelected=function(f){
-  return selectedFeatures.indexOf(f)!==-1;
-};
-
-var addSelection=function(f){
-  map.data.overrideStyle(f,{strokeWeight:5,strokeColor:'#00AA00'});
-  selectedFeatures.push(f);
-  resetPathInfo();
-};
-
-var removeSelection=function(f){
-  var idx=selectedFeatures.indexOf(f);
-  selectedFeatures.splice(idx,1);
-  map.data.revertStyle(f);
-  resetPathInfo();
-};
+var openPage=function(idx){ layout.showAt(idx); };
 
 var resetPathInfo=function(){
   pathToolbar.clearButtons();
-  var size=selectedFeatures.length;
-  if(size===0){
+  if(!selectedFeature){
     pathInfo.setHtml('მონიშნეთ გზა მასზე ინფორმაციის მისაღებად.');
-  } else if (size===1){
-    pathInfo.setHtml('მონიშნული გზის სიგძრეა: <code>'+geo.calcFeatureDistance(map,selectedFeatures).toFixed(3)+'</code> კმ');
+  } else{
+    pathInfo.setHtml('მონიშნული გზის სიგძრეა: <code>'+geo.calcFeatureDistance(map,[selectedFeature]).toFixed(3)+'</code> კმ');
     pathToolbar.addButton(btnEditPath);
-    pathToolbar.addButton(btnDeletePath);
-  } else {
-    pathInfo.setHtml('მონიშნულია <strong>'+size+'</strong> გზა, საერთო სიგრძით: <code>'+geo.calcFeatureDistance(map,selectedFeatures).toFixed(3)+'</code> კმ');
     pathToolbar.addButton(btnDeletePath);
   }
   openPage(MAIN);
@@ -549,20 +527,34 @@ var resetPathInfo=function(){
 
 var initMap=function(){
   map.data.addListener('mouseover', function(evt) {
-    if(!isSelected(evt.feature)){
-      map.data.overrideStyle(evt.feature,{strokeWeight:10,strokeColor:'#00FF00'});
-    }
+    var f=evt.feature;
+    f.hovered=true;
+    map.data.revertStyle(f);
   });
   map.data.addListener('mouseout', function(evt) {
-    if(!isSelected(evt.feature)){
-      map.data.revertStyle(evt.feature);
-    }
+    var f=evt.feature;
+    f.hovered=false;
+    map.data.revertStyle(f);
   });
   map.data.addListener('click', function(evt){
-    var f=evt.feature;
-    if(isSelected(f)){ removeSelection(f); }
-    else{ addSelection(f); }
+    changeSelection(evt.feature);
   });
+};
+
+var changeSelection=function(f){
+  if(f==selectedFeature){
+    f.selected=false;
+    selectedFeature=null;
+  } else {
+    if(selectedFeature){
+      selectedFeature.selected=false;
+      map.data.revertStyle(selectedFeature);
+    }
+    selectedFeature=f;
+    f.selected=true;
+  }
+  map.data.revertStyle(f);
+  resetPathInfo();
 };
 
 },{"../api":1,"../ui":17,"./geo":7}],9:[function(require,module,exports){
