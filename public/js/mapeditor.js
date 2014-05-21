@@ -187,9 +187,10 @@ var self, canEdit
   ;
 
 var isNewMode=function(){ return !feature; };
+var getType=function(){ return self.params.type; };
 
 var resetTitle=function(){
-  var type=self.params.type;
+  var type=getType();
   if(isNewMode()){
     titleElement.setTitle('ახალი: '+geo.typeName(type));
   } else{
@@ -288,9 +289,7 @@ var initMap=function(){
     }
   });
 
-  var type=self.params.type;
-
-  if(geo.isPath(type)){
+  if(geo.isPath(getType())){
     map.data.addListener('mouseover', function(evt) {
       if(canEdit){
         if(geo.isPath(evt.feature)){
