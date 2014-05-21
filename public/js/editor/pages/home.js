@@ -120,8 +120,7 @@ var resetPathInfo=function(){
   if(!selectedFeature){
     featureInfo.setHtml('მონიშნეთ ობიექტი რუკაზე მასზე ინფორმაციის მისაღებად.');
   } else{
-    //featureInfo.setHtml('მონიშნული გზის სიგძრეა: <code>'+geo.calcFeatureDistance(map,[selectedFeature]).toFixed(3)+'</code> კმ');
-    featureInfo.setHtml('მონიშნულია!');
+    featureInfo.setHtml(geo.featureDescription(map,selectedFeature));
     secondaryToolbar.addButton(btnEdit);
     secondaryToolbar.addButton(btnDelete);
   }

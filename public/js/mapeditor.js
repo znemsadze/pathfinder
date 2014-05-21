@@ -356,6 +356,8 @@ exports.copyFeatureToPath=function(feature,path){
   }
 };
 
+// distances
+
 exports.closestFeaturePoint=function(feature,point){
   var minDistance
     , minPoint
@@ -395,6 +397,32 @@ exports.calcFeatureDistance=function(map,feature){
   return dist/1000;
 };
 
+// feature description
+
+var typeName=function(type){
+  if('Objects::Line'===type){ return 'გადამცემი ხაზი'; }
+};
+
+var lineDescription=function(map,f){
+  var name=f.getProperty('name');
+  return [
+    '<p><strong>სახელი</strong>: ',name,'</p>',
+    '<p><strong>გზის სიგრძე</strong>: <code>',exports.calcFeatureDistance(map,f).toFixed(3),'</code> კმ</p>'
+  ].join('');
+};
+
+exports.featureDescription=function(map,f){
+  var bodyDescription
+    , type=f.getProperty('class')
+    ;
+
+  var texts=['<div class="panel panel-default">'];
+  texts.push('<div class="panel-heading"><h4 style="margin:0;padding:0;">',typeName(type),'</h4></div>');
+  if('Objects::Line'===type){ bodyDescription=lineDescription(map,f); }
+  texts.push('<div class="panel-body">',bodyDescription,'</div>');
+  texts.push('</div>');
+  return texts.join('');
+};
 
 },{}],8:[function(require,module,exports){
 var ui=require('../ui')
@@ -519,8 +547,7 @@ var resetPathInfo=function(){
   if(!selectedFeature){
     featureInfo.setHtml('მონიშნეთ ობიექტი რუკაზე მასზე ინფორმაციის მისაღებად.');
   } else{
-    //featureInfo.setHtml('მონიშნული გზის სიგძრეა: <code>'+geo.calcFeatureDistance(map,[selectedFeature]).toFixed(3)+'</code> კმ');
-    featureInfo.setHtml('მონიშნულია!');
+    featureInfo.setHtml(geo.featureDescription(map,selectedFeature));
     secondaryToolbar.addButton(btnEdit);
     secondaryToolbar.addButton(btnDelete);
   }
