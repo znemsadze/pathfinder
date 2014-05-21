@@ -44,7 +44,7 @@ module.exports=function(){
       return layout;
     },
     onExit: function() {
-      selectedFeature=null;
+      if(selectedFeature){ changeSelection(selectedFeature); }
       geo.resetMap(map);
     },
   };
