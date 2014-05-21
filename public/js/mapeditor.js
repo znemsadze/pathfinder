@@ -94,9 +94,9 @@ exports.start=function(opts){
   sidebarElement=document.getElementById((opts&&opts.sidebarid)||'sidebar');
   toolbarElement=document.getElementById((opts&&opts.toolbarid)||'toolbar');
   mapElement=document.getElementById((opts&&opts.mapid)||'map');
-  defaultCenterLat=(opts&&opts.centerLat)||41.693328079546774;
-  defaultCenterLng=(opts&&opts.centerLat)||44.801473617553710;
-  defaultZoom=(opts&&opts.startZoom)||10;
+  defaultCenterLat=(opts&&opts.centerLat)||42.3;
+  defaultCenterLng=(opts&&opts.centerLat)||43.8;
+  defaultZoom=(opts&&opts.startZoom)||8;
   window.onload=loadingGoogleMapsAsyncronously;
 };
 
@@ -123,8 +123,8 @@ var initMap=function(){
     mapTypeId: google.maps.MapTypeId.TERRAIN
   };
   map=new google.maps.Map(mapElement, mapOptions);
+
   map.loadData=function(id){
-    //var url=id ? '/geo/map.json?id='+id : '/geo/map.json';
     var url='/api/objects/all.json';
     map.data.loadGeoJson(url);
   };
@@ -148,6 +148,7 @@ var initMap=function(){
       };
     }
   });
+
   map.loadData();
 
   window.map=map;
