@@ -11,5 +11,9 @@ json.features do
         json.coordinates t.points.map{|p| [p.lng,p.lat] }
       end
     end
+    json.id t.id.to_s
+    json.properties do
+      json.class t.class.name
+    end
   end
 end
