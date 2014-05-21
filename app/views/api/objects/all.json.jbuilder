@@ -14,6 +14,7 @@ json.features do
     json.id t.id.to_s
     json.properties do
       json.class t.class.name
+      json.name t.name
     end
   end
 end

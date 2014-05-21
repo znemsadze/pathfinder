@@ -128,26 +128,23 @@ var initMap=function(){
     var url='/api/objects/all.json';
     map.data.loadGeoJson(url);
   };
-  // map.data.setStyle({
-  //   strokeColor:'#FF0000',
-  //   strokeWeight:1,
-  //   strokeOpacity:0.5,
-  // });
 
   map.data.setStyle(function(feature) {
     var className=feature.getProperty('class');
+    var name=feature.getProperty('name');
     if ('Objects::Line'==className){
       return {
         strokeColor:'#0000FF',
         strokeWeight:1,
         strokeOpacity:0.5,
+        title: name,
       };
     } else if ('Objects::Tower'==className){
       return {
         icon: '/map/small_red.png',
         visible: true,
         clickable: true,
-        title: 'hello'
+        title: name,
       };
     }
   });
