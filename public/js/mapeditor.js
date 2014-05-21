@@ -394,6 +394,8 @@ exports.calcFeatureDistance=function(map,feature){
   }
   return dist/1000;
 };
+
+
 },{}],8:[function(require,module,exports){
 var ui=require('../ui')
   , api=require('../api')
@@ -411,11 +413,11 @@ var map
   , uiInitialized=false
   , titleElement=ui.html.pageTitle('საწყისი')
   , toolbar=ui.button.toolbar([])
-  , pathInfo=ui.html.p('',{style:'margin:8px 0;'})
+  , featureInfo=ui.html.p('',{style:'margin:16px 0;'})
   , selectedFeature
-  , pathToolbar=ui.button.toolbar([])
-  , btnDeletePath
-  , btnEditPath
+  , secondaryToolbar=ui.button.toolbar([])
+  , btnDelete
+  , btnEdit
   , notLocked
   , confirmTitle=ui.html.p('საჭიროა დასტური',{class: 'page-header', style: 'font-weight:bold; font-size: 1.2em;'})
   , confirmText=ui.html.p('დაადასტურეთ, რომ ნამდვილად გინდათ მონიშნული გზ(ებ)ის წაშლა?',{class: 'text-danger'})
@@ -454,7 +456,6 @@ var initUI=function(self){
   uiInitialized=true;
 };
 
-
 var initPage1=function(self){
   var btnNewPath=ui.button.actionButton('ახალი გზა', function(){
     if(notLocked){
@@ -462,12 +463,12 @@ var initPage1=function(self){
     }
   }, {icon:'plus'});
 
-  btnDeletePath=ui.button.actionButton('წაშლა', function(){
+  btnDelete=ui.button.actionButton('წაშლა', function(){
     if(notLocked){ openPage(CONFIRM); }
   }, {icon: 'trash-o', type: 'danger'});
 
-  btnEditPath=ui.button.actionButton('შეცვლა', function(){
-    if(notLocked){ self.openPage('edit_path', {feature: selectedFeature}); }
+  btnEdit=ui.button.actionButton('შეცვლა', function(){
+    //if(notLocked){ self.openPage('edit_path', {feature: selectedFeature}); }
   }, {icon: 'pencil', type: 'warning'});
 
   toolbar.addButton(btnNewPath);
@@ -476,8 +477,8 @@ var initPage1=function(self){
     children: [
       titleElement,
       toolbar,
-      pathInfo,
-      pathToolbar,
+      featureInfo,
+      secondaryToolbar,
     ]
   });
 };
@@ -514,13 +515,14 @@ var initPage2=function(self){
 var openPage=function(idx){ layout.showAt(idx); };
 
 var resetPathInfo=function(){
-  pathToolbar.clearButtons();
+  secondaryToolbar.clearButtons();
   if(!selectedFeature){
-    pathInfo.setHtml('მონიშნეთ გზა მასზე ინფორმაციის მისაღებად.');
+    featureInfo.setHtml('მონიშნეთ ობიექტი რუკაზე მასზე ინფორმაციის მისაღებად.');
   } else{
-    pathInfo.setHtml('მონიშნული გზის სიგძრეა: <code>'+geo.calcFeatureDistance(map,[selectedFeature]).toFixed(3)+'</code> კმ');
-    pathToolbar.addButton(btnEditPath);
-    pathToolbar.addButton(btnDeletePath);
+    //featureInfo.setHtml('მონიშნული გზის სიგძრეა: <code>'+geo.calcFeatureDistance(map,[selectedFeature]).toFixed(3)+'</code> კმ');
+    featureInfo.setHtml('მონიშნულია!');
+    secondaryToolbar.addButton(btnEdit);
+    secondaryToolbar.addButton(btnDelete);
   }
   openPage(MAIN);
 };

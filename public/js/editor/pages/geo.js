@@ -53,3 +53,4 @@ exports.calcFeatureDistance=function(map,feature){
   }
   return dist/1000;
 };
+
