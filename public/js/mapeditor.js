@@ -79,6 +79,7 @@ var ui=require('./ui')
   , api=require('./api')
   , router=require('./router')
   , pages=require('./pages')
+  , geo=require('./pages/geo')
   ;
 
 var mapElement, sidebarElement, toolbarElement
@@ -131,9 +132,8 @@ var initMap=function(){
   };
 
   map.data.setStyle(function(f) {
-    var className=f.getProperty('class');
     var name=f.getProperty('name');
-    if ('Objects::Line'==className){
+    if (geo.isLine(f)){
       var strokeColor, strokeWeight;
       if(f.selected){ strokeColor='#00AA00'; strokeWeight=5; }
       else if(f.hovered){ strokeColor='#00FF00'; strokeWeight=10; }
@@ -144,7 +144,7 @@ var initMap=function(){
         strokeOpacity: 0.5,
         title: name,
       };
-    } else if ('Objects::Tower'==className){
+    } else if (geo.isTower(f)){
       return {
         icon: '/map/small_red.png',
         visible: true,
@@ -169,7 +169,7 @@ var initRouter=function(){
 
   app.openPage('root');
 };
-},{"./api":1,"./pages":9,"./router":10,"./ui":16}],3:[function(require,module,exports){
+},{"./api":1,"./pages":9,"./pages/geo":7,"./router":10,"./ui":16}],3:[function(require,module,exports){
 var app=require('./app');
 
 app.start();
@@ -290,7 +290,7 @@ var initMap=function(){
 
   var type=self.params.type;
 
-  if('Objects::Path'===type){
+  if(geo.isPath(type)){
     map.data.addListener('mouseover', function(evt) {
       if(canEdit){
         if(geo.isPath(evt.feature)){
@@ -407,14 +407,30 @@ exports.calcFeatureDistance=function(map,feature){
 
 // feature description
 
-exports.getType=function(f){ return f.getProperty('class'); };
-exports.isLine=function(f){ return 'Objects::Line'==exports.getType(f); }
-exports.isPath=function(f){ return 'Objects::Path'==exports.getType(f); }
+exports.TYPE_PATH='Objects::Path';
+exports.TYPE_LINE='Objects::Line';
+exports.TYPE_TOWER='Objects::Tower';
 
-exports.typeName=function(type){
-  if('Objects::Line'===type){ return 'გადამცემი ხაზი'; }
-  else if('Objects::Path'==type){ return 'გზა'; }
-  return type;
+exports.getType=function(f){ return f.getProperty('class'); };
+
+var typed=function(f, callback){
+  var type;
+  if(typeof f==='undefined'){ return f; }
+  else if(typeof f==='string'){ type=f; }
+  else{ type=exports.getType(f); }
+  return callback(type);
+};
+
+exports.isLine=function(f){ return typed(f,function(type){ return exports.TYPE_LINE==type; }); }
+exports.isTower=function(f){ return typed(f,function(type){ return exports.TYPE_TOWER==type; }); }
+exports.isPath=function(f){ return typed(f,function(type){ return exports.TYPE_PATH==type; }); }
+
+exports.typeName=function(f){
+  return typed(f,function(type){
+    if(exports.TYPE_LINE===type){ return 'გადამცემი ხაზი'; }
+    else if(exports.TYPE_PATH==type){ return 'გზა'; }
+    return type;
+  });
 };
 
 var lineDescription=function(map,f){
@@ -426,13 +442,11 @@ var lineDescription=function(map,f){
 };
 
 exports.featureDescription=function(map,f){
-  var bodyDescription
-    , type=f.getProperty('class')
-    ;
+  var bodyDescription;
 
   var texts=['<div class="panel panel-default">'];
-  texts.push('<div class="panel-heading"><h4 style="margin:0;padding:0;">',exports.typeName(type),'</h4></div>');
-  if('Objects::Line'===type){ bodyDescription=lineDescription(map,f); }
+  texts.push('<div class="panel-heading"><h4 style="margin:0;padding:0;">',exports.typeName(f),'</h4></div>');
+  if(exports.isLine(f)){ bodyDescription=lineDescription(map,f); }
   texts.push('<div class="panel-body">',bodyDescription,'</div>');
   texts.push('</div>');
   return texts.join('');
@@ -499,7 +513,7 @@ var initUI=function(self){
 
 var initPage1=function(self){
   var btnNewPath=ui.button.actionButton('ახალი გზა', function(){
-    if(!locked){ self.openPage('edit_path',{type:'Objects::Path'}); }
+    if(!locked){ self.openPage('edit_path',{type:geo.TYPE_PATH}); }
   }, {icon:'plus'});
 
   btnDelete=ui.button.actionButton('წაშლა', function(){

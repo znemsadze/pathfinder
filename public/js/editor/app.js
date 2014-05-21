@@ -2,6 +2,7 @@ var ui=require('./ui')
   , api=require('./api')
   , router=require('./router')
   , pages=require('./pages')
+  , geo=require('./pages/geo')
   ;
 
 var mapElement, sidebarElement, toolbarElement
@@ -54,9 +55,8 @@ var initMap=function(){
   };
 
   map.data.setStyle(function(f) {
-    var className=f.getProperty('class');
     var name=f.getProperty('name');
-    if ('Objects::Line'==className){
+    if (geo.isLine(f)){
       var strokeColor, strokeWeight;
       if(f.selected){ strokeColor='#00AA00'; strokeWeight=5; }
       else if(f.hovered){ strokeColor='#00FF00'; strokeWeight=10; }
@@ -67,7 +67,7 @@ var initMap=function(){
         strokeOpacity: 0.5,
         title: name,
       };
-    } else if ('Objects::Tower'==className){
+    } else if (geo.isTower(f)){
       return {
         icon: '/map/small_red.png',
         visible: true,

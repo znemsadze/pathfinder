@@ -114,7 +114,7 @@ var initMap=function(){
 
   var type=self.params.type;
 
-  if('Objects::Path'===type){
+  if(geo.isPath(type)){
     map.data.addListener('mouseover', function(evt) {
       if(canEdit){
         if(geo.isPath(evt.feature)){

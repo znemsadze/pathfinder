@@ -58,7 +58,7 @@ var initUI=function(self){
 
 var initPage1=function(self){
   var btnNewPath=ui.button.actionButton('ახალი გზა', function(){
-    if(!locked){ self.openPage('edit_path',{type:'Objects::Path'}); }
+    if(!locked){ self.openPage('edit_path',{type:geo.TYPE_PATH}); }
   }, {icon:'plus'});
 
   btnDelete=ui.button.actionButton('წაშლა', function(){
