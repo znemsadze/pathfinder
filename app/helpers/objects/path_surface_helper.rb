@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 module Objects::PathSurfaceHelper
-  def pathtype_collection; h = {} ; Geo::PathType.asc(:order_by).each{|x| h[x.name] = x.id }; h end
+  def pathtype_collection; h = {} ; Objects::Path::Type.asc(:order_by).each{|x| h[x.name] = x.id }; h end
 
   def pathsurface_form(surface,opts={})
     title=surface.new_record? ? 'ახალი საფარი' : 'საფარის შეცვლა'
