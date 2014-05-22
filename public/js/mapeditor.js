@@ -1,27 +1,17 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var path=require('./path')
+  ;
+
+exports.path=path;
+},{"./path":2}],2:[function(require,module,exports){
+var utils=require('./utils')
+  ;
+
 var BASE_PATH='/api/geo';
 
-var pointsFromPath=function(path){
-  var points=[];
-  path.forEach(function(element,index){
-    points.push({
-      id:element.id,
-      lat:element.lat(),
-      lng:element.lng(),
-      featureId:element.featureId
-    });
-  });
-  return points;
-};
-
-var addError=function(model,field,message){
-  if(!field){ field='_toplevel'; }
-  if(!model.errors){ model.errors={}; }
-  if(!model.errors[field]){ model.errors[field]=[]; }
-  model.errors[field].push(message);
-};
-
 exports.newPath=function(model,callback){
+  utils.clearErrors(model);
+
   var path=model.path
     , detail_id=model.detail_id
     , description=model.description
@@ -29,10 +19,10 @@ exports.newPath=function(model,callback){
 
   if(path.getLength()>1){
     if(!detail_id){
-      addError(model,'detail_id','აარჩიეთ საფარის დეტალი');
+      utils.addError(model,'detail_id','აარჩიეთ საფარის დეტალი');
       return false;
     }
-    var points=pointsFromPath(path);
+    var points=utils.pointsFromPath(path);
     var params={points:points, detail_id:detail_id, description:description};
     $.post(BASE_PATH+'/new_path',params,function(data){
       if(callback){ callback(data); }
@@ -45,6 +35,8 @@ exports.newPath=function(model,callback){
 };
 
 exports.editPath=function(id,model,callback){
+  utils.clearErrors(model);
+
   var path=model.path
     , detail_id=model.detail_id
     , description=model.description
@@ -52,10 +44,10 @@ exports.editPath=function(id,model,callback){
 
   if(path.getLength()>1){
     if(!detail_id){
-      addError(model,'detail_id','აარჩიეთ საფარის დეტალი');
+      utils.addError(model,'detail_id','აარჩიეთ საფარის დეტალი');
       return false;
     }
-    var points=pointsFromPath(path);
+    var points=utils.pointsFromPath(path);
     $.post(BASE_PATH+'/edit_path',{id:id, points:points, detail_id:detail_id, description:description},function(data){
       if(callback){ callback(data); }
     }).fail(function(err){
@@ -74,7 +66,38 @@ exports.deletePath=function(id,callback){
   });;
   return true;
 };
-},{}],2:[function(require,module,exports){
+},{"./utils":3}],3:[function(require,module,exports){
+/**
+ * converts polyline into array of points
+ */
+exports.pointsFromPath=function(path){
+  var points=[];
+  path.forEach(function(element,index){
+    points.push({
+      lat:element.lat(),
+      lng:element.lng(),
+    });
+  });
+  return points;
+};
+
+/**
+ * add model error
+ */
+exports.addError=function(model,field,message){
+  if(!field){ field='_toplevel'; } // toplevel error
+  if(!model.errors){ model.errors={}; }
+  if(!model.errors[field]){ model.errors[field]=[]; }
+  model.errors[field].push(message);
+};
+
+/**
+ * clear model errors
+ */
+exports.clearErrors=function(model){
+  model.errors={};
+};
+},{}],4:[function(require,module,exports){
 var ui=require('./ui')
   , api=require('./api')
   , router=require('./router')
@@ -169,11 +192,11 @@ var initRouter=function(){
 
   app.openPage('root');
 };
-},{"./api":1,"./pages":9,"./pages/geo":7,"./router":10,"./ui":16}],3:[function(require,module,exports){
+},{"./api":1,"./pages":11,"./pages/geo":9,"./router":12,"./ui":18}],5:[function(require,module,exports){
 var app=require('./app');
 
 app.start();
-},{"./app":2}],4:[function(require,module,exports){
+},{"./app":4}],6:[function(require,module,exports){
 var ui=require('../ui')
   , forms=require('./forms')
   , api=require('../api')
@@ -318,12 +341,9 @@ var initMap=function(){
   }
 };
 
-},{"../api":1,"../ui":16,"./forms":5,"./geo":7}],5:[function(require,module,exports){
-var path=require('./path')
-  ;
-
-exports.path=path;
-},{"./path":6}],6:[function(require,module,exports){
+},{"../api":1,"../ui":18,"./forms":7,"./geo":9}],7:[function(require,module,exports){
+arguments[4][1][0].apply(exports,arguments)
+},{"./path":8}],8:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -345,7 +365,7 @@ exports.form=function(opts){
   var form=ui.form.create(fields,{actions: actions, load_url:'/api/geo/path'});
   return form;
 };
-},{"../../ui":16}],7:[function(require,module,exports){
+},{"../../ui":18}],9:[function(require,module,exports){
 exports.resetMap=function(map){
   google.maps.event.clearInstanceListeners(map);
   google.maps.event.clearInstanceListeners(map.data);
@@ -451,7 +471,7 @@ exports.featureDescription=function(map,f){
   return texts.join('');
 };
 
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 var ui=require('../ui')
   , api=require('../api')
   , geo=require('./geo')
@@ -614,14 +634,14 @@ var changeSelection=function(f){
   resetPathInfo();
 };
 
-},{"../api":1,"../ui":16,"./geo":7}],9:[function(require,module,exports){
+},{"../api":1,"../ui":18,"./geo":9}],11:[function(require,module,exports){
 var home=require('./home')
   , edit_path=require('./edit_path')
   ;
 
 exports.home=home;
 exports.edit_path=edit_path;
-},{"./edit_path":4,"./home":8}],10:[function(require,module,exports){
+},{"./edit_path":6,"./home":10}],12:[function(require,module,exports){
 var map
   , sidebar
   , toolbar
@@ -676,7 +696,7 @@ var openPage=function(name,params){
   }
 };
 
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils')
   ;
@@ -749,7 +769,7 @@ exports.dropdown=function(text,buttons,opts){
   var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":15,"./utils":18}],12:[function(require,module,exports){
+},{"./html":17,"./utils":20}],14:[function(require,module,exports){
 var html=require('../html')
   ;
 
@@ -930,7 +950,7 @@ exports.textArea=function(name, opts){
 
   return textarea;
 };
-},{"../html":15}],13:[function(require,module,exports){
+},{"../html":17}],15:[function(require,module,exports){
 var html=require('../html')
   , button=require('../button')
   ;
@@ -997,7 +1017,7 @@ module.exports=function(fields,opts){
   return _form;
 };
 
-},{"../button":11,"../html":15}],14:[function(require,module,exports){
+},{"../button":13,"../html":17}],16:[function(require,module,exports){
 var form=require('./form')
   , field=require('./field')
   ;
@@ -1006,7 +1026,7 @@ exports.create=form;
 exports.textField=field.textField;
 exports.comboField=field.comboField;
 exports.textArea=field.textArea;
-},{"./field":12,"./form":13}],15:[function(require,module,exports){
+},{"./field":14,"./form":15}],17:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -1107,7 +1127,7 @@ exports.p=function(text,opts){
   return p; 
 };
 
-},{"./utils":18}],16:[function(require,module,exports){
+},{"./utils":20}],18:[function(require,module,exports){
 var button=require('./button')
   , layout=require('./layout')
   , html=require('./html')
@@ -1118,7 +1138,7 @@ exports.html=html;
 exports.button=button;
 exports.layout=layout;
 exports.form=form;
-},{"./button":11,"./form":14,"./html":15,"./layout":17}],17:[function(require,module,exports){
+},{"./button":13,"./form":16,"./html":17,"./layout":19}],19:[function(require,module,exports){
 var html=require('./html')
  ;
 
@@ -1189,8 +1209,8 @@ exports.card=function(opts){
 
   return layout;
 };
-},{"./html":15}],18:[function(require,module,exports){
+},{"./html":17}],20:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
 exports.fieldValue=function(object,name){ return object&&object[name]; };
-},{}]},{},[3])
+},{}]},{},[5])
