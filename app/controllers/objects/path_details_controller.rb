@@ -2,7 +2,7 @@
 class Objects::PathDetailsController < ApplicationController
   def index
     @title='გზის დეტალები'
-    @details=Geo::PathDetail.asc(:surface_id, :order_by)
+    @details=Objects::Path::Detail.asc(:surface_id, :order_by)
   end
 
   def new

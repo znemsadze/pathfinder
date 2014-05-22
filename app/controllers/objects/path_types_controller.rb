@@ -2,7 +2,7 @@
 class Objects::PathTypesController < ApplicationController
   def index
     @title='გზის სახეობები'
-    @types=Geo::PathType.asc(:order_by)
+    @types=Objects::Path::Type.asc(:order_by)
   end
 
   def new
@@ -59,7 +59,7 @@ class Objects::PathTypesController < ApplicationController
   protected
   def nav
     @nav=super
-    @nav['გზის სახეობები']=geo_path_types_url
+    @nav['გზის სახეობები']=objects_path_types_url
     if @type
       if 'edit'==action_name
         @nav[@type.name]=geo_path_type_url(id:@type.id)
