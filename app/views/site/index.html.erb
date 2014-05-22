@@ -1,24 +1,31 @@
 <%if current_user%>
 <div class="row">
-  <!-- main column -->
   <div class="col-sm-6">
     <div>
-      <h3 class="page-header">ობიექტები</h3>
-      <%=link_to 'ანძები', objects_towers_url%> |
-      <%=link_to 'ხაზები', objects_lines_url%>
-    </div>
-
-    <div>
-      <h3 class="page-header"><i class="fa fa-road"></i> გზების მართვა</h3>
-      <a class="btn btn-default" href="<%=geo_map_url%>" data-no-turbolink>
-        <i class="fa fa-pencil"></i> გზების შეცვლა
-      </a> |
-      <%=link_to 'გზის სახეობები', geo_path_types_url %> |
-      <%=link_to 'გზის საფარი', geo_path_surfaces_url %> |
-      <%=link_to 'გზის დეტალები', geo_path_details_url %>
+      <p style="padding-top: 48px;" class="text-center">
+        <a class="btn btn-warning btn-lg" href="<%=geo_map_url%>" data-no-turbolink>
+          <i class="fa fa-pencil"></i> რუკის რედაქტირება
+        </a>
+      </p>
     </div>
   </div>
-
+  <div class="col-sm-6">
+    <div>
+      <h3 class="page-header">ქსელის ობიექტები</h3>
+      <p>
+        <%=link_to 'ანძები', objects_towers_url%> |
+        <%=link_to 'ხაზები', objects_lines_url%>
+      </p>
+    </div>
+    <div>
+      <h3 class="page-header">გზის პარამეტრები</h3>
+      <p>
+        <%=link_to 'სახეობები', geo_path_types_url %> |
+        <%=link_to 'საფარი', geo_path_surfaces_url %> |
+        <%=link_to 'საფარის დეტალები', geo_path_details_url %>
+      </p>
+    </div>
+  </div>
 </div>
 <%else%>
 <div class="well">
