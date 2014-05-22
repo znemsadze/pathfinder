@@ -58,7 +58,7 @@ exports.calcFeatureDistance=function(map,feature){
 
 // feature description
 
-exports.TYPE_PATH='Objects::Path';
+exports.TYPE_PATH='Objects::Path::Line';
 exports.TYPE_LINE='Objects::Line';
 exports.TYPE_TOWER='Objects::Tower';
 
