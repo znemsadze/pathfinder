@@ -66,7 +66,7 @@ var initPage1=function(self){
   }, {icon: 'trash-o', type: 'danger'});
 
   btnEdit=ui.button.actionButton('შეცვლა', function(){
-    //if(!locked){ self.openPage('edit_path', {feature: selectedFeature}); }
+    if(!locked){ self.openPage('edit_path',{feature: selectedFeature}); }
   }, {icon: 'pencil', type: 'warning'});
 
   toolbar.addButton(btnNewPath);

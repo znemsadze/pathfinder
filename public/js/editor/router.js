@@ -30,6 +30,7 @@ var openPage=function(name,params){
     if(currentPage.onExit){
       currentPage.onExit();
     }
+    currentPage.params={};
   }
 
   // clear sidebar

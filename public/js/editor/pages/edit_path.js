@@ -5,23 +5,10 @@ var ui=require('../ui')
   ;
 
 var self, canEdit
-  , map, feature, featureType, marker, path
+  , map, marker, path
   , form, layout, uiInitialized=false
   , titleElement=ui.html.pageTitle('გზის შეცვლა')
   ;
-
-var isNewMode=function(){ return !feature; };
-var getId=function(){ return feature&&feature.getId(); };
-var getType=function(){ return self.params.type; };
-
-var resetTitle=function(){
-  var type=getType();
-  if(isNewMode()){
-    titleElement.setTitle('ახალი: '+geo.typeName(type));
-  } else{
-    titleElement.setTitle('შეცვლა: '+geo.typeName(type));
-  }
-};
 
 module.exports=function(){
   return {
@@ -30,10 +17,9 @@ module.exports=function(){
 
       if (!uiInitialized){ initUI(self); }
       canEdit=true;
-      // form.loadModel(id);
+      form.loadModel(getId());
 
       map=self.map;
-      feature=self.params.feature;
       initMap();
       resetTitle();
 
@@ -43,6 +29,33 @@ module.exports=function(){
       geo.resetMap(map);
     },
   };
+};
+
+var getFeature=function(){ return self.params.feature; }
+
+var isNewMode=function(){ return !getFeature(); };
+
+var getType=function(){
+  var feature=getFeature();
+  if(feature){
+    return geo.getType(feature);
+  } else{
+    return self.params.type;
+  }
+};
+
+var getId=function(){
+  var feature=getFeature();
+  return feature&&feature.getId();
+};
+
+var resetTitle=function(){
+  var type=getType();
+  if(isNewMode()){
+    titleElement.setTitle('ახალი: '+geo.typeName(type));
+  } else{
+    titleElement.setTitle('შეცვლა: '+geo.typeName(type));
+  }
 };
 
 var initUI=function(self){
@@ -73,6 +86,7 @@ var initUI=function(self){
 
   var cancelAction=function(){
     path.setMap(null);
+    var feature=getFeature();
     if(feature){ map.data.add(feature); }
     self.openPage('root');
   };
@@ -106,7 +120,9 @@ var initMap=function(){
   path.getPath().clear();
   path.setMap(map);
 
-  if(!isNewMode()){
+  var feature=getFeature();
+
+  if(feature){
     geo.copyFeatureToPath(feature,path);
     map.data.remove(feature);
   }

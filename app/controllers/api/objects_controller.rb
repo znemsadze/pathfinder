@@ -2,9 +2,7 @@
 class Api::ObjectsController < ApiController
   MAX_TOWERS=100
 
-  def index
-    @all=get_towers+get_lines+get_paths
-  end
+  def index; @all=get_towers+get_lines+get_paths end
 
   private
 

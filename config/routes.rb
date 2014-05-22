@@ -82,7 +82,7 @@ Pathfinder::Application.routes.draw do
 
   namespace 'api' do
     scope '/paths', controller: 'paths' do
-      get '/show', action: 'path'
+      get '/show', action: 'show'
       post '/new',  action: 'new'
       post '/edit', action: 'edit'
       post '/delete', action: 'delete'
