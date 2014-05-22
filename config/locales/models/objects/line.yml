@@ -1,0 +1,5 @@
+ka:
+  models:
+    objects_line:
+      kmlid: kmlID
+      name: დასახელება
