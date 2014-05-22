@@ -81,11 +81,11 @@ Pathfinder::Application.routes.draw do
   end
 
   namespace 'api' do
-    scope '/geo', controller: 'geo' do
-      get '/path', action: 'path', as: 'path'
-      post '/new_path',  action: 'new_path',  as: 'new_path'
-      post '/edit_path', action: 'edit_path', as: 'edit_path'
-      post '/delete_path', action: 'delete_path', as: 'delete_path'
+    scope '/paths', controller: 'paths' do
+      get '/show', action: 'path'
+      post '/new_path',  action: 'new'
+      post '/edit', action: 'edit'
+      post '/delete', action: 'delete'
     end
     scope '/objects', controller: 'objects' do
       get '/all', action: 'all', as: 'all_objects'

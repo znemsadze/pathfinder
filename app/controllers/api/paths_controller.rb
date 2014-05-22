@@ -1,24 +1,24 @@
 # -*- encoding : utf-8 -*-
-class Api::GeoController < ApiController
-  def path; @path=Geo::Path.find(params[:id]) end
+class Api::PathsController < ApiController
+  def show; @path=Objects::Path::Line.find(params[:id]) end
 
-  def new_path
+  def new
     parameter_points=params[:points].map{|k,v| [v['lat'].to_f,v['lng'].to_f]}
-    path=Geo::Path.new_path(parameter_points,params)
+    path=Objects::Path::Line.new_path(parameter_points,params)
     path.splitjoin
     render json:{id:path.neighbours.join(',')}
   end
 
-  def edit_path
+  def edit
     parameter_points=params[:points].map{|k,v| [v['lat'].to_f,v['lng'].to_f]}
-    path=Geo::Path.find(params[:id])
+    path=Objects::Path::Line.find(params[:id])
     path.update_path(parameter_points,params)
     path.splitjoin
     render json:{id:path.neighbours.join(',')}
   end
 
-  def delete_path
-    path=Geo::Path.in(id: params[:id].split(','))
+  def delete
+    path=Objects::Path::Line.in(id: params[:id].split(','))
     path.each{|x| x.destroy_path }
     render text:'ok'
   end
