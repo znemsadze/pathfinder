@@ -46,38 +46,40 @@ Pathfinder::Application.routes.draw do
       get '/show/:id', action: 'show', as: 'line'
       match '/upload', action: 'upload', via: ['get','post'], as: 'upload_lines'
     end
+    scope '/path' do
+      scope '/types', controller: 'path_types' do
+        get '/', action: 'index', as: 'path_types'
+        get '/show/:id', action: 'show', as: 'path_type'
+        match '/new', action: 'new', as: 'new_path_type', via: ['get','post']
+        match '/edit/:id', action: 'edit', as: 'edit_path_type', via: ['get', 'post']
+        delete '/delete/:id', action: 'delete', as: 'delete_path_type'
+        post '/up/:id', action: 'up', as: 'up_path_type'
+        post '/down/:id', action: 'down', as: 'down_path_type'
+      end
+      scope '/surfaces', controller: 'path_surfaces' do
+        get '/', action: 'index', as: 'path_surfaces'
+        get '/show/:id', action: 'show', as: 'path_surface'
+        match '/new', action: 'new', as: 'new_path_surface', via: ['get','post']
+        match '/edit/:id', action: 'edit', as: 'edit_path_surface', via: ['get', 'post']
+        delete '/delete/:id', action: 'delete', as: 'delete_path_surface'
+        post '/up/:id', action: 'up', as: 'up_path_surface'
+        post '/down/:id', action: 'down', as: 'down_path_surface'
+      end
+      scope '/details', controller: 'path_details' do
+        get '/', action: 'index', as: 'path_details'
+        get '/show/:id', action: 'show', as: 'path_detail'
+        match '/new', action: 'new', as: 'new_path_detail', via: ['get','post']
+        match '/edit/:id', action: 'edit', as: 'edit_path_detail', via: ['get', 'post']
+        delete '/delete/:id', action: 'delete', as: 'delete_path_detail'
+        post '/up/:id', action: 'up', as: 'up_path_detail'
+        post '/down/:id', action: 'down', as: 'down_path_detail'
+      end
+    end
   end
 
   namespace 'geo' do
     scope '/map', controller: 'map' do
       get '/', action: 'index', as: 'map'
-    end
-    scope '/pathtype', controller: 'path_types' do
-      get '/', action: 'index', as: 'path_types'
-      get '/show/:id', action: 'show', as: 'path_type'
-      match '/new', action: 'new', as: 'new_path_type', via: ['get','post']
-      match '/edit/:id', action: 'edit', as: 'edit_path_type', via: ['get', 'post']
-      delete '/delete/:id', action: 'delete', as: 'delete_path_type'
-      post '/up/:id', action: 'up', as: 'up_path_type'
-      post '/down/:id', action: 'down', as: 'down_path_type'
-    end
-    scope '/pathsurface', controller: 'path_surfaces' do
-      get '/', action: 'index', as: 'path_surfaces'
-      get '/show/:id', action: 'show', as: 'path_surface'
-      match '/new', action: 'new', as: 'new_path_surface', via: ['get','post']
-      match '/edit/:id', action: 'edit', as: 'edit_path_surface', via: ['get', 'post']
-      delete '/delete/:id', action: 'delete', as: 'delete_path_surface'
-      post '/up/:id', action: 'up', as: 'up_path_surface'
-      post '/down/:id', action: 'down', as: 'down_path_surface'
-    end
-    scope '/pathdetail', controller: 'path_details' do
-      get '/', action: 'index', as: 'path_details'
-      get '/show/:id', action: 'show', as: 'path_detail'
-      match '/new', action: 'new', as: 'new_path_detail', via: ['get','post']
-      match '/edit/:id', action: 'edit', as: 'edit_path_detail', via: ['get', 'post']
-      delete '/delete/:id', action: 'delete', as: 'delete_path_detail'
-      post '/up/:id', action: 'up', as: 'up_path_detail'
-      post '/down/:id', action: 'down', as: 'down_path_detail'
     end
   end
 
