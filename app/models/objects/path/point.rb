@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-class Geo::Point
+class Objects::Path::Point
   include Mongoid::Document
   field :lat, type: Float
   field :lng, type: Float
@@ -11,7 +11,7 @@ class Geo::Point
   def neighbours
     points=[]
     self.path_ids.each do |path_id|
-      path=Geo::Path.find(path_id) rescue nil
+      path=Objects::Path::Line.find(path_id) rescue nil
       if path
         idx=path.point_ids.index(self.id)
         points<<path.point_ids[idx-1] if (idx>0)
