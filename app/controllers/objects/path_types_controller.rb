@@ -8,52 +8,52 @@ class Objects::PathTypesController < ApplicationController
   def new
     @title='გზის ახალი სახეობა'
     if request.post?
-      @type=Geo::PathType.new(type_params)
+      @type=Objects::Path::Type.new(type_params)
       if @type.save(user:current_user)
-        redirect_to geo_path_types_url, notice: 'სახეობა დამატებულია'
-        Geo::PathType.numerate
+        redirect_to objects_path_types_url, notice: 'სახეობა დამატებულია'
+        Objects::Path::Type.numerate
       end
     else
-      @type=Geo::PathType.new
+      @type=Objects::Path::Type.new
     end
   end
 
   def edit
     @title='გზის სახეობის რედაქტირება'
-    @type=Geo::PathType.find(params[:id])
+    @type=Objects::Path::Type.find(params[:id])
     if request.post?
       @type.update_attributes(type_params.merge(user:current_user))
-      redirect_to geo_path_type_url(id:@type.id), notice: 'სახეობა შეცვლილია'
-      Geo::PathType.numerate
+      redirect_to objects_path_type_url(id:@type.id), notice: 'სახეობა შეცვლილია'
+      Objects::Path::Type.numerate
     end
   end
 
   def show
     @title='გზის სახეობის თვისებები'
-    @type=Geo::PathType.find(params[:id])
+    @type=Objects::Path::Type.find(params[:id])
   end
 
   def delete
-    type=Geo::PathType.find(params[:id])
+    type=Objects::Path::Type.find(params[:id])
     if type.can_delete?
       type.destroy
-      Geo::PathType.numerate
-      redirect_to geo_path_types_url, notice: 'გზის სახეობა წაშლილია'
+      Objects::Path::Type.numerate
+      redirect_to objects_path_types_url, notice: 'გზის სახეობა წაშლილია'
     else
-      redirect_to geo_path_type_url(id:type.id), alert: 'წაშლა დაუშვებელია: დამოკიდებული ობიექტები'
+      redirect_to objects_path_type_url(id:type.id), alert: 'წაშლა დაუშვებელია: დამოკიდებული ობიექტები'
     end
   end
 
   def up
-    type=Geo::PathType.find(params[:id])
+    type=Objects::Path::Type.find(params[:id])
     type.up
-    redirect_to geo_path_types_url, notice: 'ნუმერაცია შეცვლილია'
+    redirect_to objects_path_types_url, notice: 'ნუმერაცია შეცვლილია'
   end
 
   def down
-    type=Geo::PathType.find(params[:id])
+    type=Objects::Path::Type.find(params[:id])
     type.down
-    redirect_to geo_path_types_url, notice: 'ნუმერაცია შეცვლილია'
+    redirect_to objects_path_types_url, notice: 'ნუმერაცია შეცვლილია'
   end
 
   protected
@@ -62,12 +62,12 @@ class Objects::PathTypesController < ApplicationController
     @nav['გზის სახეობები']=objects_path_types_url
     if @type
       if 'edit'==action_name
-        @nav[@type.name]=geo_path_type_url(id:@type.id)
+        @nav[@type.name]=objects_path_type_url(id:@type.id)
       end
       @nav[@title]=nil
     end
   end
 
   private
-  def type_params; params.require(:geo_path_type).permit(:name) end
+  def type_params; params.require(:objects_path_type).permit(:name) end
 end

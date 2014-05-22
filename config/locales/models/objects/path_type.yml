@@ -1,5 +1,5 @@
 ka:
   models:
-    geo_path_type:
+    objects_path_type:
       name: დასახელება
       order_by: '#'
