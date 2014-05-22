@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-class Geo::PathTypesController < ApplicationController
+class Objects::PathTypesController < ApplicationController
   def index
     @title='გზის სახეობები'
     @types=Geo::PathType.asc(:order_by)

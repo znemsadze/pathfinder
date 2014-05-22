@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-class Geo::PathSurfacesController < ApplicationController
+class Objects::PathSurfacesController < ApplicationController
   def index
     @title='გზის საფარი'
     @surfaces=Geo::PathSurface.asc(:type_id, :order_by)

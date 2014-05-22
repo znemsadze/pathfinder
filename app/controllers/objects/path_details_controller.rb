@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-class Geo::PathDetailsController < ApplicationController
+class Objects::PathDetailsController < ApplicationController
   def index
     @title='გზის დეტალები'
     @details=Geo::PathDetail.asc(:surface_id, :order_by)
