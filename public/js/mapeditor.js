@@ -7,7 +7,7 @@ exports.path=path;
 var utils=require('./utils')
   ;
 
-var BASE_PATH='/api/geo';
+var BASE_PATH='/api/paths';
 
 exports.newPath=function(model,callback){
   utils.clearErrors(model);
@@ -24,7 +24,7 @@ exports.newPath=function(model,callback){
     }
     var points=utils.pointsFromPath(path);
     var params={points:points, detail_id:detail_id, description:description};
-    $.post(BASE_PATH+'/new_path',params,function(data){
+    $.post(BASE_PATH+'/new',params,function(data){
       if(callback){ callback(data); }
     }).fail(function(err){
       if(callback){ callback(err); }
@@ -48,7 +48,7 @@ exports.editPath=function(id,model,callback){
       return false;
     }
     var points=utils.pointsFromPath(path);
-    $.post(BASE_PATH+'/edit_path',{id:id, points:points, detail_id:detail_id, description:description},function(data){
+    $.post(BASE_PATH+'/edit',{id:id, points:points, detail_id:detail_id, description:description},function(data){
       if(callback){ callback(data); }
     }).fail(function(err){
       if(callback){ callback(err); }
@@ -59,7 +59,7 @@ exports.editPath=function(id,model,callback){
 };
 
 exports.deletePath=function(id,callback){
-  $.post(BASE_PATH+'/delete_path',{id:id},function(data){
+  $.post(BASE_PATH+'/delete',{id:id},function(data){
     if(callback){ callback(data); }
   }).fail(function(err){
     if(callback){ callback(err); }
@@ -210,6 +210,7 @@ var self, canEdit
   ;
 
 var isNewMode=function(){ return !feature; };
+var getId=function(){ return feature&&feature.getId(); };
 var getType=function(){ return self.params.type; };
 
 var resetTitle=function(){
@@ -245,14 +246,29 @@ module.exports=function(){
 
 var initUI=function(self){
   var saveAction=function(){
-    // form.clearErrors(); var model=form.getModel(); model.path=path.getPath();
-    // var sent=api.editPath(feature.getId(), model, function(data){
-    //   path.setMap(null);
-    //   map.loadData(data.id);
-    //   self.openPage('root');
-    // });
-    // canEdit= !sent;
-    // if(!sent){ form.setModel(model); }
+    form.clearErrors();
+
+    var model=form.getModel();
+    model.path=path.getPath();
+
+    var callback=function(data){
+      path.setMap(null);
+      // TODO: reload data!!!!
+      //map.loadData(data.id);
+      self.openPage('root');
+    };
+    var sent=false;
+
+    // TODO: differentiate path type!!!
+
+    if(isNewMode()){
+      sent=api.path.newPath(model, callback);
+    } else {
+      sent=api.path.editPath(getId(), model, callback);
+    }
+
+    canEdit= !sent;
+    if(!sent){ form.setModel(model); }
   };
 
   var cancelAction=function(){

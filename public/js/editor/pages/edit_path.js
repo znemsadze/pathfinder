@@ -11,6 +11,7 @@ var self, canEdit
   ;
 
 var isNewMode=function(){ return !feature; };
+var getId=function(){ return feature&&feature.getId(); };
 var getType=function(){ return self.params.type; };
 
 var resetTitle=function(){
@@ -46,14 +47,29 @@ module.exports=function(){
 
 var initUI=function(self){
   var saveAction=function(){
-    // form.clearErrors(); var model=form.getModel(); model.path=path.getPath();
-    // var sent=api.editPath(feature.getId(), model, function(data){
-    //   path.setMap(null);
-    //   map.loadData(data.id);
-    //   self.openPage('root');
-    // });
-    // canEdit= !sent;
-    // if(!sent){ form.setModel(model); }
+    form.clearErrors();
+
+    var model=form.getModel();
+    model.path=path.getPath();
+
+    var callback=function(data){
+      path.setMap(null);
+      // TODO: reload data!!!!
+      //map.loadData(data.id);
+      self.openPage('root');
+    };
+    var sent=false;
+
+    // TODO: differentiate path type!!!
+
+    if(isNewMode()){
+      sent=api.path.newPath(model, callback);
+    } else {
+      sent=api.path.editPath(getId(), model, callback);
+    }
+
+    canEdit= !sent;
+    if(!sent){ form.setModel(model); }
   };
 
   var cancelAction=function(){

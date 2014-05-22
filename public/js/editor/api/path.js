@@ -1,7 +1,7 @@
 var utils=require('./utils')
   ;
 
-var BASE_PATH='/api/geo';
+var BASE_PATH='/api/paths';
 
 exports.newPath=function(model,callback){
   utils.clearErrors(model);
@@ -18,7 +18,7 @@ exports.newPath=function(model,callback){
     }
     var points=utils.pointsFromPath(path);
     var params={points:points, detail_id:detail_id, description:description};
-    $.post(BASE_PATH+'/new_path',params,function(data){
+    $.post(BASE_PATH+'/new',params,function(data){
       if(callback){ callback(data); }
     }).fail(function(err){
       if(callback){ callback(err); }
@@ -42,7 +42,7 @@ exports.editPath=function(id,model,callback){
       return false;
     }
     var points=utils.pointsFromPath(path);
-    $.post(BASE_PATH+'/edit_path',{id:id, points:points, detail_id:detail_id, description:description},function(data){
+    $.post(BASE_PATH+'/edit',{id:id, points:points, detail_id:detail_id, description:description},function(data){
       if(callback){ callback(data); }
     }).fail(function(err){
       if(callback){ callback(err); }
@@ -53,7 +53,7 @@ exports.editPath=function(id,model,callback){
 };
 
 exports.deletePath=function(id,callback){
-  $.post(BASE_PATH+'/delete_path',{id:id},function(data){
+  $.post(BASE_PATH+'/delete',{id:id},function(data){
     if(callback){ callback(data); }
   }).fail(function(err){
     if(callback){ callback(err); }
