@@ -20,7 +20,7 @@ var map
   , btnEdit
   , locked
   , confirmTitle=ui.html.p('საჭიროა დასტური',{class: 'page-header', style: 'font-weight:bold; font-size: 1.2em;'})
-  , confirmText=ui.html.p('დაადასტურეთ, რომ ნამდვილად გინდათ მონიშნული გზ(ებ)ის წაშლა?',{class: 'text-danger'})
+  , confirmText=ui.html.p('დაადასტურეთ, რომ ნამდვილად გინდათ მონიშნული გზის წაშლა?',{class: 'text-danger'})
   , toolbar2=ui.button.toolbar([])
   ;
 
@@ -88,16 +88,15 @@ var initPage2=function(self){
   });
 
   var btnConfirm=ui.button.actionButton('ვადასტურებ', function(){
-    // var ids=selectedFeatures.map(function(x){return x.getId();}).join(',');
-    // var resp=api.deletePath(ids,function(){
-    //   for(var i=0,l=selectedFeatures.length;i<l;i++){
-    //     map.data.remove(selectedFeatures[i]);
-    //   }
-    //   selectedFeatures=[];
-    //   resetPathInfo();
-    //   locked=false;
-    // });
-    // locked=resp;
+
+    // TODO: diferentiate between feature types
+
+    locked=api.path.deletePath(selectedFeature.getId(),function(){
+      map.data.remove(selectedFeature);
+      selectedFeature=null;
+      resetPathInfo();
+      locked=false;
+    });
   },{icon:'warning', type: 'danger'});
 
   toolbar2.addButton(btnConfirm);

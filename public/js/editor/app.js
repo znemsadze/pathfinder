@@ -79,7 +79,7 @@ var initMap=function(){
       var strokeColor, strokeWeight;
       if(isSelected){ strokeColor='#00AAAA'; strokeWeight=5; }
       else if(isHovered){ strokeColor='#00FFFF'; strokeWeight=10; }
-      else{ strokeColor='#0000FF'; strokeWeight=1; }
+      else{ strokeColor='#0000FF'; strokeWeight=2; }
       return {
         strokeColor: strokeColor,
         strokeWeight: strokeWeight,
