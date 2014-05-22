@@ -18,6 +18,7 @@ json.features do
     json.properties do
       json.class t.class.name
       json.name t.name
+      json.description t.description if t.respond_to?(:description)
     end
   end
 end

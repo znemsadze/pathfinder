@@ -463,7 +463,7 @@ exports.isPath=function(f){ return typed(f,function(type){ return exports.TYPE_P
 exports.typeName=function(f){
   return typed(f,function(type){
     if(exports.TYPE_LINE===type){ return 'გადამცემი ხაზი'; }
-    else if(exports.TYPE_PATH==type){ return 'გზა'; }
+    else if(exports.TYPE_PATH==type){ return 'მარშრუტი'; }
     return type;
   });
 };
@@ -471,8 +471,18 @@ exports.typeName=function(f){
 var lineDescription=function(map,f){
   var name=f.getProperty('name');
   return [
-    '<p><strong>სახელი</strong>: ',name,'</p>',
-    '<p><strong>გზის სიგრძე</strong>: <code>',exports.calcFeatureDistance(map,f).toFixed(3),'</code> კმ</p>'
+    '<p><strong>სახელი</strong>: ',(name||'<span class="text-muted">(ცარიელი)</span>'),'</p>',
+    '<p><strong>გზის სიგრძე</strong>: <code>',exports.calcFeatureDistance(map,f).toFixed(3),'</code> კმ</p>',
+  ].join('');
+};
+
+var pathDescription=function(map,f){
+  var name=f.getProperty('name');
+  var dscr=f.getProperty('description');
+  return [
+    '<p><strong>სახელი</strong>: ',(name||'<span class="text-muted">(ცარიელი)</span>'),'</p>',
+    '<p><strong>გზის სიგრძე</strong>: <code>',exports.calcFeatureDistance(map,f).toFixed(3),'</code> კმ</p>',
+    '<p><strong>აღწერილობა</strong>: ',(dscr||'<span class="text-muted">(ცარიელი)</span>'),'</p>',
   ].join('');
 };
 
@@ -482,6 +492,7 @@ exports.featureDescription=function(map,f){
   var texts=['<div class="panel panel-default">'];
   texts.push('<div class="panel-heading"><h4 style="margin:0;padding:0;">',exports.typeName(f),'</h4></div>');
   if(exports.isLine(f)){ bodyDescription=lineDescription(map,f); }
+  else if(exports.isPath(f)){ bodyDescription=pathDescription(map,f); }
   texts.push('<div class="panel-body">',bodyDescription,'</div>');
   texts.push('</div>');
   return texts.join('');
