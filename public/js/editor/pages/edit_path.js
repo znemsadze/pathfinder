@@ -54,8 +54,7 @@ var initUI=function(self){
 
     var callback=function(data){
       path.setMap(null);
-      // TODO: reload data!!!!
-      //map.loadData(data.id);
+      map.loadData({id:data.id, type:getType()});
       self.openPage('root');
     };
     var sent=false;

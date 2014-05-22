@@ -49,9 +49,14 @@ var initMap=function(){
 
   map=new google.maps.Map(mapElement, mapOptions);
 
-  map.loadData=function(id){
-    var url='/api/objects.json';
-    map.data.loadGeoJson(url);
+  map.loadData=function(opts){
+    var url='/api/objects.json?';
+    var query=[];
+    if(typeof opts==='object'){
+      if(opts.id){ query.push('id='+opts.id); }
+      if(opts.type){ query.push('type='+opts.type); }
+    }
+    map.data.loadGeoJson(url+query.join('&'));
   };
 
   map.data.setStyle(function(f) {

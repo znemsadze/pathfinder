@@ -78,11 +78,11 @@ class Objects::Path::Line
 
   def splitat(point)
     point.path_ids.each do |pathid|
-      path=Objects::Path::Path.find(pathid)
+      path=Objects::Path::Line.find(pathid)
       unless path.edge?(point)
         points=path.points
         idx=points.index(point)
-        new_path=Objects::Path::Path.create(detail:path.detail, description:path.description)
+        new_path=Objects::Path::Line.create(detail:path.detail, description:path.description)
         points[idx..-1].each do |p|
           p.path_ids.push(new_path.id)
           unless p==point
@@ -102,7 +102,7 @@ class Objects::Path::Line
   end
 
   def validate_unique(path)
-    if Objects::Path::Path.where(point_ids: path.point_ids).count>1
+    if Objects::Path::Line.where(point_ids: path.point_ids).count>1
       path.points.each do |point|
         point.path_ids.delete path.id
         point.save
