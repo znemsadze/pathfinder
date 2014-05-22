@@ -2,7 +2,10 @@
 class Objects::PathSurfacesController < ApplicationController
   def index
     @title='გზის საფარი'
-    @types=Objects::Path::Type.asc(:order_by)
+    respond_to do |format|
+      format.html{ @types=Objects::Path::Type.asc(:order_by) }
+      format.json{ @surfaces=Objects::Path::Surface.all }
+    end
   end
 
   def new
