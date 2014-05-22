@@ -55,12 +55,26 @@ var initMap=function(){
   };
 
   map.data.setStyle(function(f) {
-    var name=f.getProperty('name');
+    var name=f.getProperty('name')
+      , isSelected=f.selected
+      , isHovered=f.hovered
+      ;
     if (geo.isLine(f)){
       var strokeColor, strokeWeight;
-      if(f.selected){ strokeColor='#00AA00'; strokeWeight=5; }
-      else if(f.hovered){ strokeColor='#00FF00'; strokeWeight=10; }
+      if(isSelected){ strokeColor='#00AA00'; strokeWeight=5; }
+      else if(isHovered){ strokeColor='#00FF00'; strokeWeight=10; }
       else{ strokeColor='#FF0000'; strokeWeight=1; }
+      return {
+        strokeColor: strokeColor,
+        strokeWeight: strokeWeight,
+        strokeOpacity: 0.5,
+        title: name,
+      };
+    } else if (geo.isPath(f)) {
+      var strokeColor, strokeWeight;
+      if(isSelected){ strokeColor='#00AAAA'; strokeWeight=5; }
+      else if(isHovered){ strokeColor='#00FFFF'; strokeWeight=10; }
+      else{ strokeColor='#0000FF'; strokeWeight=1; }
       return {
         strokeColor: strokeColor,
         strokeWeight: strokeWeight,
