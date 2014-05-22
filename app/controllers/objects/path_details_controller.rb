@@ -2,7 +2,10 @@
 class Objects::PathDetailsController < ApplicationController
   def index
     @title='საფარის დეტალები'
-    @types=Objects::Path::Type.asc(:order_by)
+    respond_to do |format|
+      format.html{ @types=Objects::Path::Type.asc(:order_by) }
+      format.json{ @details=Objects::Path::Detail.all }
+    end
   end
 
   def new
