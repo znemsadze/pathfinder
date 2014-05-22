@@ -3,6 +3,7 @@ class Objects::Path::Line
   include Mongoid::Document
   belongs_to :detail, class_name: 'Objects::Path::Detail'
   field :point_ids, type: Array, default:[]
+  field :name, type: String
   field :description, type: String
 
   def self.new_path(points,params)

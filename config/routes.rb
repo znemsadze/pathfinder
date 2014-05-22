@@ -88,7 +88,7 @@ Pathfinder::Application.routes.draw do
       post '/delete', action: 'delete'
     end
     scope '/objects', controller: 'objects' do
-      get '/all', action: 'all', as: 'all_objects'
+      get '/', action: 'index'
     end
   end
 

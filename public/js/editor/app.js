@@ -50,7 +50,7 @@ var initMap=function(){
   map=new google.maps.Map(mapElement, mapOptions);
 
   map.loadData=function(id){
-    var url='/api/objects/all.json';
+    var url='/api/objects.json';
     map.data.loadGeoJson(url);
   };
 
