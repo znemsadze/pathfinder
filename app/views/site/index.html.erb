@@ -11,10 +11,18 @@
   </div>
   <div class="col-sm-6">
     <div>
-      <h3 class="page-header">ქსელის ობიექტები</h3>
+      <h3 class="page-header">ობიექტები</h3>
       <p>
-        <%=link_to 'ანძები', objects_towers_url%> |
-        <%=link_to 'ხაზები', objects_lines_url%>
+        <%=link_to 'მაღალი ძაბვის ანძები', objects_towers_url%>
+        <span class="label label-info"><%=Objects::Tower.count%></span>
+      </p>
+      <p>
+        <%=link_to 'გადამცემი ხაზები', objects_lines_url%>
+        <span class="label label-info"><%=Objects::Line.count%></span>
+      </p>
+      <p>
+        <%= link_to 'ობიქტებთან მისასვლელი გზები', objects_path_lines_url%>
+        <span class="label label-info"><%=Objects::Path::Line.count%></span>
       </p>
     </div>
     <div>

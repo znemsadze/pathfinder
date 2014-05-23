@@ -46,9 +46,13 @@ Pathfinder::Application.routes.draw do
       get '/show/:id', action: 'show', as: 'line'
       match '/upload', action: 'upload', via: ['get','post'], as: 'upload_lines'
     end
+    scope '/maps', controller: 'maps' do
+      get '/editor', action: 'editor', as: 'map_editor'
+    end
     scope '/path' do
-      scope '/maps', controller: 'maps' do
-        get '/editor', action: 'editor', as: 'map_editor'
+      scope '/lines', controller: 'path_lines' do
+        get '/', action: 'index', as: 'path_lines'
+        get '/show/:id', action: 'show', as: 'path_line'
       end
       scope '/types', controller: 'path_types' do
         get '/', action: 'index', as: 'path_types'
