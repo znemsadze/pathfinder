@@ -16,12 +16,13 @@ module.exports=function(){
       self=this;
 
       if (!uiInitialized){ initUI(self); }
-      canEdit=true;
-      getForm().loadModel(getId());
 
       map=self.map;
       initMap();
+
       resetLayout();
+      canEdit=true;
+      getForm().loadModel(getId());
 
       return layout;
     },
