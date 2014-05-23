@@ -42,10 +42,12 @@ module.exports=function(fields,opts){
   };
 
   _form.loadModel=function(id){
-    if(opts&&opts.load_url){
+    if(id&&opts&&opts.load_url){
       $.get([opts.load_url, '?id=', id].join(''), function(data){
         _form.setModel(data);
       });
+    } else {
+      _form.setModel({});
     }
   };
 
