@@ -46,9 +46,8 @@ module.exports=function(fields,opts){
       $.get([opts.load_url, '?id=', id].join(''), function(data){
         _form.setModel(data);
       });
-    } else {
-      _form.setModel({});
     }
+    _form.setModel({});
   };
 
   // actions
