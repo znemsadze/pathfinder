@@ -5,6 +5,12 @@ class Objects::PathLinesController < ApplicationController
     @lines=Objects::Path::Line.asc(:name).paginate(per_page: 10, page: params[:page])
   end
 
+  def show
+    @title='მარშუტის თვისებები'
+    @line=Objects::Path::Line.find(params[:id])
+  end
+
+
   protected
   def nav
     @nav=super

@@ -1,0 +1,5 @@
+<%=view_for @line, title: @title, icon: '/icons/arrow-switch.png', collapsible: true do |f|
+  f.text_field 'name'
+  f.text_field 'description'
+  f.text_field 'points.count', i18n: 'points', tag: 'code'
+end%>
