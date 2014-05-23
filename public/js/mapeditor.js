@@ -368,7 +368,7 @@ var initMap=function(){
   google.maps.event.addListener(path, 'dblclick', function(evt){
     if(canEdit){
       if(typeof evt.vertex==='number'){
-        path.getPath().removeAt(evt.vertex,1);
+        path.getPath().removeAt(evt.vertex);
       }
     }
   });
