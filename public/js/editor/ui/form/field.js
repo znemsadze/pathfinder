@@ -48,7 +48,7 @@ exports.textField=function(name,opts){
 
   textField.getName=function(){return name;}
   textField.getValue=function(){ return _innerElement.value; };
-  textField.setValue=function(val){ _innerElement.value=val; };
+  textField.setValue=function(val){ _innerElement.value=(val||''); };
   textField.applyModel=function(model){ applyModelForSimpleField(textField,model); }
   textField.setModel=function(model){ setModelForSimpleField(textField,model); }
 
