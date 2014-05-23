@@ -213,7 +213,7 @@ var initRouter=function(){
 
   app.openPage('root');
 };
-},{"./api":1,"./pages":11,"./pages/geo":9,"./router":12,"./ui":18}],5:[function(require,module,exports){
+},{"./api":1,"./pages":12,"./pages/geo":10,"./router":13,"./ui":19}],5:[function(require,module,exports){
 var app=require('./app');
 
 app.start();
@@ -393,9 +393,33 @@ var initMap=function(){
   }
 };
 
-},{"../api":1,"../ui":18,"./forms":7,"./geo":9}],7:[function(require,module,exports){
-arguments[4][1][0].apply(exports,arguments)
-},{"./path":8}],8:[function(require,module,exports){
+},{"../api":1,"../ui":19,"./forms":7,"./geo":10}],7:[function(require,module,exports){
+var path=require('./path')
+  , line=require('./line')
+  ;
+
+exports.path=path;
+},{"./line":8,"./path":9}],8:[function(require,module,exports){
+var ui=require('../../ui')
+  ;
+
+exports.form=function(opts){
+  var save_f=opts.save_action;
+  var cancel_f=opts.cancel_action;
+
+  var saveAction={label: 'ხაზის შენახვა', icon:'save', type:'success', action: save_f};
+  var cancelAction={label:'გაუმება', icon:'times-circle', action: cancel_f};
+
+  var nameText=ui.form.textField('name', {label: 'სახელი'});
+  var descriptionText=ui.form.textArea('description', {label: 'შენიშვნა'});
+
+  var fields=[nameText,descriptionText];
+  var actions=[saveAction,cancelAction];
+
+  var form=ui.form.create(fields,{actions: actions, load_url:'/api/lines/show.json'});
+  return form;
+};
+},{"../../ui":19}],9:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -410,7 +434,7 @@ exports.form=function(opts){
   var surfaceCombo=ui.form.comboField('surface_id', {label: 'გზის საფარი', collection_url: '/objects/path/surfaces.json', text_property: 'name', parent_combo: typeCombo, parent_key: 'type_id'});
   var detailsCombo=ui.form.comboField('detail_id', {label: 'საფარის დეტალები', collection_url: '/objects/path/details.json', text_property: 'name', parent_combo: surfaceCombo, parent_key: 'surface_id'});
   var nameText=ui.form.textField('name', {label: 'სახელი'});
-  var descriptionText=ui.form.textArea('description', {label: 'შენიშვნები'});
+  var descriptionText=ui.form.textArea('description', {label: 'შენიშვნა'});
 
   var fields=[typeCombo, surfaceCombo, detailsCombo,nameText,descriptionText];
   var actions=[saveAction,cancelAction];
@@ -418,7 +442,7 @@ exports.form=function(opts){
   var form=ui.form.create(fields,{actions: actions, load_url:'/api/paths/show.json'});
   return form;
 };
-},{"../../ui":18}],9:[function(require,module,exports){
+},{"../../ui":19}],10:[function(require,module,exports){
 exports.resetMap=function(map){
   google.maps.event.clearInstanceListeners(map);
   google.maps.event.clearInstanceListeners(map.data);
@@ -535,7 +559,7 @@ exports.featureDescription=function(map,f){
   return texts.join('');
 };
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var ui=require('../ui')
   , api=require('../api')
   , geo=require('./geo')
@@ -697,14 +721,14 @@ var changeSelection=function(f){
   resetPathInfo();
 };
 
-},{"../api":1,"../ui":18,"./geo":9}],11:[function(require,module,exports){
+},{"../api":1,"../ui":19,"./geo":10}],12:[function(require,module,exports){
 var home=require('./home')
   , edit_path=require('./edit_path')
   ;
 
 exports.home=home;
 exports.edit_path=edit_path;
-},{"./edit_path":6,"./home":10}],12:[function(require,module,exports){
+},{"./edit_path":6,"./home":11}],13:[function(require,module,exports){
 var map
   , sidebar
   , toolbar
@@ -760,7 +784,7 @@ var openPage=function(name,params){
   }
 };
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils')
   ;
@@ -833,7 +857,7 @@ exports.dropdown=function(text,buttons,opts){
   var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":17,"./utils":20}],14:[function(require,module,exports){
+},{"./html":18,"./utils":21}],15:[function(require,module,exports){
 var html=require('../html')
   ;
 
@@ -884,7 +908,7 @@ exports.textField=function(name,opts){
 
   textField.getName=function(){return name;}
   textField.getValue=function(){ return _innerElement.value; };
-  textField.setValue=function(val){ _innerElement.value=val; };
+  textField.setValue=function(val){ _innerElement.value=(val||''); };
   textField.applyModel=function(model){ applyModelForSimpleField(textField,model); }
   textField.setModel=function(model){ setModelForSimpleField(textField,model); }
 
@@ -1014,7 +1038,7 @@ exports.textArea=function(name, opts){
 
   return textarea;
 };
-},{"../html":17}],15:[function(require,module,exports){
+},{"../html":18}],16:[function(require,module,exports){
 var html=require('../html')
   , button=require('../button')
   ;
@@ -1059,10 +1083,12 @@ module.exports=function(fields,opts){
   };
 
   _form.loadModel=function(id){
-    if(opts&&opts.load_url){
+    if(id&&opts&&opts.load_url){
       $.get([opts.load_url, '?id=', id].join(''), function(data){
         _form.setModel(data);
       });
+    } else {
+      _form.setModel({});
     }
   };
 
@@ -1081,7 +1107,7 @@ module.exports=function(fields,opts){
   return _form;
 };
 
-},{"../button":13,"../html":17}],16:[function(require,module,exports){
+},{"../button":14,"../html":18}],17:[function(require,module,exports){
 var form=require('./form')
   , field=require('./field')
   ;
@@ -1090,7 +1116,7 @@ exports.create=form;
 exports.textField=field.textField;
 exports.comboField=field.comboField;
 exports.textArea=field.textArea;
-},{"./field":14,"./form":15}],17:[function(require,module,exports){
+},{"./field":15,"./form":16}],18:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -1191,7 +1217,7 @@ exports.p=function(text,opts){
   return p; 
 };
 
-},{"./utils":20}],18:[function(require,module,exports){
+},{"./utils":21}],19:[function(require,module,exports){
 var button=require('./button')
   , layout=require('./layout')
   , html=require('./html')
@@ -1202,7 +1228,7 @@ exports.html=html;
 exports.button=button;
 exports.layout=layout;
 exports.form=form;
-},{"./button":13,"./form":16,"./html":17,"./layout":19}],19:[function(require,module,exports){
+},{"./button":14,"./form":17,"./html":18,"./layout":20}],20:[function(require,module,exports){
 var html=require('./html')
  ;
 
@@ -1273,7 +1299,7 @@ exports.card=function(opts){
 
   return layout;
 };
-},{"./html":17}],20:[function(require,module,exports){
+},{"./html":18}],21:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
 exports.fieldValue=function(object,name){ return object&&object[name]; };
