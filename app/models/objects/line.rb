@@ -9,6 +9,16 @@ class Objects::Line
   field :description, type: String
   embeds_many :points, class_name: 'Objects::LinePoint'
 
+  def set_points(points)
+    self.points.destroy_all
+    points.each do |p|
+      lat,lng=p[0],p[1]
+      point=self.points.new(line:self)
+      point.lat=lat ; point.lng=lng
+      point.save
+    end
+  end
+
   def self.from_kml(xml)
     parser=XML::Parser.string xml
     doc=parser.parse ; root=doc.child

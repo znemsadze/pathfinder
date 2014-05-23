@@ -65,19 +65,23 @@ var initUI=function(self){
     var model=form.getModel();
     model.path=path.getPath();
 
-    var callback=function(data){
-      path.setMap(null);
-      map.loadData({id:data.id, type:getType()});
-      self.openPage('root');
+    var callback=function(err,data){
+      if(err){
+        console.log(err);
+      } else {
+        path.setMap(null);
+        map.loadData({id:data.id, type:getType()});
+        self.openPage('root');
+      }
     };
+
     var sent=false;
-
-    // TODO: differentiate path type!!!
-
-    if(isNewMode()){
-      sent=api.path.newPath(model, callback);
-    } else {
-      sent=api.path.editPath(getId(), model, callback);
+    if (geo.isLine(getType())){
+      if(isNewMode()){ sent=api.line.newLine(model, callback); }
+      else { sent=api.line.editLine(getId(), model, callback); }
+    } else{
+      if(isNewMode()){ sent=api.path.newPath(model, callback); }
+      else { sent=api.path.editPath(getId(), model, callback); }
     }
 
     canEdit= !sent;
