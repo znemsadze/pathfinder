@@ -6,6 +6,7 @@ class Objects::Line
 
   field :kmlid, type: String
   field :name, type: String
+  field :description, type: String
   embeds_many :points, class_name: 'Objects::LinePoint'
 
   def self.from_kml(xml)

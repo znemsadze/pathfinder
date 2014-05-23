@@ -85,14 +85,20 @@ Pathfinder::Application.routes.draw do
   end
 
   namespace 'api' do
+    scope '/objects', controller: 'objects' do
+      get '/', action: 'index'
+    end
     scope '/paths', controller: 'paths' do
       get '/show', action: 'show'
       post '/new',  action: 'new'
       post '/edit', action: 'edit'
       post '/delete', action: 'delete'
     end
-    scope '/objects', controller: 'objects' do
-      get '/', action: 'index'
+    scope '/lines', controller: 'lines' do
+      get '/show', action: 'show'
+      post '/new',  action: 'new'
+      post '/edit', action: 'edit'
+      post '/delete', action: 'delete'
     end
   end
 
