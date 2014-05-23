@@ -38,7 +38,7 @@ exports.card=function(opts){
     , selectedIndex
     ;
 
-  if(opts.parent){ layout=html.el(opts.parent,'div',{class:'card-layout'}); }
+  if(opts&&opts.parent){ layout=html.el(opts.parent,'div',{class:'card-layout'}); }
   else{ layout=html.el('div',{class:'card-layout'}); }
 
   var addToLayout=function(child){
@@ -56,7 +56,11 @@ exports.card=function(opts){
     }
   };
 
-  if(opts.children){
+  var selected=function(){
+    return childElements[selectedIndex];
+  };
+
+  if(opts&&opts.children){
     var children=opts.children;
     for(var i=0, l=children.length; i<l; i++){
       addToLayout(children[i]);
@@ -65,6 +69,7 @@ exports.card=function(opts){
 
   layout.add=addToLayout;
   layout.showAt=select;
+  layout.selected=selected;
 
   return layout;
 };

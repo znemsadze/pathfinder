@@ -226,7 +226,7 @@ var ui=require('../ui')
 
 var self, canEdit
   , map, marker, path
-  , form, layout, uiInitialized=false
+  , layout, formLayout, uiInitialized=false
   , titleElement=ui.html.pageTitle('გზის შეცვლა')
   ;
 
@@ -237,11 +237,11 @@ module.exports=function(){
 
       if (!uiInitialized){ initUI(self); }
       canEdit=true;
-      form.loadModel(getId());
+      getForm().loadModel(getId());
 
       map=self.map;
       initMap();
-      resetTitle();
+      resetLayout();
 
       return layout;
     },
@@ -252,8 +252,8 @@ module.exports=function(){
 };
 
 var getFeature=function(){ return self.params.feature; }
-
 var isNewMode=function(){ return !getFeature(); };
+var getForm=function(){ return  formLayout.selected(); };
 
 var getType=function(){
   var feature=getFeature();
@@ -269,17 +269,16 @@ var getId=function(){
   return feature&&feature.getId();
 };
 
-var resetTitle=function(){
+var resetLayout=function(){
   var type=getType();
-  if(isNewMode()){
-    titleElement.setTitle('ახალი: '+geo.typeName(type));
-  } else{
-    titleElement.setTitle('შეცვლა: '+geo.typeName(type));
-  }
+  var prefix=isNewMode() ? 'ახალი: ' : 'შეცვლა: ';
+  titleElement.setTitle(prefix+geo.typeName(type));
+  formLayout.openType(type);
 };
 
 var initUI=function(self){
   var saveAction=function(){
+    var form=getForm();
     form.clearErrors();
 
     var model=form.getModel();
@@ -311,9 +310,18 @@ var initUI=function(self){
     self.openPage('root');
   };
 
-  form=forms.path.form({save_action:saveAction, cancel_action:cancelAction});
+  var form1=forms.path.form({save_action:saveAction, cancel_action:cancelAction});
+  var form2=forms.line.form({save_action:saveAction, cancel_action:cancelAction});
+  formLayout=ui.layout.card({children: [form1,form2]});
+  formLayout.openType=function(type){
+    if(geo.isPath(type)){
+      formLayout.showAt(0);
+    } else {
+      formLayout.showAt(1);
+    }
+  };
 
-  layout=ui.layout.vertical({ children: [ titleElement, form ] });
+  layout=ui.layout.vertical({children:[titleElement,formLayout]});
   uiInitialized=true;
 };
 
@@ -399,6 +407,7 @@ var path=require('./path')
   ;
 
 exports.path=path;
+exports.line=line;
 },{"./line":8,"./path":9}],8:[function(require,module,exports){
 var ui=require('../../ui')
   ;
@@ -1269,7 +1278,7 @@ exports.card=function(opts){
     , selectedIndex
     ;
 
-  if(opts.parent){ layout=html.el(opts.parent,'div',{class:'card-layout'}); }
+  if(opts&&opts.parent){ layout=html.el(opts.parent,'div',{class:'card-layout'}); }
   else{ layout=html.el('div',{class:'card-layout'}); }
 
   var addToLayout=function(child){
@@ -1287,7 +1296,11 @@ exports.card=function(opts){
     }
   };
 
-  if(opts.children){
+  var selected=function(){
+    return childElements[selectedIndex];
+  };
+
+  if(opts&&opts.children){
     var children=opts.children;
     for(var i=0, l=children.length; i<l; i++){
       addToLayout(children[i]);
@@ -1296,6 +1309,7 @@ exports.card=function(opts){
 
   layout.add=addToLayout;
   layout.showAt=select;
+  layout.selected=selected;
 
   return layout;
 };

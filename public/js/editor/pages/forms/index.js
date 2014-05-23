@@ -3,3 +3,4 @@ var path=require('./path')
   ;
 
 exports.path=path;
+exports.line=line;
