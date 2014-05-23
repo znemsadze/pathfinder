@@ -1,0 +1,5 @@
+ka:
+  models:
+    objects_path_line:
+      name: დასახელება
+      description: აღწერილობა
