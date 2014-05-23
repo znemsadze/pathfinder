@@ -7,6 +7,7 @@ exports.newPath=function(model,callback){
   utils.clearErrors(model);
 
   var path=model.path
+    , name=model.name
     , detail_id=model.detail_id
     , description=model.description
     ;
@@ -17,7 +18,7 @@ exports.newPath=function(model,callback){
       return false;
     }
     var points=utils.pointsFromPath(path);
-    var params={points:points, detail_id:detail_id, description:description};
+    var params={points:points, detail_id:detail_id, name:name, description:description};
     $.post(BASE_PATH+'/new',params,function(data){
       if(callback){ callback(data); }
     }).fail(function(err){
@@ -32,6 +33,7 @@ exports.editPath=function(id,model,callback){
   utils.clearErrors(model);
 
   var path=model.path
+    , name=model.name
     , detail_id=model.detail_id
     , description=model.description
     ;
@@ -42,7 +44,7 @@ exports.editPath=function(id,model,callback){
       return false;
     }
     var points=utils.pointsFromPath(path);
-    $.post(BASE_PATH+'/edit',{id:id, points:points, detail_id:detail_id, description:description},function(data){
+    $.post(BASE_PATH+'/edit',{id:id, points:points, detail_id:detail_id, name:name, description:description},function(data){
       if(callback){ callback(data); }
     }).fail(function(err){
       if(callback){ callback(err); }

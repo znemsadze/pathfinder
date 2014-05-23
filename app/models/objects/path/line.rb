@@ -49,7 +49,7 @@ class Objects::Path::Line
         self.point_ids.push(point.id)
       end
       self.save
-      self.update_attributes(description:params[:description], detail_id:params[:detail_id])
+      self.update_attributes(name: params[:name], description:params[:description], detail_id:params[:detail_id])
     end
   end
 
