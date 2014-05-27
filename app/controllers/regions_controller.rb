@@ -2,6 +2,7 @@
 class RegionsController < ApplicationController
   def index
     @title='რეგიონები'
+    @regions=Region.asc(:name)
   end
 
   protected
