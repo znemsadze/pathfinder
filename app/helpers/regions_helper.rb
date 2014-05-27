@@ -11,4 +11,20 @@ module RegionsHelper
       f.cancel_button cancel_url
     end
   end
+
+  def region_view(region,opts={})
+    title='რეგიონის თვისებები'; icon='/icons/region.png'
+    view_for region, title: title, collapsible: true, icon: icon do |v|
+      v.edit_action edit_region_url(id:region.id)
+      v.delete_action delete_region_url(id:region.id)
+      v.tab title: 'ზოგადი', icon:icon do |v|
+        v.text_field 'name', required: true
+        v.text_field 'description'
+      end
+      v.tab title: 'სისტემური',icon:'/icons/traffic-cone.png' do |v|
+        v.timestamps
+        v.userstamps
+      end
+    end
+  end
 end

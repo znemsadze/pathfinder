@@ -17,6 +17,21 @@ class RegionsController < ApplicationController
     end
   end
 
+  def edit
+    @title='რეგიონის შეცვლა'
+    @region=Region.find(params[:id])
+    if request.post?
+      if @region.update_attributes(region_params.merge({user:current_user}))
+        redirect_to region_url(id:@region.id), notice: 'რეგიონი განახლებულია'
+      end
+    end
+  end
+
+  def show
+    @region=Region.find(params[:id])
+    @title='რეგიონის თვისებები'
+  end
+
   def delete
     region=Region.find(params[:id])
     if region.can_delete?
@@ -31,6 +46,10 @@ class RegionsController < ApplicationController
   def nav
     @nav=super
     @nav['რეგიონები']=regions_url
+    if @region
+      @nav[@region.name]=region_url(id:@region.id) if action_name=='edit'
+      @nav[@title]=nil
+    end
   end
 
   private
