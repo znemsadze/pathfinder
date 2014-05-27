@@ -3,3 +3,5 @@ ka:
     objects_line:
       kmlid: kmlID
       name: დასახელება
+      region: რეგიონი
+      points: წერტილები

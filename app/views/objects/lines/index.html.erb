@@ -3,5 +3,7 @@
   t.item_action ->(x){objects_line_url(id:x.id)}, icon: '/icons/eye.png'
   t.text_field 'kmlid', tag: 'code', url: ->(x){objects_line_url(id:x.id)}
   t.text_field 'name'
+  t.text_field 'region.name', i18n: 'region'
+  t.text_field 'points.count', i18n: 'points', tag: 'code'
   t.paginate records: 'ჩანაწერი'
 end%>
