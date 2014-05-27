@@ -5,4 +5,5 @@ class Region
   include Sys::Userstamps
   field :name, type: String
   field :description, type: String
+  validates :name, presence: {message: 'ჩაწერეთ სახელი'}
 end
