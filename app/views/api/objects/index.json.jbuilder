@@ -19,6 +19,7 @@ json.features do
       json.class t.class.name
       json.name t.name
       json.description t.description if t.respond_to?(:description)
+      json.region t.region.name if t.region.present?
     end
   end
 end

@@ -593,20 +593,24 @@ exports.typeName=function(f){
 var lineDescription=function(map,f){
   var name=f.getProperty('name');
   var dscr=f.getProperty('description');
+  var region=f.getProperty('region');
   return [
     '<p><strong>სახელი</strong>: ',(name||'<span class="text-muted">(ცარიელი)</span>'),'</p>',
     '<p><strong>გზის სიგრძე</strong>: <code>',exports.calcFeatureDistance(map,f).toFixed(3),'</code> კმ</p>',
     '<p><strong>აღწერილობა</strong>: ',(dscr||'<span class="text-muted">(ცარიელი)</span>'),'</p>',
+    '<p><strong>რეგიონი</strong>: ',(region||'<span class="text-muted">(ცარიელი)</span>'),'</p>',
   ].join('');
 };
 
 var pathDescription=function(map,f){
   var name=f.getProperty('name');
   var dscr=f.getProperty('description');
+  var region=f.getProperty('region');
   return [
     '<p><strong>სახელი</strong>: ',(name||'<span class="text-muted">(ცარიელი)</span>'),'</p>',
     '<p><strong>გზის სიგრძე</strong>: <code>',exports.calcFeatureDistance(map,f).toFixed(3),'</code> კმ</p>',
     '<p><strong>აღწერილობა</strong>: ',(dscr||'<span class="text-muted">(ცარიელი)</span>'),'</p>',
+    '<p><strong>რეგიონი</strong>: ',(region||'<span class="text-muted">(ცარიელი)</span>'),'</p>',
   ].join('');
 };
 
