@@ -17,5 +17,9 @@ class Objects::LineTest < ActiveSupport::TestCase
     Objects::Line.from_kml xml
     assert_equal 26, Objects::Line.count
     assert_equal 39, l1.points.count
+
+    l1=Objects::Line.first
+    refute_nil l1.region
+    assert_equal 'იმერეთი', l1.region.name
   end
 end
