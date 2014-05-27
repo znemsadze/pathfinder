@@ -3,7 +3,7 @@ ka:
     objects_tower:
       kmlid: kmlID
       name: დასახელება
-      coordinates: კოორდინატები
       lat: განედი
       lng: გრძედი
       position: მდებარეობა
+      region: რეგიონი

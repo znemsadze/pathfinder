@@ -14,7 +14,11 @@ module RegionsHelper
 
   def region_view(region,opts={})
     title='რეგიონის თვისებები'; icon='/icons/region.png'
-    idx=case opts[:tab] when 'lines' then 1 when 'sys' then 2 else 0 end
+    idx=case opts[:tab]
+        when 'towers' then 1
+        when 'lines' then 2
+        when 'sys' then 3
+        else 0 end
     view_for region, title: title, collapsible: true, icon: icon, selected_tab: idx do |v|
       v.edit_action edit_region_url(id:region.id)
       v.delete_action delete_region_url(id:region.id)
@@ -22,10 +26,21 @@ module RegionsHelper
         v.text_field 'name', required: true
         v.text_field 'description'
       end
+      v.tab title: "ანძები &mdash; <strong>#{region.towers.count}</strong>".html_safe, icon: '/icons/tower.png' do |v|
+        v.table_field 'towers', table: {title:'ანძები', icon: '/icons/tower.png'} do |field|
+          field.table do |t|
+            t.text_field 'kmlid', tag: 'code'
+            t.text_field 'name', url: ->(x){objects_tower_url(id:x.id)}
+            t.item_action ->(x){objects_tower_url(id:x.id)}, icon: '/icons/eye.png'
+          end
+        end
+      end
       v.tab title: "ხაზები &mdash; <strong>#{region.lines.count}</strong>".html_safe, icon: '/icons/line.png' do |v|
         v.table_field 'lines', table: {title:'ხაზები', icon: '/icons/line.png'} do |field|
           field.table do |t|
+            t.text_field 'kmlid', tag: 'code'
             t.text_field 'name', url: ->(x){objects_line_url(id:x.id)}
+            t.item_action ->(x){objects_line_url(id:x.id)}, icon: '/icons/eye.png'
           end
         end
       end
