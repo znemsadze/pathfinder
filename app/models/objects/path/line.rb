@@ -5,10 +5,11 @@ class Objects::Path::Line
   field :point_ids, type: Array, default:[]
   field :name, type: String
   field :description, type: String
+  belongs_to :region
 
   def self.new_path(points,params)
     if points.uniq.size>1
-      path=Objects::Path::Line.create(description:params[:description], detail_id:params[:detail_id])
+      path=Objects::Path::Line.create(description:params[:description], detail_id:params[:detail_id], region_id: params[:region_id])
       points.each do |p|
         if p.is_a?(Objects::Path::Point) then point=p
         else
@@ -27,6 +28,9 @@ class Objects::Path::Line
   end
 
   def update_path(points,params)
+
+# raise "#{params}"
+
     if points.uniq.size>1
       existing_points=self.points
       self.point_ids=[]
@@ -49,7 +53,7 @@ class Objects::Path::Line
         self.point_ids.push(point.id)
       end
       self.save
-      self.update_attributes(name: params[:name], description:params[:description], detail_id:params[:detail_id])
+      self.update_attributes(name: params[:name], description:params[:description], detail_id:params[:detail_id], region_id: params[:region_id])
     end
   end
 

@@ -7,6 +7,7 @@ class Region
   field :description, type: String
   has_many :lines, class_name: 'Objects::Line'
   has_many :towers, class_name: 'Objects::Tower'
+  has_many :paths, class_name: 'Objects::Path::Line'
   validates :name, presence: {message: 'ჩაწერეთ სახელი'}
 
   def can_delete?; lines.empty? end

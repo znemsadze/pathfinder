@@ -56,6 +56,7 @@ exports.newPath=function(model,callback){
     , name=model.name
     , detail_id=model.detail_id
     , description=model.description
+    , region_id=model.region_id
     ;
 
   if(path.getLength()>1){
@@ -63,12 +64,16 @@ exports.newPath=function(model,callback){
       utils.addError(model,'detail_id','აარჩიეთ საფარის დეტალი');
       return false;
     }
+    if(!region_id){
+      utils.addError(model,'region_id','აარჩიეთ რეგიონი');
+      return false;
+    }
     var points=utils.pointsFromPath(path);
-    var params={points:points, detail_id:detail_id, name:name, description:description};
+    var params={points:points, detail_id:detail_id, name:name, description:description, region_id:region_id};
     $.post(BASE_PATH+'/new',params,function(data){
-      if(callback){ callback(data); }
+      if(callback){ callback(null, data); }
     }).fail(function(err){
-      if(callback){ callback(err); }
+      if(callback){ callback(err, null); }
     });
     return true;
   }
@@ -82,6 +87,7 @@ exports.editPath=function(id,model,callback){
     , name=model.name
     , detail_id=model.detail_id
     , description=model.description
+    , region_id=model.region_id
     ;
 
   if(path.getLength()>1){
@@ -89,11 +95,16 @@ exports.editPath=function(id,model,callback){
       utils.addError(model,'detail_id','აარჩიეთ საფარის დეტალი');
       return false;
     }
+    if(!region_id){
+      utils.addError(model,'region_id','აარჩიეთ რეგიონი');
+      return false;
+    }
     var points=utils.pointsFromPath(path);
-    $.post(BASE_PATH+'/edit',{id:id, points:points, detail_id:detail_id, name:name, description:description},function(data){
-      if(callback){ callback(data); }
+    var params={id:id, points:points, detail_id:detail_id, name:name, description:description, region_id:region_id};
+    $.post(BASE_PATH+'/edit',params,function(data){
+      if(callback){ callback(null, data); }
     }).fail(function(err){
-      if(callback){ callback(err); }
+      if(callback){ callback(err, null); }
     });
     return true;
   }
@@ -102,9 +113,9 @@ exports.editPath=function(id,model,callback){
 
 exports.deletePath=function(id,callback){
   $.post(BASE_PATH+'/delete',{id:id},function(data){
-    if(callback){ callback(data); }
+    if(callback){ callback(null, data); }
   }).fail(function(err){
-    if(callback){ callback(err); }
+    if(callback){ callback(err, null); }
   });;
   return true;
 };
@@ -484,8 +495,9 @@ exports.form=function(opts){
   var detailsCombo=ui.form.comboField('detail_id', {label: 'საფარის დეტალები', collection_url: '/objects/path/details.json', text_property: 'name', parent_combo: surfaceCombo, parent_key: 'surface_id'});
   var nameText=ui.form.textField('name', {label: 'სახელი'});
   var descriptionText=ui.form.textArea('description', {label: 'შენიშვნა'});
+  var regionsCombo=ui.form.comboField('region_id', {label: 'რეგიონი', collection_url: '/regions.json', text_property: 'name'});
 
-  var fields=[typeCombo, surfaceCombo, detailsCombo,nameText,descriptionText];
+  var fields=[typeCombo, surfaceCombo, detailsCombo,nameText,descriptionText,regionsCombo];
   var actions=[saveAction,cancelAction];
 
   var form=ui.form.create(fields,{actions: actions, load_url:'/api/paths/show.json'});
