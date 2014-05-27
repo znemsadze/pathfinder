@@ -11,6 +11,11 @@
   </div>
   <div class="col-sm-6">
     <div>
+      <h3 class="page-header">რეგიონები</h3>
+      <p>
+        <%=link_to 'რეგიონების მართვა', regions_url%>
+        <span class="label label-info"><%=Region.count%></span>
+      </p>
       <h3 class="page-header">ობიექტები</h3>
       <p>
         <%=link_to 'მაღალი ძაბვის ანძები', objects_towers_url%>
@@ -21,16 +26,23 @@
         <span class="label label-info"><%=Objects::Line.count%></span>
       </p>
       <p>
-        <%= link_to 'ობიქტებთან მისასვლელი გზები', objects_path_lines_url%>
+        <%= link_to 'მარშუტები', objects_path_lines_url%>
         <span class="label label-info"><%=Objects::Path::Line.count%></span>
       </p>
     </div>
     <div>
-      <h3 class="page-header">გზის პარამეტრები</h3>
+      <h3 class="page-header">პარამეტრები</h3>
       <p>
-        <%=link_to 'სახეობები', objects_path_types_url %> |
-        <%=link_to 'საფარი', objects_path_surfaces_url %> |
+        <%=link_to 'გზის სახეობები', objects_path_types_url %>
+        <span class="label label-info"><%=Objects::Path::Type.count%></span>
+      </p>
+      <p>
+        <%=link_to 'გზის საფარი', objects_path_surfaces_url %>
+        <span class="label label-info"><%=Objects::Path::Surface.count%></span>
+      </p>
+      <p>
         <%=link_to 'საფარის დეტალები', objects_path_details_url %>
+        <span class="label label-info"><%=Objects::Path::Detail.count%></span>
       </p>
     </div>
   </div>

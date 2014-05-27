@@ -37,7 +37,7 @@ Pathfinder::Application.routes.draw do
 
   scope '/regions', controller: 'regions' do
     get '/', action: 'index', as: 'regions'
-    show '/show/:id', action: 'show', as: 'region'
+    get '/show/:id', action: 'show', as: 'region'
     match '/new', action: 'new', as: 'new_region', via: [:get, :post]
     match '/edit/:id', action: 'edit', as: 'edit_region', via: [:get, :post]
     delete '/delete/:id', action: 'delete', as: 'delete_region'
