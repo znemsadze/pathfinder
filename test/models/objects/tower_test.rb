@@ -14,5 +14,9 @@ class Objects::TowerTest < ActiveSupport::TestCase
     assert_equal 194, Objects::Tower.count
     Objects::Tower.from_kml xml
     assert_equal 194, Objects::Tower.count
+
+    t1=Objects::Tower.first
+    refute_nil t1.region
+    assert_equal 'აჭარა-გურია-სამეგრელო', t1.region.name
   end
 end
