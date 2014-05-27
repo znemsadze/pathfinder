@@ -1,8 +1,8 @@
 <%=table_for @towers, title: @title, icon: '/icons/tower.png', collapsible: true do |t|
   t.title_action objects_upload_towers_url, label: 'მონაცემების ატვირთვა', icon: '/icons/upload-cloud.png'
   t.item_action ->(x){objects_tower_url(id:x.id)}, icon: '/icons/eye.png'
-  t.text_field 'kmlid', tag: 'code', url: ->(x){objects_tower_url(id:x.id)}
-  t.text_field 'name'
+  t.text_field 'kmlid', tag: 'code'
+  t.text_field 'name', url: ->(x){objects_tower_url(id:x.id)}
   t.text_field 'region.name', i18n: 'region'
   t.paginate records: 'ჩანაწერი'
 end%>
