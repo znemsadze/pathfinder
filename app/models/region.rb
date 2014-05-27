@@ -6,4 +6,6 @@ class Region
   field :name, type: String
   field :description, type: String
   validates :name, presence: {message: 'ჩაწერეთ სახელი'}
+
+  def can_delete?; true end
 end
