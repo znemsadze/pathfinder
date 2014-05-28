@@ -80,31 +80,33 @@ exports.typeName=function(f){
   return typed(f,function(type){
     if(exports.TYPE_LINE===type){ return 'გადამცემი ხაზი'; }
     else if(exports.TYPE_PATH==type){ return 'მარშრუტი'; }
+    else if(exports.TYPE_TOWER==type){ return 'ანძა'; }
     return type;
   });
 };
 
-var lineDescription=function(map,f){
-  var name=f.getProperty('name');
-  var dscr=f.getProperty('description');
-  var region=f.getProperty('region');
+var property=function(name,value){
   return [
-    '<p><strong>სახელი</strong>: ',(name||'<span class="text-muted">(ცარიელი)</span>'),'</p>',
-    '<p><strong>გზის სიგრძე</strong>: <code>',exports.calcFeatureDistance(map,f).toFixed(3),'</code> კმ</p>',
-    '<p><strong>აღწერილობა</strong>: ',(dscr||'<span class="text-muted">(ცარიელი)</span>'),'</p>',
-    '<p><strong>რეგიონი</strong>: ',(region||'<span class="text-muted">(ცარიელი)</span>'),'</p>',
+    '<p><strong>',name,'</strong>: ',
+    (value||'<span class="text-muted">(ცარიელი)</span>'),
+    '</p>'
   ].join('');
 };
 
-var pathDescription=function(map,f){
-  var name=f.getProperty('name');
-  var dscr=f.getProperty('description');
-  var region=f.getProperty('region');
+var lineDescription=function(map,f){
   return [
-    '<p><strong>სახელი</strong>: ',(name||'<span class="text-muted">(ცარიელი)</span>'),'</p>',
-    '<p><strong>გზის სიგრძე</strong>: <code>',exports.calcFeatureDistance(map,f).toFixed(3),'</code> კმ</p>',
-    '<p><strong>აღწერილობა</strong>: ',(dscr||'<span class="text-muted">(ცარიელი)</span>'),'</p>',
-    '<p><strong>რეგიონი</strong>: ',(region||'<span class="text-muted">(ცარიელი)</span>'),'</p>',
+    property('დასახელება',f.getProperty('name')),
+    property('სიგრძე',exports.calcFeatureDistance(map,f).toFixed(3)),
+    property('აღწერილობა',f.getProperty('description')),
+    property('რეგიონი',f.getProperty('region')),
+  ].join('');
+};
+
+var towerDescription=function(map,f){
+  return [
+    property('დასახელება',f.getProperty('name')),
+    property('აღწერილობა',f.getProperty('description')),
+    property('რეგიონი',f.getProperty('region')),
   ].join('');
 };
 
@@ -114,7 +116,8 @@ exports.featureDescription=function(map,f){
   var texts=['<div class="panel panel-default">'];
   texts.push('<div class="panel-heading"><h4 style="margin:0;padding:0;">',exports.typeName(f),'</h4></div>');
   if(exports.isLine(f)){ bodyDescription=lineDescription(map,f); }
-  else if(exports.isPath(f)){ bodyDescription=pathDescription(map,f); }
+  else if(exports.isPath(f)){ bodyDescription=lineDescription(map,f); }
+  else if(exports.isTower(f)){ bodyDescription=towerDescription(map,f); }
   texts.push('<div class="panel-body">',bodyDescription,'</div>');
   texts.push('</div>');
   return texts.join('');
