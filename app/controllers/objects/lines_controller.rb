@@ -11,7 +11,7 @@ class Objects::LinesController < ApplicationController
   end
 
   def upload
-    @title='KMZ ფაილის ატვირთვა'
+    @title='ფაილის ატვირთვა'
     if request.post?
       f=params[:data].original_filename
       case File.extname(f).downcase
