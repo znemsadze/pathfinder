@@ -1,5 +1,5 @@
 <%=table_for @towers, title: @title, icon: '/icons/tower.png', collapsible: true do |t|
-  t.title_action objects_upload_towers_url, label: 'KMZ ატვირთვა', icon: '/icons/upload-cloud.png'
+  t.title_action objects_upload_towers_url, label: 'ფაილის ატვირთვა', icon: '/icons/upload-cloud.png'
   t.title_action objects_towers_url(format:'xlsx'), label: 'Excel ფორმატში', icon: '/icons/document-excel.png'
   t.item_action ->(x){objects_tower_url(id:x.id)}, icon: '/icons/eye.png'
   t.text_field 'kmlid', tag: 'code'
