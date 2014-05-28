@@ -87,8 +87,12 @@ var initMap=function(){
         title: name,
       };
     } else if (geo.isTower(f)){
+      var icon;
+      if(isSelected){ icon='/map/tower_selected.png'; }
+      else if(isHovered){ icon='/map/tower_hovered.png'; }
+      else{ icon='/map/tower.png'; }
       return {
-        icon: '/map/small_red.png',
+        icon: icon,
         visible: true,
         clickable: true,
         title: name,
