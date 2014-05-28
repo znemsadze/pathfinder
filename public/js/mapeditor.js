@@ -17,12 +17,18 @@ var save=function(id,model,callback){
   var path=model.path
     , name=model.name
     , description=model.description
+    , region_id=model.region_id
     ;
 
   if(path.getLength()>1){
+    if(!region_id){
+      utils.addError(model,'region_id','აარჩიეთ რეგიონი');
+      return false;
+    }
     var points=utils.pointsFromPath(path);
-    var params={id:id, points:points, name:name, description:description};
-    $.post(BASE_PATH+'/edit',params,function(data){
+    var params={id:id, points:points, name:name, description:description, region_id:region_id};
+    var url=BASE_PATH+(id ? '/edit' : '/new');
+    $.post(url, params, function(data){
       if(callback){ callback(null,data); }
     }).fail(function(err){
       if(callback){ callback(err,null); }
@@ -472,8 +478,9 @@ exports.form=function(opts){
 
   var nameText=ui.form.textField('name', {label: 'სახელი'});
   var descriptionText=ui.form.textArea('description', {label: 'შენიშვნა'});
+  var regionsCombo=ui.form.comboField('region_id', {label: 'რეგიონი', collection_url: '/regions.json', text_property: 'name'});
 
-  var fields=[nameText,descriptionText];
+  var fields=[nameText,descriptionText,regionsCombo];
   var actions=[saveAction,cancelAction];
 
   var form=ui.form.create(fields,{actions: actions, load_url:'/api/lines/show.json'});

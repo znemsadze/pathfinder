@@ -15,6 +15,7 @@ class Api::LinesController < ApiController
     line.set_points(parameter_points)
     line.name=params[:name]
     line.description=params[:description]
+    line.region_id=params[:region_id]
     line.save
     render json:{id:line.id.to_s}
   end
