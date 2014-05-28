@@ -3,8 +3,10 @@ require 'zip'
 
 class Objects::LinesController < ApplicationController
   def index
-    @title='ხაზები'
-    @lines=Objects::Line.asc(:kmlid).paginate(per_page:10, page: params[:page])
+    respond_to do |format|
+      format.html { @title='ხაზები'; @lines=Objects::Line.asc(:kmlid).paginate(per_page:10, page: params[:page]) }
+      format.xlsx { @lines=Objects::Line.asc(:kmlid) }
+    end
   end
 
   def upload

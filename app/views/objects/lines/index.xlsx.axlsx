@@ -1,0 +1,9 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "report") do |sheet|
+  sheet.add_row ['ID','დასახელება','რეგიონი']
+  @lines.each do |line|
+    sheet.add_row [
+      line.id.to_s, line.name, line.region&&line.region.name
+    ]
+  end
+end
