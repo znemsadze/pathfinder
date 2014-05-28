@@ -10,7 +10,7 @@ class Objects::LinesController < ApplicationController
   end
 
   def upload
-    @title='ხაზების ატვირთვა'
+    @title='KMZ ფაილის ატვირთვა'
     if request.post?
       Zip::File.open params[:data].tempfile do |zip_file|
         zip_file.each do |entry|

@@ -10,7 +10,7 @@ class Objects::TowersController < ApplicationController
   end
 
   def upload
-    @title='მონაცემების ატვირთვა'
+    @title='KMZ ფაილის ატვირთვა'
     if request.post?
       Zip::File.open params[:data].tempfile do |zip_file|
         zip_file.each do |entry|
