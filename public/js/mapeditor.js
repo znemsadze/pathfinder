@@ -271,10 +271,12 @@ var initRouter=function(){
 
   app.addPage('root', pages.home());
   app.addPage('edit_path', pages.edit_path());
+  app.addPage('edit_point', pages.edit_point());
 
   app.openPage('root');
 };
-},{"./api":1,"./pages":13,"./pages/geo":11,"./router":14,"./ui":20}],6:[function(require,module,exports){
+
+},{"./api":1,"./pages":14,"./pages/geo":12,"./router":15,"./ui":21}],6:[function(require,module,exports){
 var app=require('./app');
 
 app.start();
@@ -288,7 +290,7 @@ var ui=require('../ui')
 var self, canEdit
   , map, marker, path
   , layout, formLayout, uiInitialized=false
-  , titleElement=ui.html.pageTitle('გზის შეცვლა')
+  , titleElement=ui.html.pageTitle('შეცვლა')
   ;
 
 module.exports=function(){
@@ -467,9 +469,82 @@ var initMap=function(){
   }
 };
 
-},{"../api":1,"../ui":20,"./forms":8,"./geo":11}],8:[function(require,module,exports){
+},{"../api":1,"../ui":21,"./forms":9,"./geo":12}],8:[function(require,module,exports){
+var ui=require('../ui')
+  , forms=require('./forms')
+  , api=require('../api')
+  , geo=require('./geo')
+  ;
+
+var self, canEdit
+  , map, marker
+  , layout, formLayout, uiInitialized=false
+  , titleElement=ui.html.pageTitle('შეცვლა')
+  ;
+
+module.exports=function(){
+  return {
+    onEnter: function(){
+      self=this;
+
+      if (!uiInitialized){ initUI(self); }
+
+      // map=self.map;
+      // initMap();
+
+      // resetLayout();
+      // canEdit=true;
+      // getForm().loadModel(getId());
+
+      return layout;
+    },
+    onExit: function() {
+      geo.resetMap(map);
+    },
+  };
+};
+
+var initUI=function(){
+  var saveAction=function(){
+    // TODO:
+  };
+
+  var cancelAction=function(){
+    // TODO: remove marker
+    // path.setMap(null);
+    // var feature=getFeature();
+    // if(feature){ map.data.add(feature); }
+    self.openPage('root');
+  };
+
+  var form1=forms.point.form({save_action:saveAction, cancel_action:cancelAction});
+  formLayout=ui.layout.card({children: [form1]});
+
+  layout=ui.layout.vertical({children:[titleElement,formLayout]});
+  uiInitialized=true;
+};
+
+var getFeature=function(){ return self.params.feature; }
+var isNewMode=function(){ return !getFeature(); };
+var getForm=function(){ return  formLayout.selected(); };
+
+var getType=function(){
+  var feature=getFeature();
+  if(feature){
+    return geo.getType(feature);
+  } else{
+    return self.params.type;
+  }
+};
+
+var getId=function(){
+  var feature=getFeature();
+  return feature&&feature.getId();
+};
+
+},{"../api":1,"../ui":21,"./forms":9,"./geo":12}],9:[function(require,module,exports){
 arguments[4][1][0].apply(exports,arguments)
-},{"./line":9,"./path":10}],9:[function(require,module,exports){
+},{"./line":10,"./path":11}],10:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -490,7 +565,7 @@ exports.form=function(opts){
   var form=ui.form.create(fields,{actions: actions, load_url:'/api/lines/show.json'});
   return form;
 };
-},{"../../ui":20}],10:[function(require,module,exports){
+},{"../../ui":21}],11:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -514,7 +589,7 @@ exports.form=function(opts){
   var form=ui.form.create(fields,{actions: actions, load_url:'/api/paths/show.json'});
   return form;
 };
-},{"../../ui":20}],11:[function(require,module,exports){
+},{"../../ui":21}],12:[function(require,module,exports){
 exports.resetMap=function(map){
   google.maps.event.clearInstanceListeners(map);
   google.maps.event.clearInstanceListeners(map.data);
@@ -640,7 +715,7 @@ exports.featureDescription=function(map,f){
   return texts.join('');
 };
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 var ui=require('../ui')
   , api=require('../api')
   , geo=require('./geo')
@@ -709,7 +784,13 @@ var initPage1=function(self){
   }, {icon: 'trash-o', type: 'danger'});
 
   btnEdit=ui.button.actionButton('შეცვლა', function(){
-    if(!locked){ self.openPage('edit_path',{feature: selectedFeature}); }
+    if(!locked){
+      if(geo.isPath(selectedFeature)||geo.isLine(selectedFeature)){
+        self.openPage('edit_path',{feature: selectedFeature});
+      } else if(geo.isTower(selectedFeature)){
+        self.openPage('edit_point',{feature: selectedFeature});
+      }
+    }
   }, {icon: 'pencil', type: 'warning'});
 
   toolbar.addButton(btnNewPath);
@@ -802,14 +883,16 @@ var changeSelection=function(f){
   resetPathInfo();
 };
 
-},{"../api":1,"../ui":20,"./geo":11}],13:[function(require,module,exports){
+},{"../api":1,"../ui":21,"./geo":12}],14:[function(require,module,exports){
 var home=require('./home')
   , edit_path=require('./edit_path')
+  , edit_point=require('./edit_point')
   ;
 
 exports.home=home;
 exports.edit_path=edit_path;
-},{"./edit_path":7,"./home":12}],14:[function(require,module,exports){
+exports.edit_point=edit_point;
+},{"./edit_path":7,"./edit_point":8,"./home":13}],15:[function(require,module,exports){
 var map
   , sidebar
   , toolbar
@@ -865,7 +948,7 @@ var openPage=function(name,params){
   }
 };
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils')
   ;
@@ -938,7 +1021,7 @@ exports.dropdown=function(text,buttons,opts){
   var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":19,"./utils":22}],16:[function(require,module,exports){
+},{"./html":20,"./utils":23}],17:[function(require,module,exports){
 var html=require('../html')
   ;
 
@@ -1119,7 +1202,7 @@ exports.textArea=function(name, opts){
 
   return textarea;
 };
-},{"../html":19}],17:[function(require,module,exports){
+},{"../html":20}],18:[function(require,module,exports){
 var html=require('../html')
   , button=require('../button')
   ;
@@ -1187,7 +1270,7 @@ module.exports=function(fields,opts){
   return _form;
 };
 
-},{"../button":15,"../html":19}],18:[function(require,module,exports){
+},{"../button":16,"../html":20}],19:[function(require,module,exports){
 var form=require('./form')
   , field=require('./field')
   ;
@@ -1196,7 +1279,7 @@ exports.create=form;
 exports.textField=field.textField;
 exports.comboField=field.comboField;
 exports.textArea=field.textArea;
-},{"./field":16,"./form":17}],19:[function(require,module,exports){
+},{"./field":17,"./form":18}],20:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -1297,7 +1380,7 @@ exports.p=function(text,opts){
   return p; 
 };
 
-},{"./utils":22}],20:[function(require,module,exports){
+},{"./utils":23}],21:[function(require,module,exports){
 var button=require('./button')
   , layout=require('./layout')
   , html=require('./html')
@@ -1308,7 +1391,7 @@ exports.html=html;
 exports.button=button;
 exports.layout=layout;
 exports.form=form;
-},{"./button":15,"./form":18,"./html":19,"./layout":21}],21:[function(require,module,exports){
+},{"./button":16,"./form":19,"./html":20,"./layout":22}],22:[function(require,module,exports){
 var html=require('./html')
  ;
 
@@ -1384,7 +1467,7 @@ exports.card=function(opts){
 
   return layout;
 };
-},{"./html":19}],22:[function(require,module,exports){
+},{"./html":20}],23:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
 exports.fieldValue=function(object,name){ return object&&object[name]; };

@@ -112,6 +112,7 @@ var initRouter=function(){
 
   app.addPage('root', pages.home());
   app.addPage('edit_path', pages.edit_path());
+  app.addPage('edit_point', pages.edit_point());
 
   app.openPage('root');
 };

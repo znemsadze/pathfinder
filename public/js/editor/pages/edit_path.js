@@ -7,7 +7,7 @@ var ui=require('../ui')
 var self, canEdit
   , map, marker, path
   , layout, formLayout, uiInitialized=false
-  , titleElement=ui.html.pageTitle('გზის შეცვლა')
+  , titleElement=ui.html.pageTitle('შეცვლა')
   ;
 
 module.exports=function(){

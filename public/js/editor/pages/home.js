@@ -66,7 +66,13 @@ var initPage1=function(self){
   }, {icon: 'trash-o', type: 'danger'});
 
   btnEdit=ui.button.actionButton('შეცვლა', function(){
-    if(!locked){ self.openPage('edit_path',{feature: selectedFeature}); }
+    if(!locked){
+      if(geo.isPath(selectedFeature)||geo.isLine(selectedFeature)){
+        self.openPage('edit_path',{feature: selectedFeature});
+      } else if(geo.isTower(selectedFeature)){
+        self.openPage('edit_point',{feature: selectedFeature});
+      }
+    }
   }, {icon: 'pencil', type: 'warning'});
 
   toolbar.addButton(btnNewPath);
