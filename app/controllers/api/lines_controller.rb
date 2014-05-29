@@ -20,9 +20,9 @@ class Api::LinesController < ApiController
     render json:{id:line.id.to_s}
   end
 
-  # def delete
-  #   path=Objects::Path::Line.in(id: params[:id].split(','))
-  #   path.each{|x| x.destroy_path }
-  #   render text:'ok'
-  # end
+  def delete
+    line=Objects::Line.in(id: params[:id])
+    line.destroy
+    render text:'ok'
+  end
 end
