@@ -1,11 +1,13 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var path=require('./path')
   , line=require('./line')
+  , tower=require('./tower')
   ;
 
 exports.path=path;
 exports.line=line;
-},{"./line":2,"./path":3}],2:[function(require,module,exports){
+exports.tower=tower;
+},{"./line":2,"./path":3,"./tower":4}],2:[function(require,module,exports){
 var utils=require('./utils')
   ;
 
@@ -49,7 +51,7 @@ exports.deleteLine=function(id,callback){
   });
   return true;
 };
-},{"./utils":4}],3:[function(require,module,exports){
+},{"./utils":5}],3:[function(require,module,exports){
 var utils=require('./utils')
   ;
 
@@ -125,7 +127,47 @@ exports.deletePath=function(id,callback){
   });;
   return true;
 };
-},{"./utils":4}],4:[function(require,module,exports){
+},{"./utils":5}],4:[function(require,module,exports){
+var utils=require('./utils')
+  ;
+
+var BASE_PATH='/api/towers';
+
+var save=function(id,model,callback){
+  utils.clearErrors(model);
+
+  var name=model.name
+    , region_id=model.region_id
+    ;
+
+  if(!region_id){
+    utils.addError(model,'region_id','აარჩიეთ რეგიონი');
+    return false;
+  }
+
+  var params={id:id, name:name, region_id:region_id};
+  var url=BASE_PATH+(id ? '/edit' : '/new');
+  $.post(url, params, function(data){
+    if(callback){ callback(null,data); }
+  }).fail(function(err){
+    if(callback){ callback(err,null); }
+  });
+
+  return true;
+};
+
+exports.newTower=function(model,callback){ return save(null,model,callback); };
+exports.editTower=function(id,model,callback){ return save(id,model,callback); };
+
+exports.deleteTower=function(id,callback){
+  $.post(BASE_PATH+'/delete',{id:id},function(data){
+    if(callback){ callback(null,data); }
+  }).fail(function(err){
+    if(callback){ callback(err,null); }
+  });
+  return true;
+};
+},{"./utils":5}],5:[function(require,module,exports){
 /**
  * converts polyline into array of points
  */
@@ -156,7 +198,7 @@ exports.addError=function(model,field,message){
 exports.clearErrors=function(model){
   model.errors={};
 };
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var ui=require('./ui')
   , api=require('./api')
   , router=require('./router')
@@ -276,11 +318,11 @@ var initRouter=function(){
   app.openPage('root');
 };
 
-},{"./api":1,"./pages":15,"./pages/geo":13,"./router":16,"./ui":22}],6:[function(require,module,exports){
+},{"./api":1,"./pages":16,"./pages/geo":14,"./router":17,"./ui":23}],7:[function(require,module,exports){
 var app=require('./app');
 
 app.start();
-},{"./app":5}],7:[function(require,module,exports){
+},{"./app":6}],8:[function(require,module,exports){
 var ui=require('../ui')
   , forms=require('./forms')
   , api=require('../api')
@@ -469,7 +511,7 @@ var initMap=function(){
   }
 };
 
-},{"../api":1,"../ui":22,"./forms":9,"./geo":13}],8:[function(require,module,exports){
+},{"../api":1,"../ui":23,"./forms":10,"./geo":14}],9:[function(require,module,exports){
 var ui=require('../ui')
   , forms=require('./forms')
   , api=require('../api')
@@ -652,16 +694,9 @@ var getId=function(){
   return feature&&feature.getId();
 };
 
-},{"../api":1,"../ui":22,"./forms":9,"./geo":13}],9:[function(require,module,exports){
-var path=require('./path')
-  , line=require('./line')
-  , tower=require('./tower')
-  ;
-
-exports.path=path;
-exports.line=line;
-exports.tower=tower;
-},{"./line":10,"./path":11,"./tower":12}],10:[function(require,module,exports){
+},{"../api":1,"../ui":23,"./forms":10,"./geo":14}],10:[function(require,module,exports){
+arguments[4][1][0].apply(exports,arguments)
+},{"./line":11,"./path":12,"./tower":13}],11:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -682,7 +717,7 @@ exports.form=function(opts){
   var form=ui.form.create(fields,{actions: actions,load_url:'/api/lines/show.json'});
   return form;
 };
-},{"../../ui":22}],11:[function(require,module,exports){
+},{"../../ui":23}],12:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -706,7 +741,7 @@ exports.form=function(opts){
   var form=ui.form.create(fields,{actions: actions, load_url:'/api/paths/show.json'});
   return form;
 };
-},{"../../ui":22}],12:[function(require,module,exports){
+},{"../../ui":23}],13:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -726,7 +761,7 @@ exports.form=function(opts){
   var form=ui.form.create(fields,{actions: actions,load_url:'/api/towers/show.json'});
   return form;
 };
-},{"../../ui":22}],13:[function(require,module,exports){
+},{"../../ui":23}],14:[function(require,module,exports){
 exports.resetMap=function(map){
   google.maps.event.clearInstanceListeners(map);
   google.maps.event.clearInstanceListeners(map.data);
@@ -851,7 +886,7 @@ exports.featureDescription=function(map,f){
   return texts.join('');
 };
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 var ui=require('../ui')
   , api=require('../api')
   , geo=require('./geo')
@@ -1019,7 +1054,7 @@ var changeSelection=function(f){
   resetPathInfo();
 };
 
-},{"../api":1,"../ui":22,"./geo":13}],15:[function(require,module,exports){
+},{"../api":1,"../ui":23,"./geo":14}],16:[function(require,module,exports){
 var home=require('./home')
   , edit_path=require('./edit_path')
   , edit_point=require('./edit_point')
@@ -1028,7 +1063,7 @@ var home=require('./home')
 exports.home=home;
 exports.edit_path=edit_path;
 exports.edit_point=edit_point;
-},{"./edit_path":7,"./edit_point":8,"./home":14}],16:[function(require,module,exports){
+},{"./edit_path":8,"./edit_point":9,"./home":15}],17:[function(require,module,exports){
 var map
   , sidebar
   , toolbar
@@ -1084,7 +1119,7 @@ var openPage=function(name,params){
   }
 };
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils')
   ;
@@ -1157,7 +1192,7 @@ exports.dropdown=function(text,buttons,opts){
   var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":21,"./utils":24}],18:[function(require,module,exports){
+},{"./html":22,"./utils":25}],19:[function(require,module,exports){
 var html=require('../html')
   ;
 
@@ -1338,7 +1373,7 @@ exports.textArea=function(name, opts){
 
   return textarea;
 };
-},{"../html":21}],19:[function(require,module,exports){
+},{"../html":22}],20:[function(require,module,exports){
 var html=require('../html')
   , button=require('../button')
   ;
@@ -1406,7 +1441,7 @@ module.exports=function(fields,opts){
   return _form;
 };
 
-},{"../button":17,"../html":21}],20:[function(require,module,exports){
+},{"../button":18,"../html":22}],21:[function(require,module,exports){
 var form=require('./form')
   , field=require('./field')
   ;
@@ -1415,7 +1450,7 @@ exports.create=form;
 exports.textField=field.textField;
 exports.comboField=field.comboField;
 exports.textArea=field.textArea;
-},{"./field":18,"./form":19}],21:[function(require,module,exports){
+},{"./field":19,"./form":20}],22:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -1516,7 +1551,7 @@ exports.p=function(text,opts){
   return p; 
 };
 
-},{"./utils":24}],22:[function(require,module,exports){
+},{"./utils":25}],23:[function(require,module,exports){
 var button=require('./button')
   , layout=require('./layout')
   , html=require('./html')
@@ -1527,7 +1562,7 @@ exports.html=html;
 exports.button=button;
 exports.layout=layout;
 exports.form=form;
-},{"./button":17,"./form":20,"./html":21,"./layout":23}],23:[function(require,module,exports){
+},{"./button":18,"./form":21,"./html":22,"./layout":24}],24:[function(require,module,exports){
 var html=require('./html')
  ;
 
@@ -1603,8 +1638,8 @@ exports.card=function(opts){
 
   return layout;
 };
-},{"./html":21}],24:[function(require,module,exports){
+},{"./html":22}],25:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
 exports.fieldValue=function(object,name){ return object&&object[name]; };
-},{}]},{},[6])
+},{}]},{},[7])
