@@ -105,7 +105,6 @@ var lineDescription=function(map,f){
 var towerDescription=function(map,f){
   return [
     property('დასახელება',f.getProperty('name')),
-    property('აღწერილობა',f.getProperty('description')),
     property('რეგიონი',f.getProperty('region')),
   ].join('');
 };
