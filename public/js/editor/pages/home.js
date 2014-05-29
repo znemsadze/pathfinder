@@ -20,7 +20,7 @@ var map
   , btnEdit
   , locked
   , confirmTitle=ui.html.p('საჭიროა დასტური',{class: 'page-header', style: 'font-weight:bold; font-size: 1.2em;'})
-  , confirmText=ui.html.p('დაადასტურეთ, რომ ნამდვილად გინდათ მონიშნული გზის წაშლა?',{class: 'text-danger'})
+  , confirmText=ui.html.p('დაადასტურეთ, რომ ნამდვილად გინდათ მონიშნული ობიექტის წაშლა?',{class: 'text-danger'})
   , toolbar2=ui.button.toolbar([])
   ;
 
@@ -37,7 +37,7 @@ module.exports=function(){
 
       map=self.map;
       initMap();
-      resetPathInfo();
+      resetFeatureInfo();
 
       openPage(MAIN);
 
@@ -89,21 +89,8 @@ var initPage1=function(self){
 };
 
 var initPage2=function(self){
-  var btnCancel=ui.button.actionButton('გაუქმება', function(){
-    openPage(MAIN);
-  });
-
-  var btnConfirm=ui.button.actionButton('ვადასტურებ', function(){
-
-    // TODO: diferentiate between feature types
-
-    locked=api.path.deletePath(selectedFeature.getId(),function(){
-      map.data.remove(selectedFeature);
-      selectedFeature=null;
-      resetPathInfo();
-      locked=false;
-    });
-  },{icon:'warning', type: 'danger'});
+  var btnCancel=ui.button.actionButton('გაუქმება', function(){ openPage(MAIN); });
+  var btnConfirm=ui.button.actionButton('ვადასტურებ', deleteSelectedFeature, {icon:'warning', type: 'danger'});
 
   toolbar2.addButton(btnConfirm);
   toolbar2.addButton(btnCancel);
@@ -121,7 +108,7 @@ var initPage2=function(self){
 
 var openPage=function(idx){ layout.showAt(idx); };
 
-var resetPathInfo=function(){
+var resetFeatureInfo=function(){
   secondaryToolbar.clearButtons();
   if(!selectedFeature){
     featureInfo.setHtml('მონიშნეთ ობიექტი რუკაზე მასზე ინფორმაციის მისაღებად.');
@@ -162,5 +149,22 @@ var changeSelection=function(f){
     f.selected=true;
   }
   map.data.revertStyle(f);
-  resetPathInfo();
+  resetFeatureInfo();
+};
+
+var deleteSelectedFeature=function(){
+  if(!selectedFeature){ return; }
+
+  var id=selectedFeature.getId();
+
+  var callback=function(){
+    map.data.remove(selectedFeature);
+    selectedFeature=null;
+    resetFeatureInfo();
+    locked=false;
+  };
+
+  if(geo.isPath(selectedFeature)){ locked=api.path.deletePath(id,callback); }
+  else if(geo.isLine(selectedFeature)){ locked=api.line.deleteLine(id,callback); }
+  else if(geo.isTower(selectedFeature)){ locked=api.tower.deleteTower(id,callback); }
 };
