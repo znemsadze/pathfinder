@@ -101,7 +101,7 @@ var property=function(name,value){
 var lineDescription=function(map,f){
   return [
     property('დასახელება',f.getProperty('name')),
-    property('სიგრძე',exports.calcFeatureDistance(map,f).toFixed(3)),
+    property('სიგრძე','<code>'+exports.calcFeatureDistance(map,f).toFixed(3)+'</code> კმ'),
     property('აღწერილობა',f.getProperty('description')),
     property('რეგიონი',f.getProperty('region')),
   ].join('');
