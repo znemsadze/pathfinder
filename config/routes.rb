@@ -108,6 +108,12 @@ Pathfinder::Application.routes.draw do
       post '/edit', action: 'edit'
       post '/delete', action: 'delete'
     end
+    scope 'towers', controller: 'towers' do
+      get '/show', action: 'show'
+      post '/new',  action: 'new'
+      post '/edit', action: 'edit'
+      post '/delete', action: 'delete'
+    end
   end
 
   root 'site#index'
