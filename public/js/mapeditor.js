@@ -813,7 +813,7 @@ var property=function(name,value){
 var lineDescription=function(map,f){
   return [
     property('დასახელება',f.getProperty('name')),
-    property('სიგრძე',exports.calcFeatureDistance(map,f).toFixed(3)),
+    property('სიგრძე','<code>'+exports.calcFeatureDistance(map,f).toFixed(3)+'</code> კმ'),
     property('აღწერილობა',f.getProperty('description')),
     property('რეგიონი',f.getProperty('region')),
   ].join('');
@@ -850,17 +850,13 @@ var MAIN=0    // main page
   ;
 
 var map
-  , layout
-  , page1
-  , page2
-  , uiInitialized=false
-  , toolbar=ui.button.toolbar([])
+  , uiInitialized=false, locked
+  , layout, page1, page2, toolbar=ui.button.toolbar([])
   , featureInfo=ui.html.p('',{style:'margin:16px 0;'})
   , selectedFeature
   , secondaryToolbar=ui.button.toolbar([])
-  , btnDelete
-  , btnEdit
-  , locked
+  , btnNewPath, btnNewLine, btnNewTower // new objects
+  , btnDelete, btnEdit // change objects
   , confirmTitle=ui.html.p('საჭიროა დასტური',{class: 'page-header', style: 'font-weight:bold; font-size: 1.2em;'})
   , confirmText=ui.html.p('დაადასტურეთ, რომ ნამდვილად გინდათ მონიშნული ობიექტის წაშლა?',{class: 'text-danger'})
   , toolbar2=ui.button.toolbar([])
@@ -899,7 +895,7 @@ var initUI=function(self){
 };
 
 var initPage1=function(self){
-  var btnNewPath=ui.button.actionButton('ახალი გზა', function(){
+  btnNewPath=ui.button.actionButton('ახალი გზა', function(){
     if(!locked){ self.openPage('edit_path',{type:geo.TYPE_PATH}); }
   }, {icon:'plus'});
 
