@@ -15,6 +15,11 @@ exports.copyFeatureToPath=function(feature,path){
   }
 };
 
+exports.copyFeatureToMarker=function(feature,marker){
+  var point=feature.getGeometry().get();
+  marker.setPosition(new google.maps.LatLng(point.lat(), point.lng()));
+};
+
 // distances
 
 exports.closestFeaturePoint=function(feature,point){

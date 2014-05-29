@@ -138,6 +138,8 @@ var save=function(id,model,callback){
 
   var name=model.name
     , region_id=model.region_id
+    , lat=model.lat
+    , lng=model.lng
     ;
 
   if(!region_id){
@@ -145,7 +147,7 @@ var save=function(id,model,callback){
     return false;
   }
 
-  var params={id:id, name:name, region_id:region_id};
+  var params={id:id, name:name, region_id:region_id, lat:lat, lng:lng};
   var url=BASE_PATH+(id ? '/edit' : '/new');
   $.post(url, params, function(data){
     if(callback){ callback(null,data); }
@@ -551,14 +553,18 @@ var initUI=function(){
     var form=getForm();
     form.clearErrors();
 
-    var model=form.getModel();
-    // TODO: add lat/lng from map
+    var model=form.getModel()
+      , position=marker.getPosition()
+      ;
+
+    model.lat=position.lat();
+    model.lng=position.lng();
 
     var callback=function(err,data){
       if(err){
         console.log(err);
       } else {
-        // path.setMap(null);
+        marker.setMap(null);
         map.loadData({id:data.id, type:getType()});
         self.openPage('root');
       }
@@ -575,10 +581,9 @@ var initUI=function(){
   };
 
   var cancelAction=function(){
-    // TODO:
-    // path.setMap(null);
-    // var feature=getFeature();
-    // if(feature){ map.data.add(feature); }
+    marker.setMap(null);
+    var feature=getFeature();
+    if(feature){ map.data.add(feature); }
     self.openPage('root');
   };
 
@@ -601,79 +606,22 @@ var resetLayout=function(){
 };
 
 var initMap=function(){
-  // if(!path) {
-  //   path=new google.maps.Polyline({
-  //     geodesic:true,
-  //     strokeColor:'#0000FF',
-  //     strokeOpacity:1.0,
-  //     strokeWeight:1,
-  //     editable:true,
-  //   });
-  //   marker = new google.maps.Marker({
-  //     icon: {
-  //       path:google.maps.SymbolPath.CIRCLE,
-  //       fillOpacity:0,
-  //       strokeOpacity:1,
-  //       strokeColor:'#FF0000',
-  //       strokeWeight:1,
-  //       scale:10, //pixels
-  //     }
-  //   });
-  // }
-  // path.getPath().clear();
-  // path.setMap(map);
+  if(!marker){
+    marker=new google.maps.Marker({
+      draggable:true,
+      animation: google.maps.Animation.DROP,
+    });
+  }
+  marker.setMap(map);
 
-  // var feature=getFeature();
+  var feature=getFeature();
 
-  // if(feature){
-  //   geo.copyFeatureToPath(feature,path);
-  //   map.data.remove(feature);
-  // }
-
-  // var extendPath=function(evt){
-  //   if(canEdit){
-  //     path.getPath().push(evt.latLng);
-  //   }
-  // };
-
-  // google.maps.event.addListener(map, 'click', extendPath);
-  // google.maps.event.addListener(marker, 'click', extendPath);
-
-  // google.maps.event.addListener(path, 'dblclick', function(evt){
-  //   if(canEdit){
-  //     if(typeof evt.vertex==='number'){
-  //       path.getPath().removeAt(evt.vertex);
-  //     }
-  //   }
-  // });
-
-  // if(geo.isPath(getType())){
-  //   map.data.addListener('mouseover', function(evt) {
-  //     if(canEdit){
-  //       if(geo.isPath(evt.feature)){
-  //         map.data.overrideStyle(evt.feature,{strokeWeight:10,strokeColor:'#00FF00'});
-  //         marker.setMap(map);
-  //       }
-  //     }
-  //   });
-
-  //   map.data.addListener('mouseout', function(evt) {
-  //     if(canEdit){
-  //       if(geo.isPath(evt.feature)){
-  //         map.data.revertStyle();
-  //         marker.setMap(null);
-  //       }
-  //     }
-  //   });
-
-  //   map.data.addListener('mousemove', function(evt){
-  //     if(canEdit){
-  //       if(geo.isPath(evt.feature)){
-  //         marker.setPosition(geo.closestFeaturePoint(evt.feature,evt.latLng));
-  //       }
-  //     }
-  //   });
-  // }
+  if(feature){
+    geo.copyFeatureToMarker(feature, marker);
+    map.data.remove(feature);
+  } else{
+    marker.setPosition(new google.maps.LatLng(42, 42));
+  }
 };
 
 var getFeature=function(){ return self.params.feature; }
@@ -777,6 +725,11 @@ exports.copyFeatureToPath=function(feature,path){
     var point=new google.maps.LatLng(p.lat(),p.lng());
     path.getPath().push(point);
   }
+};
+
+exports.copyFeatureToMarker=function(feature,marker){
+  var point=feature.getGeometry().get();
+  marker.setPosition(new google.maps.LatLng(point.lat(), point.lng()));
 };
 
 // distances

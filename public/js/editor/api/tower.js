@@ -8,6 +8,8 @@ var save=function(id,model,callback){
 
   var name=model.name
     , region_id=model.region_id
+    , lat=model.lat
+    , lng=model.lng
     ;
 
   if(!region_id){
@@ -15,7 +17,7 @@ var save=function(id,model,callback){
     return false;
   }
 
-  var params={id:id, name:name, region_id:region_id};
+  var params={id:id, name:name, region_id:region_id, lat:lat, lng:lng};
   var url=BASE_PATH+(id ? '/edit' : '/new');
   $.post(url, params, function(data){
     if(callback){ callback(null,data); }
