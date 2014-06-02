@@ -67,6 +67,9 @@ exports.dropdown=function(text,buttons,opts){
   if(utils.isArray(text)){text=text.push(' ');} else{text=[text,' '];}
   text.push(html.el('span',{class:'caret'}));
   var btn=html.el('button',{class:classes,'data-toggle':'dropdown'},text);
-  var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
+  var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){
+    if(x.divider){ return html.el('li',{class:'divider'}); }
+    return html.el('li',[x]);
+  }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };

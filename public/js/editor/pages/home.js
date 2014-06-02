@@ -63,8 +63,12 @@ var initPage1=function(self){
   btnNewLine=ui.button.actionLink('გადამცემი ხაზი', function(){
     if(!locked){ self.openPage('edit_path',{type:geo.TYPE_LINE}); }
   });
+  btnNewTower=ui.button.actionLink('ანძა', function(){
+    if(!locked){ self.openPage('edit_point',{type:geo.TYPE_TOWER}); }
+  });
 
-  var newObjects=ui.button.dropdown('ახალი ობიექტი',[btnNewPath,btnNewLine], {type:'success'});  
+  var buttons=[btnNewPath,btnNewLine,{divider:true},btnNewTower];
+  var newObjects=ui.button.dropdown('ახალი ობიექტი',buttons, {type:'success'});  
 
   btnDelete=ui.button.actionButton('წაშლა', function(){
     if(!locked){ openPage(CONFIRM); }

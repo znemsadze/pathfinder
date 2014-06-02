@@ -905,8 +905,12 @@ var initPage1=function(self){
   btnNewLine=ui.button.actionLink('გადამცემი ხაზი', function(){
     if(!locked){ self.openPage('edit_path',{type:geo.TYPE_LINE}); }
   });
+  btnNewTower=ui.button.actionLink('ანძა', function(){
+    if(!locked){ self.openPage('edit_point',{type:geo.TYPE_TOWER}); }
+  });
 
-  var newObjects=ui.button.dropdown('ახალი ობიექტი',[btnNewPath,btnNewLine], {type:'success'});  
+  var buttons=[btnNewPath,btnNewLine,{divider:true},btnNewTower];
+  var newObjects=ui.button.dropdown('ახალი ობიექტი',buttons, {type:'success'});  
 
   btnDelete=ui.button.actionButton('წაშლა', function(){
     if(!locked){ openPage(CONFIRM); }
@@ -1151,7 +1155,10 @@ exports.dropdown=function(text,buttons,opts){
   if(utils.isArray(text)){text=text.push(' ');} else{text=[text,' '];}
   text.push(html.el('span',{class:'caret'}));
   var btn=html.el('button',{class:classes,'data-toggle':'dropdown'},text);
-  var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){ return html.el('li',[x]); }));
+  var dd=html.el('ul',{class:'dropdown-menu'},buttons.map(function(x){
+    if(x.divider){ return html.el('li',{class:'divider'}); }
+    return html.el('li',[x]);
+  }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
 },{"./html":22,"./utils":25}],19:[function(require,module,exports){
