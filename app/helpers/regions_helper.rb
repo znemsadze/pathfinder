@@ -27,7 +27,7 @@ module RegionsHelper
         v.text_field 'description'
       end
       v.tab title: "ანძები &mdash; <strong>#{region.towers.count}</strong>".html_safe, icon: '/icons/tower.png' do |v|
-        v.table_field 'towers', table: {title:'ანძები', icon: '/icons/tower.png'} do |field|
+        v.table_field 'towers_limited', table: {title:'ანძები', icon: '/icons/tower.png'} do |field|
           field.table do |t|
             t.text_field 'kmlid', tag: 'code'
             t.text_field 'name', url: ->(x){objects_tower_url(id:x.id)}
