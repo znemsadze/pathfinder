@@ -17,18 +17,32 @@
         <span class="label label-info"><%=Region.count%></span>
       </p>
       <h3 class="page-header">ობიექტები</h3>
-      <p>
-        <%=link_to 'მაღალი ძაბვის ანძები', objects_towers_url%>
-        <span class="label label-info"><%=Objects::Tower.count%></span>
-      </p>
-      <p>
-        <%=link_to 'გადამცემი ხაზები', objects_lines_url%>
-        <span class="label label-info"><%=Objects::Line.count%></span>
-      </p>
-      <p>
-        <%= link_to 'მარშუტები', objects_path_lines_url%>
-        <span class="label label-info"><%=Objects::Path::Line.count%></span>
-      </p>
+      <div class="row">
+        <div class="col-xs-6">
+          <p>
+            <%=link_to 'ოფისები', objects_offices_url%>
+            <span class="label label-info"><%=Objects::Office.count%></span>
+          </p>
+          <p>
+            <%=link_to 'ანძები', objects_towers_url%>
+            <span class="label label-info"><%=Objects::Tower.count%></span>
+          </p>
+          <p>
+            <%=link_to 'ქვესადგურები'%>
+            <span class="label label-info"><%=Objects::Substation.count%></span>
+          </p>
+        </div>
+        <div class="col-xs-6">
+          <p>
+            <%=link_to 'გადამცემი ხაზები', objects_lines_url%>
+            <span class="label label-info"><%=Objects::Line.count%></span>
+          </p>
+          <p>
+            <%= link_to 'მარშუტები', objects_path_lines_url%>
+            <span class="label label-info"><%=Objects::Path::Line.count%></span>
+          </p>
+        </div>
+      </div>
     </div>
     <div>
       <h3 class="page-header">პარამეტრები</h3>
