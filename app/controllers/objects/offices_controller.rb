@@ -53,14 +53,13 @@ class Objects::OfficesController < ApplicationController
   def upload_xlsx(file)
     sheet=Roo::Spreadsheet.open(file.path, extension: 'xlsx')
     (2..sheet.last_row).each do |row|
-      # id=sheet.cell('A',row) ; name=sheet.excelx_value('C',row).to_s ; regionname=sheet.cell('D',row).to_s
-      # lat=sheet.cell('E',row).to_f; lng=sheet.cell('F',row).to_f
-      # region=Region.where(name:regionname).first
-      # region=Region.create(name:regionname) unless region.present?
-      # office=Objects::Office.find(id)
-      # office.name=name ; office.region=region
-      # office.lat=lat ; office.lng=lng
-      # office.save
+      id=sheet.cell('A',row) ; name=sheet.cell('C',row) ; regionname=sheet.cell('D',row).to_s
+      address=sheet.cell('E',row) ; lat=sheet.cell('F',row).to_f; lng=sheet.cell('G',row).to_f
+      region=Region.get_by_name(regionname)
+      office=Objects::Office.find(id)
+      office.name=name ; office.region=region
+      office.address=address ; office.lat=lat ; office.lng=lng
+      office.save
     end
   end
 end
