@@ -5,3 +5,5 @@ ka:
       name: დასახელება
       region: რეგიონი
       points: წერტილები
+      description: შენიშვნა
+      direction: მიმართულება

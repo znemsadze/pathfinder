@@ -2,5 +2,7 @@
   f.text_field 'kmlid', tag: 'code'
   f.text_field 'name'
   f.text_field 'region.name', i18n: 'region', url: region_url(id:@line.region.id)
+  f.text_field 'direction'
+  f.text_field 'description'
   f.text_field 'points.count', i18n: 'points', tag: 'code'
 end%>

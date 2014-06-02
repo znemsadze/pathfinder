@@ -6,6 +6,7 @@ class Objects::Line
 
   field :kmlid, type: String
   field :name, type: String
+  field :direction, type: String
   field :description, type: String
   belongs_to :region
   embeds_many :points, class_name: 'Objects::LinePoint'
@@ -36,15 +37,12 @@ class Objects::Line
       idx1=descr.index(s1)+s1.length
       idx2=descr.index(s2)+s2.length
       regname=descr[idx1..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
-      description=descr[idx2..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
+      direction=descr[idx2..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
       region=Region.where(name:regname).first
       region=Region.create(name:regname) if region.blank?
       # end of description section
       obj=Objects::Line.where(kmlid:id).first || Objects::Line.create(kmlid:id)
-      obj.description=description
-      obj.region=region
-      obj.name=name
-      obj.save
+      obj.direction=direction ; obj.region=region ; obj.name=name; obj.save
       obj.points.destroy_all
       coords.split(' ').each do |coord|
         point=obj.points.new(line:obj)
