@@ -778,6 +778,8 @@ exports.calcFeatureDistance=function(map,feature){
 exports.TYPE_PATH='Objects::Path::Line';
 exports.TYPE_LINE='Objects::Line';
 exports.TYPE_TOWER='Objects::Tower';
+exports.TYPE_OFFICE='Objects::Office';
+exports.TYPE_SUBSTATION='Object::Substation';
 
 exports.getType=function(f){ return f.getProperty('class'); };
 
@@ -790,14 +792,18 @@ var typed=function(f, callback){
 };
 
 exports.isLine=function(f){ return typed(f,function(type){ return exports.TYPE_LINE==type; }); }
-exports.isTower=function(f){ return typed(f,function(type){ return exports.TYPE_TOWER==type; }); }
 exports.isPath=function(f){ return typed(f,function(type){ return exports.TYPE_PATH==type; }); }
+exports.isTower=function(f){ return typed(f,function(type){ return exports.TYPE_TOWER==type; }); }
+exports.isOffice=function(f){ return typed(f,function(type){ return exports.TYPE_OFFICE==type; }); }
+exports.isSubstation=function(f){ return typed(f,function(type){ return exports.TYPE_SUBSTATION==type; }); }
 
 exports.typeName=function(f){
   return typed(f,function(type){
     if(exports.TYPE_LINE===type){ return 'გადამცემი ხაზი'; }
     else if(exports.TYPE_PATH==type){ return 'მარშრუტი'; }
     else if(exports.TYPE_TOWER==type){ return 'ანძა'; }
+    else if(exports.TYPE_OFFICE==type){ return 'ოფისი'; }
+    else if(exports.TYPE_SUBSTATION==type){ return 'ქვესადგური'; }
     return type;
   });
 };
