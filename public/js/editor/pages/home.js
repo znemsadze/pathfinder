@@ -37,6 +37,10 @@ module.exports=function(){
 
       openPage(MAIN);
 
+      if(self.params&&self.params.selectedFeature){
+        changeSelection(self.params.selectedFeature);
+      }
+
       return layout;
     },
     onExit: function() {

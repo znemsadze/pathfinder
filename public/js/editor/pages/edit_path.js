@@ -92,7 +92,7 @@ var initUI=function(self){
     path.setMap(null);
     var feature=getFeature();
     if(feature){ map.data.add(feature); }
-    self.openPage('root');
+    self.openPage('root', {selectedFeature: getFeature()});
   };
 
   var form1=forms.path.form({save_action:saveAction, cancel_action:cancelAction});
