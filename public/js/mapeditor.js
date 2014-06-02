@@ -620,7 +620,7 @@ var initMap=function(){
     geo.copyFeatureToMarker(feature, marker);
     map.data.remove(feature);
   } else{
-    marker.setPosition(new google.maps.LatLng(42, 42));
+    marker.setPosition(map.getCenter());
   }
 };
 
