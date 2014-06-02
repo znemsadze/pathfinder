@@ -8,6 +8,7 @@ var save=function(id,model,callback){
 
   var path=model.path
     , name=model.name
+    , direction=model.direction
     , description=model.description
     , region_id=model.region_id
     ;
@@ -18,7 +19,7 @@ var save=function(id,model,callback){
       return false;
     }
     var points=utils.pointsFromPath(path);
-    var params={id:id, points:points, name:name, description:description, region_id:region_id};
+    var params={id:id, points:points, name:name, direction:direction, region_id:region_id, description:description};
     var url=BASE_PATH+(id ? '/edit' : '/new');
     $.post(url, params, function(data){
       if(callback){ callback(null,data); }

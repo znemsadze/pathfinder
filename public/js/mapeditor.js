@@ -18,6 +18,7 @@ var save=function(id,model,callback){
 
   var path=model.path
     , name=model.name
+    , direction=model.direction
     , description=model.description
     , region_id=model.region_id
     ;
@@ -28,7 +29,7 @@ var save=function(id,model,callback){
       return false;
     }
     var points=utils.pointsFromPath(path);
-    var params={id:id, points:points, name:name, description:description, region_id:region_id};
+    var params={id:id, points:points, name:name, direction:direction, region_id:region_id, description:description};
     var url=BASE_PATH+(id ? '/edit' : '/new');
     $.post(url, params, function(data){
       if(callback){ callback(null,data); }
@@ -656,10 +657,11 @@ exports.form=function(opts){
   var cancelAction={label:'გაუმება', icon:'times-circle', action: cancel_f};
 
   var nameText=ui.form.textField('name', {label: 'სახელი'});
-  var descriptionText=ui.form.textArea('description', {label: 'შენიშვნა'});
+  var directionText=ui.form.textField('direction', {label: 'მიმართულება'});
   var regionsCombo=ui.form.comboField('region_id', {label: 'რეგიონი', collection_url: '/regions.json', text_property: 'name'});
+  var descriptionText=ui.form.textArea('description', {label: 'შენიშვნა'});
 
-  var fields=[nameText,descriptionText,regionsCombo];
+  var fields=[nameText,directionText,regionsCombo,descriptionText];
   var actions=[saveAction,cancelAction];
 
   var form=ui.form.create(fields,{actions: actions,load_url:'/api/lines/show.json'});
