@@ -1,0 +1,9 @@
+ka:
+  models:
+    objects_office:
+      kmlid: kmlID
+      name: დასახელება
+      lat: განედი
+      lng: გრძედი
+      address: მისამართი
+      region: რეგიონი
