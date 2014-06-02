@@ -9,7 +9,8 @@ class Region
   has_many :paths, class_name: 'Objects::Path::Line'
   has_many :towers, class_name: 'Objects::Tower'
   has_many :offices, class_name: 'Objects::Office'
+  has_many :substations, class_name: 'Objects::Substation'
   validates :name, presence: {message: 'ჩაწერეთ სახელი'}
 
-  def can_delete?; lines.empty? and  paths.empty? and towers.empty? and offices.empty? end
+  def can_delete?; lines.empty? and  paths.empty? and towers.empty? and offices.empty? and substations.empty? end
 end
