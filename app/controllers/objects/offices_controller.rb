@@ -11,7 +11,7 @@ class Objects::OfficesController < ApplicationController
   end
 
   def upload
-    @title='ფაილის ატვირთვა'
+    @title='ფაილის ატვირთვა: ოფისები'
     if request.post?
       f=params[:data].original_filename
       case File.extname(f).downcase
@@ -24,7 +24,7 @@ class Objects::OfficesController < ApplicationController
   end
 
   def show
-    @title='ანძის თვისებები'
+    @title='ოფისის თვისებები'
     @office=Objects::Office.find(params[:id])
   end
 
