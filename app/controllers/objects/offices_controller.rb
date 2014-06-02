@@ -5,7 +5,7 @@ class Objects::OfficesController < ApplicationController
   def index
     rel=Objects::Office.asc(:kmlid)
     respond_to do |format|
-      format.html{ @title='ანძები'; @offices=rel.paginate(per_page:10, page: params[:page]) }
+      format.html{ @title='ოფისები'; @offices=rel.paginate(per_page:10, page: params[:page]) }
       format.xlsx{ @offices=rel }
     end
   end
@@ -47,7 +47,7 @@ class Objects::OfficesController < ApplicationController
 
   def upload_kml(file)
     kml=file.get_input_stream.read
-    Objects::office.from_kml(kml)
+    Objects::Office.from_kml(kml)
   end
 
   def upload_xlsx(file)
