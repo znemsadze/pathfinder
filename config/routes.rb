@@ -54,6 +54,11 @@ Pathfinder::Application.routes.draw do
       get '/show/:id', action: 'show', as: 'office'
       match '/upload', action: 'upload', via: ['get', 'post'], as: 'upload_offices'
     end
+    scope '/substations', controller: 'substations' do
+      get '/', action: 'index', as: 'substations'
+      get '/show/:id', action: 'show', as: 'substation'
+      match '/upload', action: 'upload', via: ['get', 'post'], as: 'upload_substations'
+    end
     scope '/lines', controller: 'lines' do
       get '/', action: 'index', as: 'lines'
       get '/show/:id', action: 'show', as: 'line'
