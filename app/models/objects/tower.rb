@@ -22,8 +22,7 @@ class Objects::Tower
       s1='<td>რეგიონი</td>'
       idx1=descr.index(s1)+s1.length
       regname=descr[idx1..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
-      region=Region.where(name:regname).first
-      region=Region.create(name:regname) if region.blank?
+      region=Region.get_by_name(regname)
       # end of description section
       coord=placemark.find('./kml:Point/kml:coordinates',kmlns).first.content
       obj=Objects::Tower.where(kmlid:id).first || Objects::Tower.create(kmlid:id)
