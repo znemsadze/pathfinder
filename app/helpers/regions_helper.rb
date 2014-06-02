@@ -26,6 +26,16 @@ module RegionsHelper
         v.text_field 'name', required: true
         v.text_field 'description'
       end
+      v.tab title: "ოფისები &mdash; <strong>#{region.offices.count}</strong>".html_safe, icon: '/icons/office.png' do |v|
+        v.table_field 'offices', table: {title:'ოფისები', icon: '/icons/office.png'} do |field|
+          field.table do |t|
+            t.text_field 'kmlid', tag: 'code'
+            t.text_field 'name', url: ->(x){objects_office_url(id:x.id)}
+            t.text_field 'address'
+            t.item_action ->(x){objects_office_url(id:x.id)}, icon: '/icons/eye.png'
+          end
+        end
+      end
       v.tab title: "ანძები &mdash; <strong>#{region.towers.count}</strong>".html_safe, icon: '/icons/tower.png' do |v|
         v.table_field 'towers_limited', table: {title:'ანძები', icon: '/icons/tower.png'} do |field|
           field.table do |t|

@@ -29,7 +29,7 @@ class RegionsController < ApplicationController
 
   def show
     @region=Region.find(params[:id])
-    @title='რეგიონის თვისებები'
+    @title=@region.name
   end
 
   def delete
