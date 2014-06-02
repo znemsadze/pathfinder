@@ -15,9 +15,10 @@ module RegionsHelper
   def region_view(region,opts={})
     title='რეგიონის თვისებები'; icon='/icons/region.png'
     idx=case opts[:tab]
-        when 'towers' then 1
-        when 'lines' then 2
-        when 'sys' then 3
+        when 'offices' then 1
+        when 'towers' then 2
+        when 'lines' then 3
+        when 'sys' then 4
         else 0 end
     view_for region, title: title, collapsible: true, icon: icon, selected_tab: idx do |v|
       v.edit_action edit_region_url(id:region.id)
