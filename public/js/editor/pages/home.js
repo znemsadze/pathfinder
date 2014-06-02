@@ -53,9 +53,14 @@ var initUI=function(self){
 };
 
 var initPage1=function(self){
-  btnNewPath=ui.button.actionButton('ახალი გზა', function(){
+  btnNewPath=ui.button.actionLink('მარშუტი', function(){
     if(!locked){ self.openPage('edit_path',{type:geo.TYPE_PATH}); }
-  }, {icon:'plus'});
+  });
+  btnNewLine=ui.button.actionLink('გადამცემი ხაზი', function(){
+    if(!locked){ self.openPage('edit_path',{type:geo.TYPE_LINE}); }
+  });
+
+  var newObjects=ui.button.dropdown('ახალი ობიექტი',[btnNewPath,btnNewLine], {type:'success'});  
 
   btnDelete=ui.button.actionButton('წაშლა', function(){
     if(!locked){ openPage(CONFIRM); }
@@ -71,7 +76,7 @@ var initPage1=function(self){
     }
   }, {icon: 'pencil', type: 'warning'});
 
-  toolbar.addButton(btnNewPath);
+  toolbar.addButton(newObjects);
 
   var titleElement=ui.html.pageTitle('საწყისი');
   page1=ui.layout.vertical({
