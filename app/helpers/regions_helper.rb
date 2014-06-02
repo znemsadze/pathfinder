@@ -16,9 +16,10 @@ module RegionsHelper
     title='რეგიონის თვისებები'; icon='/icons/region.png'
     idx=case opts[:tab]
         when 'offices' then 1
-        when 'towers' then 2
-        when 'lines' then 3
-        when 'sys' then 4
+        when 'substations' then 2
+        when 'towers' then 3
+        when 'lines' then 4
+        when 'sys' then 5
         else 0 end
     view_for region, title: title, collapsible: true, icon: icon, selected_tab: idx do |v|
       v.edit_action edit_region_url(id:region.id)
@@ -34,6 +35,16 @@ module RegionsHelper
             t.text_field 'name', url: ->(x){objects_office_url(id:x.id)}
             t.text_field 'address'
             t.item_action ->(x){objects_office_url(id:x.id)}, icon: '/icons/eye.png'
+          end
+        end
+      end
+      v.tab title: "ქვესადგურები &mdash; <strong>#{region.substations.count}</strong>".html_safe, icon: '/icons/substation.png' do |v|
+        v.table_field 'substations', table: {title:'ქვესადგურები', icon: '/icons/substation.png'} do |field|
+          field.table do |t|
+            t.text_field 'kmlid', tag: 'code'
+            t.text_field 'name', url: ->(x){objects_substation_url(id:x.id)}
+            t.text_field 'address'
+            t.item_action ->(x){objects_substation_url(id:x.id)}, icon: '/icons/eye.png'
           end
         end
       end
