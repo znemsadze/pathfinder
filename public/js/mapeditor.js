@@ -71,7 +71,10 @@ var save=function(id,model,callback){
     , description=model.description
     ;
 
-  if(!region_id){
+  if(!name){
+    utils.addError(model,'name',' ჩაწერეთ დასახელება');
+    return false;
+  } else if(!region_id){
     utils.addError(model,'region_id','აარჩიეთ რეგიონი');
     return false;
   }
@@ -731,7 +734,7 @@ exports.form=function(opts){
   var saveAction={label: 'ოფისის შენახვა', icon:'save', type:'success', action: save_f};
   var cancelAction={label:'გაუმება', icon:'times-circle', action: cancel_f};
 
-  var nameText=ui.form.textField('name', {label: 'სახელი'});
+  var nameText=ui.form.textField('name', {label: 'დასახელება'});
   var addressText=ui.form.textField('address', {label: 'მისამართი'});
   var regionsCombo=ui.form.comboField('region_id', {label: 'რეგიონი', collection_url: '/regions.json', text_property: 'name'});
   var descriptionText=ui.form.textArea('description', {label: 'შენიშვნა'});
@@ -961,7 +964,7 @@ var map
   , featureInfo=ui.html.p('',{style:'margin:16px 0;'})
   , selectedFeature
   , secondaryToolbar=ui.button.toolbar([])
-  , btnNewPath, btnNewLine, btnNewTower // new objects
+  , btnNewPath, btnNewLine, btnNewTower, btnNewOffice // new objects
   , btnDelete, btnEdit // change objects
   , confirmTitle=ui.html.p('საჭიროა დასტური',{class: 'page-header', style: 'font-weight:bold; font-size: 1.2em;'})
   , confirmText=ui.html.p('დაადასტურეთ, რომ ნამდვილად გინდათ მონიშნული ობიექტის წაშლა?',{class: 'text-danger'})
@@ -1014,8 +1017,11 @@ var initPage1=function(self){
   btnNewTower=ui.button.actionLink('ანძა', function(){
     if(!locked){ self.openPage('edit_point',{type:geo.TYPE_TOWER}); }
   });
+  btnNewOffice=ui.button.actionLink('ოფისი', function(){
+    if(!locked){ self.openPage('edit_point',{type:geo.TYPE_OFFICE}); }
+  });
 
-  var buttons=[btnNewPath,btnNewLine,{divider:true},btnNewTower];
+  var buttons=[btnNewPath,btnNewLine,{divider:true},btnNewOffice,btnNewTower];
   var newObjects=ui.button.dropdown('ახალი ობიექტი',buttons, {type:'success'});  
 
   btnDelete=ui.button.actionButton('წაშლა', function(){

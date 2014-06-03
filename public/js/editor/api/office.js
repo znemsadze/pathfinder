@@ -14,7 +14,10 @@ var save=function(id,model,callback){
     , description=model.description
     ;
 
-  if(!region_id){
+  if(!name){
+    utils.addError(model,'name',' ჩაწერეთ დასახელება');
+    return false;
+  } else if(!region_id){
     utils.addError(model,'region_id','აარჩიეთ რეგიონი');
     return false;
   }

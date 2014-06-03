@@ -8,7 +8,7 @@ exports.form=function(opts){
   var saveAction={label: 'ოფისის შენახვა', icon:'save', type:'success', action: save_f};
   var cancelAction={label:'გაუმება', icon:'times-circle', action: cancel_f};
 
-  var nameText=ui.form.textField('name', {label: 'სახელი'});
+  var nameText=ui.form.textField('name', {label: 'დასახელება'});
   var addressText=ui.form.textField('address', {label: 'მისამართი'});
   var regionsCombo=ui.form.comboField('region_id', {label: 'რეგიონი', collection_url: '/regions.json', text_property: 'name'});
   var descriptionText=ui.form.textArea('description', {label: 'შენიშვნა'});

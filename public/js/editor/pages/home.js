@@ -13,7 +13,7 @@ var map
   , featureInfo=ui.html.p('',{style:'margin:16px 0;'})
   , selectedFeature
   , secondaryToolbar=ui.button.toolbar([])
-  , btnNewPath, btnNewLine, btnNewTower // new objects
+  , btnNewPath, btnNewLine, btnNewTower, btnNewOffice // new objects
   , btnDelete, btnEdit // change objects
   , confirmTitle=ui.html.p('საჭიროა დასტური',{class: 'page-header', style: 'font-weight:bold; font-size: 1.2em;'})
   , confirmText=ui.html.p('დაადასტურეთ, რომ ნამდვილად გინდათ მონიშნული ობიექტის წაშლა?',{class: 'text-danger'})
@@ -66,8 +66,11 @@ var initPage1=function(self){
   btnNewTower=ui.button.actionLink('ანძა', function(){
     if(!locked){ self.openPage('edit_point',{type:geo.TYPE_TOWER}); }
   });
+  btnNewOffice=ui.button.actionLink('ოფისი', function(){
+    if(!locked){ self.openPage('edit_point',{type:geo.TYPE_OFFICE}); }
+  });
 
-  var buttons=[btnNewPath,btnNewLine,{divider:true},btnNewTower];
+  var buttons=[btnNewPath,btnNewLine,{divider:true},btnNewOffice,btnNewTower];
   var newObjects=ui.button.dropdown('ახალი ობიექტი',buttons, {type:'success'});  
 
   btnDelete=ui.button.actionButton('წაშლა', function(){
