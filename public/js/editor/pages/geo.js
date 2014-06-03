@@ -126,6 +126,17 @@ var towerDescription=function(map,f){
   ].join('');
 };
 
+var officeDescription=function(map,f){
+  var point=f.getGeometry().get();
+  return [
+    property('დასახელება',f.getProperty('name')),
+    property('რეგიონი',f.getProperty('region')),
+    property('განედი','<code>'+point.lat()+'</code>'),
+    property('გრძედი','<code>'+point.lng()+'</code>'),
+    property('შენიშვნა',f.getProperty('description')),
+  ].join('');
+};
+
 exports.featureDescription=function(map,f){
   var bodyDescription;
 
@@ -134,6 +145,7 @@ exports.featureDescription=function(map,f){
   if(exports.isLine(f)){ bodyDescription=lineDescription(map,f); }
   else if(exports.isPath(f)){ bodyDescription=lineDescription(map,f); }
   else if(exports.isTower(f)){ bodyDescription=towerDescription(map,f); }
+  else if(exports.isOffice(f)){ bodyDescription=officeDescription(map,f); }
   texts.push('<div class="panel-body">',bodyDescription,'</div>');
   texts.push('</div>');
   return texts.join('');
