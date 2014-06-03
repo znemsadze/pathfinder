@@ -8,6 +8,7 @@ class Objects::Tower
   field :kmlid, type: String
   field :name, type: String
   field :category, type: String
+  field :description, type: String
   belongs_to :region
 
   def self.from_kml(xml)

@@ -10,6 +10,8 @@ var save=function(id,model,callback){
     , region_id=model.region_id
     , lat=model.lat
     , lng=model.lng
+    , category=model.category
+    , description=model.description
     ;
 
   if(!region_id){
@@ -17,7 +19,7 @@ var save=function(id,model,callback){
     return false;
   }
 
-  var params={id:id, name:name, region_id:region_id, lat:lat, lng:lng};
+  var params={id:id, name:name, region_id:region_id, lat:lat, lng:lng, category:category, description:description};
   var url=BASE_PATH+(id ? '/edit' : '/new');
   $.post(url, params, function(data){
     if(callback){ callback(null,data); }

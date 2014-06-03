@@ -55,11 +55,12 @@ class Objects::TowersController < ApplicationController
       id=sheet.cell('A',row) ; name=sheet.excelx_value('C',row).to_s ; category=sheet.cell('D', row)
       regionname=sheet.cell('E',row).to_s
       lat=sheet.cell('F',row).to_f; lng=sheet.cell('G',row).to_f
+      description=sheet.cell('H',row)
       region=Region.where(name:regionname).first
       region=Region.create(name:regionname) unless region.present?
       tower=Objects::Tower.find(id)
       tower.name=name ; tower.region=region ; tower.category=category
-      tower.lat=lat ; tower.lng=lng
+      tower.lat=lat ; tower.lng=lng; tower.description=description
       tower.save
     end
   end

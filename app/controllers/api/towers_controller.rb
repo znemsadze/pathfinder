@@ -21,5 +21,5 @@ class Api::TowersController < ApiController
   end
 
   private
-  def tower_params; params.permit(:name,:region_id, :lat, :lng, :category) end
+  def tower_params; params.permit(:name,:region_id, :lat, :lng, :category, :description) end
 end
