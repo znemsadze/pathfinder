@@ -885,7 +885,7 @@ exports.TYPE_PATH='Objects::Path::Line';
 exports.TYPE_LINE='Objects::Line';
 exports.TYPE_TOWER='Objects::Tower';
 exports.TYPE_OFFICE='Objects::Office';
-exports.TYPE_SUBSTATION='Object::Substation';
+exports.TYPE_SUBSTATION='Objects::Substation';
 
 exports.getType=function(f){ return f.getProperty('class'); };
 
@@ -956,6 +956,17 @@ var officeDescription=function(map,f){
   ].join('');
 };
 
+var substationDescription=function(map,f){
+  var point=f.getGeometry().get();
+  return [
+    property('დასახელება',f.getProperty('name')),
+    property('რეგიონი',f.getProperty('region')),
+    property('განედი','<code>'+point.lat()+'</code>'),
+    property('გრძედი','<code>'+point.lng()+'</code>'),
+    property('შენიშვნა',f.getProperty('description')),
+  ].join('');
+};
+
 exports.featureDescription=function(map,f){
   var bodyDescription;
 
@@ -965,6 +976,7 @@ exports.featureDescription=function(map,f){
   else if(exports.isPath(f)){ bodyDescription=lineDescription(map,f); }
   else if(exports.isTower(f)){ bodyDescription=towerDescription(map,f); }
   else if(exports.isOffice(f)){ bodyDescription=officeDescription(map,f); }
+  else if(exports.isSubstation(f)){ bodyDescription=substationDescription(map,f); }
   texts.push('<div class="panel-body">',bodyDescription,'</div>');
   texts.push('</div>');
   return texts.join('');

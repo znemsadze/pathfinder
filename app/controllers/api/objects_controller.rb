@@ -2,7 +2,7 @@
 class Api::ObjectsController < ApiController
   MAX_TOWERS=100
 
-  def index; @all=get_towers+get_offices+get_lines+get_paths end
+  def index; @all=get_towers+get_offices+get_substations+get_lines+get_paths end
 
   private
 
@@ -23,6 +23,18 @@ class Api::ObjectsController < ApiController
       Objects::Office.all
     elsif params[:type]=='Objects::Office'
       rel=Objects::Office
+      rel=rel.in(_id:params[:id].split(',')) if params[:id].present?
+      rel.all
+    else
+      []
+    end
+  end
+
+  def get_substations
+    if params[:type].blank?
+      Objects::Substation.all
+    elsif params[:type]=='Objects::Substation'
+      rel=Objects::Substation
       rel=rel.in(_id:params[:id].split(',')) if params[:id].present?
       rel.all
     else
