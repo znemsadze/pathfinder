@@ -21,5 +21,5 @@ class Api::SubstationsController < ApiController
   end
 
   private
-  def substation; params.permit(:name, :region_id, :lat, :lng, :description) end
+  def substation_params; params.permit(:name, :region_id, :lat, :lng, :description) end
 end
