@@ -394,7 +394,7 @@ var initRouter=function(){
   app.openPage('root');
 };
 
-},{"./api":1,"./pages":18,"./pages/geo":16,"./router":19,"./ui":25}],8:[function(require,module,exports){
+},{"./api":1,"./pages":19,"./pages/geo":17,"./router":20,"./ui":26}],8:[function(require,module,exports){
 var app=require('./app');
 
 app.start();
@@ -587,7 +587,7 @@ var initMap=function(){
   }
 };
 
-},{"../api":1,"../ui":25,"./forms":11,"./geo":16}],10:[function(require,module,exports){
+},{"../api":1,"../ui":26,"./forms":11,"./geo":17}],10:[function(require,module,exports){
 var ui=require('../ui')
   , forms=require('./forms')
   , api=require('../api')
@@ -651,6 +651,9 @@ var initUI=function(){
     } else if(geo.isOffice(getType())){
       if(isNewMode()){ sent=api.office.newOffice(model, callback); }
       else { sent=api.office.editOffice(getId(), model, callback); }
+    } else if(geo.isSubstation(getType())){
+      if(isNewMode()){ sent=api.substation.newSubstation(model, callback); }
+      else { sent=api.substation.editSubstation(getId(), model, callback); }
     }
 
     canEdit= !sent;
@@ -661,16 +664,17 @@ var initUI=function(){
     marker.setMap(null);
     var feature=getFeature();
     if(feature){ map.data.add(feature); }
-    self.openPage('root');
+    self.openPage('root',{selectedFeature: feature});
   };
 
   var form1=forms.tower.form({save_action:saveAction, cancel_action:cancelAction});
   var form2=forms.office.form({save_action:saveAction, cancel_action:cancelAction});
-  formLayout=ui.layout.card({children: [form1, form2]});
+  var form3=forms.substation.form({save_action:saveAction, cancel_action:cancelAction});
+  formLayout=ui.layout.card({children: [form1, form2, form3]});
   formLayout.openType=function(type){
     if(geo.isTower(type)){ formLayout.showAt(0); }
     else if(geo.isOffice(type)){ formLayout.showAt(1); }
-    else if(geo.isOffice(type)){ formLayout.showAt(2); }
+    else if(geo.isSubstation(type)){ formLayout.showAt(2); }
   };
 
   layout=ui.layout.vertical({children:[titleElement,formLayout]});
@@ -721,9 +725,20 @@ var getId=function(){
   return feature&&feature.getId();
 };
 
-},{"../api":1,"../ui":25,"./forms":11,"./geo":16}],11:[function(require,module,exports){
-arguments[4][1][0].apply(exports,arguments)
-},{"./line":12,"./office":13,"./path":14,"./tower":15}],12:[function(require,module,exports){
+},{"../api":1,"../ui":26,"./forms":11,"./geo":17}],11:[function(require,module,exports){
+var path=require('./path')
+  , line=require('./line')
+  , tower=require('./tower')
+  , office=require('./office')
+  , substation=require('./substation')
+  ;
+
+exports.path=path;
+exports.line=line;
+exports.tower=tower;
+exports.office=office;
+exports.substation=substation;
+},{"./line":12,"./office":13,"./path":14,"./substation":15,"./tower":16}],12:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -745,7 +760,7 @@ exports.form=function(opts){
   var form=ui.form.create(fields,{actions: actions,load_url:'/api/lines/show.json'});
   return form;
 };
-},{"../../ui":25}],13:[function(require,module,exports){
+},{"../../ui":26}],13:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -768,7 +783,7 @@ exports.form=function(opts){
   return form;
 };
 
-},{"../../ui":25}],14:[function(require,module,exports){
+},{"../../ui":26}],14:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -792,7 +807,29 @@ exports.form=function(opts){
   var form=ui.form.create(fields,{actions: actions, load_url:'/api/paths/show.json'});
   return form;
 };
-},{"../../ui":25}],15:[function(require,module,exports){
+},{"../../ui":26}],15:[function(require,module,exports){
+var ui=require('../../ui')
+  ;
+
+exports.form=function(opts){
+  var save_f=opts.save_action;
+  var cancel_f=opts.cancel_action;
+
+  var saveAction={label: 'ქვესადგურის შენახვა', icon:'save', type:'success', action: save_f};
+  var cancelAction={label:'გაუმება', icon:'times-circle', action: cancel_f};
+
+  var nameText=ui.form.textField('name', {label: 'დასახელება'});
+  var regionsCombo=ui.form.comboField('region_id', {label: 'რეგიონი', collection_url: '/regions.json', text_property: 'name'});
+  var descriptionText=ui.form.textArea('description', {label: 'შენიშვნა'});
+
+  var fields=[nameText, regionsCombo, descriptionText];
+  var actions=[saveAction,cancelAction];
+
+  var form=ui.form.create(fields,{actions: actions,load_url:'/api/substations/show.json'});
+  return form;
+};
+
+},{"../../ui":26}],16:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -815,7 +852,7 @@ exports.form=function(opts){
   return form;
 };
 
-},{"../../ui":25}],16:[function(require,module,exports){
+},{"../../ui":26}],17:[function(require,module,exports){
 exports.resetMap=function(map){
   google.maps.event.clearInstanceListeners(map);
   google.maps.event.clearInstanceListeners(map.data);
@@ -982,7 +1019,7 @@ exports.featureDescription=function(map,f){
   return texts.join('');
 };
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 var ui=require('../ui')
   , api=require('../api')
   , geo=require('./geo')
@@ -1167,7 +1204,7 @@ var deleteSelectedFeature=function(){
   else if(geo.isOffice(selectedFeature)){ locked=api.office.deleteOffice(id,callback); }
 };
 
-},{"../api":1,"../ui":25,"./geo":16}],18:[function(require,module,exports){
+},{"../api":1,"../ui":26,"./geo":17}],19:[function(require,module,exports){
 var home=require('./home')
   , edit_path=require('./edit_path')
   , edit_point=require('./edit_point')
@@ -1176,7 +1213,7 @@ var home=require('./home')
 exports.home=home;
 exports.edit_path=edit_path;
 exports.edit_point=edit_point;
-},{"./edit_path":9,"./edit_point":10,"./home":17}],19:[function(require,module,exports){
+},{"./edit_path":9,"./edit_point":10,"./home":18}],20:[function(require,module,exports){
 var map
   , sidebar
   , toolbar
@@ -1232,7 +1269,7 @@ var openPage=function(name,params){
   }
 };
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils')
   ;
@@ -1308,7 +1345,7 @@ exports.dropdown=function(text,buttons,opts){
   }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":24,"./utils":27}],21:[function(require,module,exports){
+},{"./html":25,"./utils":28}],22:[function(require,module,exports){
 var html=require('../html')
   ;
 
@@ -1489,7 +1526,7 @@ exports.textArea=function(name, opts){
 
   return textarea;
 };
-},{"../html":24}],22:[function(require,module,exports){
+},{"../html":25}],23:[function(require,module,exports){
 var html=require('../html')
   , button=require('../button')
   ;
@@ -1557,7 +1594,7 @@ module.exports=function(fields,opts){
   return _form;
 };
 
-},{"../button":20,"../html":24}],23:[function(require,module,exports){
+},{"../button":21,"../html":25}],24:[function(require,module,exports){
 var form=require('./form')
   , field=require('./field')
   ;
@@ -1566,7 +1603,7 @@ exports.create=form;
 exports.textField=field.textField;
 exports.comboField=field.comboField;
 exports.textArea=field.textArea;
-},{"./field":21,"./form":22}],24:[function(require,module,exports){
+},{"./field":22,"./form":23}],25:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -1667,7 +1704,7 @@ exports.p=function(text,opts){
   return p; 
 };
 
-},{"./utils":27}],25:[function(require,module,exports){
+},{"./utils":28}],26:[function(require,module,exports){
 var button=require('./button')
   , layout=require('./layout')
   , html=require('./html')
@@ -1678,7 +1715,7 @@ exports.html=html;
 exports.button=button;
 exports.layout=layout;
 exports.form=form;
-},{"./button":20,"./form":23,"./html":24,"./layout":26}],26:[function(require,module,exports){
+},{"./button":21,"./form":24,"./html":25,"./layout":27}],27:[function(require,module,exports){
 var html=require('./html')
  ;
 
@@ -1754,7 +1791,7 @@ exports.card=function(opts){
 
   return layout;
 };
-},{"./html":24}],27:[function(require,module,exports){
+},{"./html":25}],28:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
 exports.fieldValue=function(object,name){ return object&&object[name]; };

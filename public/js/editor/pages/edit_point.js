@@ -61,6 +61,9 @@ var initUI=function(){
     } else if(geo.isOffice(getType())){
       if(isNewMode()){ sent=api.office.newOffice(model, callback); }
       else { sent=api.office.editOffice(getId(), model, callback); }
+    } else if(geo.isSubstation(getType())){
+      if(isNewMode()){ sent=api.substation.newSubstation(model, callback); }
+      else { sent=api.substation.editSubstation(getId(), model, callback); }
     }
 
     canEdit= !sent;
@@ -71,16 +74,17 @@ var initUI=function(){
     marker.setMap(null);
     var feature=getFeature();
     if(feature){ map.data.add(feature); }
-    self.openPage('root');
+    self.openPage('root',{selectedFeature: feature});
   };
 
   var form1=forms.tower.form({save_action:saveAction, cancel_action:cancelAction});
   var form2=forms.office.form({save_action:saveAction, cancel_action:cancelAction});
-  formLayout=ui.layout.card({children: [form1, form2]});
+  var form3=forms.substation.form({save_action:saveAction, cancel_action:cancelAction});
+  formLayout=ui.layout.card({children: [form1, form2, form3]});
   formLayout.openType=function(type){
     if(geo.isTower(type)){ formLayout.showAt(0); }
     else if(geo.isOffice(type)){ formLayout.showAt(1); }
-    else if(geo.isOffice(type)){ formLayout.showAt(2); }
+    else if(geo.isSubstation(type)){ formLayout.showAt(2); }
   };
 
   layout=ui.layout.vertical({children:[titleElement,formLayout]});
