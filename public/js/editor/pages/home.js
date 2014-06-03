@@ -180,4 +180,5 @@ var deleteSelectedFeature=function(){
   else if(geo.isLine(selectedFeature)){ locked=api.line.deleteLine(id,callback); }
   else if(geo.isTower(selectedFeature)){ locked=api.tower.deleteTower(id,callback); }
   else if(geo.isOffice(selectedFeature)){ locked=api.office.deleteOffice(id,callback); }
+  else if(geo.isSubstation(selectedFeature)){ locked=api.substation.deleteSubstation(id,callback); }
 };
