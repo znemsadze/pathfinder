@@ -343,8 +343,8 @@ var initMap=function(){
       };
     } else if (geo.isTower(f)){
       var icon;
-      if(isSelected){ icon='/map/tower_selected.png'; }
-      else if(isHovered){ icon='/map/tower_hovered.png'; }
+      if(isSelected){ icon='/map/tower-selected.png'; }
+      else if(isHovered){ icon='/map/tower-hovered.png'; }
       else{ icon='/map/tower.png'; }
       return {
         icon: icon,
@@ -357,6 +357,17 @@ var initMap=function(){
       if(isSelected){ icon='/map/office-selected.png'; }
       else if(isHovered){ icon='/map/office-hovered.png'; }
       else{ icon='/map/office.png'; }
+      return {
+        icon: icon,
+        visible: true,
+        clickable: true,
+        title: name,
+      };
+    } else if (geo.isSubstation(f)){
+      var icon;
+      if(isSelected){ icon='/map/substation-selected.png'; }
+      else if(isHovered){ icon='/map/substation-hovered.png'; }
+      else{ icon='/map/substation.png'; }
       return {
         icon: icon,
         visible: true,
