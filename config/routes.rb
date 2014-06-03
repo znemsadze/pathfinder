@@ -124,6 +124,12 @@ Pathfinder::Application.routes.draw do
       post '/edit', action: 'edit'
       post '/delete', action: 'delete'
     end
+    scope 'offices', controller: 'offices' do
+      get '/show', action: 'show'
+      post '/new',  action: 'new'
+      post '/edit', action: 'edit'
+      post '/delete', action: 'delete'
+    end
   end
 
   root 'site#index'
