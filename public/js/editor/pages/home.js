@@ -176,4 +176,5 @@ var deleteSelectedFeature=function(){
   if(geo.isPath(selectedFeature)){ locked=api.path.deletePath(id,callback); }
   else if(geo.isLine(selectedFeature)){ locked=api.line.deleteLine(id,callback); }
   else if(geo.isTower(selectedFeature)){ locked=api.tower.deleteTower(id,callback); }
+  else if(geo.isOffice(selectedFeature)){ locked=api.office.deleteOffice(id,callback); }
 };

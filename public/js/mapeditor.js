@@ -623,6 +623,9 @@ var initUI=function(){
     if (geo.isTower(getType())){
       if(isNewMode()){ sent=api.tower.newTower(model, callback); }
       else { sent=api.tower.editTower(getId(), model, callback); }
+    } else if(geo.isOffice(getType())){
+      if(isNewMode()){ sent=api.office.newOffice(model, callback); }
+      else { sent=api.office.editOffice(getId(), model, callback); }
     }
 
     canEdit= !sent;
@@ -1121,6 +1124,7 @@ var deleteSelectedFeature=function(){
   if(geo.isPath(selectedFeature)){ locked=api.path.deletePath(id,callback); }
   else if(geo.isLine(selectedFeature)){ locked=api.line.deleteLine(id,callback); }
   else if(geo.isTower(selectedFeature)){ locked=api.tower.deleteTower(id,callback); }
+  else if(geo.isOffice(selectedFeature)){ locked=api.office.deleteOffice(id,callback); }
 };
 
 },{"../api":1,"../ui":25,"./geo":16}],18:[function(require,module,exports){

@@ -21,5 +21,5 @@ class Api::OfficesController < ApiController
   end
 
   private
-  def office_params; params.permit(:name,:region_id, :lat, :lng, :description) end
+  def office_params; params.permit(:name, :region_id, :lat, :lng, :description, :address) end
 end

@@ -58,6 +58,9 @@ var initUI=function(){
     if (geo.isTower(getType())){
       if(isNewMode()){ sent=api.tower.newTower(model, callback); }
       else { sent=api.tower.editTower(getId(), model, callback); }
+    } else if(geo.isOffice(getType())){
+      if(isNewMode()){ sent=api.office.newOffice(model, callback); }
+      else { sent=api.office.editOffice(getId(), model, callback); }
     }
 
     canEdit= !sent;
