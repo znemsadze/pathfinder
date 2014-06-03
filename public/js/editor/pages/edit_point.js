@@ -72,10 +72,12 @@ var initUI=function(){
   };
 
   var form1=forms.tower.form({save_action:saveAction, cancel_action:cancelAction});
-  formLayout=ui.layout.card({children: [form1]});
+  var form2=forms.office.form({save_action:saveAction, cancel_action:cancelAction});
+  formLayout=ui.layout.card({children: [form1, form2]});
   formLayout.openType=function(type){
     if(geo.isTower(type)){ formLayout.showAt(0); }
-    // TODO: other types
+    else if(geo.isOffice(type)){ formLayout.showAt(1); }
+    else if(geo.isOffice(type)){ formLayout.showAt(2); }
   };
 
   layout=ui.layout.vertical({children:[titleElement,formLayout]});

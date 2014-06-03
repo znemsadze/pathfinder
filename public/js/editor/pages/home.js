@@ -78,7 +78,7 @@ var initPage1=function(self){
     if(!locked){
       if(geo.isPath(selectedFeature)||geo.isLine(selectedFeature)){
         self.openPage('edit_path',{feature: selectedFeature});
-      } else if(geo.isTower(selectedFeature)){
+      } else if(geo.isTower(selectedFeature)||geo.isOffice(selectedFeature)||geo.isSubstation(selectedFeature)){
         self.openPage('edit_point',{feature: selectedFeature});
       }
     }

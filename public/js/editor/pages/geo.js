@@ -131,6 +131,7 @@ var officeDescription=function(map,f){
   return [
     property('დასახელება',f.getProperty('name')),
     property('რეგიონი',f.getProperty('region')),
+    property('მისამართი',f.getProperty('address')),
     property('განედი','<code>'+point.lat()+'</code>'),
     property('გრძედი','<code>'+point.lng()+'</code>'),
     property('შენიშვნა',f.getProperty('description')),
