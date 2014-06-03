@@ -8,6 +8,7 @@ class Objects::Office
   field :name, type: String
   field :description, type: String
   field :address, type: String
+  field :description, type: String
   belongs_to :region
 
   def self.from_kml(xml)

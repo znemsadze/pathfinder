@@ -55,10 +55,12 @@ class Objects::OfficesController < ApplicationController
     (2..sheet.last_row).each do |row|
       id=sheet.cell('A',row) ; name=sheet.cell('C',row) ; regionname=sheet.cell('D',row).to_s
       address=sheet.cell('E',row) ; lat=sheet.cell('F',row).to_f; lng=sheet.cell('G',row).to_f
+      description=sheet.cell('H',row)
       region=Region.get_by_name(regionname)
       office=Objects::Office.find(id)
       office.name=name ; office.region=region
       office.address=address ; office.lat=lat ; office.lng=lng
+      office.description=description
       office.save
     end
   end
