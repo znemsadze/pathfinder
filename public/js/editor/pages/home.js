@@ -13,7 +13,7 @@ var map
   , featureInfo=ui.html.p('',{style:'margin:16px 0;'})
   , selectedFeature
   , secondaryToolbar=ui.button.toolbar([])
-  , btnNewPath, btnNewLine, btnNewTower, btnNewOffice // new objects
+  , btnNewPath, btnNewLine, btnNewTower, btnNewOffice, btnNewSubstation // new objects
   , btnDelete, btnEdit // change objects
   , confirmTitle=ui.html.p('საჭიროა დასტური',{class: 'page-header', style: 'font-weight:bold; font-size: 1.2em;'})
   , confirmText=ui.html.p('დაადასტურეთ, რომ ნამდვილად გინდათ მონიშნული ობიექტის წაშლა?',{class: 'text-danger'})
@@ -69,8 +69,11 @@ var initPage1=function(self){
   btnNewOffice=ui.button.actionLink('ოფისი', function(){
     if(!locked){ self.openPage('edit_point',{type:geo.TYPE_OFFICE}); }
   });
+  btnNewSubstation=ui.button.actionLink('ქვესადგური', function(){
+    if(!locked){ self.openPage('edit_point',{type:geo.TYPE_SUBSTATION}); }
+  });
 
-  var buttons=[btnNewPath,btnNewLine,{divider:true},btnNewOffice,btnNewTower];
+  var buttons=[btnNewPath,btnNewLine,{divider:true},btnNewOffice,btnNewSubstation,btnNewTower];
   var newObjects=ui.button.dropdown('ახალი ობიექტი',buttons, {type:'success'});  
 
   btnDelete=ui.button.actionButton('წაშლა', function(){
