@@ -2,7 +2,7 @@
 class Api::ObjectsController < ApiController
   MAX_TOWERS=100
 
-  def index; @all=get_towers+get_lines+get_paths end
+  def index; @all=get_towers+get_offices+get_lines+get_paths end
 
   private
 
@@ -13,6 +13,18 @@ class Api::ObjectsController < ApiController
       rel=Objects::Tower
       rel=rel.in(_id:params[:id].split(',')) if params[:id].present?
       rel.all.paginate(per_page:MAX_TOWERS)
+    else
+      []
+    end
+  end
+
+  def get_offices
+    if params[:type].blank?
+      Objects::Office.all
+    elsif params[:type]=='Objects::Office'
+      rel=Objects::Office
+      rel=rel.in(_id:params[:id].split(',')) if params[:id].present?
+      rel.all
     else
       []
     end

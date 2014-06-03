@@ -6,6 +6,9 @@ json.features do
       if t.is_a?(Objects::Tower)
         json.type 'Point'
         json.coordinates [t.lng,t.lat]
+      elsif t.is_a?(Objects::Office)
+        json.type 'Point'
+        json.coordinates [t.lng,t.lat]
       elsif t.is_a?(Objects::Line)
         json.type 'LineString'
         json.coordinates t.points.map{|p| [p.lng,p.lat] }
