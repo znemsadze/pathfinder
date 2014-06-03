@@ -115,9 +115,14 @@ var lineDescription=function(map,f){
 };
 
 var towerDescription=function(map,f){
+  var point=f.getGeometry().get();
   return [
-    property('დასახელება',f.getProperty('name')),
+    property('ანძის#',f.getProperty('name')),
+    property('ტიპი',f.getProperty('category')),
     property('რეგიონი',f.getProperty('region')),
+    property('განედი','<code>'+point.lat()+'</code>'),
+    property('გრძედი','<code>'+point.lng()+'</code>'),
+    property('შენიშვნა',f.getProperty('description')),
   ].join('');
 };
 

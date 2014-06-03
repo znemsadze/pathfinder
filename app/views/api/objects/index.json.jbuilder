@@ -21,6 +21,7 @@ json.features do
       json.description t.description if t.respond_to?(:description)
       json.region t.region.name if t.region.present?
       json.direction t.direction if t.respond_to?(:direction)
+      json.category t.category if t.respond_to?(:category)
     end
   end
 end

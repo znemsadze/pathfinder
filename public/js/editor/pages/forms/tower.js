@@ -9,9 +9,11 @@ exports.form=function(opts){
   var cancelAction={label:'გაუმება', icon:'times-circle', action: cancel_f};
 
   var nameText=ui.form.textField('name', {label: 'სახელი'});
+  var categoryText=ui.form.textField('category', {label: 'ტიპი'});
   var regionsCombo=ui.form.comboField('region_id', {label: 'რეგიონი', collection_url: '/regions.json', text_property: 'name'});
+  var descriptionText=ui.form.textArea('description', {label: 'შენიშვნა'});
 
-  var fields=[nameText,regionsCombo];
+  var fields=[nameText,categoryText,regionsCombo,descriptionText];
   var actions=[saveAction,cancelAction];
 
   var form=ui.form.create(fields,{actions: actions,load_url:'/api/towers/show.json'});

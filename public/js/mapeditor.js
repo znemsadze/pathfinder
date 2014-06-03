@@ -703,14 +703,17 @@ exports.form=function(opts){
   var cancelAction={label:'გაუმება', icon:'times-circle', action: cancel_f};
 
   var nameText=ui.form.textField('name', {label: 'სახელი'});
+  var categoryText=ui.form.textField('category', {label: 'ტიპი'});
   var regionsCombo=ui.form.comboField('region_id', {label: 'რეგიონი', collection_url: '/regions.json', text_property: 'name'});
+  var descriptionText=ui.form.textArea('description', {label: 'შენიშვნა'});
 
-  var fields=[nameText,regionsCombo];
+  var fields=[nameText,categoryText,regionsCombo,descriptionText];
   var actions=[saveAction,cancelAction];
 
   var form=ui.form.create(fields,{actions: actions,load_url:'/api/towers/show.json'});
   return form;
 };
+
 },{"../../ui":23}],14:[function(require,module,exports){
 exports.resetMap=function(map){
   google.maps.event.clearInstanceListeners(map);
@@ -829,9 +832,14 @@ var lineDescription=function(map,f){
 };
 
 var towerDescription=function(map,f){
+  var point=f.getGeometry().get();
   return [
-    property('დასახელება',f.getProperty('name')),
+    property('ანძის#',f.getProperty('name')),
+    property('ტიპი',f.getProperty('category')),
     property('რეგიონი',f.getProperty('region')),
+    property('განედი','<code>'+point.lat()+'</code>'),
+    property('გრძედი','<code>'+point.lng()+'</code>'),
+    property('შენიშვნა',f.getProperty('description')),
   ].join('');
 };
 
