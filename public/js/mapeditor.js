@@ -352,6 +352,17 @@ var initMap=function(){
         clickable: true,
         title: name,
       };
+    } else if (geo.isOffice(f)){
+      var icon;
+      if(isSelected){ icon='/map/office-selected.png'; }
+      else if(isHovered){ icon='/map/office-hovered.png'; }
+      else{ icon='/map/office.png'; }
+      return {
+        icon: icon,
+        visible: true,
+        clickable: true,
+        title: name,
+      };
     }
   });
 
