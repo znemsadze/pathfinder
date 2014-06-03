@@ -2,8 +2,9 @@ ka:
   models:
     objects_tower:
       kmlid: kmlID
-      name: დასახელება
+      name: "ანზის #"
       lat: განედი
       lng: გრძედი
       position: მდებარეობა
       region: რეგიონი
+      category: ანძის ტიპი

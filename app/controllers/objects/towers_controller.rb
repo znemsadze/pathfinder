@@ -52,12 +52,13 @@ class Objects::TowersController < ApplicationController
   def upload_xlsx(file)
     sheet=Roo::Spreadsheet.open(file.path, extension: 'xlsx')
     (2..sheet.last_row).each do |row|
-      id=sheet.cell('A',row) ; name=sheet.excelx_value('C',row).to_s ; regionname=sheet.cell('D',row).to_s
-      lat=sheet.cell('E',row).to_f; lng=sheet.cell('F',row).to_f
+      id=sheet.cell('A',row) ; name=sheet.excelx_value('C',row).to_s ; category=sheet.cell('D', row)
+      regionname=sheet.cell('E',row).to_s
+      lat=sheet.cell('F',row).to_f; lng=sheet.cell('G',row).to_f
       region=Region.where(name:regionname).first
       region=Region.create(name:regionname) unless region.present?
       tower=Objects::Tower.find(id)
-      tower.name=name ; tower.region=region
+      tower.name=name ; tower.region=region ; tower.category=category
       tower.lat=lat ; tower.lng=lng
       tower.save
     end
