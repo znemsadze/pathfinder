@@ -3,7 +3,7 @@ var ui=require('../ui')
   , geo=require('./geo')
   ;
 
-var map
+var map, selectedFeature
   , uiInitialized=false
   , layout
   , search
@@ -21,6 +21,7 @@ module.exports=function(){
       }
 
       map=self.map;
+      selectedFeature=null;
 
       return layout;
     },
@@ -36,7 +37,7 @@ module.exports=function(){
 var initUI=function(self){
   var toolbar=ui.button.toolbar();
   var btnBack=ui.button.actionButton('უკან', function(){
-    self.openPage('root');
+    self.openPage('root',{selectedFeature: selectedFeature});
   }, {icon: 'arrow-circle-left'});
 
   toolbar.addButton(btnBack);
@@ -73,9 +74,39 @@ var displaySearchResults=function(features){
     results.innerText='';
     for(var i=0,l=features.length;i<l;i++){
       var f=features[i];
-      var d=ui.html.el('div',{class:'search-result'});
+      var d=ui.html.el('div',{class:'search-result','data-id':f.getId()});
       d.innerHTML=geo.featureShortDescritpion(map,f);
+      d.onclick=itemSelected;
       results.appendChild(d);
+    }
+  }
+};
+
+var itemSelected=function(){
+  var f=map.data.getFeatureById(this.getAttribute('data-id'));
+  // console.log(f);
+  changeSelection(f);
+};
+
+var changeSelection=function(f){
+  if(f!=selectedFeature){
+    if(selectedFeature){
+      selectedFeature.selected=false;
+      map.data.revertStyle(selectedFeature);
+    }
+    selectedFeature=f;
+    f.selected=true;
+  }
+  map.data.revertStyle(f);
+  resetFeatureView();
+};
+
+var resetFeatureView=function(){
+  if(selectedFeature){
+    var f=selectedFeature;
+    if(geo.isOffice(f)||geo.isTower(f)||geo.isSubstation(f)){
+      map.setCenter(f.getGeometry().get());
+      // map.setZoom(12);
     }
   }
 };
