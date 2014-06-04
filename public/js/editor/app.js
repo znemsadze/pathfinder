@@ -65,7 +65,7 @@ var styleFunction=function(f) {
       strokeWeight: strokeWeight,
       strokeOpacity: 0.5,
       title: name,
-      visible: visible,
+      visible: visible&&chkLine.isChecked(),
     };
   } else if (geo.isPath(f)) {
     var strokeColor, strokeWeight;
@@ -77,7 +77,7 @@ var styleFunction=function(f) {
       strokeWeight: strokeWeight,
       strokeOpacity: 0.5,
       title: name,
-      visible: visible,
+      visible: visible&&chkPath.isChecked(),
     };
   } else if (geo.isTower(f)){
     var icon;
@@ -89,7 +89,7 @@ var styleFunction=function(f) {
       visible: true,
       clickable: true,
       title: name,
-      visible: visible,
+      visible: visible&&chkTower.isChecked(),
     };
   } else if (geo.isOffice(f)){
     var icon;
@@ -101,7 +101,7 @@ var styleFunction=function(f) {
       visible: true,
       clickable: true,
       title: name,
-      visible: visible,
+      visible: visible&&chkOffice.isChecked(),
     };
   } else if (geo.isSubstation(f)){
     var icon;
@@ -113,7 +113,7 @@ var styleFunction=function(f) {
       visible: true,
       clickable: true,
       title: name,
-      visible: visible,
+      visible: visible&&chkSubstation.isChecked(),
     };
   }
 };
@@ -159,6 +159,11 @@ var initRouter=function(){
 // filterbar
 
 var regionCombo
+  , chkSubstation
+  , chkOffice
+  , chkTower
+  , chkPath
+  , chkLine
   ;
 
 var initFilterbar=function(){
@@ -169,6 +174,26 @@ var initFilterbar=function(){
   regionCombo=ui.form.comboField('filter_region', {collection_url: '/regions.json', text_property: 'name', empty: '-- ყველა რეგიონი --'});
   regionCombo.addChangeListener(mapReset);
 
-  filterbarElement.appendChild(regionCombo);
+  chkOffice=filterCheckbox('ოფისი', mapReset);
+  chkSubstation=filterCheckbox('ქვესადგური', mapReset);
+  chkTower=filterCheckbox('ანძა', mapReset);
+  chkLine=filterCheckbox('ხაზი', mapReset);
+  chkPath=filterCheckbox('მარშუტი', mapReset);
 
+  var d1=ui.html.el('div', [chkOffice, chkSubstation, chkTower]);
+  var d2=ui.html.el('div', [chkLine, chkPath]);
+
+  filterbarElement.appendChild(regionCombo);
+  filterbarElement.appendChild(d1);
+  filterbarElement.appendChild(d2);
+};
+
+var filterCheckbox=function(label,onchange){
+  var input=ui.html.el('input', {type:'checkbox', checked: true});
+  var field=ui.html.el('label', {style:'padding: 0 10px;'}, [input, ' '+label]);
+  input.onchange=onchange;
+  field.isChecked=function(){
+    return input.checked;
+  };
+  return field;
 };
