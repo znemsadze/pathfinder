@@ -13,7 +13,7 @@ var map
   , featureInfo=ui.html.p('',{style:'margin:16px 0;'})
   , selectedFeature
   , secondaryToolbar=ui.button.toolbar([])
-  , btnHome
+  , btnHome, btnSearch
   , btnNewPath, btnNewLine, btnNewTower, btnNewOffice, btnNewSubstation // new objects
   , btnDelete, btnEdit // change objects
   , confirmTitle=ui.html.p('საჭიროა დასტური',{class: 'page-header', style: 'font-weight:bold; font-size: 1.2em;'})
@@ -61,6 +61,10 @@ var initPage1=function(self){
   btnHome=ui.button.actionButton('', function(){
     window.location='/';
   }, {icon:'home'});
+  btnSearch=ui.button.actionButton('ძებნა', function(){
+    self.openPage('search');
+  }, {icon: 'search'});
+
   btnNewPath=ui.button.actionLink('მარშუტი', function(){
     if(!locked){ self.openPage('edit_path',{type:geo.TYPE_PATH}); }
   });
@@ -94,6 +98,7 @@ var initPage1=function(self){
     }
   }, {icon: 'pencil', type: 'warning'});
 
+  toolbar.addButton(btnSearch);
   toolbar.addButton(btnHome);
   toolbar.addButton(newObjects);
 
