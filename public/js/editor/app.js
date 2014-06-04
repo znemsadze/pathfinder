@@ -163,11 +163,10 @@ var regionCombo
 
 var initFilterbar=function(){
   var mapReset=function(){
-    console.log('xxx');
     map.data.setStyle(styleFunction);
   };
 
-  regionCombo=ui.form.comboField('filter_region', {collection_url: '/regions.json', text_property: 'name'});
+  regionCombo=ui.form.comboField('filter_region', {collection_url: '/regions.json', text_property: 'name', empty: '-- ყველა რეგიონი --'});
   regionCombo.addChangeListener(mapReset);
 
   filterbarElement.appendChild(regionCombo);

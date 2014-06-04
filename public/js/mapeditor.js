@@ -466,11 +466,10 @@ var regionCombo
 
 var initFilterbar=function(){
   var mapReset=function(){
-    console.log('xxx');
     map.data.setStyle(styleFunction);
   };
 
-  regionCombo=ui.form.comboField('filter_region', {collection_url: '/regions.json', text_property: 'name'});
+  regionCombo=ui.form.comboField('filter_region', {collection_url: '/regions.json', text_property: 'name', empty: '-- ყველა რეგიონი --'});
   regionCombo.addChangeListener(mapReset);
 
   filterbarElement.appendChild(regionCombo);
@@ -1535,6 +1534,9 @@ exports.comboField=function(name,opts){
     _collection=collection;
     if(_collection){
       var filtered=currentCollection();
+      if(opts.empty){
+        html.el(_select,'option',{value: ""},opts.empty);
+      }
       for(var i=0,l=filtered.length;i<l;i++){
         var val=filtered[i];
         html.el(_select,'option',{value: getId(val)},getText(val));
