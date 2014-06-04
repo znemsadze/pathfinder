@@ -5,13 +5,10 @@ exports.resetMap=function(map){
 };
 
 exports.copyFeatureToPath=function(feature,path){
-  var g=feature.getGeometry();
-  var ary=g.getArray();
+  var points=feature.getGeometry().getArray();
   path.getPath().clear();
-  for(var i=0,l=ary.length;i<l;i++){
-    var p=ary[i];
-    var point=new google.maps.LatLng(p.lat(),p.lng());
-    path.getPath().push(point);
+  for(var i=0,l=points.length;i<l;i++){
+    path.getPath().push(points[i]);
   }
 };
 
