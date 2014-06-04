@@ -1562,10 +1562,16 @@ var changeSelection=function(f){
 var resetFeatureView=function(){
   if(selectedFeature){
     var f=selectedFeature;
+    var bounds = new google.maps.LatLngBounds ();
     if(geo.isOffice(f)||geo.isTower(f)||geo.isSubstation(f)){
-      map.setCenter(f.getGeometry().get());
-      // map.setZoom(12);
+      bounds.extend(f.getGeometry().get());
+    } else {
+      var points=f.getGeometry().getArray();
+       for(var i=0,l=points.length;i<l;i++){
+        bounds.extend(points[i]);
+      }
     }
+    map.fitBounds(bounds);
   }
 };
 },{"../api":1,"../ui":28,"./geo":18}],22:[function(require,module,exports){
