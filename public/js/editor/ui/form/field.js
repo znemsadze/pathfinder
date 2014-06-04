@@ -107,6 +107,9 @@ exports.comboField=function(name,opts){
     _collection=collection;
     if(_collection){
       var filtered=currentCollection();
+      if(opts.empty){
+        html.el(_select,'option',{value: ""},opts.empty);
+      }
       for(var i=0,l=filtered.length;i<l;i++){
         var val=filtered[i];
         html.el(_select,'option',{value: getId(val)},getText(val));
