@@ -1115,6 +1115,74 @@ exports.featureDescription=function(map,f){
   return texts.join('');
 };
 
+// search support
+
+exports.searchHit=function(f,words){
+  for(var i=0,l=words.length;i<l;i++){
+    var word=words[i];
+    if(!searchSingleHit(f,word)){
+      return false;
+    }
+  }
+  return true;
+};
+
+var searchSingleHit=function(f,word){
+  if(exports.isTower(f)){ return searchTowerHit(f, word); }
+  else if(exports.isSubstation(f)){ return searchSubstationHit(f,word); }
+  else if(exports.isOffice(f)){ return searchOfficeHit(f,word); }
+  else if(exports.isLine(f)){ return searchPathHit(f,word); }
+  else if(exports.isPath(f)){ return searchLineHit(f,word); }
+  return false;
+};
+
+var searchTowerHit=function(f,word){
+  var searchString=[
+    f.getProperty('name'),
+    f.getProperty('category'),
+    f.getProperty('region'),
+    f.getProperty('description')
+  ].join(' ');
+  return searchString.indexOf(word) != -1;
+};
+
+var searchSubstationHit=function(f,word){
+  var searchString=[
+    f.getProperty('name'),
+    f.getProperty('region'),
+    f.getProperty('description')
+  ].join(' ');
+  return searchString.indexOf(word) != -1;
+};
+
+var searchOfficeHit=function(f,word){
+  var searchString=[
+    f.getProperty('name'),
+    f.getProperty('region'),
+    f.getProperty('description'),
+    f.getProperty('address'),
+  ].join(' ');
+  return searchString.indexOf(word) != -1;
+};
+
+var searchLineHit=function(f,word){
+  var searchString=[
+    f.getProperty('name'),
+    f.getProperty('region'),
+    f.getProperty('description'),
+    f.getProperty('direction'),
+  ].join(' ');
+  return searchString.indexOf(word) != -1;
+};
+
+var searchPathHit=function(f,word){
+  var searchString=[
+    f.getProperty('name'),
+    f.getProperty('region'),
+    f.getProperty('description'),
+  ].join(' ');
+  return searchString.indexOf(word) != -1;
+};
 },{}],19:[function(require,module,exports){
 var ui=require('../ui')
   , api=require('../api')
@@ -1370,12 +1438,26 @@ var initUI=function(self){
   toolbar.style.marginBottom='8px';
 
   search=ui.form.textField('search',{placeholder: 'ჩაწერეთ საკვანძო სიტყვა', autofocus: true});
+  search.getTextField().onkeyup=function(){
+    searching(search.getValue());
+  };
 
   layout=ui.layout.vertical({children: [toolbar,search]});
   uiInitialized=true;
 };
 
-
+var searching=function(text){
+  var selected=[];
+  if(text){
+    var words=text.split(' ');
+    map.data.forEach(function(f){
+      if(geo.searchHit(f,words)){
+        selected.push(f);
+      }
+    });
+  }
+  console.log(selected.length);
+};
 },{"../api":1,"../ui":28,"./geo":18}],22:[function(require,module,exports){
 var map
   , sidebar
