@@ -1115,6 +1115,68 @@ exports.featureDescription=function(map,f){
   return texts.join('');
 };
 
+// short descriptions
+
+var towerShortDescription=function(map,f){
+  var point=f.getGeometry().get();
+  return [
+    '<p><img src="/icons/tower.png"/> <strong>ანძა#',f.getProperty('name'),'</strong> &mdash;<span class="text-muted">',f.getProperty('category'),'</span></p>',
+    '<p>',f.getProperty('region'),'</p>',
+    // property('განედი','<code>'+point.lat()+'</code>'),
+    // property('გრძედი','<code>'+point.lng()+'</code>'),
+    // property('შენიშვნა',f.getProperty('description')),
+  ].join('');
+};
+
+var substationShortDescription=function(map,f){
+  var point=f.getGeometry().get();
+  return [
+    '<p><img src="/icons/substation.png"/> <strong>ქვესადგური: ',f.getProperty('name'),'</strong></p>',
+    '<p>',f.getProperty('region'),'</p>',
+    // property('განედი','<code>'+point.lat()+'</code>'),
+    // property('გრძედი','<code>'+point.lng()+'</code>'),
+    // property('შენიშვნა',f.getProperty('description')),
+  ].join('');
+};
+
+var officeShortDescription=function(map,f){
+  var point=f.getGeometry().get();
+  return [
+    '<p><img src="/icons/office.png"/> <strong>',f.getProperty('name'),'</strong> ',
+    '<span class="text-muted">',f.getProperty('address'),'</span></p>',
+    '<p>',f.getProperty('region'),'</p>',
+    // property('მისამართი',f.getProperty('address')),
+    // property('განედი','<code>'+point.lat()+'</code>'),
+    // property('გრძედი','<code>'+point.lng()+'</code>'),
+    // property('შენიშვნა',f.getProperty('description')),
+  ].join('');
+};
+
+var pathShortDescription=function(map,f){
+  return [
+    '<p><img src="/icons/path.png"/> <strong>მარშუტი: ',f.getProperty('name'),'</strong> <span class="text-muted">',f.getProperty('direction'),'</span></p>',
+    '<p><code>',exports.calcFeatureDistance(map,f).toFixed(3),'</code>კმ &mdash; ', f.getProperty('region'),'</p>',
+    // property('შენიშვნა',f.getProperty('description')),
+  ].join('');
+};
+
+var lineShortDescription=function(map,f){
+  return [
+    '<p><img src="/icons/line.png"/> <strong>ხაზი: ',f.getProperty('name'),'</strong></p>',
+    '<p><code>',exports.calcFeatureDistance(map,f).toFixed(3),'</code>კმ &mdash; ', f.getProperty('region'),'</p>',
+    // property('შენიშვნა',f.getProperty('description')),
+  ].join('');
+};
+
+exports.featureShortDescritpion=function(map,f){
+  if(exports.isTower(f)){ return towerShortDescription(map,f); }
+  else if(exports.isSubstation(f)){ return substationShortDescription(map,f); }
+  else if(exports.isOffice(f)){ return officeShortDescription(map,f); }
+  else if(exports.isPath(f)){ return pathShortDescription(map,f); }
+  else if(exports.isLine(f)){ return lineShortDescription(map,f); }
+  return '--';
+};
+
 // search support
 
 exports.searchHit=function(f,words){
@@ -1413,10 +1475,10 @@ module.exports=function(){
 
       if (!uiInitialized){
         initUI(self);
+        displaySearchResults([]);
       }
 
       map=self.map;
-
 
       return layout;
     },
@@ -1459,7 +1521,21 @@ var searching=function(text){
       }
     });
   }
-  results.innerText="Results: "+selected.length;
+  displaySearchResults(selected);
+};
+
+var displaySearchResults=function(features){
+  if(features.length==0){
+    results.innerText='მონაცემი არაა';
+  } else {
+    results.innerText='';
+    for(var i=0,l=features.length;i<l;i++){
+      var f=features[i];
+      var d=ui.html.el('div',{class:'search-result'});
+      d.innerHTML=geo.featureShortDescritpion(map,f);
+      results.appendChild(d);
+    }
+  }
 };
 },{"../api":1,"../ui":28,"./geo":18}],22:[function(require,module,exports){
 var map

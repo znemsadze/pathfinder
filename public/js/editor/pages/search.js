@@ -17,10 +17,10 @@ module.exports=function(){
 
       if (!uiInitialized){
         initUI(self);
+        displaySearchResults([]);
       }
 
       map=self.map;
-
 
       return layout;
     },
@@ -63,5 +63,19 @@ var searching=function(text){
       }
     });
   }
-  results.innerText="Results: "+selected.length;
+  displaySearchResults(selected);
+};
+
+var displaySearchResults=function(features){
+  if(features.length==0){
+    results.innerText='მონაცემი არაა';
+  } else {
+    results.innerText='';
+    for(var i=0,l=features.length;i<l;i++){
+      var f=features[i];
+      var d=ui.html.el('div',{class:'search-result'});
+      d.innerHTML=geo.featureShortDescritpion(map,f);
+      results.appendChild(d);
+    }
+  }
 };
