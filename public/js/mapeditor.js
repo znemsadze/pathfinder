@@ -1403,6 +1403,7 @@ var map
   , uiInitialized=false
   , layout
   , search
+  , results
   ;
 
 module.exports=function(){
@@ -1442,7 +1443,9 @@ var initUI=function(self){
     searching(search.getValue());
   };
 
-  layout=ui.layout.vertical({children: [toolbar,search]});
+  results=ui.html.el('div',{style: 'position:absolute; top:90px; bottom: 0; left:0; right: 0; padding: 4px 8px; overflow: auto; background: #fafafa;'});
+
+  layout=ui.layout.vertical({children: [toolbar,search, results]});
   uiInitialized=true;
 };
 
@@ -1456,7 +1459,7 @@ var searching=function(text){
       }
     });
   }
-  console.log(selected.length);
+  results.innerText="Results: "+selected.length;
 };
 },{"../api":1,"../ui":28,"./geo":18}],22:[function(require,module,exports){
 var map
