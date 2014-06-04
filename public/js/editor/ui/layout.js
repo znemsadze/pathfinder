@@ -9,7 +9,7 @@ exports.vertical=function(opts){
     , childElements=[]
     ;
 
-  if(opts.parent){ layout=html.el(opts.parent,'div',{class:'vertical-layout'}); }
+  if(opts&&opts.parent){ layout=html.el(opts.parent,'div',{class:'vertical-layout'}); }
   else { layout=html.el('div',{class:'vertical-layout'}); }
 
   var addToLayout=function(child){
@@ -17,7 +17,7 @@ exports.vertical=function(opts){
     childElements.push(childElement);
   };
 
-  if(opts.children){
+  if(opts&&opts.children){
     var children=opts.children;
     for(var i=0, l=children.length; i<l; i++){
       addToLayout(children[i]);

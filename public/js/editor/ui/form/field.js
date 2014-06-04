@@ -42,6 +42,7 @@ exports.textField=function(name,opts){
   var textField=standardField(opts&&opts.label, function(){
     var attributes={type:'text', class:'form-control'};
     if(opts&&opts.autofocus){ attributes.autofocus=true; }
+    if(opts&&opts.placeholder){ attributes.placeholder=opts.placeholder; }
     _innerElement=html.el('input', attributes);
     return _innerElement;
   });
@@ -51,6 +52,8 @@ exports.textField=function(name,opts){
   textField.setValue=function(val){ _innerElement.value=(val||''); };
   textField.applyModel=function(model){ applyModelForSimpleField(textField,model); }
   textField.setModel=function(model){ setModelForSimpleField(textField,model); }
+  textField.getTextField=function(){ return _innerElement; };
+  textField.requestFocus=function(){ _innerElement.focus(); };
 
   return textField;
 };

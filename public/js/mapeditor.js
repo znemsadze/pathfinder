@@ -1334,6 +1334,7 @@ var ui=require('../ui')
 var map
   , uiInitialized=false
   , layout
+  , search
   ;
 
 module.exports=function(){
@@ -1342,19 +1343,39 @@ module.exports=function(){
       var self=this;
 
       if (!uiInitialized){
-        // initUI(self);
-        layout=ui.layout.vertical();
+        initUI(self);
       }
 
       map=self.map;
+
 
       return layout;
     },
     onExit: function() {
       geo.resetMap(map);
     },
+    onStart: function(){
+      search.requestFocus();
+    },
   };
 };
+
+var initUI=function(self){
+  var toolbar=ui.button.toolbar();
+  var btnBack=ui.button.actionButton('უკან', function(){
+    self.openPage('root');
+  }, {icon: 'arrow-circle-left'});
+
+  toolbar.addButton(btnBack);
+  toolbar.style.marginBottom='8px';
+
+  search=ui.form.textField('search',{placeholder: 'ჩაწერეთ საკვანძო სიტყვა', autofocus: true});
+
+  layout=ui.layout.vertical({children: [toolbar,search]});
+  uiInitialized=true;
+};
+
+
 },{"../api":1,"../ui":28,"./geo":18}],22:[function(require,module,exports){
 var map
   , sidebar
@@ -1532,6 +1553,7 @@ exports.textField=function(name,opts){
   var textField=standardField(opts&&opts.label, function(){
     var attributes={type:'text', class:'form-control'};
     if(opts&&opts.autofocus){ attributes.autofocus=true; }
+    if(opts&&opts.placeholder){ attributes.placeholder=opts.placeholder; }
     _innerElement=html.el('input', attributes);
     return _innerElement;
   });
@@ -1541,6 +1563,8 @@ exports.textField=function(name,opts){
   textField.setValue=function(val){ _innerElement.value=(val||''); };
   textField.applyModel=function(model){ applyModelForSimpleField(textField,model); }
   textField.setModel=function(model){ setModelForSimpleField(textField,model); }
+  textField.getTextField=function(){ return _innerElement; };
+  textField.requestFocus=function(){ _innerElement.focus(); };
 
   return textField;
 };
@@ -1874,7 +1898,7 @@ exports.vertical=function(opts){
     , childElements=[]
     ;
 
-  if(opts.parent){ layout=html.el(opts.parent,'div',{class:'vertical-layout'}); }
+  if(opts&&opts.parent){ layout=html.el(opts.parent,'div',{class:'vertical-layout'}); }
   else { layout=html.el('div',{class:'vertical-layout'}); }
 
   var addToLayout=function(child){
@@ -1882,7 +1906,7 @@ exports.vertical=function(opts){
     childElements.push(childElement);
   };
 
-  if(opts.children){
+  if(opts&&opts.children){
     var children=opts.children;
     for(var i=0, l=children.length; i<l; i++){
       addToLayout(children[i]);
