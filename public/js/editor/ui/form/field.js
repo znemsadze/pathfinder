@@ -89,6 +89,7 @@ exports.comboField=function(name,opts){
   }
   comboField.applyModel=function(model){ applyModelForSimpleField(comboField,model); }
   comboField.setModel=function(model){ setModelForSimpleField(comboField,model); }
+  comboField.getText=function(){ return _select.options[_select.selectedIndex].innerHTML; }
 
   // manage collections
 

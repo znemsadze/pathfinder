@@ -1,13 +1,13 @@
 var map
   , sidebar
-  , toolbar
+  , filterbar
   , currentPage
   , pages={}
   ;
 
 exports.initApplication=function(opts){
   map=opts.map;
-  toolbar=opts.toolbar;
+  filterbar=opts.filterbar;
   sidebar=opts.sidebar;
   return {
     addPage: addPage,
