@@ -1,6 +1,8 @@
 # -*- encoding : utf-8 -*-
 class Objects::Path::Line
   include Mongoid::Document
+  include Objects::LengthProperty
+
   belongs_to :detail, class_name: 'Objects::Path::Detail'
   field :point_ids, type: Array, default:[]
   field :name, type: String
@@ -28,9 +30,6 @@ class Objects::Path::Line
   end
 
   def update_path(points,params)
-
-# raise "#{params}"
-
     if points.uniq.size>1
       existing_points=self.points
       self.point_ids=[]

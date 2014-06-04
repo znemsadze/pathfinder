@@ -2,6 +2,6 @@
   t.item_action ->(x){objects_path_line_url(id:x.id)}, icon: '/icons/eye.png'
   t.text_field 'name', url: ->(x){objects_path_line_url(id:x.id)}
   t.text_field 'description'
-  t.text_field 'points.count', tag:'code', i18n:'points'
+  t.number_field 'length', after: 'კმ'
   t.paginate records: 'ჩანაწერი'
 end%>

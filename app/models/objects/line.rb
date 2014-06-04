@@ -1,8 +1,10 @@
 # -*- encoding : utf-8 -*-
 require 'xml'
+
 class Objects::Line
   include Mongoid::Document
   include Objects::Kml
+  include Objects::LengthProperty
 
   field :kmlid, type: String
   field :name, type: String
