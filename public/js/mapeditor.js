@@ -480,7 +480,7 @@ var initFilterbar=function(){
   chkOffice=filterCheckbox('ოფისი', mapReset);
   chkSubstation=filterCheckbox('ქვესადგური', mapReset);
   chkTower=filterCheckbox('ანძა', mapReset);
-  chkLine=filterCheckbox('ხაზი', mapReset);
+  chkLine=filterCheckbox('გადამცემი ხაზი', mapReset);
   chkPath=filterCheckbox('მარშუტი', mapReset);
 
   var d1=ui.html.el('div', [chkOffice, chkSubstation, chkTower]);
