@@ -84,7 +84,6 @@ var displaySearchResults=function(features){
 
 var itemSelected=function(){
   var f=map.data.getFeatureById(this.getAttribute('data-id'));
-  // console.log(f);
   changeSelection(f);
 };
 

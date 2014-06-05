@@ -1190,13 +1190,14 @@ var searchSingleHit=function(f,word){
   if(exports.isTower(f)){ return searchTowerHit(f, word); }
   else if(exports.isSubstation(f)){ return searchSubstationHit(f,word); }
   else if(exports.isOffice(f)){ return searchOfficeHit(f,word); }
-  else if(exports.isLine(f)){ return searchPathHit(f,word); }
-  else if(exports.isPath(f)){ return searchLineHit(f,word); }
+  else if(exports.isLine(f)){ return searchLineHit(f,word); }
+  else if(exports.isPath(f)){ return searchPathHit(f,word); }
   return false;
 };
 
 var searchTowerHit=function(f,word){
   var searchString=[
+    'ანძა',
     f.getProperty('name'),
     f.getProperty('category'),
     f.getProperty('region'),
@@ -1207,6 +1208,7 @@ var searchTowerHit=function(f,word){
 
 var searchSubstationHit=function(f,word){
   var searchString=[
+    'ქვესადგური',
     f.getProperty('name'),
     f.getProperty('region'),
     f.getProperty('description')
@@ -1216,6 +1218,7 @@ var searchSubstationHit=function(f,word){
 
 var searchOfficeHit=function(f,word){
   var searchString=[
+    'ოფისი',
     f.getProperty('name'),
     f.getProperty('region'),
     f.getProperty('description'),
@@ -1226,6 +1229,7 @@ var searchOfficeHit=function(f,word){
 
 var searchLineHit=function(f,word){
   var searchString=[
+    'ხაზი',
     f.getProperty('name'),
     f.getProperty('region'),
     f.getProperty('description'),
@@ -1236,6 +1240,7 @@ var searchLineHit=function(f,word){
 
 var searchPathHit=function(f,word){
   var searchString=[
+    'მარშუტი',
     f.getProperty('name'),
     f.getProperty('region'),
     f.getProperty('description'),
@@ -1539,7 +1544,6 @@ var displaySearchResults=function(features){
 
 var itemSelected=function(){
   var f=map.data.getFeatureById(this.getAttribute('data-id'));
-  // console.log(f);
   changeSelection(f);
 };
 
