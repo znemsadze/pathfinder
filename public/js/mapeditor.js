@@ -360,8 +360,8 @@ var styleFunction=function(f) {
 
   if (geo.isLine(f)){
     var strokeColor, strokeWeight;
-    if(isSelected){ strokeColor='#00AA00'; strokeWeight=5; }
-    else if(isHovered){ strokeColor='#00FF00'; strokeWeight=10; }
+    if(isSelected){ strokeColor='#AA0000'; strokeWeight=10; }
+    else if(isHovered){ strokeColor='#FF5555'; strokeWeight=10; }
     else{ strokeColor='#FF0000'; strokeWeight=1; }
     return {
       strokeColor: strokeColor,
@@ -372,9 +372,9 @@ var styleFunction=function(f) {
     };
   } else if (geo.isPath(f)) {
     var strokeColor, strokeWeight;
-    if(isSelected){ strokeColor='#00AAAA'; strokeWeight=5; }
-    else if(isHovered){ strokeColor='#00FFFF'; strokeWeight=10; }
-    else{ strokeColor='#0000FF'; strokeWeight=2; }
+    if(isSelected){ strokeColor='#AA00AA'; strokeWeight=10; }
+    else if(isHovered){ strokeColor='#FF55FF'; strokeWeight=10; }
+    else{ strokeColor='#FF00FF'; strokeWeight=2; }
     return {
       strokeColor: strokeColor,
       strokeWeight: strokeWeight,
@@ -450,7 +450,7 @@ var initMap=function(){
 // router
 
 var initRouter=function(){
-  app=router.initApplication({map:map,filterbar:filterbarElement,sidebar:sidebarElement});
+  app=router.initApplication({map:map, filters:{}, sidebar:sidebarElement});
 
   app.addPage('root', pages.home());
   app.addPage('edit_path', pages.edit_path());
