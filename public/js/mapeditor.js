@@ -1118,7 +1118,7 @@ exports.featureDescription=function(map,f){
 var towerShortDescription=function(map,f){
   var point=f.getGeometry().get();
   return [
-    '<p><img src="/icons/tower.png"/> <strong>ანძა#',f.getProperty('name'),'</strong> &mdash;<span class="text-muted">',f.getProperty('category'),'</span></p>',
+    '<p><img src="/icons/tower.png"/> <strong>ანძა#',f.getProperty('name'),'</strong> &mdash;<span class="text-muted">',f.getProperty('linename'),'</span></p>',
     '<p>',f.getProperty('region'),'</p>',
     // property('განედი','<code>'+point.lat()+'</code>'),
     // property('გრძედი','<code>'+point.lng()+'</code>'),
