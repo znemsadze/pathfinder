@@ -1,5 +1,5 @@
 exports.resetMap=function(map){
-  google.maps.event.clearInstanceListeners(map);
+  // google.maps.event.clearInstanceListeners(map);
   google.maps.event.clearInstanceListeners(map.data);
   map.data.revertStyle();
 };

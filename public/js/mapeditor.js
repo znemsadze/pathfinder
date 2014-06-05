@@ -425,7 +425,7 @@ var initMap=function(){
   var mapOptions = {
     zoom: defaultZoom,
     center: new google.maps.LatLng(defaultCenterLat,defaultCenterLng),
-    mapTypeId: google.maps.MapTypeId.ROADMAP
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
   };
 
   map=new google.maps.Map(mapElement, mapOptions);
@@ -950,7 +950,7 @@ exports.form=function(opts){
 
 },{"../../ui":28}],18:[function(require,module,exports){
 exports.resetMap=function(map){
-  google.maps.event.clearInstanceListeners(map);
+  // google.maps.event.clearInstanceListeners(map);
   google.maps.event.clearInstanceListeners(map.data);
   map.data.revertStyle();
 };
@@ -1547,6 +1547,8 @@ var displaySearchResults=function(features){
 var itemSelected=function(){
   var f=map.data.getFeatureById(this.getAttribute('data-id'));
   changeSelection(f);
+
+  // change selection class
   var children=this.parentElement.children;
   for(var i=0,l=children.length;i<l;i++){
     var child=children[i];
@@ -1574,16 +1576,19 @@ var changeSelection=function(f){
 var resetFeatureView=function(){
   if(selectedFeature){
     var f=selectedFeature;
-    var bounds = new google.maps.LatLngBounds ();
+    
     if(geo.isOffice(f)||geo.isTower(f)||geo.isSubstation(f)){
-      bounds.extend(f.getGeometry().get());
+      var point=f.getGeometry().get();
+      map.setCenter(point);
+      if(map.getZoom()<12){ map.setZoom(12); }
     } else {
       var points=f.getGeometry().getArray();
-       for(var i=0,l=points.length;i<l;i++){
+      var bounds = new google.maps.LatLngBounds ();
+      for(var i=0,l=points.length;i<l;i++){
         bounds.extend(points[i]);
       }
+      map.fitBounds(bounds);
     }
-    map.fitBounds(bounds);
   }
 };
 },{"../api":1,"../ui":28,"./geo":18}],22:[function(require,module,exports){

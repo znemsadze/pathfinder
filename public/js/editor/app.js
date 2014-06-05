@@ -122,7 +122,7 @@ var initMap=function(){
   var mapOptions = {
     zoom: defaultZoom,
     center: new google.maps.LatLng(defaultCenterLat,defaultCenterLng),
-    mapTypeId: google.maps.MapTypeId.ROADMAP
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
   };
 
   map=new google.maps.Map(mapElement, mapOptions);
