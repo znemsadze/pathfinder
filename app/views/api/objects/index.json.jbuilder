@@ -29,6 +29,7 @@ json.features do
       json.direction t.direction if t.respond_to?(:direction)
       json.category t.category if t.respond_to?(:category)
       json.address t.address if t.respond_to?(:address)
+      json.linename t.linename if t.respond_to?(:linename)
     end
   end
 end
