@@ -48,7 +48,7 @@ var initUI=function(self){
     searching(search.getValue());
   };
 
-  results=ui.html.el('div',{style: 'position:absolute; top:90px; bottom: 0; left:0; right: 0; padding: 4px 8px; overflow: auto; background: #fafafa;'});
+  results=ui.html.el('div',{style: 'position:absolute; top:90px; bottom: 0; left:0; right: 0; overflow: auto; background: #fafafa;'});
 
   layout=ui.layout.vertical({children: [toolbar,search, results]});
   uiInitialized=true;
@@ -85,6 +85,15 @@ var displaySearchResults=function(features){
 var itemSelected=function(){
   var f=map.data.getFeatureById(this.getAttribute('data-id'));
   changeSelection(f);
+  var children=this.parentElement.children;
+  for(var i=0,l=children.length;i<l;i++){
+    var child=children[i];
+    if(child==this){
+      child.className='search-result selected';
+    } else{
+      child.className='search-result';
+    }
+  }
 };
 
 var changeSelection=function(f){
