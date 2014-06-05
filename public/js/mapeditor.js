@@ -1068,6 +1068,7 @@ var towerDescription=function(map,f){
     property('ანძის#',f.getProperty('name')),
     property('ტიპი',f.getProperty('category')),
     property('რეგიონი',f.getProperty('region')),
+    property('ხაზი',f.getProperty('linename')),
     property('განედი','<code>'+point.lat()+'</code>'),
     property('გრძედი','<code>'+point.lng()+'</code>'),
     property('შენიშვნა',f.getProperty('description')),
@@ -1201,7 +1202,8 @@ var searchTowerHit=function(f,word){
     f.getProperty('name'),
     f.getProperty('category'),
     f.getProperty('region'),
-    f.getProperty('description')
+    f.getProperty('description'),
+    f.getProperty('linename'),
   ].join(' ');
   return searchString.indexOf(word) != -1;
 };
@@ -1211,7 +1213,7 @@ var searchSubstationHit=function(f,word){
     'ქვესადგური',
     f.getProperty('name'),
     f.getProperty('region'),
-    f.getProperty('description')
+    f.getProperty('description'),
   ].join(' ');
   return searchString.indexOf(word) != -1;
 };
