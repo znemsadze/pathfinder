@@ -1,13 +1,13 @@
 var map
   , sidebar
-  , filterbar
+  , filters
   , currentPage
   , pages={}
   ;
 
 exports.initApplication=function(opts){
   map=opts.map;
-  filterbar=opts.filterbar;
+  filters=opts.filters;
   sidebar=opts.sidebar;
   return {
     addPage: addPage,
@@ -40,6 +40,7 @@ var openPage=function(name,params){
   currentPage=pages[name];
 
   currentPage.map=map;
+  currentPage.filters=filters;
 
   if(currentPage){
     currentPage.params=params;

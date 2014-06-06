@@ -3,11 +3,14 @@ var ui=require('../ui')
   , geo=require('./geo')
   ;
 
-var map, selectedFeature
+var map
+  , selectedFeature
+  , filters
   , uiInitialized=false
   , layout
   , search
   , results
+  , currText
   ;
 
 module.exports=function(){
@@ -15,13 +18,14 @@ module.exports=function(){
     onEnter: function(){
       var self=this;
 
+      map=self.map;
+      filters=self.filters;
+      selectedFeature=null;
+
       if (!uiInitialized){
         initUI(self);
         displaySearchResults([]);
       }
-
-      map=self.map;
-      selectedFeature=null;
 
       return layout;
     },
@@ -54,12 +58,17 @@ var initUI=function(self){
   uiInitialized=true;
 };
 
+var reserch=function(){ // search again!
+  searching(currText);
+};
+
 var searching=function(text){
+  currText=text;
   var selected=[];
   if(text){
     var words=text.split(' ');
     map.data.forEach(function(f){
-      if(geo.searchHit(f,words)){
+      if(isVisible(f)&&geo.searchHit(f,words)){
         selected.push(f);
       }
     });
@@ -68,17 +77,17 @@ var searching=function(text){
 };
 
 var displaySearchResults=function(features){
-  if(features.length==0){
-    results.innerText='მონაცემი არაა';
-  } else {
+  if(features.length>0){
     results.innerText='';
     for(var i=0,l=features.length;i<l;i++){
       var f=features[i];
-      var d=ui.html.el('div',{class:'search-result','data-id':f.getId()});
-      d.innerHTML=geo.featureShortDescritpion(map,f);
-      d.onclick=itemSelected;
-      results.appendChild(d);
+        var d=ui.html.el('div',{class:'search-result','data-id':f.getId()});
+        d.innerHTML=geo.featureShortDescritpion(map,f);
+        d.onclick=itemSelected;
+        results.appendChild(d);
     }
+  } else {
+    results.innerHTML='<div style="padding:8px;">მონაცემი არაა</div>';
   }
 };
 
@@ -128,4 +137,17 @@ var resetFeatureView=function(){
       map.fitBounds(bounds);
     }
   }
+};
+
+var isVisible=function(f){
+  if(filters.regionCombo.getValue()){
+    var selectedRegion=filters.regionCombo.getText();
+    if(f.getProperty('region') != selectedRegion){ return false; }
+  }
+  if (geo.isLine(f)){ if(!filters.chkLine.isChecked()){ return false; } }
+  if (geo.isPath(f)){ if(!filters.chkPath.isChecked()){ return false; } }
+  if (geo.isTower(f)){ if(!filters.chkTower.isChecked()){ return false; } }
+  if (geo.isOffice(f)){ if(!filters.chkOffice.isChecked()){ return false; } }
+  if (geo.isSubstation(f)){ if(!filters.chkSubstation.isChecked()){ return false; } }
+  return true;
 };

@@ -37,8 +37,8 @@ var loadingGoogleMapsAsyncronously=function(){
 
 var onGoogleMapLoaded=function(){
   initMap();
-  initRouter();
   initFilterbar();
+  initRouter();
 };
 
 var styleFunction=function(f) {
@@ -147,7 +147,8 @@ var initMap=function(){
 // router
 
 var initRouter=function(){
-  app=router.initApplication({map:map, filters:{}, sidebar:sidebarElement});
+  var filters={regionCombo:regionCombo, chkSubstation:chkSubstation, chkOffice:chkOffice, chkTower:chkTower, chkPath:chkPath, chkLine:chkLine};
+  app=router.initApplication({map:map, filters:filters, sidebar:sidebarElement});
 
   app.addPage('root', pages.home());
   app.addPage('edit_path', pages.edit_path());
