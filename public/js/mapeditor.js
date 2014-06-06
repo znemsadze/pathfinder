@@ -367,7 +367,7 @@ var styleFunction=function(f) {
       strokeColor: strokeColor,
       strokeWeight: strokeWeight,
       strokeOpacity: 0.5,
-      title: name,
+      //title: name,
       visible: visible&&chkLine.isChecked(),
     };
   } else if (geo.isPath(f)) {
@@ -379,7 +379,7 @@ var styleFunction=function(f) {
       strokeColor: strokeColor,
       strokeWeight: strokeWeight,
       strokeOpacity: 0.5,
-      title: name,
+      //title: name,
       visible: visible&&chkPath.isChecked(),
     };
   } else if (geo.isTower(f)){
@@ -391,7 +391,7 @@ var styleFunction=function(f) {
       icon: icon,
       visible: true,
       clickable: true,
-      title: name,
+      title: name + ' (' + f.getProperty('linename') +')',
       visible: visible&&chkTower.isChecked(),
     };
   } else if (geo.isOffice(f)){
