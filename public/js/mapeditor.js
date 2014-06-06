@@ -474,6 +474,7 @@ var regionCombo
 var initFilterbar=function(){
   var mapReset=function(){
     map.data.setStyle(styleFunction);
+    router.filterChanged();
   };
 
   regionCombo=ui.form.comboField('filter_region', {collection_url: '/regions.json', text_property: 'name', empty: '-- ყველა რეგიონი --'});
@@ -1498,6 +1499,9 @@ module.exports=function(){
     onStart: function(){
       search.requestFocus();
     },
+    filterChanged:function(){
+      research();
+    },
   };
 };
 
@@ -1521,7 +1525,7 @@ var initUI=function(self){
   uiInitialized=true;
 };
 
-var reserch=function(){ // search again!
+var research=function(){ // search again!
   searching(currText);
 };
 
@@ -1630,6 +1634,12 @@ exports.initApplication=function(opts){
     addPage: addPage,
     openPage: openPage,
   };
+};
+
+exports.filterChanged=function(){
+  if(currentPage&&currentPage.filterChanged){
+    currentPage.filterChanged();
+  }
 };
 
 var addPage=function(name,page){

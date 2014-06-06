@@ -171,6 +171,7 @@ var regionCombo
 var initFilterbar=function(){
   var mapReset=function(){
     map.data.setStyle(styleFunction);
+    router.filterChanged();
   };
 
   regionCombo=ui.form.comboField('filter_region', {collection_url: '/regions.json', text_property: 'name', empty: '-- ყველა რეგიონი --'});

@@ -15,6 +15,12 @@ exports.initApplication=function(opts){
   };
 };
 
+exports.filterChanged=function(){
+  if(currentPage&&currentPage.filterChanged){
+    currentPage.filterChanged();
+  }
+};
+
 var addPage=function(name,page){
   page.openPage=openPage;
   pages[name]=page;

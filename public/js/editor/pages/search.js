@@ -35,6 +35,9 @@ module.exports=function(){
     onStart: function(){
       search.requestFocus();
     },
+    filterChanged:function(){
+      research();
+    },
   };
 };
 
@@ -58,7 +61,7 @@ var initUI=function(self){
   uiInitialized=true;
 };
 
-var reserch=function(){ // search again!
+var research=function(){ // search again!
   searching(currText);
 };
 
