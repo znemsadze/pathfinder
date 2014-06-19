@@ -17,7 +17,7 @@ class Objects::Path::Line
         else
           if p.is_a?(Hash) then lat,lng=p['lat'],p['lng']
           else lat,lng=p[0],p[1] end
-          point=Objects::Path::Point.where(lat: lat,lng: lng).first || Objects::Path::Point.new(lat: lat,lng: lng, path_ids: [])
+          point=Objects::Path::Point.where(location: [lng,lat]).first || Objects::Path::Point.new(location: [lng,lat], path_ids: [])
         end
         point.path_ids.push(path.id)
         path.point_ids.push(point.id)
@@ -37,7 +37,7 @@ class Objects::Path::Line
       points.each_with_index do |p,i|
         if p.is_a?(Hash) then lat,lng=p['lat'],p['lng']
         else lat,lng=p[0],p[1] end
-        point=Objects::Path::Point.where(lat: lat,lng: lng).first
+        point=Objects::Path::Point.where(location: [lng,lat]).first
         if point.blank? and (i==0 or i==points.length-1)
           point=(i==0 ? existing_points.first : existing_points.last)
           if self.point_ids.include?(point.id)
