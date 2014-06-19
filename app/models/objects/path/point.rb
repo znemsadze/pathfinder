@@ -1,8 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Objects::Path::Point
   include Mongoid::Document
-  field :lat, type: Float
-  field :lng, type: Float
+  include Objects::Coordinate
   field :path_ids, type: Array, default:[]
 
   def path_count; self.path_ids.size end
