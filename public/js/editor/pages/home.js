@@ -15,7 +15,7 @@ var map
   , secondaryToolbar=ui.button.toolbar([])
   , btnHome, btnSearch
   , btnNewPath, btnNewLine, btnNewTower, btnNewOffice, btnNewSubstation // new objects
-  , btnDelete, btnEdit // change objects
+  , btnDelete, btnEdit, btnAddToPath
   , confirmTitle=ui.html.p('საჭიროა დასტური',{class: 'page-header', style: 'font-weight:bold; font-size: 1.2em;'})
   , confirmText=ui.html.p('დაადასტურეთ, რომ ნამდვილად გინდათ მონიშნული ობიექტის წაშლა?',{class: 'text-danger'})
   , toolbar2=ui.button.toolbar([])
@@ -98,6 +98,10 @@ var initPage1=function(self){
     }
   }, {icon: 'pencil', type: 'warning'});
 
+  btnAddToPath=ui.button.actionButton('დანიშნულების წერტილი', function(){
+    console.log('add to path');
+  }, {icon: 'plus', type: 'success'});
+
   toolbar.addButton(btnSearch);
   toolbar.addButton(btnHome);
   toolbar.addButton(newObjects);
@@ -141,6 +145,9 @@ var resetFeatureInfo=function(){
     featureInfo.setHtml(geo.featureDescription(map,selectedFeature));
     secondaryToolbar.addButton(btnEdit);
     secondaryToolbar.addButton(btnDelete);
+    if(geo.isPointlike(selectedFeature)){
+      secondaryToolbar.addButton(btnAddToPath);
+    }
   }
   openPage(MAIN);
 };

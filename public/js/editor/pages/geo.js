@@ -78,9 +78,12 @@ var typed=function(f, callback){
 
 exports.isLine=function(f){ return typed(f,function(type){ return exports.TYPE_LINE==type; }); }
 exports.isPath=function(f){ return typed(f,function(type){ return exports.TYPE_PATH==type; }); }
+exports.isLinelike=function(f){ return exports.isLine(f) || exports.isPath(f); }
+
 exports.isTower=function(f){ return typed(f,function(type){ return exports.TYPE_TOWER==type; }); }
 exports.isOffice=function(f){ return typed(f,function(type){ return exports.TYPE_OFFICE==type; }); }
 exports.isSubstation=function(f){ return typed(f,function(type){ return exports.TYPE_SUBSTATION==type; }); }
+exports.isPointlike=function(f){ return exports.isTower(f) || exports.isOffice(f) || exports.isSubstation(f); }
 
 exports.typeName=function(f){
   return typed(f,function(type){
