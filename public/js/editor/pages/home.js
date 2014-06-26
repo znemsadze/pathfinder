@@ -226,10 +226,24 @@ var resetPathInfo=function(){
   }
 };
 
+var path;
+
 var getShortestPath=function(){
-   api.shortestpath.getShortestPath(pathPoints, function(err, data){
-     console.log(err);
-     console.log(data);
-     // TODO: display shortest route
-   });
+  if(!path) {
+    path= new google.maps.Polyline({ geodesic: true, strokeColor: '#00AA00', strokeOpacity: 0.75, strokeWeight: 10 });
+  }
+  path.getPath().clear();
+  path.setMap(map);
+  api.shortestpath.getShortestPath(pathPoints, function(err, data){
+    if(data) {
+      // console.log(data);
+      for(var i=0,l=data.length;i<l;i++){
+        var points=data[i];
+        for(var j=0,k=points.length;j<k;j++){
+          var point=points[j];
+          path.getPath().push(new google.maps.LatLng(point.lat, point.lng));
+        }
+      }
+    }
+  });
 };
