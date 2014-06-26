@@ -84,10 +84,10 @@ var displaySearchResults=function(features){
     results.innerText='';
     for(var i=0,l=features.length;i<l;i++){
       var f=features[i];
-        var d=ui.html.el('div',{class:'search-result','data-id':f.getId()});
-        d.innerHTML=geo.featureShortDescritpion(map,f);
-        d.onclick=itemSelected;
-        results.appendChild(d);
+      var d=ui.html.el('div',{class:'search-result','data-id':f.getId()});
+      d.innerHTML=geo.featureShortDescritpion(map,f);
+      d.onclick=itemSelected;
+      results.appendChild(d);
     }
   } else {
     results.innerHTML='<div style="padding:8px;">მონაცემი არაა</div>';

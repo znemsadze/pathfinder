@@ -11,6 +11,7 @@ var map
   , uiInitialized=false, locked
   , layout, page1, page2, toolbar=ui.button.toolbar([])
   , featureInfo=ui.html.p('',{style:'margin:16px 0;'})
+  , pathInfo=ui.html.el('div',{style: 'margin: 16px 0;'})
   , selectedFeature
   , secondaryToolbar=ui.button.toolbar([])
   , btnHome, btnSearch
@@ -19,6 +20,7 @@ var map
   , confirmTitle=ui.html.p('საჭიროა დასტური',{class: 'page-header', style: 'font-weight:bold; font-size: 1.2em;'})
   , confirmText=ui.html.p('დაადასტურეთ, რომ ნამდვილად გინდათ მონიშნული ობიექტის წაშლა?',{class: 'text-danger'})
   , toolbar2=ui.button.toolbar([])
+  , pathPoints=[]
   ;
 
 module.exports=function(){
@@ -58,12 +60,9 @@ var initUI=function(self){
 };
 
 var initPage1=function(self){
-  btnHome=ui.button.actionButton('', function(){
-    window.location='/';
-  }, {icon:'home'});
-  btnSearch=ui.button.actionButton('ძებნა', function(){
-    self.openPage('search');
-  }, {icon: 'search'});
+  // main toolbar actions
+  btnHome=ui.button.actionButton('', function(){ window.location='/'; }, {icon:'home'});
+  btnSearch=ui.button.actionButton('ძებნა', function(){ self.openPage('search'); }, {icon: 'search'});
 
   btnNewPath=ui.button.actionLink('მარშუტი', function(){
     if(!locked){ self.openPage('edit_path',{type:geo.TYPE_PATH}); }
@@ -84,6 +83,12 @@ var initPage1=function(self){
   var buttons=[btnNewPath,btnNewLine,{divider:true},btnNewOffice,btnNewSubstation,btnNewTower];
   var newObjects=ui.button.dropdown('ახალი ობიექტი',buttons, {type:'success'});  
 
+  toolbar.addButton(btnSearch);
+  toolbar.addButton(btnHome);
+  toolbar.addButton(newObjects);
+
+  // secondary actions
+
   btnDelete=ui.button.actionButton('წაშლა', function(){
     if(!locked){ openPage(CONFIRM); }
   }, {icon: 'trash-o', type: 'danger'});
@@ -99,12 +104,14 @@ var initPage1=function(self){
   }, {icon: 'pencil', type: 'warning'});
 
   btnAddToPath=ui.button.actionButton('დანიშნულების წერტილი', function(){
-    console.log('add to path');
+    if(pathPoints.indexOf(selectedFeature) == -1){
+      pathPoints.push(selectedFeature);
+      resetPathInfo();
+      // TODO: send request to the server
+    }
   }, {icon: 'plus', type: 'success'});
 
-  toolbar.addButton(btnSearch);
-  toolbar.addButton(btnHome);
-  toolbar.addButton(newObjects);
+  // page1 layout
 
   var titleElement=ui.html.pageTitle('საწყისი');
   page1=ui.layout.vertical({
@@ -113,6 +120,7 @@ var initPage1=function(self){
       toolbar,
       featureInfo,
       secondaryToolbar,
+      pathInfo,
     ]
   });
 };
@@ -201,4 +209,19 @@ var deleteSelectedFeature=function(){
   else if(geo.isTower(selectedFeature)){ locked=api.tower.deleteTower(id,callback); }
   else if(geo.isOffice(selectedFeature)){ locked=api.office.deleteOffice(id,callback); }
   else if(geo.isSubstation(selectedFeature)){ locked=api.substation.deleteSubstation(id,callback); }
+};
+
+var resetPathInfo=function(){
+  pathInfo.innerText='';
+  if(pathPoints.length>0){
+    var titleEleemnt=ui.html.el('h4', {class: 'page-header'}, 'გზის პარამეტრები (' + pathPoints.length + ')');
+    pathInfo.appendChild(titleEleemnt);
+    for(var i=0,l=pathPoints.length; i<l; i++){
+      var f=pathPoints[i];
+      var d=ui.html.el('div',{class:'search-result','data-id':f.getId()});
+      d.innerHTML=geo.featureShortDescritpion(map,f);
+      //d.onclick=itemSelected;
+      pathInfo.appendChild(d);
+    }
+  }
 };
