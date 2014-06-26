@@ -136,6 +136,9 @@ Pathfinder::Application.routes.draw do
       post '/edit', action: 'edit'
       post '/delete', action: 'delete'
     end
+    scope 'shortestpath', controller: 'shortestpath' do
+      get '/', action: 'index'
+    end
   end
 
   root 'site#index'

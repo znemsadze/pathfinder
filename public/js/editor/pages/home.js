@@ -107,7 +107,7 @@ var initPage1=function(self){
     if(pathPoints.indexOf(selectedFeature) == -1){
       pathPoints.push(selectedFeature);
       resetPathInfo();
-      // TODO: send request to the server
+      if(pathPoints.length > 1) { getShortestPath(); }
     }
   }, {icon: 'plus', type: 'success'});
 
@@ -224,4 +224,12 @@ var resetPathInfo=function(){
       pathInfo.appendChild(d);
     }
   }
+};
+
+var getShortestPath=function(){
+   api.shortestpath.getShortestPath(pathPoints, function(err, data){
+     console.log(err);
+     console.log(data);
+     // TODO: display shortest route
+   });
 };
