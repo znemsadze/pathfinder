@@ -220,12 +220,31 @@ var resetPathInfo=function(){
     for(var i=0,l=pathPoints.length; i<l; i++){
       var f=pathPoints[i];
       if(f){
-        var tbar=ui.html.el('div',{class:'pull-right'});
+        // toolbar
+
+        var tbar=ui.html.el('div',{class:['pull-right','btn-group']});
+        pathInfo.appendChild(tbar);
+        // move up action
+        if (i > 0) {
+          var btnUp=ui.html.el('button',{class:['btn','btn-xs','btn-default'], 'data-id':f.getId()});
+          btnUp.innerHTML='<i class="fa fa-arrow-up"></i>';
+          btnUp.onclick=movePathPointUp;
+          tbar.appendChild(btnUp);
+        }
+        // move down action
+        if (i != pathPoints.length-1) {
+          var btnDown=ui.html.el('button',{class:['btn','btn-xs','btn-default'], 'data-id':f.getId()});
+          btnDown.innerHTML='<i class="fa fa-arrow-down"></i>';
+          btnDown.onclick=movePathPointDown;
+          tbar.appendChild(btnDown);
+        }
+        // delete action
         var btnDelete=ui.html.el('button',{class:['btn','btn-xs','btn-danger'], 'data-id':f.getId()});
         btnDelete.innerHTML='<i class="fa fa-trash-o"></i>';
         btnDelete.onclick=deletePathPoint;
         tbar.appendChild(btnDelete);
-        pathInfo.appendChild(tbar);
+
+        // content
 
         var d1=ui.html.el('div',{class:'search-result','data-id':f.getId()});
         d1.innerHTML=geo.featureShortDescritpion(map,f);
@@ -287,6 +306,26 @@ var deletePathPoint=function() {
   var indexToRemove=pathPoints.map(function(x){ return x.getId() }).indexOf(id);
   console.log(indexToRemove);
   pathPoints.splice(indexToRemove,1);
+  resetPathInfo();
+  getShortestPath();
+};
+
+var movePathPointUp=function(){ movePathPoint(this.getAttribute('data-id'), true); };
+var movePathPointDown=function(){ movePathPoint(this.getAttribute('data-id'), false); };
+
+var movePathPoint=function(id, up){
+  var index=pathPoints.map(function(x){ return x.getId() }).indexOf(id);
+  if(up && index==0){ return; }
+  if(!up && index==pathPoints.length-1){ return; }
+  if(up){
+    var e1=pathPoints[index];
+    var e2=pathPoints[index-1];
+    pathPoints.splice(index-1,2,e1,e2);
+  } else {
+    var e1=pathPoints[index];
+    var e2=pathPoints[index+1];
+    pathPoints.splice(index,2,e2,e1)
+  }
   resetPathInfo();
   getShortestPath();
 };
