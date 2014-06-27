@@ -71,9 +71,18 @@ class Api::ShortestpathController < ApiController
       p2 = points[idx]
       line=Objects::Path::Line.all(point_ids: [p1.id, p2.id]).first
       i1=line.point_ids.index(p1.id) ; i2=line.point_ids.index(p2.id)
-      if i1 > i2; i1,i2 = i2,i1 end
-      (i1..i2).each do |i|
-        new_points << Objects::Path::Point.find(line.point_ids[i])
+      if i1 < i2
+        (i1..i2).each do |i|
+          new_points << Objects::Path::Point.find(line.point_ids[i])
+        end
+      else
+        ary=[]
+        (i2..i1).each do |i|
+          ary << Objects::Path::Point.find(line.point_ids[i])
+        end
+        ary.reverse.each do |p|
+          new_points << p
+        end
       end
       p1 = p2
     end
