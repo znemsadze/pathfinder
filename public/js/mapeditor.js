@@ -1508,10 +1508,17 @@ var resetPathInfo=function(){
     for(var i=0,l=pathPoints.length; i<l; i++){
       var f=pathPoints[i];
       if(f){
+        var tbar=ui.html.el('div',{class:'pull-right'});
+        var btnDelete=ui.html.el('button',{class:['btn','btn-xs','btn-danger'], 'data-id':f.getId()});
+        btnDelete.innerHTML='<i class="fa fa-trash-o"></i>';
+        btnDelete.onclick=deletePathPoint;
+        tbar.appendChild(btnDelete);
+        pathInfo.appendChild(tbar);
+
         var d1=ui.html.el('div',{class:'search-result','data-id':f.getId()});
         d1.innerHTML=geo.featureShortDescritpion(map,f);
         pathInfo.appendChild(d1);
-        if(paths[i]){
+        if(pathPoints.length > 1 && paths[i]){
           var d2 = ui.html.el('div', {style: 'padding: 5px; background: #FFFFDD'});
           var length = paths[i].length;
           totalLength += length;
@@ -1520,9 +1527,11 @@ var resetPathInfo=function(){
         }
       }
     }
-    var summary=ui.html.el('div', {style: 'padding: 5px; background: #DDFFDD'});
-    summary.innerHTML='<strong>მანძილი სულ</strong>: <code>' + totalLength.toFixed(3) + '</code> კმ';
-    pathInfo.appendChild(summary);
+    if(pathPoints.length > 1){
+      var summary=ui.html.el('div', {style: 'padding: 5px; background: #DDFFDD'});
+      summary.innerHTML='<strong>მანძილი სულ</strong>: <code>' + totalLength.toFixed(3) + '</code> კმ';
+      pathInfo.appendChild(summary);
+    }
   }
 };
 
@@ -1539,24 +1548,35 @@ var clearPaths=function(){
 
 var getShortestPath=function() {
   clearPaths();
-  api.shortestpath.getShortestPath(pathPoints, function(err, data){
-    if(data) {
-      for(var i=0,l=data.length;i<l;i++){
-        var points=data[i].points;
-        var path = new google.maps.Polyline({ geodesic: true, strokeColor: '#00AA00', strokeOpacity: 0.75, strokeWeight: 10 });
-        path.length=data[i].length;
-        for(var j=0, k=points.length; j < k; j++){
-          var point=points[j];
-          path.getPath().push(new google.maps.LatLng(point.lat, point.lng));
+  if(pathPoints.length > 1) {
+    api.shortestpath.getShortestPath(pathPoints, function(err, data){
+      if(data) {
+        for(var i=0,l=data.length;i<l;i++){
+          var points=data[i].points;
+          var path = new google.maps.Polyline({ geodesic: true, strokeColor: '#00AA00', strokeOpacity: 0.75, strokeWeight: 10 });
+          path.length=data[i].length;
+          for(var j=0, k=points.length; j < k; j++){
+            var point=points[j];
+            path.getPath().push(new google.maps.LatLng(point.lat, point.lng));
+          }
+          path.setMap(map);
+          paths.push(path);
         }
-        path.setMap(map);
-        paths.push(path);
+        resetPathInfo();
+      } else if(err) {
+        console.log(err);
       }
-      resetPathInfo();
-    } else if(err) {
-      console.log(err);
-    }
-  });
+    });
+  }
+};
+
+var deletePathPoint=function() {
+  var id=this.getAttribute('data-id');
+  var indexToRemove=pathPoints.map(function(x){ return x.getId() }).indexOf(id);
+  console.log(indexToRemove);
+  pathPoints.splice(indexToRemove,1);
+  resetPathInfo();
+  getShortestPath();
 };
 },{"../api":1,"../ui":29,"./geo":19}],21:[function(require,module,exports){
 var home=require('./home')
