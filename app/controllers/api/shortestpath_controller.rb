@@ -16,7 +16,7 @@ class Api::ShortestpathController < ApiController
       @responses = []
       (1..close_points.length-1).each do |idx|
         p2 = close_points[idx]
-        @responses << Shortest::Path.astar(dist, heur, graph, p1, p2)
+        @responses << extract_path(Shortest::Path.astar(dist, heur, graph, p1, p2))
         p1 = p2
       end
     else
@@ -62,5 +62,21 @@ class Api::ShortestpathController < ApiController
       len += a1.distance_to(a2)
     end
     len
+  end
+
+  def extract_path(points)
+    p1 = p2 = points[0]
+    new_points=[]
+    (1..points.length-1).each do |idx|
+      p2 = points[idx]
+      line=Objects::Path::Line.all(point_ids: [p1.id, p2.id]).first
+      i1=line.point_ids.index(p1.id) ; i2=line.point_ids.index(p2.id)
+      if i1 > i2; i1,i2 = i2,i1 end
+      (i1..i2).each do |i|
+        new_points << Objects::Path::Point.find(line.point_ids[i])
+      end
+      p1 = p2
+    end
+    new_points
   end
 end
