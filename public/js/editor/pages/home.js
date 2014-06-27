@@ -216,34 +216,57 @@ var resetPathInfo=function(){
   if(pathPoints.length>0){
     var titleEleemnt=ui.html.el('h4', {class: 'page-header'}, 'გზის პარამეტრები (' + pathPoints.length + ')');
     pathInfo.appendChild(titleEleemnt);
+    var totalLength = 0;
     for(var i=0,l=pathPoints.length; i<l; i++){
       var f=pathPoints[i];
-      var d=ui.html.el('div',{class:'search-result','data-id':f.getId()});
-      d.innerHTML=geo.featureShortDescritpion(map,f);
-      //d.onclick=itemSelected;
-      pathInfo.appendChild(d);
+      if(f){
+        var d1=ui.html.el('div',{class:'search-result','data-id':f.getId()});
+        d1.innerHTML=geo.featureShortDescritpion(map,f);
+        pathInfo.appendChild(d1);
+        if(paths[i]){
+          var d2 = ui.html.el('div', {style: 'padding: 5px; background: #FFFFDD'});
+          var length = paths[i].length;
+          totalLength += length;
+          d2.innerHTML='მონაკვეთი <strong>' + (i+1) + '</strong>: <code>' + length.toFixed(3) + '</code> კმ';
+          pathInfo.appendChild(d2);
+        }
+      }
     }
+    var summary=ui.html.el('div', {style: 'padding: 5px; background: #DDFFDD'});
+    summary.innerHTML='<strong>მანძილი სულ</strong>: <code>' + totalLength.toFixed(3) + '</code> კმ';
+    pathInfo.appendChild(summary);
   }
 };
 
-var path;
+var paths=[];
 
-var getShortestPath=function(){
-  if(!path) {
-    path= new google.maps.Polyline({ geodesic: true, strokeColor: '#00AA00', strokeOpacity: 0.75, strokeWeight: 10 });
+var clearPaths=function(){
+  for(var i=0,l=paths.length; i < l; i++){
+    var path = paths[i];
+    path.getPath().clear();
+    path.setMap(null);
   }
-  path.getPath().clear();
-  path.setMap(map);
+  paths=[];
+};
+
+var getShortestPath=function() {
+  clearPaths();
   api.shortestpath.getShortestPath(pathPoints, function(err, data){
     if(data) {
-      // console.log(data);
       for(var i=0,l=data.length;i<l;i++){
-        var points=data[i];
-        for(var j=0,k=points.length;j<k;j++){
+        var points=data[i].points;
+        var path = new google.maps.Polyline({ geodesic: true, strokeColor: '#00AA00', strokeOpacity: 0.75, strokeWeight: 10 });
+        path.length=data[i].length;
+        for(var j=0, k=points.length; j < k; j++){
           var point=points[j];
           path.getPath().push(new google.maps.LatLng(point.lat, point.lng));
         }
+        path.setMap(map);
+        paths.push(path);
       }
+      resetPathInfo();
+    } else if(err) {
+      console.log(err);
     }
   });
 };
