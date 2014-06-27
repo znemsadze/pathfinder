@@ -4,11 +4,7 @@ class Api::ShortestpathController < ApiController
     origins=params[:ids].map{|x| a=x.split('/'); a[0].constantize.find(a[1]) }
     close_points=origins.map{|x| Objects::Path::Point.geo_near(x.location).spherical.first }.uniq
 
-    dist = heur = ->(p1,p2){
-      a1 = Geokit::LatLng.new(p1.lat, p1.lng)
-      a2 = Geokit::LatLng.new(p2.lat, p2.lng)
-      a1.distance_to(a2)
-    }
+    dist = heur = ->(p1,p2){ distance_between(p1,p2) }
 
     if close_points.length > 1
       p1 = p2 = close_points[0]
@@ -67,6 +63,7 @@ class Api::ShortestpathController < ApiController
   def extract_path(points)
     p1 = p2 = points[0]
     new_points=[]
+    length=0
     (1..points.length-1).each do |idx|
       p2 = points[idx]
       line=Objects::Path::Line.all(point_ids: [p1.id, p2.id]).first
@@ -84,8 +81,15 @@ class Api::ShortestpathController < ApiController
           new_points << p
         end
       end
+      length += distance_between(p1, p2)
       p1 = p2
     end
-    new_points
+    {points: new_points, length: length}
+  end
+
+  def distance_between(p1,p2)
+    a1 = Geokit::LatLng.new(p1.lat, p1.lng)
+    a2 = Geokit::LatLng.new(p2.lat, p2.lng)
+    a1.distance_to(a2)
   end
 end
