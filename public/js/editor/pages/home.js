@@ -248,6 +248,7 @@ var resetPathInfo=function(){
 
         var d1=ui.html.el('div',{class:'search-result','data-id':f.getId()});
         d1.innerHTML=geo.featureShortDescritpion(map,f);
+        d1.onclick=pathPointSelected;
         pathInfo.appendChild(d1);
         if(pathPoints.length > 1 && paths[i]){
           var d2 = ui.html.el('div', {style: 'padding: 5px; background: #FFFFDD'});
@@ -284,7 +285,7 @@ var getShortestPath=function() {
       if(data) {
         for(var i=0,l=data.length;i<l;i++){
           var points=data[i].points;
-          var path = new google.maps.Polyline({ geodesic: true, strokeColor: '#00AA00', strokeOpacity: 0.75, strokeWeight: 10 });
+          var path = new google.maps.Polyline({ geodesic: true, strokeColor: '#00FF00', strokeOpacity: 0.75, strokeWeight: 10 });
           path.length=data[i].length;
           for(var j=0, k=points.length; j < k; j++){
             var point=points[j];
@@ -328,4 +329,9 @@ var movePathPoint=function(id, up){
   }
   resetPathInfo();
   getShortestPath();
+};
+
+var pathPointSelected=function(){
+  var f=map.data.getFeatureById(this.getAttribute('data-id'));
+  changeSelection(f);
 };
