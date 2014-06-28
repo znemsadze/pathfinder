@@ -103,6 +103,9 @@ Pathfinder::Application.routes.draw do
   end
 
   namespace 'api' do
+    scope '/users', controller: 'users' do
+      get '/login', action: 'login'
+    end
     scope '/objects', controller: 'objects' do
       get '/', action: 'index'
     end
