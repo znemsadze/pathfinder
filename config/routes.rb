@@ -105,6 +105,7 @@ Pathfinder::Application.routes.draw do
   namespace 'tasks' do
     scope 'tracking', controller: 'tracking' do
       get '/', action: 'index', as: 'tracking'
+      get '/user/:id', action: 'user', as: 'tracking_user'
     end
   end
 

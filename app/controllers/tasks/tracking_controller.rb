@@ -5,6 +5,12 @@ class Tasks::TrackingController < ApplicationController
     @users=Sys::User.all.asc(:username)
   end
 
+  def user
+    @user=Sys::User.find(params[:id])
+    @title=@user.full_name
+    @tracks=Tracking::Path.where(user:@user).desc(:_id).paginate(per_page: 10, page: params[:page])
+  end
+
   protected
   def nav
     @nav=super
