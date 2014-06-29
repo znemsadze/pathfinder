@@ -26,7 +26,7 @@ class Tracking::Path
 
     a1 = Geokit::LatLng.new(last_point.lat, last_point.lng)
     a2 = Geokit::LatLng.new(lat, lng)
-    distance += a1.distance_to(a2)
+    distance = a1.distance_to(a2)
     return path if distance < DISTANCE
 
     return nil
