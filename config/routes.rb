@@ -106,6 +106,7 @@ Pathfinder::Application.routes.draw do
     scope 'tracking', controller: 'tracking' do
       get '/', action: 'index', as: 'tracking'
       get '/user/:id', action: 'user', as: 'tracking_user'
+      get '/track/:id', action: 'track', as: 'tracking_track'
     end
   end
 

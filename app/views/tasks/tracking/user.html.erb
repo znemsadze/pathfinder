@@ -22,7 +22,7 @@
           </td>
           <td><%= track.created_at.strftime('%d-%b-%Y %H:%M:%S') %></td>
           <td><%= track.updated_at.strftime('%d-%b-%Y %H:%M:%S') %></td>
-          <td><code><%= track.points.count%></code> <%= link_to 'წერტილი'%></td>
+          <td><code><%= track.points.count%></code> <%= link_to 'წერტილი', tasks_tracking_track_url(id: track.id), data: {'no-turbolink' => true} %></td>
         </tr>
       <% end %>
     <% else %>
