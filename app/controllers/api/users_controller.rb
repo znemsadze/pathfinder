@@ -6,4 +6,11 @@ class Api::UsersController < ApiController
       render json: {error: 'არასწორი მომხამრებლი ან პაროლი'}
     end
   end
+
+  def track_point
+    user=Sys::User.authenticate(params[:username], params[:password])
+    lat=params[:lat].to_f ; lng=params[:lng]
+    Tracking::Path.add_point(user, lat, lng)
+    render text: 'ok'
+  end
 end
