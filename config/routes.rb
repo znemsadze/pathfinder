@@ -102,6 +102,12 @@ Pathfinder::Application.routes.draw do
     end
   end
 
+  namespace 'tasks' do
+    scope 'tracking', controller: 'tracking' do
+      get '/', action: 'index', as: 'tracking'
+    end
+  end
+
   namespace 'api' do
     scope '/users', controller: 'users' do
       post '/login', action: 'login'

@@ -1,0 +1,10 @@
+<p class="text-muted">აარჩიეთ სიიდან მომხმარებელი, რომლის ტრეკინგიც გსრუთ.</p>
+
+<table class="table table-bordered">
+  <% @users.each do |user| %>
+  <tr>
+    <td width="200"><img src="/icons/user.png"/> <strong><%=user.username%></strong></td>
+    <td><%=link_to user.full_name%></td>
+  </tr>
+  <% end %>
+</table>
