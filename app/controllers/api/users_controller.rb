@@ -8,9 +8,7 @@ class Api::UsersController < ApiController
   end
 
   def track_point
-    user=Sys::User.authenticate(params[:username], params[:password])
-    lat=params[:lat].to_f ; lng=params[:lng]
-    Tracking::Path.add_point(user, lat, lng)
+    Tracking::Path.add_point(Sys::User.find(params[:id]), params[:lat].to_f, params[:lng])
     render text: 'ok'
   end
 end
