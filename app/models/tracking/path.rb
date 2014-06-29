@@ -10,6 +10,7 @@ class Tracking::Path
 
   def self.add_point(user, lat, lng)
     path = Tracking::Path.get_path(user, lat, lng) || Tracking::Path.create(user: user)
+    path.touch; path.save
     point=Tracking::Point.new(path: path)
     point.lat = lat ; point.lng = lng
     point.save
