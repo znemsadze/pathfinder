@@ -13,7 +13,7 @@ class Tasks::TrackingController < ApplicationController
 
   def track
     @track=Tracking::Path.find(params[:id])
-    @title="ტრეკი: #{@track.created_at.strftime('%d-%b-%Y %H:%M:%S')} / #{@track.updated_at.strftime('%d-%b-%Y %H:%M:%S')}"
+    @title="ტრეკი: #{@track.created_at.localtime.strftime('%d-%b-%Y %H:%M:%S')} / #{@track.updated_at.localtime.strftime('%d-%b-%Y %H:%M:%S')}"
   end
 
   protected
