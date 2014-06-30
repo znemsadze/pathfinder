@@ -14,6 +14,12 @@ class Task
   field :status, type: Integer, default: START
   before_create :on_before_create
 
+  def normal_destinations
+    self.destinations.map do |dest|
+      dest['type'].constantize.find(dest['id'])
+    end
+  end
+
   private
   def on_before_create
     last = Task.last

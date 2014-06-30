@@ -2,6 +2,12 @@
 require 'json'
 
 class Api::TasksController < ApiController
+  def index
+    authenticate do |user|
+      @tasks = Task.where(assignee: user).paginate(per_page: 10, page: params[:page])
+    end
+  end
+
   def new
     assignee = Sys::User.find(params[:assignee_id])
     destinations = params[:destinations].map{|k,v| v}

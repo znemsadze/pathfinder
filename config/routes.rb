@@ -153,6 +153,7 @@ Pathfinder::Application.routes.draw do
       get '/', action: 'index'
     end
     scope 'tasks', controller: 'tasks' do
+      match '/', action: 'index', via: ['get', 'post']
       post '/new', action: 'new'
     end
   end
