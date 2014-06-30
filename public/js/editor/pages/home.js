@@ -113,14 +113,27 @@ var initPage1=function(self){
 
   // page1 layout
 
+  var tabs = ui.html.el('div', {style: 'margin-top: 16px;'});
+  tabs.innerHTML = ['<ul class="nav nav-tabs" role="tablist">',
+    '<li class="active"><a href="#feature" role="tab" data-toggle="tab">ობიექტი</a></li>',
+    '<li><a href="#path" role="tab" data-toggle="tab">მარშუტი</a></li>',
+    '</ul>',
+  ].join('');
+
+  var tabContent = ui.html.el('div', {class: 'tab-content'});
+  var t1 = ui.html.el(tabContent, 'div', {class: ['tab-pane','active'], id: 'feature'});
+  t1.appendChild(featureInfo);
+  t1.appendChild(secondaryToolbar);
+  var t2 = ui.html.el(tabContent, 'div', {class: ['tab-pane'], id: 'path'});
+  t2.appendChild(pathInfo);
+  tabs.appendChild(tabContent);
+
   var titleElement=ui.html.pageTitle('საწყისი');
   page1=ui.layout.vertical({
     children: [
       titleElement,
       toolbar,
-      featureInfo,
-      secondaryToolbar,
-      pathInfo,
+      tabs,
     ]
   });
 };
