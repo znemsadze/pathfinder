@@ -13,7 +13,7 @@ var map
   , featureInfo=ui.html.p('',{style:'margin:16px 0;'})
   , pathInfo=ui.html.el('div',{style: 'margin: 16px 0;'})
   , selectedFeature
-  , secondaryToolbar=ui.button.toolbar([])
+  , secondaryToolbar=ui.button.toolbar([]), pathToolbar=ui.button.toolbar([])
   , btnHome, btnSearch
   , btnNewPath, btnNewLine, btnNewTower, btnNewOffice, btnNewSubstation // new objects
   , btnDelete, btnEdit, btnAddToPath
@@ -124,7 +124,10 @@ var initPage1=function(self){
   var t1 = ui.html.el(tabContent, 'div', {class: ['tab-pane','active'], id: 'feature'});
   t1.appendChild(featureInfo);
   t1.appendChild(secondaryToolbar);
+
   var t2 = ui.html.el(tabContent, 'div', {class: ['tab-pane'], id: 'path'});
+  pathToolbar.style.marginTop="16px";
+  t2.appendChild(pathToolbar);
   t2.appendChild(pathInfo);
   tabs.appendChild(tabContent);
 
@@ -160,6 +163,7 @@ var openPage=function(idx){ layout.showAt(idx); };
 
 var resetFeatureInfo=function(){
   secondaryToolbar.clearButtons();
+  pathToolbar.clearButtons();
   if(!selectedFeature){
     featureInfo.setHtml('მონიშნეთ ობიექტი რუკაზე მასზე ინფორმაციის მისაღებად.');
   } else{
@@ -167,7 +171,7 @@ var resetFeatureInfo=function(){
     secondaryToolbar.addButton(btnEdit);
     secondaryToolbar.addButton(btnDelete);
     if(geo.isPointlike(selectedFeature)){
-      secondaryToolbar.addButton(btnAddToPath);
+      pathToolbar.addButton(btnAddToPath);
     }
   }
   openPage(MAIN);
