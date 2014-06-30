@@ -4,7 +4,9 @@ class Task
   include Mongoid::Timestamps
 
   START = 0
-  COMPELETE = 10
+  CANCELED = 1
+  IN_PROGRESS = 2
+  COMPELETED = 10
 
   belongs_to :assignee, class_name: 'Sys::User'
   field :destinations, type: Array
