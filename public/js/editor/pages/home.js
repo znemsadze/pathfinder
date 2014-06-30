@@ -16,7 +16,7 @@ var map
   , secondaryToolbar=ui.button.toolbar([]), pathToolbar=ui.button.toolbar([])
   , btnHome, btnSearch
   , btnNewPath, btnNewLine, btnNewTower, btnNewOffice, btnNewSubstation // new objects
-  , btnDelete, btnEdit, btnAddToPath
+  , btnDelete, btnEdit, btnAddToPath, btnNewTask
   , confirmTitle=ui.html.p('საჭიროა დასტური',{class: 'page-header', style: 'font-weight:bold; font-size: 1.2em;'})
   , confirmText=ui.html.p('დაადასტურეთ, რომ ნამდვილად გინდათ მონიშნული ობიექტის წაშლა?',{class: 'text-danger'})
   , toolbar2=ui.button.toolbar([])
@@ -103,13 +103,18 @@ var initPage1=function(self){
     }
   }, {icon: 'pencil', type: 'warning'});
 
-  btnAddToPath=ui.button.actionButton('დანიშნულების წერტილი', function(){
+  btnAddToPath=ui.button.actionButton('წერტილის დამატება', function(){
     if(pathPoints.indexOf(selectedFeature) == -1){
       pathPoints.push(selectedFeature);
       resetPathInfo();
+      resetFeatureInfo();
       if(pathPoints.length > 1) { getShortestPath(); }
     }
   }, {icon: 'plus', type: 'success'});
+
+  btnNewTask=ui.button.actionButton('დავალების შექმნა', function() {
+    console.log('new task');
+  }, {icon: 'tasks'})
 
   // page1 layout
 
@@ -119,16 +124,14 @@ var initPage1=function(self){
     '<li><a href="#path" role="tab" data-toggle="tab">მარშუტი</a></li>',
     '</ul>',
   ].join('');
-
   var tabContent = ui.html.el('div', {class: 'tab-content'});
   var t1 = ui.html.el(tabContent, 'div', {class: ['tab-pane','active'], id: 'feature'});
   t1.appendChild(featureInfo);
   t1.appendChild(secondaryToolbar);
-
   var t2 = ui.html.el(tabContent, 'div', {class: ['tab-pane'], id: 'path'});
   pathToolbar.style.marginTop="16px";
-  t2.appendChild(pathToolbar);
   t2.appendChild(pathInfo);
+  t2.appendChild(pathToolbar);
   tabs.appendChild(tabContent);
 
   var titleElement=ui.html.pageTitle('საწყისი');
@@ -164,7 +167,7 @@ var openPage=function(idx){ layout.showAt(idx); };
 var resetFeatureInfo=function(){
   secondaryToolbar.clearButtons();
   pathToolbar.clearButtons();
-  if(!selectedFeature){
+  if (!selectedFeature) {
     featureInfo.setHtml('მონიშნეთ ობიექტი რუკაზე მასზე ინფორმაციის მისაღებად.');
   } else{
     featureInfo.setHtml(geo.featureDescription(map,selectedFeature));
@@ -173,6 +176,9 @@ var resetFeatureInfo=function(){
     if(geo.isPointlike(selectedFeature)){
       pathToolbar.addButton(btnAddToPath);
     }
+  }
+  if (pathPoints.length > 1) {
+    pathToolbar.appendChild(btnNewTask);
   }
   openPage(MAIN);
 };
@@ -322,9 +328,9 @@ var getShortestPath=function() {
 var deletePathPoint=function() {
   var id=this.getAttribute('data-id');
   var indexToRemove=pathPoints.map(function(x){ return x.getId() }).indexOf(id);
-  console.log(indexToRemove);
   pathPoints.splice(indexToRemove,1);
   resetPathInfo();
+  resetFeatureInfo();
   getShortestPath();
 };
 
