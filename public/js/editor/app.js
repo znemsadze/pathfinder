@@ -154,6 +154,7 @@ var initRouter=function(){
   app.addPage('edit_path', pages.edit_path());
   app.addPage('edit_point', pages.edit_point());
   app.addPage('search', pages.search());
+  app.addPage('task', pages.task());
 
   app.openPage('root');
 };
