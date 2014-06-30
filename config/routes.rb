@@ -112,6 +112,7 @@ Pathfinder::Application.routes.draw do
 
   namespace 'api' do
     scope '/users', controller: 'users' do
+      get '/', action: 'index'
       post '/login', action: 'login'
       post '/track_point', action: 'track_point'
     end
@@ -150,6 +151,9 @@ Pathfinder::Application.routes.draw do
     end
     scope 'shortestpath', controller: 'shortestpath' do
       get '/', action: 'index'
+    end
+    scope controller: 'tasks' do
+      post '/new', action: 'new'
     end
   end
 
