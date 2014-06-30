@@ -104,17 +104,18 @@ var initPage1=function(self){
   }, {icon: 'pencil', type: 'warning'});
 
   btnAddToPath=ui.button.actionButton('წერტილის დამატება', function(){
-    if(pathPoints.indexOf(selectedFeature) == -1){
+    if (pathPoints.indexOf(selectedFeature) == -1) {
       pathPoints.push(selectedFeature);
       resetPathInfo();
       resetFeatureInfo();
-      if(pathPoints.length > 1) { getShortestPath(); }
+      if (pathPoints.length > 1) { getShortestPath(); }
     }
   }, {icon: 'plus', type: 'success'});
 
   btnNewTask=ui.button.actionButton('დავალების შექმნა', function() {
-    // TODO: path all required parameters
-    self.openPage('task');
+    if(paths.length > 0) {
+      self.openPage('task', {destinations: pathPoints, paths: paths});
+    }
   }, {icon: 'tasks'})
 
   // page1 layout

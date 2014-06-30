@@ -22,50 +22,34 @@ module.exports=function(){
 
 var initUI=function(){
   var saveAction=function(){
-    // var form=getForm();
-    // form.clearErrors();
+    form.clearErrors();
 
-    // var model=form.getModel()
-    //   , position=marker.getPosition()
-    //   ;
+    var model=form.getModel()
+      , paths = self.params.paths
+      , destinations = self.params.destinations
+      ;
 
-    // model.lat=position.lat();
-    // model.lng=position.lng();
+    model.paths = paths;
+    model.destinations = destinations;
 
-    // var callback=function(err,data){
-    //   if(err){
-    //     console.log(err);
-    //   } else {
-    //     marker.setMap(null);
-    //     map.loadData({id:data.id, type:getType()});
-    //     self.openPage('root');
-    //   }
-    // };
+    var callback=function(err,data){
+      if(err){
+        console.log(err);
+      } else {
+        alert("დავალება გაგზავნილია: #" + data.number);
+        self.openPage('root');
+      }
+    };
 
-    // var sent=false;
-    // if (geo.isTower(getType())){
-    //   if(isNewMode()){ sent=api.tower.newTower(model, callback); }
-    //   else { sent=api.tower.editTower(getId(), model, callback); }
-    // } else if(geo.isOffice(getType())){
-    //   if(isNewMode()){ sent=api.office.newOffice(model, callback); }
-    //   else { sent=api.office.editOffice(getId(), model, callback); }
-    // } else if(geo.isSubstation(getType())){
-    //   if(isNewMode()){ sent=api.substation.newSubstation(model, callback); }
-    //   else { sent=api.substation.editSubstation(getId(), model, callback); }
-    // }
-
-    // canEdit= !sent;
-    // if(!sent){ form.setModel(model); }
+    var sent=api.tasks.newTask(model, callback);
+    if(!sent){ form.setModel(model); }
   };
 
   var cancelAction=function(){
-    // marker.setMap(null);
-    // var feature=getFeature();
-    // if(feature){ map.data.add(feature); }
     self.openPage('root');
   };
 
-  var form=forms.task.form({ save_action:saveAction, cancel_action:cancelAction });
+  var form = forms.task.form({ save_action:saveAction, cancel_action:cancelAction });
 
   layout=ui.layout.vertical({children: [titleElement, form] });
   uiInitialized=true;

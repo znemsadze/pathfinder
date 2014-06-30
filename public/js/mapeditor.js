@@ -972,10 +972,11 @@ exports.form=function(opts){
   var saveAction = { label: 'დავალების შენახვა', icon:'save', type:'success', action: save_f };
   var cancelAction = { label:'გაუმება', icon:'times-circle', action: cancel_f };
 
+  var assigneeCombo=ui.form.comboField('assignee_id', {label: 'შემსრულებელი', collection_url: '/api/users.json', text_property: 'username'});
   var noteText=ui.form.textArea('note', { label: 'შენიშვნა' });
 
-  var fields=[noteText];
-  var actions=[saveAction,cancelAction];
+  var fields = [assigneeCombo, noteText];
+  var actions = [saveAction,cancelAction];
 
   var form = ui.form.create(fields, { actions: actions });
   return form;
@@ -1415,17 +1416,18 @@ var initPage1=function(self){
   }, {icon: 'pencil', type: 'warning'});
 
   btnAddToPath=ui.button.actionButton('წერტილის დამატება', function(){
-    if(pathPoints.indexOf(selectedFeature) == -1){
+    if (pathPoints.indexOf(selectedFeature) == -1) {
       pathPoints.push(selectedFeature);
       resetPathInfo();
       resetFeatureInfo();
-      if(pathPoints.length > 1) { getShortestPath(); }
+      if (pathPoints.length > 1) { getShortestPath(); }
     }
   }, {icon: 'plus', type: 'success'});
 
   btnNewTask=ui.button.actionButton('დავალების შექმნა', function() {
-    // TODO: path all required parameters
-    self.openPage('task');
+    if(paths.length > 0) {
+      self.openPage('task', {destinations: pathPoints, paths: paths});
+    }
   }, {icon: 'tasks'})
 
   // page1 layout
@@ -1865,50 +1867,34 @@ module.exports=function(){
 
 var initUI=function(){
   var saveAction=function(){
-    // var form=getForm();
-    // form.clearErrors();
+    form.clearErrors();
 
-    // var model=form.getModel()
-    //   , position=marker.getPosition()
-    //   ;
+    var model=form.getModel()
+      , paths = self.params.paths
+      , destinations = self.params.destinations
+      ;
 
-    // model.lat=position.lat();
-    // model.lng=position.lng();
+    model.paths = paths;
+    model.destinations = destinations;
 
-    // var callback=function(err,data){
-    //   if(err){
-    //     console.log(err);
-    //   } else {
-    //     marker.setMap(null);
-    //     map.loadData({id:data.id, type:getType()});
-    //     self.openPage('root');
-    //   }
-    // };
+    var callback=function(err,data){
+      if(err){
+        console.log(err);
+      } else {
+        alert("დავალება გაგზავნილია: #" + data.number);
+        self.openPage('root');
+      }
+    };
 
-    // var sent=false;
-    // if (geo.isTower(getType())){
-    //   if(isNewMode()){ sent=api.tower.newTower(model, callback); }
-    //   else { sent=api.tower.editTower(getId(), model, callback); }
-    // } else if(geo.isOffice(getType())){
-    //   if(isNewMode()){ sent=api.office.newOffice(model, callback); }
-    //   else { sent=api.office.editOffice(getId(), model, callback); }
-    // } else if(geo.isSubstation(getType())){
-    //   if(isNewMode()){ sent=api.substation.newSubstation(model, callback); }
-    //   else { sent=api.substation.editSubstation(getId(), model, callback); }
-    // }
-
-    // canEdit= !sent;
-    // if(!sent){ form.setModel(model); }
+    var sent=api.tasks.newTask(model, callback);
+    if(!sent){ form.setModel(model); }
   };
 
   var cancelAction=function(){
-    // marker.setMap(null);
-    // var feature=getFeature();
-    // if(feature){ map.data.add(feature); }
     self.openPage('root');
   };
 
-  var form=forms.task.form({ save_action:saveAction, cancel_action:cancelAction });
+  var form = forms.task.form({ save_action:saveAction, cancel_action:cancelAction });
 
   layout=ui.layout.vertical({children: [titleElement, form] });
   uiInitialized=true;
