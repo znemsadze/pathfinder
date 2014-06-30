@@ -3,6 +3,16 @@ class ApiController < ActionController::Base
   protect_from_forgery with: :null_session
   before_filter :set_access_control_headers
 
+  protected
+  def authenticate
+    user=Sys::User.authenticate(params[:username], params[:password])
+    if user and user.active
+      yield user
+    else
+      render json: {error: 'არასწორი მომხამრებლი ან პაროლი'}
+    end
+  end
+
   private
 
   def set_access_control_headers
