@@ -1,6 +1,7 @@
-json.array! @tasks do |task|
+json.tasks @tasks do |task|
   json.id task.id.to_s
   json.number task.number
+  json.note task.note
   json.status task.status
   json.paths task.paths
   json.destinations task.normal_destinations do |destination|
