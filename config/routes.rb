@@ -152,7 +152,7 @@ Pathfinder::Application.routes.draw do
     scope 'shortestpath', controller: 'shortestpath' do
       get '/', action: 'index'
     end
-    scope controller: 'tasks' do
+    scope 'tasks', controller: 'tasks' do
       post '/new', action: 'new'
     end
   end

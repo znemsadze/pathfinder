@@ -25,8 +25,8 @@ var initUI=function(){
     form.clearErrors();
 
     var model=form.getModel()
-      , paths = self.params.paths
-      , destinations = self.params.destinations
+      , paths = self.params.paths.map(function(x){ return x.getPath().getArray().map(function(x){ return {lat: x.lat(), lng: x.lng()}; }); })
+      , destinations = self.params.destinations.map(function(x){ return {id: x.getId(), type: geo.getType(x)}; })
       ;
 
     model.paths = paths;
@@ -41,7 +41,7 @@ var initUI=function(){
       }
     };
 
-    var sent=api.tasks.newTask(model, callback);
+    var sent=api.task.save(model, callback);
     if(!sent){ form.setModel(model); }
   };
 

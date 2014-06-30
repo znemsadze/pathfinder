@@ -4,6 +4,7 @@ var path=require('./path')
   , office=require('./office')
   , substation=require('./substation')
   , shortestpath=require('./shortestpath')
+  , task = require('./task')
   ;
 
 exports.path=path;
@@ -12,3 +13,4 @@ exports.tower=tower;
 exports.office=office;
 exports.substation=substation;
 exports.shortestpath=shortestpath;
+exports.task = task;

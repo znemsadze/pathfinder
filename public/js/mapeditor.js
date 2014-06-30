@@ -5,6 +5,7 @@ var path=require('./path')
   , office=require('./office')
   , substation=require('./substation')
   , shortestpath=require('./shortestpath')
+  , task = require('./task')
   ;
 
 exports.path=path;
@@ -13,8 +14,8 @@ exports.tower=tower;
 exports.office=office;
 exports.substation=substation;
 exports.shortestpath=shortestpath;
-
-},{"./line":2,"./office":3,"./path":4,"./shortestpath":5,"./substation":6,"./tower":7}],2:[function(require,module,exports){
+exports.task = task;
+},{"./line":2,"./office":3,"./path":4,"./shortestpath":5,"./substation":6,"./task":7,"./tower":8}],2:[function(require,module,exports){
 var utils=require('./utils')
   ;
 
@@ -59,7 +60,7 @@ exports.deleteLine=function(id,callback){
   });
   return true;
 };
-},{"./utils":8}],3:[function(require,module,exports){
+},{"./utils":9}],3:[function(require,module,exports){
 var utils=require('./utils')
   ;
 
@@ -106,7 +107,7 @@ exports.deleteOffice=function(id,callback){
   });
   return true;
 };
-},{"./utils":8}],4:[function(require,module,exports){
+},{"./utils":9}],4:[function(require,module,exports){
 var utils=require('./utils')
   ;
 
@@ -182,7 +183,7 @@ exports.deletePath=function(id,callback){
   });;
   return true;
 };
-},{"./utils":8}],5:[function(require,module,exports){
+},{"./utils":9}],5:[function(require,module,exports){
 var BASE_PATH='/api/shortestpath';
 
 exports.getShortestPath=function(features,callback){
@@ -245,7 +246,35 @@ exports.deleteSubstation=function(id,callback){
   });
   return true;
 };
-},{"./utils":8}],7:[function(require,module,exports){
+},{"./utils":9}],7:[function(require,module,exports){
+var utils=require('./utils')
+  ;
+
+var BASE_PATH='/api/tasks';
+
+var save=function(model,callback){
+  utils.clearErrors(model);
+
+  var note=model.note
+    , assignee_id=model.assignee_id
+    , destinations=model.destinations
+    , paths=model.paths
+    ;
+
+  if(!assignee_id){
+    utils.addError(model,'region_id','აარჩიეთ შემსრულებელი');
+    return false;
+  }
+
+  var params = { assignee_id: assignee_id, note: note, paths: paths, destinations: destinations };
+  var url = BASE_PATH + '/new';
+  $.post(url, params, function(data){ callback(null,data); }).fail(function(err){ callback(err,null); });
+
+  return true;
+};
+
+exports.save=save;
+},{"./utils":9}],8:[function(require,module,exports){
 var utils=require('./utils')
   ;
 
@@ -289,7 +318,7 @@ exports.deleteTower=function(id,callback){
   });
   return true;
 };
-},{"./utils":8}],8:[function(require,module,exports){
+},{"./utils":9}],9:[function(require,module,exports){
 /**
  * converts polyline into array of points
  */
@@ -320,7 +349,7 @@ exports.addError=function(model,field,message){
 exports.clearErrors=function(model){
   model.errors={};
 };
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 var ui=require('./ui')
   , api=require('./api')
   , router=require('./router')
@@ -524,11 +553,11 @@ var filterCheckbox=function(label,onchange){
   };
   return field;
 };
-},{"./api":1,"./pages":22,"./pages/geo":20,"./router":25,"./ui":31}],10:[function(require,module,exports){
+},{"./api":1,"./pages":23,"./pages/geo":21,"./router":26,"./ui":32}],11:[function(require,module,exports){
 var app=require('./app');
 
 app.start();
-},{"./app":9}],11:[function(require,module,exports){
+},{"./app":10}],12:[function(require,module,exports){
 var ui=require('../ui')
   , forms=require('./forms')
   , api=require('../api')
@@ -717,7 +746,7 @@ var initMap=function(){
   }
 };
 
-},{"../api":1,"../ui":31,"./forms":13,"./geo":20}],12:[function(require,module,exports){
+},{"../api":1,"../ui":32,"./forms":14,"./geo":21}],13:[function(require,module,exports){
 var ui=require('../ui')
   , forms=require('./forms')
   , api=require('../api')
@@ -855,7 +884,7 @@ var getId=function(){
   return feature&&feature.getId();
 };
 
-},{"../api":1,"../ui":31,"./forms":13,"./geo":20}],13:[function(require,module,exports){
+},{"../api":1,"../ui":32,"./forms":14,"./geo":21}],14:[function(require,module,exports){
 var path=require('./path')
   , line=require('./line')
   , tower=require('./tower')
@@ -870,7 +899,7 @@ exports.tower=tower;
 exports.office=office;
 exports.substation=substation;
 exports.task=task;
-},{"./line":14,"./office":15,"./path":16,"./substation":17,"./task":18,"./tower":19}],14:[function(require,module,exports){
+},{"./line":15,"./office":16,"./path":17,"./substation":18,"./task":19,"./tower":20}],15:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -892,7 +921,7 @@ exports.form=function(opts){
   var form=ui.form.create(fields,{actions: actions,load_url:'/api/lines/show.json'});
   return form;
 };
-},{"../../ui":31}],15:[function(require,module,exports){
+},{"../../ui":32}],16:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -915,7 +944,7 @@ exports.form=function(opts){
   return form;
 };
 
-},{"../../ui":31}],16:[function(require,module,exports){
+},{"../../ui":32}],17:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -939,7 +968,7 @@ exports.form=function(opts){
   var form=ui.form.create(fields,{actions: actions, load_url:'/api/paths/show.json'});
   return form;
 };
-},{"../../ui":31}],17:[function(require,module,exports){
+},{"../../ui":32}],18:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -961,7 +990,7 @@ exports.form=function(opts){
   return form;
 };
 
-},{"../../ui":31}],18:[function(require,module,exports){
+},{"../../ui":32}],19:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -982,7 +1011,7 @@ exports.form=function(opts){
   return form;
 };
 
-},{"../../ui":31}],19:[function(require,module,exports){
+},{"../../ui":32}],20:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -1005,7 +1034,7 @@ exports.form=function(opts){
   return form;
 };
 
-},{"../../ui":31}],20:[function(require,module,exports){
+},{"../../ui":32}],21:[function(require,module,exports){
 exports.resetMap=function(map){
   // google.maps.event.clearInstanceListeners(map);
   google.maps.event.clearInstanceListeners(map.data);
@@ -1309,7 +1338,7 @@ var searchPathHit=function(f,word){
   ].join(' ');
   return searchString.indexOf(word) != -1;
 };
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 var ui=require('../ui')
   , api=require('../api')
   , geo=require('./geo')
@@ -1672,7 +1701,7 @@ var pathPointSelected=function(){
   var f=map.data.getFeatureById(this.getAttribute('data-id'));
   changeSelection(f);
 };
-},{"../api":1,"../ui":31,"./geo":20}],22:[function(require,module,exports){
+},{"../api":1,"../ui":32,"./geo":21}],23:[function(require,module,exports){
 var home=require('./home')
   , edit_path=require('./edit_path')
   , edit_point=require('./edit_point')
@@ -1685,7 +1714,7 @@ exports.edit_path=edit_path;
 exports.edit_point=edit_point;
 exports.search=search;
 exports.task=task;
-},{"./edit_path":11,"./edit_point":12,"./home":21,"./search":23,"./task":24}],23:[function(require,module,exports){
+},{"./edit_path":12,"./edit_point":13,"./home":22,"./search":24,"./task":25}],24:[function(require,module,exports){
 var ui=require('../ui')
   , api=require('../api')
   , geo=require('./geo')
@@ -1842,7 +1871,7 @@ var isVisible=function(f){
   if (geo.isSubstation(f)){ if(!filters.chkSubstation.isChecked()){ return false; } }
   return true;
 };
-},{"../api":1,"../ui":31,"./geo":20}],24:[function(require,module,exports){
+},{"../api":1,"../ui":32,"./geo":21}],25:[function(require,module,exports){
 var ui=require('../ui')
   , forms=require('./forms')
   , api=require('../api')
@@ -1870,8 +1899,8 @@ var initUI=function(){
     form.clearErrors();
 
     var model=form.getModel()
-      , paths = self.params.paths
-      , destinations = self.params.destinations
+      , paths = self.params.paths.map(function(x){ return x.getPath().getArray().map(function(x){ return {lat: x.lat(), lng: x.lng()}; }); })
+      , destinations = self.params.destinations.map(function(x){ return {id: x.getId(), type: geo.getType(x)}; })
       ;
 
     model.paths = paths;
@@ -1886,7 +1915,7 @@ var initUI=function(){
       }
     };
 
-    var sent=api.tasks.newTask(model, callback);
+    var sent=api.task.save(model, callback);
     if(!sent){ form.setModel(model); }
   };
 
@@ -1900,7 +1929,7 @@ var initUI=function(){
   uiInitialized=true;
 };
 
-},{"../api":1,"../ui":31,"./forms":13,"./geo":20}],25:[function(require,module,exports){
+},{"../api":1,"../ui":32,"./forms":14,"./geo":21}],26:[function(require,module,exports){
 var map
   , sidebar
   , filters
@@ -1963,7 +1992,7 @@ var openPage=function(name,params){
   }
 };
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils')
   ;
@@ -2039,7 +2068,7 @@ exports.dropdown=function(text,buttons,opts){
   }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":30,"./utils":33}],27:[function(require,module,exports){
+},{"./html":31,"./utils":34}],28:[function(require,module,exports){
 var html=require('../html')
   ;
 
@@ -2227,7 +2256,7 @@ exports.textArea=function(name, opts){
 
   return textarea;
 };
-},{"../html":30}],28:[function(require,module,exports){
+},{"../html":31}],29:[function(require,module,exports){
 var html=require('../html')
   , button=require('../button')
   ;
@@ -2295,7 +2324,7 @@ module.exports=function(fields,opts){
   return _form;
 };
 
-},{"../button":26,"../html":30}],29:[function(require,module,exports){
+},{"../button":27,"../html":31}],30:[function(require,module,exports){
 var form=require('./form')
   , field=require('./field')
   ;
@@ -2305,7 +2334,7 @@ exports.textField=field.textField;
 exports.comboField=field.comboField;
 exports.textArea=field.textArea;
 
-},{"./field":27,"./form":28}],30:[function(require,module,exports){
+},{"./field":28,"./form":29}],31:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -2406,7 +2435,7 @@ exports.p=function(text,opts){
   return p; 
 };
 
-},{"./utils":33}],31:[function(require,module,exports){
+},{"./utils":34}],32:[function(require,module,exports){
 var button=require('./button')
   , layout=require('./layout')
   , html=require('./html')
@@ -2417,7 +2446,7 @@ exports.html=html;
 exports.button=button;
 exports.layout=layout;
 exports.form=form;
-},{"./button":26,"./form":29,"./html":30,"./layout":32}],32:[function(require,module,exports){
+},{"./button":27,"./form":30,"./html":31,"./layout":33}],33:[function(require,module,exports){
 var html=require('./html')
  ;
 
@@ -2493,8 +2522,8 @@ exports.card=function(opts){
 
   return layout;
 };
-},{"./html":30}],33:[function(require,module,exports){
+},{"./html":31}],34:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
 exports.fieldValue=function(object,name){ return object&&object[name]; };
-},{}]},{},[10])
+},{}]},{},[11])
