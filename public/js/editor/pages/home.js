@@ -113,7 +113,8 @@ var initPage1=function(self){
   }, {icon: 'plus', type: 'success'});
 
   btnNewTask=ui.button.actionButton('დავალების შექმნა', function() {
-    console.log('new task');
+    // TODO: path all required parameters
+    self.openPage('task');
   }, {icon: 'tasks'})
 
   // page1 layout

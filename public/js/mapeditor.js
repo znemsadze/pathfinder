@@ -524,7 +524,7 @@ var filterCheckbox=function(label,onchange){
   };
   return field;
 };
-},{"./api":1,"./pages":21,"./pages/geo":19,"./router":24,"./ui":30}],10:[function(require,module,exports){
+},{"./api":1,"./pages":22,"./pages/geo":20,"./router":25,"./ui":31}],10:[function(require,module,exports){
 var app=require('./app');
 
 app.start();
@@ -717,7 +717,7 @@ var initMap=function(){
   }
 };
 
-},{"../api":1,"../ui":30,"./forms":13,"./geo":19}],12:[function(require,module,exports){
+},{"../api":1,"../ui":31,"./forms":13,"./geo":20}],12:[function(require,module,exports){
 var ui=require('../ui')
   , forms=require('./forms')
   , api=require('../api')
@@ -855,12 +855,13 @@ var getId=function(){
   return feature&&feature.getId();
 };
 
-},{"../api":1,"../ui":30,"./forms":13,"./geo":19}],13:[function(require,module,exports){
+},{"../api":1,"../ui":31,"./forms":13,"./geo":20}],13:[function(require,module,exports){
 var path=require('./path')
   , line=require('./line')
   , tower=require('./tower')
   , office=require('./office')
   , substation=require('./substation')
+  , task=require('./task')
   ;
 
 exports.path=path;
@@ -868,7 +869,8 @@ exports.line=line;
 exports.tower=tower;
 exports.office=office;
 exports.substation=substation;
-},{"./line":14,"./office":15,"./path":16,"./substation":17,"./tower":18}],14:[function(require,module,exports){
+exports.task=task;
+},{"./line":14,"./office":15,"./path":16,"./substation":17,"./task":18,"./tower":19}],14:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -890,7 +892,7 @@ exports.form=function(opts){
   var form=ui.form.create(fields,{actions: actions,load_url:'/api/lines/show.json'});
   return form;
 };
-},{"../../ui":30}],15:[function(require,module,exports){
+},{"../../ui":31}],15:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -913,7 +915,7 @@ exports.form=function(opts){
   return form;
 };
 
-},{"../../ui":30}],16:[function(require,module,exports){
+},{"../../ui":31}],16:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -937,7 +939,7 @@ exports.form=function(opts){
   var form=ui.form.create(fields,{actions: actions, load_url:'/api/paths/show.json'});
   return form;
 };
-},{"../../ui":30}],17:[function(require,module,exports){
+},{"../../ui":31}],17:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -959,7 +961,27 @@ exports.form=function(opts){
   return form;
 };
 
-},{"../../ui":30}],18:[function(require,module,exports){
+},{"../../ui":31}],18:[function(require,module,exports){
+var ui=require('../../ui')
+  ;
+
+exports.form=function(opts){
+  var save_f=opts.save_action;
+  var cancel_f=opts.cancel_action;
+
+  var saveAction = { label: 'დავალების შენახვა', icon:'save', type:'success', action: save_f };
+  var cancelAction = { label:'გაუმება', icon:'times-circle', action: cancel_f };
+
+  var noteText=ui.form.textArea('note', { label: 'შენიშვნა' });
+
+  var fields=[noteText];
+  var actions=[saveAction,cancelAction];
+
+  var form = ui.form.create(fields, { actions: actions });
+  return form;
+};
+
+},{"../../ui":31}],19:[function(require,module,exports){
 var ui=require('../../ui')
   ;
 
@@ -982,7 +1004,7 @@ exports.form=function(opts){
   return form;
 };
 
-},{"../../ui":30}],19:[function(require,module,exports){
+},{"../../ui":31}],20:[function(require,module,exports){
 exports.resetMap=function(map){
   // google.maps.event.clearInstanceListeners(map);
   google.maps.event.clearInstanceListeners(map.data);
@@ -1286,7 +1308,7 @@ var searchPathHit=function(f,word){
   ].join(' ');
   return searchString.indexOf(word) != -1;
 };
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 var ui=require('../ui')
   , api=require('../api')
   , geo=require('./geo')
@@ -1402,7 +1424,8 @@ var initPage1=function(self){
   }, {icon: 'plus', type: 'success'});
 
   btnNewTask=ui.button.actionButton('დავალების შექმნა', function() {
-    console.log('new task');
+    // TODO: path all required parameters
+    self.openPage('task');
   }, {icon: 'tasks'})
 
   // page1 layout
@@ -1647,7 +1670,7 @@ var pathPointSelected=function(){
   var f=map.data.getFeatureById(this.getAttribute('data-id'));
   changeSelection(f);
 };
-},{"../api":1,"../ui":30,"./geo":19}],21:[function(require,module,exports){
+},{"../api":1,"../ui":31,"./geo":20}],22:[function(require,module,exports){
 var home=require('./home')
   , edit_path=require('./edit_path')
   , edit_point=require('./edit_point')
@@ -1660,7 +1683,7 @@ exports.edit_path=edit_path;
 exports.edit_point=edit_point;
 exports.search=search;
 exports.task=task;
-},{"./edit_path":11,"./edit_point":12,"./home":20,"./search":22,"./task":23}],22:[function(require,module,exports){
+},{"./edit_path":11,"./edit_point":12,"./home":21,"./search":23,"./task":24}],23:[function(require,module,exports){
 var ui=require('../ui')
   , api=require('../api')
   , geo=require('./geo')
@@ -1817,7 +1840,7 @@ var isVisible=function(f){
   if (geo.isSubstation(f)){ if(!filters.chkSubstation.isChecked()){ return false; } }
   return true;
 };
-},{"../api":1,"../ui":30,"./geo":19}],23:[function(require,module,exports){
+},{"../api":1,"../ui":31,"./geo":20}],24:[function(require,module,exports){
 var ui=require('../ui')
   , forms=require('./forms')
   , api=require('../api')
@@ -1841,65 +1864,57 @@ module.exports=function(){
 };
 
 var initUI=function(){
-  // var saveAction=function(){
-  //   var form=getForm();
-  //   form.clearErrors();
+  var saveAction=function(){
+    // var form=getForm();
+    // form.clearErrors();
 
-  //   var model=form.getModel()
-  //     , position=marker.getPosition()
-  //     ;
+    // var model=form.getModel()
+    //   , position=marker.getPosition()
+    //   ;
 
-  //   model.lat=position.lat();
-  //   model.lng=position.lng();
+    // model.lat=position.lat();
+    // model.lng=position.lng();
 
-  //   var callback=function(err,data){
-  //     if(err){
-  //       console.log(err);
-  //     } else {
-  //       marker.setMap(null);
-  //       map.loadData({id:data.id, type:getType()});
-  //       self.openPage('root');
-  //     }
-  //   };
+    // var callback=function(err,data){
+    //   if(err){
+    //     console.log(err);
+    //   } else {
+    //     marker.setMap(null);
+    //     map.loadData({id:data.id, type:getType()});
+    //     self.openPage('root');
+    //   }
+    // };
 
-  //   var sent=false;
-  //   if (geo.isTower(getType())){
-  //     if(isNewMode()){ sent=api.tower.newTower(model, callback); }
-  //     else { sent=api.tower.editTower(getId(), model, callback); }
-  //   } else if(geo.isOffice(getType())){
-  //     if(isNewMode()){ sent=api.office.newOffice(model, callback); }
-  //     else { sent=api.office.editOffice(getId(), model, callback); }
-  //   } else if(geo.isSubstation(getType())){
-  //     if(isNewMode()){ sent=api.substation.newSubstation(model, callback); }
-  //     else { sent=api.substation.editSubstation(getId(), model, callback); }
-  //   }
+    // var sent=false;
+    // if (geo.isTower(getType())){
+    //   if(isNewMode()){ sent=api.tower.newTower(model, callback); }
+    //   else { sent=api.tower.editTower(getId(), model, callback); }
+    // } else if(geo.isOffice(getType())){
+    //   if(isNewMode()){ sent=api.office.newOffice(model, callback); }
+    //   else { sent=api.office.editOffice(getId(), model, callback); }
+    // } else if(geo.isSubstation(getType())){
+    //   if(isNewMode()){ sent=api.substation.newSubstation(model, callback); }
+    //   else { sent=api.substation.editSubstation(getId(), model, callback); }
+    // }
 
-  //   canEdit= !sent;
-  //   if(!sent){ form.setModel(model); }
-  // };
+    // canEdit= !sent;
+    // if(!sent){ form.setModel(model); }
+  };
 
-  // var cancelAction=function(){
-  //   marker.setMap(null);
-  //   var feature=getFeature();
-  //   if(feature){ map.data.add(feature); }
-  //   self.openPage('root',{selectedFeature: feature});
-  // };
+  var cancelAction=function(){
+    // marker.setMap(null);
+    // var feature=getFeature();
+    // if(feature){ map.data.add(feature); }
+    self.openPage('root');
+  };
 
-  // var form1=forms.tower.form({save_action:saveAction, cancel_action:cancelAction});
-  // var form2=forms.office.form({save_action:saveAction, cancel_action:cancelAction});
-  // var form3=forms.substation.form({save_action:saveAction, cancel_action:cancelAction});
-  // formLayout=ui.layout.card({children: [form1, form2, form3]});
-  // formLayout.openType=function(type){
-  //   if(geo.isTower(type)){ formLayout.showAt(0); }
-  //   else if(geo.isOffice(type)){ formLayout.showAt(1); }
-  //   else if(geo.isSubstation(type)){ formLayout.showAt(2); }
-  // };
+  var form=forms.task.form({ save_action:saveAction, cancel_action:cancelAction });
 
-  layout=ui.layout.vertical({children:[titleElement]});
+  layout=ui.layout.vertical({children: [titleElement, form] });
   uiInitialized=true;
 };
 
-},{"../api":1,"../ui":30,"./forms":13,"./geo":19}],24:[function(require,module,exports){
+},{"../api":1,"../ui":31,"./forms":13,"./geo":20}],25:[function(require,module,exports){
 var map
   , sidebar
   , filters
@@ -1962,7 +1977,7 @@ var openPage=function(name,params){
   }
 };
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 var html=require('./html')
   , utils=require('./utils')
   ;
@@ -2038,7 +2053,7 @@ exports.dropdown=function(text,buttons,opts){
   }));
   return html.el('div',{class:'btn-group'},[btn,dd]);
 };
-},{"./html":29,"./utils":32}],26:[function(require,module,exports){
+},{"./html":30,"./utils":33}],27:[function(require,module,exports){
 var html=require('../html')
   ;
 
@@ -2226,7 +2241,7 @@ exports.textArea=function(name, opts){
 
   return textarea;
 };
-},{"../html":29}],27:[function(require,module,exports){
+},{"../html":30}],28:[function(require,module,exports){
 var html=require('../html')
   , button=require('../button')
   ;
@@ -2294,7 +2309,7 @@ module.exports=function(fields,opts){
   return _form;
 };
 
-},{"../button":25,"../html":29}],28:[function(require,module,exports){
+},{"../button":26,"../html":30}],29:[function(require,module,exports){
 var form=require('./form')
   , field=require('./field')
   ;
@@ -2304,7 +2319,7 @@ exports.textField=field.textField;
 exports.comboField=field.comboField;
 exports.textArea=field.textArea;
 
-},{"./field":26,"./form":27}],29:[function(require,module,exports){
+},{"./field":27,"./form":28}],30:[function(require,module,exports){
 var utils=require('./utils');
 
 var dashedToCamelized=function(name){
@@ -2405,7 +2420,7 @@ exports.p=function(text,opts){
   return p; 
 };
 
-},{"./utils":32}],30:[function(require,module,exports){
+},{"./utils":33}],31:[function(require,module,exports){
 var button=require('./button')
   , layout=require('./layout')
   , html=require('./html')
@@ -2416,7 +2431,7 @@ exports.html=html;
 exports.button=button;
 exports.layout=layout;
 exports.form=form;
-},{"./button":25,"./form":28,"./html":29,"./layout":31}],31:[function(require,module,exports){
+},{"./button":26,"./form":29,"./html":30,"./layout":32}],32:[function(require,module,exports){
 var html=require('./html')
  ;
 
@@ -2492,7 +2507,7 @@ exports.card=function(opts){
 
   return layout;
 };
-},{"./html":29}],32:[function(require,module,exports){
+},{"./html":30}],33:[function(require,module,exports){
 exports.isArray=function(x){ return x && (x instanceof Array); };
 exports.isElement=function(x){ return x && ((x instanceof Element) || (x instanceof Document)); }
 exports.fieldValue=function(object,name){ return object&&object[name]; };
