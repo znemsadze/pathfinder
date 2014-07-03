@@ -9,5 +9,7 @@ json.tasks @tasks do |task|
     json.id destination.id.to_s
     json.type destination.class.name
     json.name destination.name
+    json.lat destination.lat
+    json.lng destination.lng
   end
 end
