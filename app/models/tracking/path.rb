@@ -2,6 +2,7 @@
 class Tracking::Path
   DISTANCE = 100 # meters
   INTERVAL = 300 # sec
+  MAX_INTERVAL = 60*60 # sec
 
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -25,6 +26,7 @@ class Tracking::Path
     return path if last_point.blank?
 
     return path if (Time.now - last_point.created_at < INTERVAL)
+    return nil if (Time.now - last_point.created_at > MAX_INTERVAL)
 
     a1 = Geokit::LatLng.new(last_point.lat, last_point.lng)
     a2 = Geokit::LatLng.new(lat, lng)
