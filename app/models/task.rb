@@ -14,6 +14,7 @@ class Task
   field :number, type: Integer
   field :note, type: String
   field :status, type: Integer, default: START
+  has_many :paths, class_name: 'Tracking::Path'
   before_create :on_before_create
 
   def normal_destinations
