@@ -31,6 +31,8 @@ class Task
     Task.where(:status.in => [START, IN_PROGRESS])
   end
 
+  def can_delete?; self.start? end
+
   def start?; self.status == START end
   def in_progress?; self.status == IN_PROGRESS end
   def completed?; self.status == COMPLETED end

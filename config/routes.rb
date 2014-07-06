@@ -108,6 +108,7 @@ Pathfinder::Application.routes.draw do
       get '/all', action: 'all', as: 'all'
       get '/show/:id', action: 'show', as: 'task'
       match '/edit/:id', action: 'edit', as: 'edit_task', via: ['get', 'post']
+      delete '/delete/:id', action: 'destroy', as: 'delete_task'
     end
     scope 'tracking', controller: 'tracking' do
       get '/', action: 'index', as: 'tracking'

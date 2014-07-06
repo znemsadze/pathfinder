@@ -25,6 +25,16 @@ class Tasks::BaseController < ApplicationController
     end
   end
 
+  def destroy
+    task = Task.find(params[:id])
+    if task.can_delete?
+      task.destroy
+      redirect_to tasks_open_url, notice: 'დავალება წაშლილია'
+    else
+      redirect_to tasks_task_url(id: task.id), alert: 'ვერ წავშლი'
+    end
+  end
+
   protected
   def nav
     @nav=super
