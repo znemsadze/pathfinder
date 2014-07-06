@@ -2,7 +2,7 @@
   <thead>
     <tr>
       <th>მომხმარებელი</th>
-      <th width="16">?</th>
+      <th>დავალება</th>
       <th>დასაწყისი</th>
       <th>ბოლო</th>
       <th>წერტილები</th>
@@ -15,12 +15,20 @@
           <td>
             <img src="/icons/user.png"/>
             <strong><%= track.user.username %></strong>
-            <%= track.user.full_name %>
+            (<span class="text-muted"><%= track.user.full_name %></span>)
+          </td>
+          <td>
+            <% if track.task %>
+              <img src="<%= track.task.status_icon %>"/>
+              #<code><%= link_to track.task.number, tasks_task_url(id: track.task.id) %></code>
+            <% else %>
+              <span class="text-muted">(ცარიელი)</span>
+            <% end %>
           </td>
           <td>
             <img src="<%= track.open ? '/icons/clock.png' : '/icons/tick.png' %>"/>
+            <%= track.created_at.localtime.strftime('%d-%b-%Y %H:%M:%S') %>
           </td>
-          <td><%= track.created_at.localtime.strftime('%d-%b-%Y %H:%M:%S') %></td>
           <td><%= track.updated_at.localtime.strftime('%d-%b-%Y %H:%M:%S') %></td>
           <td><code><%= track.points.count%></code> <%= link_to 'წერტილი', tasks_tracking_track_url(id: track.id), data: {'no-turbolink' => true} %></td>
         </tr>
