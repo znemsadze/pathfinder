@@ -11,7 +11,6 @@ gem 'turbolinks'
 gem 'jquery-turbolinks'
 gem 'jbuilder', '~> 1.2'
 
-#gem 'mongoid', github: 'mongoid/mongoid', ref: '3d1b8aa48340b79b8481ab96b56e0681433b0bcb'
 gem 'mongoid', '~> 4.0'
 gem 'will_paginate_mongoid'
 gem 'forma', '~>0.1'

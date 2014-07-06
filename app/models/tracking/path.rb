@@ -36,4 +36,6 @@ class Tracking::Path
 
     return nil
   end
+
+  def self.close_paths(user); Tracking::Path.where(user: user, open: true).update_all(open: false) end
 end

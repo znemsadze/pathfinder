@@ -6,7 +6,7 @@ class Task
   START = 0
   CANCELED = 1
   IN_PROGRESS = 2
-  COMPELETED = 10
+  COMPLETED = 10
 
   belongs_to :assignee, class_name: 'Sys::User'
   field :destinations, type: Array
@@ -24,7 +24,34 @@ class Task
   end
 
   def self.current_task(user)
-    Task.where(user: user, status: IN_PROGRESS).first
+    Task.where(assignee: user, status: IN_PROGRESS).first
+  end
+
+  def start?; self.status == START end
+  def in_progress?; self.status == IN_PROGRESS end
+  def completed?; self.status == COMPLETED end
+  def canceled?; self.status == CANCELED end
+
+  def begin
+    if self.start?
+      raise 'დახურეთ ყველა დავალება' if Task.where(assignee: self.assignee, status: IN_PROGRESS).any?
+      self.status=IN_PROGRESS ; self.save
+      Tracking::Path.close_paths(self.assignee)
+    end
+  end
+
+  def close
+    if self.in_progress?
+      self.status = COMPLETED ; self.save
+      Tracking::Path.close_paths(self.assignee)
+    end
+  end
+
+  def cancel
+    if self.in_progress? or self.start?
+      self.status = CANCELED ; self.save
+      Tracking::Path.close_paths(self.assignee)
+    end
   end
 
   private

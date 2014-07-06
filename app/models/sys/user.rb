@@ -14,6 +14,8 @@ module Sys
     field :last_name,  type: String
     field :mobile,     type: String
     has_and_belongs_to_many :roles, class_name: 'Sys::Role'
+    has_many :paths, class_name: 'Tracking::Path'
+    has_many :tasks, as: :assignee
 
     index({ username: 1 }, { unique: true })
     index(first_name: 1, last_name: 1)
