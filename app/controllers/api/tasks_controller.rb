@@ -4,7 +4,7 @@ require 'json'
 class Api::TasksController < ApiController
   def index
     authenticate do |user|
-      @tasks = Task.where(assignee: user).desc(:_id).paginate(per_page: 10, page: params[:page])
+      @tasks = Task.open_tasks.where(assignee: user).desc(:_id).paginate(per_page: 10, page: params[:page])
     end
   end
 
