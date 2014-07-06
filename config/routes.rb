@@ -106,6 +106,7 @@ Pathfinder::Application.routes.draw do
     scope '/', controller: 'base' do
       get '/open', action: 'open', as: 'open'
       get '/all', action: 'all', as: 'all'
+      get '/show/:id', action: 'show', as: 'task'
     end
     scope 'tracking', controller: 'tracking' do
       get '/', action: 'index', as: 'tracking'

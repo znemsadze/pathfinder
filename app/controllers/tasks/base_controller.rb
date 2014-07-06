@@ -10,10 +10,18 @@ class Tasks::BaseController < ApplicationController
     @tasks = Task.desc(:_id).paginate(per_page: 25)
   end
 
+  def show
+    @title='დავალების თვისებები'
+    @task = Task.find(params[:id])
+  end
+
   protected
   def nav
     @nav=super
     @nav['ღია დავალებები']=tasks_open_url
-    @nav[@title]=nil unless ['open'].include?(action_name)
+    unless ['open'].include?(action_name)
+      @nav['ყველა დავალება']=tasks_all_url unless ['all'].include?(action_name)
+      @nav[@title]=nil
+    end
   end
 end

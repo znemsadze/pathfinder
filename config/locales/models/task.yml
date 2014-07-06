@@ -6,6 +6,7 @@ ka:
       note: შენიშვნა
       assignee: მომხმარებელი
       status: სტატუსი
+      created_at: თარიღი
       statuses:
         start: საწყისი
         in_progress: 'დამუშავებაში'
