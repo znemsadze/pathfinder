@@ -1,1 +1,6 @@
 <%= task_view(@task, title: @title) %>
+
+<%= render partial: '/layouts/paths', locals: { paths: @task.tracking_paths, direction: true } %>
+
+
+<%= @task.tracking_paths.count %>

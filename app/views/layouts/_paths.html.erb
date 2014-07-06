@@ -1,0 +1,45 @@
+<div id="map-canvas" style="width:100%; height: 500px; border: 1px solid #aaa; margin-bottom: 32px;"></div>
+<!-- script src="https://maps.googleapis.com/maps/api/js?"></script -->
+<script type="text/javascript">
+  var PATHS = [<%=
+    paths.map do |path|
+      '[' + path.points.map{|p| "[#{p.lat},#{p.lng}]" }.join(',') + ']'
+    end.join(',')
+  %>];
+
+  function initialize() {
+    var mapOptions = {
+      center: new google.maps.LatLng(42,43),
+      zoom: 7
+    };
+    var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+    var bounds = new google.maps.LatLngBounds();
+    var total_points = 0;
+
+    for (var i = 0, l = PATHS.length; i < l; i++) {
+      var points = PATHS[i].map(function(x) { return new google.maps.LatLng(x[0],x[1]); });
+      var path = new google.maps.Polyline({
+        path: points,
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2,
+        <% if direction %>
+        icons: [{
+          icon: { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW },
+          offset: '100%'
+        }],
+        <% end %>
+      });
+
+      path.setMap(map);
+
+      for(var j = 0, k = points.length; j < k; j++) {
+        total_points++;
+        bounds.extend(points[j]);
+      }
+    }
+    if(total_points > 1) { map.fitBounds(bounds); }
+  }
+  google.maps.event.addDomListener(window, 'load', initialize);
+</script>
