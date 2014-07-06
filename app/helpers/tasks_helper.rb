@@ -19,7 +19,7 @@ module TasksHelper
   def task_view(task, opts={})
     view_for task, title: 'დავალების თვისებები', icon: '/icons/report-paper.png', collapsible: true do |f|
       f.edit_action tasks_edit_task_url(id: task.id)
-      f.delete_action tasks_delete_task_url(id: task.id), condition: task.can_delete?
+      f.delete_action tasks_delete_task_url(id: task.id), condition: ->(x){ x.can_delete? }
       f.tab title: 'ძირითადი', icon: '/icons/report-paper.png' do |f|
         f.text_field 'number', required: true, tag: 'code'
         f.date_field 'created_at', required: true
