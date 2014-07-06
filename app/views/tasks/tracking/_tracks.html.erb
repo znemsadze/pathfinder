@@ -20,7 +20,7 @@
           <td>
             <% if track.task %>
               <img src="<%= track.task.status_icon %>"/>
-              #<code><%= link_to track.task.number, tasks_task_url(id: track.task.id) %></code>
+              #<code><%= link_to track.task.number, tasks_task_url(id: track.task.id), data: {'no-turbolink' => true} %></code>
             <% else %>
               <span class="text-muted">(ცარიელი)</span>
             <% end %>
