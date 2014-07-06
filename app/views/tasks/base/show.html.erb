@@ -1,8 +1,5 @@
 <%= task_view(@task, title: @title) %>
 <h4 class="page-header">დავალების რუკა</h4>
-<% if @task.tracking_paths.any? %>
-<%= render partial: '/tasks/tracking/tracks', locals: {tracks: @task.tracking_paths.desc(:_id)} %>
-<% end %>
 <p>
   <strong style="color: green;">მწვანე ფრად</strong> მონიშნულია დავალების
   <strong style="color: green;">გეგნიური მარშუტი</strong>;
@@ -18,3 +15,7 @@ var onPostInitialize = function(map, bounds) {
   map.fitBounds(bounds);
 };
 </script>
+<% if @task.tracking_paths.any? %>
+<h4 class="page-header">ინფორმაცია ტრეკების შესახებ</h4>
+<%= render partial: '/tasks/tracking/tracks', locals: {tracks: @task.tracking_paths.desc(:_id)} %>
+<% end %>
