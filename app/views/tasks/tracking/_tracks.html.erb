@@ -1,7 +1,3 @@
-<h2 class="page-header">
-  <code><%= @user.username %></code>
-  <%= @user.full_name %>
-</h2>
 <table class="table table-bordered table-striped table-hover">
   <thead>
     <tr>
@@ -13,8 +9,8 @@
     </tr>
   </thead>
   <tbody>
-    <% if @tracks.any? %>
-      <% @tracks.each do |track| %>
+    <% if tracks.any? %>
+      <% tracks.each do |track| %>
         <tr>
           <td>
             <img src="/icons/user.png"/>
@@ -31,9 +27,9 @@
       <% end %>
     <% else %>
       <tr>
-        <td colspan="4" style="padding:32px; text-align: center; background: #eee;">no-data</td>
+        <td colspan="5" style="padding:32px; text-align: center; background: #eee;">no-data</td>
       </tr>
     <% end %>
   </tbody>
 </table>
-<%= will_paginate @tracks %>
+<%= will_paginate tracks if tracks.respond_to?(:total_pages) %>
