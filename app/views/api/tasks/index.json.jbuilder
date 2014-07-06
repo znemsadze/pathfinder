@@ -12,4 +12,12 @@ json.tasks @tasks do |task|
     json.lat destination.lat
     json.lng destination.lng
   end
+  json.tracking task.tracking_paths do |tracking|
+    json.id tracking.id.to_s
+    json.open tracking.open
+    json.points tracking.points do |point|
+      json.lat point.lat
+      json.lng point.lng
+    end
+  end
 end
