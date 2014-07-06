@@ -19,6 +19,10 @@ class Tracking::Path
     point.save
   end
 
+  def self.open_tracks
+    Tracking::Path.where(open: true)
+  end
+
   def self.get_path(user, lat, lng)
     path = Tracking::Path.where(user: user, open: true).last
     return nil if path.blank?

@@ -9,24 +9,30 @@
 <div class="row">
   <div class="col-sm-6">
     <div>
-      <h3 class="page-header">დავალებები</h3>
+      <div class="page-header">
+        <div class="pull-right">
+          <span class="label label-info">ღია</span>
+          <span class="label label-danger">სულ</span>
+        </div>
+        <h3>დავალებები</h3>
+      </div>
       <p>
         <%= link_to 'დავალებები', tasks_home_url %>
-        <span class="label label-info"><%=Task.open_tasks.count%></span> /
+        <span class="label label-info"><%=Task.open_tasks.count%></span>
         <span class="label label-danger"><%=Task.count%></span>
       </p>
       <p>
         <%=link_to 'მომხმარებელთა ტრეკინგი', tasks_tracking_url%>
+        <span class="label label-info"><%=Tracking::Path.open_tracks.count%></span>
+        <span class="label label-danger"><%=Tracking::Path.count%></span>
       </p>
-    </div>
-    <div class="well">
-      <span class="label label-info">ღია</span> /
-      <span class="label label-danger">სულ</span>
     </div>
   </div>
   <div class="col-sm-6">
     <div>
-      <h3 class="page-header">რეგიონები</h3>
+      <div class="page-header">
+        <h3>რეგიონები</h3>
+      </div>
       <p>
         <%=link_to 'რეგიონების მართვა', regions_url%>
         <span class="label label-info"><%=Region.count%></span>
