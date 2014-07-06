@@ -23,6 +23,10 @@ class Task
     end
   end
 
+  def self.current_task(user)
+    Task.where(user: user, status: IN_PROGRESS).first
+  end
+
   private
   def on_before_create
     last = Task.last

@@ -9,9 +9,10 @@ class Tracking::Path
   belongs_to :user, class_name: 'Sys::User'
   belongs_to :task, class_name: 'Task'
   has_many :points, class_name: 'Tracking::Point'
+  field :open, type: Mongoid::Boolean, default: true
 
   def self.add_point(user, lat, lng)
-    path = Tracking::Path.get_path(user, lat, lng) || Tracking::Path.create(user: user)
+    path = Tracking::Path.get_path(user, lat, lng) || Tracking::Path.create(user: user, task: user.current_task)
     path.touch; path.save
     point=Tracking::Point.new(path: path)
     point.lat = lat ; point.lng = lng
@@ -19,7 +20,7 @@ class Tracking::Path
   end
 
   def self.get_path(user, lat, lng)
-    path = Tracking::Path.where(user: user).last
+    path = Tracking::Path.where(user: user, open: true).last
     return nil if path.blank?
 
     last_point = path.points.last

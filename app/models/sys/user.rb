@@ -55,6 +55,8 @@ module Sys
       user
     end
 
+    def current_task; Task.current_task(self) end
+
     private
 
     def password_definition
