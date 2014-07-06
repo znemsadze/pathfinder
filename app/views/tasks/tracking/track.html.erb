@@ -5,4 +5,4 @@
 <strong><%=@track.user.username%></strong>
 <%=link_to @track.user.full_name, tasks_tracking_user_url(id: @track.user.id)%>
 </p>
-<%= render partial: '/layouts/path', locals: {points: @track.points, direction: true} %>
+<%= render partial: '/layouts/paths', locals: {paths: [ @track ], direction: true} %>
