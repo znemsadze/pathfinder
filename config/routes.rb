@@ -107,6 +107,7 @@ Pathfinder::Application.routes.draw do
       get '/open', action: 'open', as: 'open'
       get '/all', action: 'all', as: 'all'
       get '/show/:id', action: 'show', as: 'task'
+      match '/edit/:id', action: 'edit', as: 'edit_task', via: ['get', 'post']
     end
     scope 'tracking', controller: 'tracking' do
       get '/', action: 'index', as: 'tracking'

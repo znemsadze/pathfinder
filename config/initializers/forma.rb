@@ -49,7 +49,8 @@ module CommonActions
       url,
       label: I18n.t('models.general._actions.cancel'),
       icon: '/icons/cross.png',
-      confirm: h[:confirm]
+      confirm: h[:confirm],
+      turbolink: (h[:turbolink] == false ? false : true)
     )
   end
 
