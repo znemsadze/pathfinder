@@ -32,6 +32,9 @@ class Task
   end
 
   def can_delete?; self.start? end
+  def can_begin?; self.start? end
+  def can_complete?; self.in_progress? end
+  def can_cancel?; self.start? or self.in_progress? end
 
   def start?; self.status == START end
   def in_progress?; self.status == IN_PROGRESS end
@@ -46,7 +49,7 @@ class Task
     end
   end
 
-  def close
+  def complete
     if self.in_progress?
       self.status = COMPLETED ; self.save
       Tracking::Path.close_paths(self.assignee)

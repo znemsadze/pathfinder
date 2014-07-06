@@ -31,7 +31,37 @@ class Tasks::BaseController < ApplicationController
       task.destroy
       redirect_to tasks_open_url, notice: 'დავალება წაშლილია'
     else
-      redirect_to tasks_task_url(id: task.id), alert: 'ვერ წავშლი'
+      redirect_to tasks_task_url(id: task.id), alert: 'ამ დავალებას ვერ წავშლი'
+    end
+  end
+
+  def begin_task
+    task = Task.find(params[:id])
+    if task.can_begin?
+      task.begin
+      redirect_to tasks_task_url(id: task.id), notice: 'დავალება დაწყებულია'
+    else
+      redirect_to tasks_task_url(id: task.id), alert: 'დავალებას ვერ დავიწყებ'
+    end
+  end
+
+  def cancel_task
+    task = Task.find(params[:id])
+    if task.can_cancel?
+      task.cancel
+      redirect_to tasks_task_url(id: task.id), notice: 'დავალება გაუქმებულია'
+    else
+      redirect_to tasks_task_url(id: task.id), alert: 'დავალებას ვერ გავაუქმებ'
+    end
+  end
+
+  def complete_task
+    task = Task.find(params[:id])
+    if task.can_cancel?
+      task.complete
+      redirect_to tasks_task_url(id: task.id), notice: 'დავალება დასრულებულია'
+    else
+      redirect_to tasks_task_url(id: task.id), alert: 'დავალებას ვერ დავასრულებ'
     end
   end
 

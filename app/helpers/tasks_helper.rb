@@ -23,7 +23,11 @@ module TasksHelper
       f.tab title: 'ძირითადი', icon: '/icons/report-paper.png' do |f|
         f.text_field 'number', required: true, tag: 'code'
         f.date_field 'created_at', required: true
-        f.text_field 'status_name', required: true, i18n: 'status', icon: ->(x){ x.status_icon }
+        f.text_field 'status_name', required: true, i18n: 'status', icon: ->(x){ x.status_icon } do |f|
+          f.action tasks_begin_task_url(id: task.id), label: 'დავალების დაწყება', icon: '/icons/status_in_progress.png', method: 'post', confirm: 'ნამდვილად გინდათ დავალების დაწყება?' if task.can_begin?
+          f.action tasks_complete_task_url(id: task.id), label: 'დავალების დასრულება', icon: '/icons/status_completed.png', method: 'post', confirm: 'ნამდვილად გინდათ დავალების დასრულება?' if task.can_complete?
+          f.action tasks_cancel_task_url(id: task.id), label: 'დავალების გაუქმება', icon: '/icons/status_canceled.png', method: 'post', confirm: 'ნამდვილად გინდათ დავალების გაუქმება?' if task.can_cancel?
+        end
         f.complex_field i18n: 'assignee', required: true do |f|
           f.text_field 'assignee.username', tag: 'strong', url: admin_user_url(id: task.assignee.id)
           f.text_field 'assignee.full_name'

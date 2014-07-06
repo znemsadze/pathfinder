@@ -1,6 +1,20 @@
 <%= task_view(@task, title: @title) %>
+<h4 class="page-header">დავალების რუკა</h4>
 <% if @task.tracking_paths.any? %>
-<h4 class="page-header">დავალებასთან დაკავშირებული ტრეკები &mdash; <code><%= @task.tracking_paths.count %></code></h4>
 <%= render partial: '/tasks/tracking/tracks', locals: {tracks: @task.tracking_paths.desc(:_id)} %>
-<%= render partial: '/layouts/paths', locals: { paths: @task.tracking_paths, direction: true } %>
 <% end %>
+<p>
+  <strong style="color: green;">მწვანე ფრად</strong> მონიშნულია დავალების
+  <strong style="color: green;">გეგნიური მარშუტი</strong>;
+  ხოლო <strong style="color: red;">წითლად</strong> -- რეალური <strong style="color: red;">ტრეკი</strong>.
+</p>
+<%= render partial: '/layouts/paths', locals: { paths: @task.tracking_paths, direction: true } %>
+<script type="text/javascript">
+var task_paths = [<%= @task.paths.map do |path|
+  '['+ path.map { |point| "[#{point['lat']},#{point['lng']}]" }.join(',') +']'
+end.join(',') %>];
+var onPostInitialize = function(map, bounds) {
+  draw_paths({ map: map, data: task_paths, bounds: bounds, color: '#00AA00', direction: true, });
+  map.fitBounds(bounds);
+};
+</script>

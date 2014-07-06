@@ -26,7 +26,7 @@ class Objects::TaskTest < ActiveSupport::TestCase
     assert_equal path.user, user
     assert_equal 3, path.points.count
 
-    task.close ; task.reload ; path.reload
+    task.complete ; task.reload ; path.reload
     assert task.completed?
     refute path.open, 'track should be closed by then'
 
