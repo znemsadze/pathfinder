@@ -5,39 +5,4 @@
 <strong><%=@track.user.username%></strong>
 <%=link_to @track.user.full_name, tasks_tracking_user_url(id: @track.user.id)%>
 </p>
-<div id="map-canvas" style="width:100%; height: 500px; border: 1px solid #aaa;"></div>
-<script src="https://maps.googleapis.com/maps/api/js?"></script>
-<script type="text/javascript">
-  var POINTS = [<%= @track.points.map{|x| "[#{x.lat},#{x.lng}]"}.join(',') %>];
-  function initialize() {
-    var mapOptions = {
-      center: new google.maps.LatLng(42,43),
-      zoom: 7
-    };
-    var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-
-    var points = POINTS.map(function(x) { return new google.maps.LatLng(x[0],x[1]); });
-    var path = new google.maps.Polyline({
-      path: points,
-      geodesic: true,
-      strokeColor: '#FF0000',
-      strokeOpacity: 1.0,
-      strokeWeight: 2,
-      icons: [{
-        icon: { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW },
-        offset: '100%'
-      }],
-    });
-
-    path.setMap(map);
-
-    if(points.length > 1) {
-      var bounds = new google.maps.LatLngBounds();
-      for(var i=0,l=points.length;i<l;i++){
-        bounds.extend(points[i]);
-      }
-      map.fitBounds(bounds);
-    }
-  }
-  google.maps.event.addDomListener(window, 'load', initialize);
-</script>
+<%= render partial: '/layouts/path', locals: {points: @track.points, direction: true} %>
