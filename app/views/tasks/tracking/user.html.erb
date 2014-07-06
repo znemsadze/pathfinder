@@ -6,6 +6,7 @@
   <thead>
     <tr>
       <th>მომხმარებელი</th>
+      <th width="16">?</th>
       <th>დასაწყისი</th>
       <th>ბოლო</th>
       <th>წერტილები</th>
@@ -19,6 +20,9 @@
             <img src="/icons/user.png"/>
             <strong><%= track.user.username %></strong>
             <%= track.user.full_name %>
+          </td>
+          <td>
+            <img src="<%= track.open ? '/icons/clock.png' : '/icons/tick.png' %>"/>
           </td>
           <td><%= track.created_at.localtime.strftime('%d-%b-%Y %H:%M:%S') %></td>
           <td><%= track.updated_at.localtime.strftime('%d-%b-%Y %H:%M:%S') %></td>

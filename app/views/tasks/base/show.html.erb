@@ -1,6 +1,5 @@
 <%= task_view(@task, title: @title) %>
-
+<% if @task.tracking_paths.any? %>
+<h4 class="page-header">დავალებასთან დაკავშირებული ტრეკები &mdash; <code><%= @task.tracking_paths.count %></code></h4>
 <%= render partial: '/layouts/paths', locals: { paths: @task.tracking_paths, direction: true } %>
-
-
-<%= @task.tracking_paths.count %>
+<% end %>
