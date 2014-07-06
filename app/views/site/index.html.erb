@@ -11,8 +11,17 @@
     <div>
       <h3 class="page-header">დავალებები</h3>
       <p>
+        <%= link_to 'დავალებები', tasks_home_url %>
+        <span class="label label-info"><%=Task.open_tasks.count%></span> /
+        <span class="label label-danger"><%=Task.count%></span>
+      </p>
+      <p>
         <%=link_to 'მომხმარებელთა ტრეკინგი', tasks_tracking_url%>
       </p>
+    </div>
+    <div class="well">
+      <span class="label label-info">ღია</span> /
+      <span class="label label-danger">სულ</span>
     </div>
   </div>
   <div class="col-sm-6">

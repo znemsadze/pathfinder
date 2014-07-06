@@ -27,6 +27,10 @@ class Task
     Task.where(assignee: user, status: IN_PROGRESS).first
   end
 
+  def self.open_tasks
+    Task.where(:status.in => [START, IN_PROGRESS])
+  end
+
   def start?; self.status == START end
   def in_progress?; self.status == IN_PROGRESS end
   def completed?; self.status == COMPLETED end
