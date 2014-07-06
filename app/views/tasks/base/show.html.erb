@@ -8,11 +8,34 @@
 <%= render partial: '/layouts/paths', locals: { paths: @task.tracking_paths, direction: true } %>
 <script type="text/javascript">
 var task_paths = [<%= @task.paths.map do |path|
-  '['+ path.map { |point| "[#{point['lat']},#{point['lng']}]" }.join(',') +']'
-end.join(',') %>];
+    '['+ path.map { |point| "[#{point['lat']},#{point['lng']}]" }.join(',') +']'
+  end.join(',') %>];
+var destinations = eval('<%= @task.normal_destinations.map { |dest| {name: dest.name, type: dest.class.name, lat: dest.lat, lng: dest.lng} }.to_json.html_safe %>');
 var onPostInitialize = function(map, bounds) {
   draw_paths({ map: map, data: task_paths, bounds: bounds, color: '#00AA00', direction: true, });
+  drawDestinations(map, bounds);
   map.fitBounds(bounds);
+};
+var drawDestinations = function(map, bounds) {
+  for (var i = 0, l = destinations.length; i < l; i++) {
+    var dest = destinations[i];
+    var position = new google.maps.LatLng(dest.lat, dest.lng);
+    var icon = '';
+    if (dest.type == 'Objects::Office') {
+      icon = '/map/office.png';
+    } else if (dest.type == 'Objects::Substation') {
+      icon = '/map/substation.png';
+    } else if (dest.type == 'Object::Tower') {
+      icon = '/map/tower.png';
+    }
+    var marker = new google.maps.Marker({
+      position: position,
+      map: map,
+      title: dest.name,
+      icon: icon,
+    });
+    bounds.extend(position);
+  }
 };
 </script>
 <% if @task.tracking_paths.any? %>
