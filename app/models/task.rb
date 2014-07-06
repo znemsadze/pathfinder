@@ -58,6 +58,24 @@ class Task
     end
   end
 
+  def status_icon
+    case self.status
+    when IN_PROGRESS then '/icons/status_in_progress.png'
+    when COMPLETED then '/icons/status_completed.png'
+    when CANCELED then '/icons/status_canceled.png'
+    else '/icons/status_start.png'
+    end
+  end
+
+  def status_name
+    case self.status
+    when IN_PROGRESS then I18n.t('models.task.statuses.in_progress')
+    when COMPLETED then I18n.t('models.task.statuses.completed')
+    when CANCELED then I18n.t('models.task.statuses.canceled')
+    else I18n.t('models.task.statuses.start')
+    end
+  end
+
   private
   def on_before_create
     last = Task.last

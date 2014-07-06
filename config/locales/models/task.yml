@@ -1,0 +1,13 @@
+ka:
+  models:
+    task:
+      status: 'სტატუსი'
+      number: ნომერი
+      note: შენიშვნა
+      assignee: მომხმარებელი
+      status: სტატუსი
+      statuses:
+        start: საწყისი
+        in_progress: 'დამუშავებაში'
+        completed: 'შესრულებული'
+        canceled: 'გაუქმებული'

@@ -1,7 +1,8 @@
 # -*- encoding : utf-8 -*-
 class Tasks::BaseController < ApplicationController
   def index
-    @title='დავალებები'
+    @title='ღია დავალებები'
+    @tasks = Task.open_tasks.desc(:_id).paginate(per_page: 25)
   end
 
   protected
