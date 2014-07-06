@@ -22,7 +22,7 @@
         <span class="label label-danger"><%=Task.count%></span>
       </p>
       <p>
-        <%=link_to 'მომხმარებელთა ტრეკინგი', tasks_tracking_url%>
+        <%=link_to 'მომხმარებელთა ტრეკინგი', tasks_tracking_url, data: { 'no-turbolink' => true }%>
         <span class="label label-info"><%=Tracking::Path.open_tracks.count%></span>
         <span class="label label-danger"><%=Tracking::Path.count%></span>
       </p>

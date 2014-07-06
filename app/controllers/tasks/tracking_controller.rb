@@ -2,6 +2,7 @@
 class Tasks::TrackingController < ApplicationController
   def index
     @title='მომხმარებელთა ტრეკინგი'
+    @open_tracks = Tracking::Path.where(open: true)
     @users=Sys::User.all.asc(:username)
   end
 
