@@ -64,11 +64,11 @@ module CommonActions
     end
   end
 
-  def delete_action(url)
+  def delete_action(url, opts = {})
     if respond_to?(:title_action)
-      title_action url, method: 'delete', icon: '/icons/bin.png', label: I18n.t('models.general._actions.delete'), confirm: I18n.t('models.general._actions.confirm')
+      title_action url, opts.merge(method: 'delete', icon: '/icons/bin.png', label: I18n.t('models.general._actions.delete'), confirm: I18n.t('models.general._actions.confirm'))
     else
-      action url, method: 'delete', icon: '/icons/bin.png', label: I18n.t('models.general._actions.delete'), confirm: I18n.t('models.general._actions.confirm')
+      action url, opts.merge(method: 'delete', icon: '/icons/bin.png', label: I18n.t('models.general._actions.delete'), confirm: I18n.t('models.general._actions.confirm'))
     end
   end
 
