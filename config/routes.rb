@@ -104,7 +104,8 @@ Pathfinder::Application.routes.draw do
 
   namespace 'tasks' do
     scope '/', controller: 'base' do
-      get '/', action: 'index', as: 'home'
+      get '/open', action: 'open', as: 'open'
+      get '/all', action: 'all', as: 'all'
     end
     scope 'tracking', controller: 'tracking' do
       get '/', action: 'index', as: 'tracking'

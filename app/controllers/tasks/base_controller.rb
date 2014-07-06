@@ -1,14 +1,19 @@
 # -*- encoding : utf-8 -*-
 class Tasks::BaseController < ApplicationController
-  def index
+  def open
     @title='ღია დავალებები'
     @tasks = Task.open_tasks.desc(:_id).paginate(per_page: 25)
+  end
+
+  def all
+    @title='ყველა დავალება'
+    @tasks = Task.desc(:_id).paginate(per_page: 25)
   end
 
   protected
   def nav
     @nav=super
-    @nav['დავალებები']=tasks_home_url
-    @nav[@title]=nil unless ['index'].include?(action_name)
+    @nav['ღია დავალებები']=tasks_open_url
+    @nav[@title]=nil unless ['open'].include?(action_name)
   end
 end
