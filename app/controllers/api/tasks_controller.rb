@@ -15,4 +15,31 @@ class Api::TasksController < ApiController
     task = Task.create(assignee: assignee, note: params[:note], paths: paths, destinations: destinations)
     render json: {number: task.number}
   end
+
+  def begin_task
+    task = Task.find(params[:id])
+    if task.can_begin?
+      task.begin ; render json: { text: 'ok' }
+    else
+      render json: { error: 'ამ დავალებას ვერ დაიწყებთ: ჯერ დახურეთ სხვა დავალებები.' }
+    end
+  end
+
+  def cancel_task
+    task = Task.find(params[:id])
+    if task.can_cancel?
+      task.cancel ; render json: { text: 'ok' }
+    else
+      render json: { error: 'ამ დავალებას ვერ გააუქმებთ' }
+    end
+  end
+
+  def complete_task
+    task = Task.find(params[:id])
+    if task.can_cancel?
+      task.complete ; render json: { text: 'ok' }
+    else
+      render json: { error: 'ამ დავალებას ვერ დაასრულებთ' }
+    end
+  end
 end

@@ -165,6 +165,9 @@ Pathfinder::Application.routes.draw do
     scope 'tasks', controller: 'tasks' do
       match '/', action: 'index', via: ['get', 'post']
       post '/new', action: 'new'
+      post '/begin_task', action: 'begin_task'
+      post '/complete_task', action: 'complete_task'
+      post '/cancel_task', action: 'cancel_task'
     end
   end
 
