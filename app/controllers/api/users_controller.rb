@@ -9,7 +9,8 @@ class Api::UsersController < ApiController
   end
 
   def track_point
-    Tracking::Path.add_point(Sys::User.find(params[:userid]), params[:lat].to_f, params[:lng])
+    user=Sys::User.find(params[:userid])
+    Tracking::Path.add_point(user, params[:lat].to_f, params[:lng].to_f)
     render json: {status: 'ok'}
   end
 end
