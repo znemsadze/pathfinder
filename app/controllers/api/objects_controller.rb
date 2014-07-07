@@ -1,10 +1,10 @@
 # -*- encoding : utf-8 -*-
 class Api::ObjectsController < ApiController
-  MAX_TOWERS=100
+  MAX_TOWERS=100_000
 
-  caches_action :index, if: (Proc.new do
+  caches_action :index, if: -> {
     params[:id].blank?
-  end)
+  } 
 
   def index
     @all=get_towers+get_offices+get_substations+get_lines+get_paths
