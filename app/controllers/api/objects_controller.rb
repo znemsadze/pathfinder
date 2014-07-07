@@ -2,7 +2,13 @@
 class Api::ObjectsController < ApiController
   MAX_TOWERS=100
 
-  def index; @all=get_towers+get_offices+get_substations+get_lines+get_paths end
+  caches_action :index, if: (Proc.new do
+    params[:id].blank?
+  end)
+
+  def index
+    @all=get_towers+get_offices+get_substations+get_lines+get_paths
+  end
 
   private
 

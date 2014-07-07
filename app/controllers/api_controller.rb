@@ -2,6 +2,7 @@
 class ApiController < ActionController::Base
   protect_from_forgery with: :null_session
   before_filter :set_access_control_headers
+  rescue_from Exception, with: :api_error
 
   protected
   def authenticate
@@ -14,6 +15,10 @@ class ApiController < ActionController::Base
   end
 
   private
+
+  def api_error(ex)
+    render json: { error: ex.to_s }
+  end
 
   def set_access_control_headers
     headers['Access-Control-Allow-Origin'] = "*"
