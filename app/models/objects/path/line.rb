@@ -2,11 +2,13 @@
 class Objects::Path::Line
   include Mongoid::Document
   include Objects::LengthProperty
+  include Objects::Kml
 
   belongs_to :detail, class_name: 'Objects::Path::Detail'
   field :point_ids, type: Array, default:[]
   field :name, type: String
   field :description, type: String
+  field :kmlid, type: String
   belongs_to :region
 
   def self.new_path(points,params)
@@ -38,7 +40,7 @@ class Objects::Path::Line
         if p.is_a?(Hash) then lat,lng=p['lat'],p['lng']
         else lat,lng=p[0],p[1] end
         point=Objects::Path::Point.where(location: [lng,lat]).first
-        if point.blank? and (i==0 or i==points.length-1)
+        if existing_points.any? and point.blank? and (i==0 or i==points.length-1)
           point=(i==0 ? existing_points.first : existing_points.last)
           if self.point_ids.include?(point.id)
             point=nil
@@ -74,6 +76,40 @@ class Objects::Path::Line
       point=Objects::Path::Point.find(point_id)
       route_count=point.route_count
       splitat(point) if (point.path_count>1 and route_count>2)
+    end
+  end
+
+  def self.from_kml(xml)
+    parser=XML::Parser.string xml
+    doc=parser.parse ; root=doc.child
+    kmlns="kml:#{KMLNS}"
+    placemarks=doc.child.find '//kml:Placemark',kmlns
+    placemarks.each do |placemark|
+      id = placemark.attributes['id']
+      name = placemark.find('./kml:name', kmlns).first.content
+      coords = placemark.find('./kml:MultiGeometry/kml:LineString/kml:coordinates', kmlns).first.content
+
+      # description content
+      # descr=placemark.find('./kml:description',kmlns).first.content
+      # s1='<td>რეგიონი</td>'
+      # s2='<td>მიმართულება</td>'
+      # idx1=descr.index(s1)+s1.length
+      # idx2=descr.index(s2)+s2.length
+      # regname=descr[idx1..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
+      # direction=descr[idx2..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
+      # region=Region.where(name:regname).first
+      # region=Region.create(name:regname) if region.blank?
+      # end of description section
+
+      detail = Objects::Path::Detail.first # XXX
+      region = Region.first # XXX
+      params = { name: name, description: '', detail_id: detail.id, region_id: region.id }
+      points = coords.split(' ').map do |text|
+        coords = text.split(',').map{ |x| x.strip.to_f }
+        { 'lng' => coords[0],  'lat' => coords[1] }
+      end
+      line = Objects::Path::Line.where(kmlid: id).first || Objects::Path::Line.create(kmlid: id)
+      line.update_path(points, params)
     end
   end
 
