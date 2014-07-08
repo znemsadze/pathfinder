@@ -1,4 +1,5 @@
 <%=table_for @lines, title:@title, icon:'/icons/arrow-switch.png', collapsible:true do |t|
+  t.title_action objects_upload_path_lines_url, label: 'ფაილის ატვირთვა', icon: '/icons/upload-cloud.png'
   t.item_action ->(x){objects_path_line_url(id:x.id)}, icon: '/icons/eye.png', turbolink: false
   t.text_field 'name', url: ->(x){objects_path_line_url(id:x.id)}, turbolink: false
   t.text_field 'description'

@@ -10,14 +10,39 @@ class Objects::PathLinesController < ApplicationController
     @line=Objects::Path::Line.find(params[:id])
   end
 
+  def upload
+    @title='ფაილის ატვირთვა'
+    if request.post?
+      f=params[:data].original_filename
+      case File.extname(f).downcase
+      when '.kmz' then upload_kmz(params[:data].tempfile)
+      when '.kml' then upload_kml(params[:data].tempfile)
+      # when '.xlsx' then upload_xlsx(params[:data].tempfile)
+      else raise 'არასწორი ფორმატი' end
+      redirect_to objects_path_lines_url, notice: 'მონაცემები ატვირთულია'
+    end
+  end
 
   protected
   def nav
     @nav=super
     @nav['მარშუტები']=objects_path_lines_url
-    if @line
+    if @line || ['upload'].include?(action_name)
       @nav[@line.name]=objects_path_line_url(id:@line.id) if 'edit'==action_name
       @nav[@title]=nil
     end
+  end
+
+  def upload_kmz(file)
+    Zip::File.open file do |zip_file|
+      zip_file.each do |entry|
+        upload_kml(entry) if 'kml'==entry.name[-3..-1]
+      end
+    end
+  end
+
+  def upload_kml(file)
+    kml=file.get_input_stream.read
+    Objects::Path::Line.from_kml(kml)
   end
 end

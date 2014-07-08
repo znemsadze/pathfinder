@@ -72,6 +72,7 @@ Pathfinder::Application.routes.draw do
       scope '/lines', controller: 'path_lines' do
         get '/', action: 'index', as: 'path_lines'
         get '/show/:id', action: 'show', as: 'path_line'
+        match '/upload', action: 'upload', via: ['get','post'], as: 'upload_path_lines'
       end
       scope '/types', controller: 'path_types' do
         get '/', action: 'index', as: 'path_types'
