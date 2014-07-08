@@ -359,9 +359,11 @@ var ui=require('./ui')
 
 var mapElement, sidebarElement, filterbarElement
   , defaultCenterLat, defaultCenterLng, defaultZoom
-  , apikey, map
+  , apikey, map, currentZoomLevel
   , app
   ;
+
+var MIN_TOWER_ZOOM = 11;
 
 /**
  * Entry point for the application.
@@ -441,7 +443,7 @@ var styleFunction=function(f) {
       visible: true,
       clickable: true,
       title: name + ' (' + f.getProperty('linename') +')',
-      visible: visible&&chkTower.isChecked(),
+      visible: visible && chkTower.isChecked() && map.getZoom() > MIN_TOWER_ZOOM,
     };
   } else if (geo.isOffice(f)){
     var icon;
@@ -494,7 +496,17 @@ var initMap=function(){
   map.loadData();
 
   window.map=map;
+
+  currentZoomLevel = map.getZoom();
+  google.maps.event.addListener(map, 'zoom_changed', function() {
+    var newZoomLevel = map.getZoom();
+    if( (newZoomLevel > MIN_TOWER_ZOOM && currentZoomLevel <= MIN_TOWER_ZOOM) || (newZoomLevel <= MIN_TOWER_ZOOM && currentZoomLevel > MIN_TOWER_ZOOM) ) {
+      map.data.setStyle(styleFunction);
+    }
+    currentZoomLevel = newZoomLevel;
+  });
 };
+
 
 // router
 
@@ -522,19 +534,19 @@ var regionCombo
   ;
 
 var initFilterbar=function(){
-  var mapReset=function(){
+  var resetMapStyle=function(){
     map.data.setStyle(styleFunction);
     router.filterChanged();
   };
 
   regionCombo=ui.form.comboField('filter_region', {collection_url: '/regions.json', text_property: 'name', empty: '-- ყველა რეგიონი --'});
-  regionCombo.addChangeListener(mapReset);
+  regionCombo.addChangeListener(resetMapStyle);
 
-  chkOffice=filterCheckbox('ოფისი', mapReset);
-  chkSubstation=filterCheckbox('ქვესადგური', mapReset);
-  chkTower=filterCheckbox('ანძა', mapReset);
-  chkLine=filterCheckbox('გადამცემი ხაზი', mapReset);
-  chkPath=filterCheckbox('მარშუტი', mapReset);
+  chkOffice=filterCheckbox('ოფისი', resetMapStyle);
+  chkSubstation=filterCheckbox('ქვესადგური', resetMapStyle);
+  chkTower=filterCheckbox('ანძა', resetMapStyle);
+  chkLine=filterCheckbox('გადამცემი ხაზი', resetMapStyle);
+  chkPath=filterCheckbox('მარშუტი', resetMapStyle);
 
   var d1=ui.html.el('div', [chkOffice, chkSubstation, chkTower]);
   var d2=ui.html.el('div', [chkLine, chkPath]);
