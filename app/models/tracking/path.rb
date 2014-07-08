@@ -12,7 +12,11 @@ class Tracking::Path
   field :open, type: Mongoid::Boolean, default: true
 
   def self.add_point(user, lat, lng)
-    path = Tracking::Path.get_path(user, lat, lng) || Tracking::Path.create(user: user, task: user.current_task)
+    path = Tracking::Path.get_path(user, lat, lng)
+    if path.blank?
+      Tracking::Path.where(user: user, open: true).update_all(open: false)
+      path = Tracking::Path.create(user: user, task: user.current_task)
+    end
     path.touch; path.save
     point=Tracking::Point.new(path: path)
     point.lat = lat ; point.lng = lng
