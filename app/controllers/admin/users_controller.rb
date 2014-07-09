@@ -14,7 +14,7 @@ class Admin::UsersController < ApplicationController
     @title=t('models.sys_user._actions.new_user')
     if request.post?
       @user=Sys::User.new(user_params)
-      if @user.save(user:current_user)
+      if @user.save(user: current_user)
         redirect_to admin_users_url, notice: t('pages.admin_users.new.user_created')
       end
     else
@@ -26,7 +26,7 @@ class Admin::UsersController < ApplicationController
     @title=t('models.sys_user._actions.edit_user')
     @user=Sys::User.find(params[:id])
     if request.post?
-      if @user.update_attributes(user_params.merge(user:current_user))
+      if @user.update_attributes(user_params.merge(user: current_user))
         redirect_to admin_user_url(id:@user.id), notice: t('pages.admin_users.edit.user_updated')
       end
     end
@@ -59,5 +59,5 @@ class Admin::UsersController < ApplicationController
   end
 
   private
-  def user_params; params.require(:sys_user).permit(:username,:password,:first_name,:last_name,:mobile) end
+  def user_params; params.require(:sys_user).permit(:username, :password, :first_name, :last_name, :mobile, :active, :admin, :editor, :all_regions) end
 end

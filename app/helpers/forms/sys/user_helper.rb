@@ -10,8 +10,10 @@ module Forms::Sys::UserHelper
       f.text_field 'first_name', required:true
       f.text_field 'last_name', required:true
       f.text_field 'mobile', required:true
-      f.boolean_field 'admin', required:true unless user.new_record?
       f.boolean_field 'active', required:true unless user.new_record?
+      f.boolean_field 'admin', required:true unless user.new_record?
+      f.boolean_field 'editor', required: true
+      f.boolean_field 'all_regions', required: true
       f.submit t('models.general._actions.save')
       f.cancel_button cancel_url
     end
@@ -25,11 +27,13 @@ module Forms::Sys::UserHelper
       f.edit_action admin_edit_user_url(id:user.id)
       f.delete_action admin_destroy_user_url(id:user.id)
       f.tab title: t('models.general.general_properties'), icon:icon do |f|
-        f.text_field 'username', required:true, tag:'code'
-        f.text_field 'full_name', required:true
-        f.text_field 'formatted_mobile', required:true, tag:'code', i18n:'mobile'
-        f.boolean_field 'admin', required:true
-        f.boolean_field 'active', required:true
+        f.text_field 'username', required: true, tag: 'code'
+        f.text_field 'full_name', required: true
+        f.text_field 'formatted_mobile', required: true, tag: 'code', i18n: 'mobile'
+        f.boolean_field 'active', required: true
+        f.boolean_field 'admin', required: true
+        f.boolean_field 'editor', required: true
+        f.boolean_field 'all_regions', required: true
       end
       table_opts={ title: "რეგიონები &mdash; <strong>#{user.regions.count}</strong>".html_safe, icon:'/icons/region.png' }
       f.tab table_opts do |t|
