@@ -10,6 +10,7 @@ class Region
   has_many :towers, class_name: 'Objects::Tower'
   has_many :offices, class_name: 'Objects::Office'
   has_many :substations, class_name: 'Objects::Substation'
+  has_and_belongs_to_many :users, class_name: 'Sys::User'
   validates :name, presence: {message: 'ჩაწერეთ სახელი'}
 
   def self.get_by_name(name); Region.where(name:name).first || Region.create(name:name) end
