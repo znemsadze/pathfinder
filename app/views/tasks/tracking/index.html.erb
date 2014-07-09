@@ -26,7 +26,9 @@ var onPostInitialize = function(map, bounds) {
      });
 
   }
-  map.fitBounds(bounds);
+  if (users.length > 1) {
+    map.fitBounds(bounds);
+  }
 };
 </script>
 <h3 class="page-header">ყველა მომხმარებელი</h3>
