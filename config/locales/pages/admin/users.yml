@@ -10,7 +10,3 @@ ka:
         user_updated: მომხმარებელი განახლებულია
       destroy:
         user_destroied: მომხმარებელი წაშლილია
-      remove_role:
-        role_removed: როლი წაშლილია
-      add_role:
-        role_added: როლი დამატებულია

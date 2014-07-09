@@ -13,7 +13,6 @@ module Sys
     field :first_name, type: String
     field :last_name,  type: String
     field :mobile,     type: String
-    has_and_belongs_to_many :roles, class_name: 'Sys::Role'
     has_many :paths, class_name: 'Tracking::Path'
     has_many :tasks, as: :assignee
 
@@ -40,7 +39,6 @@ module Sys
     def to_s; self.full_name end
     def formatted_mobile; KA.format_mobile(self.mobile) end
 
-    def includes_role?(role); self.role_ids.include?(Moped::BSON::ObjectId(role)) end
     def admin?; self.admin end
 
     def password=(pwd)

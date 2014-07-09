@@ -21,17 +21,6 @@ Pathfinder::Application.routes.draw do
       match '/new', action: 'new', as: 'new_user', via: ['get','post']
       match '/edit/:id', action: 'edit', as: 'edit_user', via: ['get','post']
       delete '/delete/:id', action: 'destroy', as: 'destroy_user'
-      match '/add_role/:id', action:'add_role', as:'user_add_role', via:['get','post']
-      delete '/remove_role/:id/:role_id', action:'remove_role', as:'user_remove_role'
-    end
-    scope '/roles', controller: 'roles' do
-      get '/', action: 'index', as:'roles'
-      get '/show/:id', action:'show', as:'role'
-      match '/new', action:'new', as:'new_role', via:['get','post']
-      match '/edit/:id', action:'edit', as:'edit_role', via:['get','post']
-      delete '/delete/:id', action:'destroy', as:'destroy_role'
-      match '/add_user/:id', action:'add_user', as:'role_add_user', via:['get','post']
-      delete '/remove_user/:id/:user_id', action:'remove_user', as:'role_remove_user'
     end
   end
 
