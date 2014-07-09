@@ -5,9 +5,6 @@
       <i class="fa fa-pencil"></i> რუკაზე ობიექტების რედაქტირება
     </a>
   </p>
-  <p class="text-center">
-    <%= link_to 'კეშის გასუფთავება', objects_clear_cache_url, data: {confirm: 'ნამდვილად გინდათ კეშის გასუფთავება?', method: 'post'} %>
-  </p>
 </div>
 <div class="row">
   <div class="col-sm-6">
@@ -17,14 +14,19 @@
           <span class="label label-info">ღია</span>
           <span class="label label-danger">სულ</span>
         </div>
-        <h3>დავალებები</h3>
+        <h3>
+          <i class="fa fa-tasks"></i>
+          დავალებები
+        </h3>
       </div>
       <p>
+        <i class="fa fa-tasks"></i>
         <%= link_to 'დავალებები', tasks_open_url %>
         <span class="label label-info"><%=Task.open_tasks.count%></span>
         <span class="label label-danger"><%=Task.count%></span>
       </p>
       <p>
+        <i class="fa fa-users"></i>
         <%=link_to 'მომხმარებელთა ტრეკინგი', tasks_tracking_url, data: { 'no-turbolink' => true }%>
         <span class="label label-info"><%=Tracking::Path.open_tracks.count%></span>
         <span class="label label-danger"><%=Tracking::Path.count%></span>
@@ -34,7 +36,10 @@
   <div class="col-sm-6">
     <div>
       <div class="page-header">
-        <h3>რეგიონები</h3>
+        <h3>
+          <i class="fa fa-globe"></i>
+          რეგიონები
+        </h3>
       </div>
       <p>
         <%=link_to 'რეგიონების მართვა', regions_url%>
@@ -69,19 +74,7 @@
       </div>
     </div>
     <div>
-      <h3 class="page-header">პარამეტრები</h3>
-      <p>
-        <%=link_to 'გზის სახეობები', objects_path_types_url %>
-        <span class="label label-info"><%=Objects::Path::Type.count%></span>
-      </p>
-      <p>
-        <%=link_to 'გზის საფარი', objects_path_surfaces_url %>
-        <span class="label label-info"><%=Objects::Path::Surface.count%></span>
-      </p>
-      <p>
-        <%=link_to 'საფარის დეტალები', objects_path_details_url %>
-        <span class="label label-info"><%=Objects::Path::Detail.count%></span>
-      </p>
+      
     </div>
   </div>
 </div>
