@@ -42,31 +42,40 @@
         </h3>
       </div>
       <p>
+        <i class="fa fa-globe"></i>
         <%=link_to 'რეგიონების მართვა', regions_url%>
         <span class="label label-info"><%=Region.count%></span>
       </p>
-      <h3 class="page-header">ობიექტები</h3>
+      <h3 class="page-header">
+        <i class="fa fa-cubes"></i>
+        ობიექტები
+      </h3>
       <div class="row">
         <div class="col-xs-6">
           <p>
+            <i class="fa fa-building"></i>
             <%=link_to 'ოფისები', objects_offices_url%>
             <span class="label label-info"><%=Objects::Office.count%></span>
           </p>
           <p>
+            <i class="fa fa-bolt"></i>
             <%=link_to 'ქვესადგურები', objects_substations_url%>
             <span class="label label-info"><%=Objects::Substation.count%></span>
           </p>
           <p>
+            <i class="fa fa-bolt"></i>
             <%=link_to 'ანძები', objects_towers_url%>
             <span class="label label-info"><%=Objects::Tower.count%></span>
           </p>
         </div>
         <div class="col-xs-6">
           <p>
+            <i class="fa fa-bolt"></i>
             <%=link_to 'გადამცემი ხაზები', objects_lines_url%>
             <span class="label label-info"><%=Objects::Line.count%></span>
           </p>
           <p>
+            <i class="fa fa-road"></i>
             <%= link_to 'მარშუტები', objects_path_lines_url%>
             <span class="label label-info"><%=Objects::Path::Line.count%></span>
           </p>
