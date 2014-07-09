@@ -62,14 +62,14 @@
       </tr>
     </thead>
     <tbody>
-      <% unless user.regions.any? %>
+      <% if user.regions.any? %>
         <% user.regions.each_with_index do |region, index| %>
           <tr>
             <td class="text-right">
               <strong><%= index + 1 %></strong>
             </td>
             <td>
-              <%= region.name %>
+              <%= link_to region.name, region_url(id: region.id) %>
               <span class="text-muted"><%= region.description %></span>
             </td>
           </tr>
