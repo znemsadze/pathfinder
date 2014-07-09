@@ -1,4 +1,7 @@
-<h3 class="page-header">მიმდინარე ტრეკები</h3>
+<h3 class="page-header">
+  <i class="fa fa-send"></i>
+  მიმდინარე ტრეკები
+</h3>
 <%= render partial: '/layouts/paths', locals: {paths: @open_tracks, direction: true} %>
 <script type="text/javascript">
 var users = eval('<%= @open_tracks.map { |track| last=track.points.last; {username: track.user.username, full_name: track.user.full_name, lat: last.lat, lng: last.lng} if last }.compact.to_json.html_safe %>');
@@ -31,7 +34,13 @@ var onPostInitialize = function(map, bounds) {
   }
 };
 </script>
-<h3 class="page-header">ყველა მომხმარებელი</h3>
+
+<!-- -->
+
+<h3 class="page-header">
+  <i class="fa fa-users"></i>
+  ყველა მომხმარებელი
+</h3>
 <p class="text-muted">აარჩიეთ სიიდან მომხმარებელი, რომლის ტრეკინგიც გსრუთ.</p>
 <table class="table table-bordered table-striped table-hover">
   <tbody>
