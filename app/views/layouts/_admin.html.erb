@@ -1,6 +1,10 @@
 <div id="admin-box">
-  <strong class="label label-danger"><%=t('pages.application.layout.sysadmin')%></strong>
-  &nbsp;
-  <%=link_to t('pages.application.layout.admin_users'), admin_users_url%> |
-  <%=link_to t('pages.application.layout.admin_roles'), admin_roles_url%>
+  <h4 class="page-header">
+    <i class="fa fa-wrench"></i>
+    სისტემის ადმინისტრირება
+  </h4>
+  <p>
+    <i class="fa fa-users"></i>
+    <%=link_to t('pages.application.layout.admin_users'), admin_users_url%>
+  </p>
 </div>

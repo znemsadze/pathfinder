@@ -90,3 +90,4 @@
   პროგრამაში სამუშაოდ, გაიარეთ <%=link_to 'ავტორიზაცია', login_url%>.
 </div>
 <%end%>
+<%= render partial: 'layouts/admin' if sys_admin? %>
