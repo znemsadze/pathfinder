@@ -8,8 +8,10 @@ module Sys
     field :username,              type: String
     field :hashed_password,       type: String
     field :salt,                  type: String
-    field :admin,                 type: Mongoid::Boolean
-    field :active,                type: Mongoid::Boolean
+    field :admin,                 type: Mongoid::Boolean, default: false
+    field :active,                type: Mongoid::Boolean, default: true
+    field :editor,                type: Mongoid::Boolean, default: false
+    field :all_regions,           type: Mongoid::Boolean, default: false
     field :first_name, type: String
     field :last_name,  type: String
     field :mobile,     type: String

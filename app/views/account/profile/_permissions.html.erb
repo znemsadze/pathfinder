@@ -1,0 +1,50 @@
+<div class="row">
+  <div class="col-sm-3 text-center">
+    <!-- is active? -->
+    <% if user.active %>
+      <div class="alert alert-success alert-block" style="min-height: 150px;">
+        <h4><i class="fa fa-check"></i> აქტიური</h4> <hr> <p>ეს მომხმარებელი აქტიურია</p>
+      </div>
+    <% else %>
+      <div class="alert alert-danger alert-block" style="min-height: 150px;">
+        <h4><i class="fa fa-check"></i> აქტიური</h4> <hr> <p>ეს მომხმარებელი <strong>არაა</strong> აქტიური</p>
+      </div>
+    <% end %>
+  </div>
+  <div class="col-sm-3 text-center">
+    <!-- is sysadmin? -->
+    <% if user.admin %>
+      <div class="alert alert-success alert-block" style="min-height: 150px;">
+        <h4><i class="fa fa-wrench"></i> სისადმინი</h4> <hr> <p>ეს მომხმარებელი სისტემური ადმინისტრატორია</p>
+      </div>
+    <% else %>
+      <div class="alert alert-danger alert-block" style="min-height: 150px;">
+        <h4><i class="fa fa-wrench"></i> სისადმინი</h4> <hr> <p>ეს მომხმარებელი <strong>არაა</strong> სისტემური ადმინისტრატორი</p>
+      </div>
+    <% end %>
+  </div>
+  <div class="col-sm-3 text-center">
+    <!-- is editor? -->
+    <% if user.editor %>
+      <div class="alert alert-success alert-block" style="min-height: 150px;">
+        <h4><i class="fa fa-pencil"></i> რედაქტირება</h4> <hr> <p>ამ მომხმარებელს აქვს რედაქტირების უფლება</p>
+      </div>
+    <% else %>
+      <div class="alert alert-danger alert-block" style="min-height: 150px;">
+        <h4><i class="fa fa-pencil"></i> რედაქტირება</h4> <hr> <p>ამ მომხმარებელს <strong>არ აქვს</strong> რედაქტირების უფლება</p>
+      </div>
+    <% end %>
+  </div>
+  <div class="col-sm-3 text-center">
+    <!-- all regions? -->
+    <% if user.all_regions %>
+      <div class="alert alert-success alert-block" style="min-height: 150px;">
+        <h4><i class="fa fa-globe"></i> ყველა რეგიონი</h4> <hr> <p>ამ მომხმარებელს აქვს წვდომა ყველა რეგიონზე</p>
+      </div>
+    <% else %>
+      <div class="alert alert-danger alert-block" style="min-height: 150px;">
+        <h4><i class="fa fa-globe"></i> ყველა რეგიონი</h4> <hr> <p>ამ მომხმარებელს აქვს წვდომა <strong>მხოლოდ შერჩეულ</strong> რეგიონებზე</p>
+      </div>
+    <% end %>
+  </div>
+</div>
