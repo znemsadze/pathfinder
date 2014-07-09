@@ -1,9 +1,9 @@
 # -*- encoding : utf-8 -*-
 class Tasks::TrackingController < ApplicationController
   def index
-    @title='მომხმარებელთა ტრეკინგი'
-    @open_tracks = Tracking::Path.where(open: true)
-    @users=Sys::User.all.asc(:username)
+    @title = 'მომხმარებელთა ტრეკინგი'
+    @users = Sys::User.all.asc(:username)
+    @open_tracks = @users.map{|user| Tracking::Path.where(user: user).last }.compact
   end
 
   def user
