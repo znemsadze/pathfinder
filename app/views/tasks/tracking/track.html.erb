@@ -13,3 +13,22 @@
   <% end %>
 </p>
 <%= render partial: '/layouts/paths', locals: {paths: [ @track ], direction: true} %>
+<% last_p = @track.points.last %>
+<% if last_p %>
+<script type="text/javascript">
+  var last_point = eval('[<%= { username: @user.username, full_name: @user.full_name, lat: last_p.lat, lng: last_p.lng }.to_json.html_safe %>]');
+  var onPostInitialize = function(map, bounds) {
+    var data = last_point[0];
+    new MarkerWithLabel({
+       position: new google.maps.LatLng(data.lat, data.lng),
+       map: map,
+       icon: '/map/user.png',
+       labelContent: data.username + ' (' + data.full_name + ')',
+       labelAnchor: new google.maps.Point(8, 0),
+       labelClass: "map-labels",
+       labelStyle: { opacity: 0.75 }
+     });
+    map.fitBounds(bounds);
+  };
+</script>
+<% end %>

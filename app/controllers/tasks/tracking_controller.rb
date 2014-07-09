@@ -3,7 +3,7 @@ class Tasks::TrackingController < ApplicationController
   def index
     @title = 'მომხმარებელთა ტრეკინგი'
     @users = Sys::User.all.asc(:username)
-    @open_tracks = @users.map{|user| Tracking::Path.where(user: user).last }.compact
+    @last_tracks = @users.map{|user| Tracking::Path.where(user: user).last }.compact
   end
 
   def user
@@ -13,8 +13,9 @@ class Tasks::TrackingController < ApplicationController
   end
 
   def track
-    @track=Tracking::Path.find(params[:id])
-    @title="ტრეკი: #{@track.created_at.localtime.strftime('%d-%b-%Y %H:%M:%S')} / #{@track.updated_at.localtime.strftime('%d-%b-%Y %H:%M:%S')}"
+    @track = Tracking::Path.find(params[:id])
+    @user = @track.user
+    @title = "ტრეკი: #{@track.created_at.localtime.strftime('%d-%b-%Y %H:%M:%S')} / #{@track.updated_at.localtime.strftime('%d-%b-%Y %H:%M:%S')}"
   end
 
   protected
