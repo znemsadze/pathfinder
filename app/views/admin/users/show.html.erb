@@ -1,1 +1,2 @@
 <%= sys_user_view(@user,tab:params[:tab]) %>
+<%= render partial: '/account/profile/permissions', locals: { user: @user } %>
