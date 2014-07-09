@@ -38,6 +38,16 @@ class Admin::UsersController < ApplicationController
     redirect_to admin_users_url, notice: t('pages.admin_users.destroy.user_destroied')
   end
 
+  def add_region
+    @user = Sys::User.find(params[:id])
+    @title = 'რეგიონის დამატება'
+    if request.post?
+      region = Region.find(params[:region_id])
+      @user.regions << region unless @user.regions.include?(region)
+      redirect_to admin_user_url(id: @user.id, tab: 'regions'), notice: 'რეგიონი დამატებულია'
+    end
+  end
+
   protected
   def nav
     @nav=super

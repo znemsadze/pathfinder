@@ -21,6 +21,8 @@ Pathfinder::Application.routes.draw do
       match '/new', action: 'new', as: 'new_user', via: ['get','post']
       match '/edit/:id', action: 'edit', as: 'edit_user', via: ['get','post']
       delete '/delete/:id', action: 'destroy', as: 'destroy_user'
+      match '/add_region/:id', action: 'add_region', as: 'user_add_region', via: ['get', 'post']
+      delete '/remove_region/:id', action: 'remove_region', as: 'user_remove_region'
     end
   end
 

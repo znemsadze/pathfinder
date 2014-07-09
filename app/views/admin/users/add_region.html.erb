@@ -1,0 +1,17 @@
+<h3 class="page-header">
+  <%= @title %>
+</h3>
+<%= form_tag do %>
+  <p>
+    <span class="label label-info"><i class="fa fa-user"></i> <%= @user.username %></span>
+    <%= @user.full_name %>
+  </p>
+  <p>აარჩიეთ რეგიონი, რომლის დამატება გსურთ მომხმარებელზე: </p>
+  <%= select_tag 'region_id', options_from_collection_for_select(Region.all, "id", "name") %>
+  <div style="margin-top: 16px;">
+    <%= submit_tag 'შენახვა', class: ['btn', 'btn-primary'] %>
+    <a class="btn btn-default" href="<%= admin_user_url(id: @user.id, tab: 'regions') %>">
+      <img src="/icons/cross.png" /> გაუქმება
+    </a>
+  </div>
+<% end %>
