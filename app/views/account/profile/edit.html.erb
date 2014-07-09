@@ -1,5 +1,5 @@
 <%=forma_for @user, title:@title, icon:'/icons/user.png', collapsible:true do |f|
-  f.text_field 'username', required:true, readonly:true
+  f.text_field 'username', required:true, readonly:true, tag: 'code'
   f.text_field 'first_name', required:true, autofocus:true
   f.text_field 'last_name', required:true
   f.text_field 'mobile', required:true
