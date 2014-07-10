@@ -120,7 +120,8 @@ Pathfinder::Application.routes.draw do
       post '/track_point', action: 'track_point'
     end
     scope '/objects', controller: 'objects' do
-      match '/', action: 'index', via: ['get', 'post']
+      get '/', action: 'index'
+      get '/lines', action: 'lines'
     end
     scope '/paths', controller: 'paths' do
       get '/show', action: 'show'

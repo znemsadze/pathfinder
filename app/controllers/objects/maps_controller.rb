@@ -8,6 +8,7 @@ class Objects::MapsController < ApplicationController
   def clear_cache
     if request.post?
       expire_action controller: '/api/objects', action: 'index', format: 'json'
+      expire_action controller: '/api/objects', action: 'lines', format: 'json'
       redirect_to objects_clear_cache_url(status: 'ok')
     else
       @title = 'კეშის გასუფთავება'
