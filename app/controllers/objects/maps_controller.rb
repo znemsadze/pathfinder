@@ -9,6 +9,9 @@ class Objects::MapsController < ApplicationController
     if request.post?
       expire_action controller: '/api/objects', action: 'index', format: 'json'
       expire_action controller: '/api/objects', action: 'lines', format: 'json'
+      expire_action controller: '/api/objects', action: 'pathlines', format: 'json'
+      expire_action controller: '/api/objects', action: 'offices', format: 'json'
+      expire_action controller: '/api/objects', action: 'substations', format: 'json'
       redirect_to objects_clear_cache_url(status: 'ok')
     else
       @title = 'კეშის გასუფთავება'

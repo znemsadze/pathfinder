@@ -3,16 +3,17 @@ class Api::ObjectsController < ApiController
   MAX_TOWERS=100_000
 
   caches_action :index, if: -> { params[:id].blank? }
-  caches_action :lines
+  caches_action :lines, :pathlines, :offices, :substations
+  # don't cache towers!
 
-  def index
-    @all = get_towers + get_offices + get_substations + get_lines + get_paths
-  end
+  def index; @objects = get_towers + get_offices + get_substations + get_lines + get_paths end
+  def lines; @objects = get_lines ; render action: 'index' end
+  def pathlines; @objects = get_paths ; render action: 'index' end
+  def offices; @objects = get_offices ; render action: 'index' end
+  def substations; @objects = get_substations ; render action: 'index' end
 
-  def lines
-    @all = get_paths + get_lines
-    render action: 'index'
-  end
+  # TODO: get towers "near" given point
+  # def towers; @objects = get_towers ; render action: 'index' end 
 
   private
 

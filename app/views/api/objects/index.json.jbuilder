@@ -1,6 +1,6 @@
 json.type 'FeatureCollection'
 json.features do
-  json.array! @all do |t|
+  json.array! @objects do |t|
     json.type 'Feature'
     json.geometry do
       if t.is_a?(Objects::Tower)

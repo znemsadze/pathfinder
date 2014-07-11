@@ -122,6 +122,10 @@ Pathfinder::Application.routes.draw do
     scope '/objects', controller: 'objects' do
       get '/', action: 'index'
       get '/lines', action: 'lines'
+      get '/pathlines', action: 'pathlines'
+      get '/offices', action: 'offices'
+      get '/substations', action: 'substations'
+      get '/towers', action: 'towers'
     end
     scope '/paths', controller: 'paths' do
       get '/show', action: 'show'
