@@ -11,6 +11,7 @@ class Api::ObjectsController < ApiController
   def pathlines; @objects = get_paths ; render action: 'index' end
   def offices; @objects = get_offices ; render action: 'index' end
   def substations; @objects = get_substations ; render action: 'index' end
+  def towers; @objects = Objects::Tower.paginate(per_page: 500, page: params[:page]) ; render action: 'index' end
 
   # TODO: get towers "near" given point
   # def towers; @objects = get_towers ; render action: 'index' end 
