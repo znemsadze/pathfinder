@@ -47,22 +47,23 @@ class Objects::Tower
   def has_images?; self.images.present? end
   def thumbnails; self.images.map{ |x| "/uploads/#{self.id}/thumb/#{x}" } end
   def larges; self.images.map{ |x| "/uploads/#{self.id}/large/#{x}" } end
-  def originals; self.images.map{ |x| "/uploads/#{self.id}/original/#{x}" } end
+  # def originals; self.images.map{ |x| "/uploads/#{self.id}/original/#{x}" } end
 
   def generate_images
     images = Dir.glob("#{Pathfinder::POLES_HOME}/#{self.linename.to_lat}/#{self.name}_*.jpg") if self.linename
     if images.present?
       images.each do |url|
         basename = File.basename(url)
-        original = Magick::Image::read(url).first.rotate(90)
-        thumb = original.scale(90,120) ; large = original.scale(900,1200)
+        original = Magick::Image::read(url).first
+        large = original.scale(800,600).rotate(90)
+        thumb = large.scale(90,120) ; 
         dir1 = "#{Rails.root}/public/uploads/#{self.id}/thumb" ; FileUtils.mkdir_p(dir1)
         dir2 = "#{Rails.root}/public/uploads/#{self.id}/large" ; FileUtils.mkdir_p(dir2)
-        dir3 = "#{Rails.root}/public/uploads/#{self.id}/original" ; FileUtils.mkdir_p(dir3)
+        #dir3 = "#{Rails.root}/public/uploads/#{self.id}/original" ; FileUtils.mkdir_p(dir3)
         path1 = "#{dir1}/#{basename}"
         path2 = "#{dir2}/#{basename}"
-        path3 = "#{dir3}/#{basename}"
-        thumb.write(path1) ; large.write(path2) ; original.write(path3)
+        # path3 = "#{dir3}/#{basename}"
+        thumb.write(path1) ; large.write(path2) #; original.write(path3)
       end
     end
     self.images = images.map{|x| File.basename(x) } ; self.save
