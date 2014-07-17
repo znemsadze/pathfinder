@@ -28,3 +28,4 @@ gem 'roo'
 gem 'geokit'
 
 gem 'shortest-path', path: '../shortest-path'
+gem 'rmagick'
