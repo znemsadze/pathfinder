@@ -2,9 +2,11 @@
   <div class="row">
     <div class="col-sm-6">
       <p>&copy; 2014 <a href="http://www.gse.com.ge">საქართველოს სახელმწიფო ელექტროსისტემა</a></p>
-      <p>
-        <a href="<%= apk_url('002') %>" class="btn btn-default btn-sm"><i class="fa fa-android"></i> Android აპლიკაცია</a>
-      </p>
+      <% if current_user %>
+        <p>
+          <a href="<%= apk_url('002') %>" class="btn btn-default btn-sm"><i class="fa fa-android"></i> Android აპლიკაცია</a>
+        </p>
+      <% end %>
     </div>
     <div class="col-sm-6 text-right">
       created by: <a href="mailto:dimakura@gmail.com">@dimakura</a>
