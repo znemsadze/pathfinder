@@ -55,8 +55,8 @@ class Objects::Tower
       images.each do |url|
         basename = File.basename(url)
         original = Magick::Image::read(url).first
-        large = original.thumbnail(800,600).rotate(90)
-        thumb = original.thumbnail(80,60).rotate(90)
+        large = original.resize_to_fit(800,800).rotate(90)
+        thumb = large.resize_to_fit(80,80)
         dir1 = "#{Rails.root}/public/uploads/#{self.id}/thumb" ; FileUtils.mkdir_p(dir1)
         dir2 = "#{Rails.root}/public/uploads/#{self.id}/large" ; FileUtils.mkdir_p(dir2)
         path1 = "#{dir1}/#{basename}"
