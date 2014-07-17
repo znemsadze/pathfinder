@@ -1350,6 +1350,30 @@ var searchPathHit=function(f,word){
   ].join(' ');
   return searchString.indexOf(word) != -1;
 };
+
+// image
+
+exports.featureImages = function(f) {
+  var images = f.getProperty('images');
+  if(images) {
+    var ary = [];
+    var thumbnails = images.thumbnails;
+    var larges = images.larges;
+    for(var i = 0, l = thumbnails.length; i < l; i++) {
+      ary.push( [
+        '<a href="' + larges[i] + '" target="_blank">',
+        '<img src="' + thumbnails[i] +'" class="img-thumbnail"/>',
+        '</a>',
+        ].join('') );
+    }
+    return ary.join(' ');
+    // return images.thumbnails.map(function(x){
+    //   return ['<img src="'+x+'" class="img-thumbnail"/>'];
+    // }).join(' ');
+  } else {
+    return "";
+  }
+};
 },{}],22:[function(require,module,exports){
 var ui=require('../ui')
   , api=require('../api')
@@ -1525,7 +1549,7 @@ var resetFeatureInfo=function(){
   if (!selectedFeature) {
     featureInfo.setHtml('მონიშნეთ ობიექტი რუკაზე მასზე ინფორმაციის მისაღებად.');
   } else{
-    featureInfo.setHtml(geo.featureDescription(map,selectedFeature));
+    featureInfo.setHtml(geo.featureDescription(map,selectedFeature) + geo.featureImages(selectedFeature));
     secondaryToolbar.addButton(btnEdit);
     secondaryToolbar.addButton(btnDelete);
     if(geo.isPointlike(selectedFeature)){
@@ -1555,6 +1579,12 @@ var initMap=function(){
 };
 
 var changeSelection=function(f){
+
+if(f.getId() == '53a2977c3bd04153fe004d85') {
+  console.log(f.images);
+}
+
+
   if(f==selectedFeature){
     f.selected=false;
     selectedFeature=null;

@@ -172,7 +172,7 @@ var resetFeatureInfo=function(){
   if (!selectedFeature) {
     featureInfo.setHtml('მონიშნეთ ობიექტი რუკაზე მასზე ინფორმაციის მისაღებად.');
   } else{
-    featureInfo.setHtml(geo.featureDescription(map,selectedFeature));
+    featureInfo.setHtml(geo.featureDescription(map,selectedFeature) + geo.featureImages(selectedFeature));
     secondaryToolbar.addButton(btnEdit);
     secondaryToolbar.addButton(btnDelete);
     if(geo.isPointlike(selectedFeature)){
@@ -202,6 +202,12 @@ var initMap=function(){
 };
 
 var changeSelection=function(f){
+
+if(f.getId() == '53a2977c3bd04153fe004d85') {
+  console.log(f.images);
+}
+
+
   if(f==selectedFeature){
     f.selected=false;
     selectedFeature=null;

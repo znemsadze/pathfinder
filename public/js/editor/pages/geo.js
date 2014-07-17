@@ -301,3 +301,27 @@ var searchPathHit=function(f,word){
   ].join(' ');
   return searchString.indexOf(word) != -1;
 };
+
+// image
+
+exports.featureImages = function(f) {
+  var images = f.getProperty('images');
+  if(images) {
+    var ary = [];
+    var thumbnails = images.thumbnails;
+    var larges = images.larges;
+    for(var i = 0, l = thumbnails.length; i < l; i++) {
+      ary.push( [
+        '<a href="' + larges[i] + '" target="_blank">',
+        '<img src="' + thumbnails[i] +'" class="img-thumbnail"/>',
+        '</a>',
+        ].join('') );
+    }
+    return ary.join(' ');
+    // return images.thumbnails.map(function(x){
+    //   return ['<img src="'+x+'" class="img-thumbnail"/>'];
+    // }).join(' ');
+  } else {
+    return "";
+  }
+};
