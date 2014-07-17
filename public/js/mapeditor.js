@@ -1490,9 +1490,9 @@ var initPage1=function(self){
   }, {icon: 'plus', type: 'success'});
 
   btnNewTask=ui.button.actionButton('დავალების შექმნა', function() {
-    if(paths.length > 0) {
+    // if(paths.length > 0) {
       self.openPage('task', {destinations: pathPoints, paths: paths});
-    }
+    // }
   }, {icon: 'tasks'})
 
   // page1 layout
