@@ -1,3 +1,3 @@
 module Pathfinder
-  POLES_HOME='/Users/dimitrikurashvili/poles'
+  POLES_HOME='/home/dimitri/Downloads/poles'
 end

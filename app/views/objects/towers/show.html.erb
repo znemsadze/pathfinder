@@ -7,5 +7,13 @@
   f.text_field 'lat'
   f.text_field 'lng'
   f.text_field 'description'
-  f.map_field 'position'
+  f.map_field 'position', height: 200
 end%>
+<% if @tower.has_images? %>
+  <h4 class="page-header">ამ ანძის გამოსახულებები</h4>
+  <div>
+    <% @tower.thumbnails.each do |thumb| %>
+      <img src="<%= thumb %>" alt="tower" class="img-thumbnail">
+    <% end %>
+  </div>
+<% end %>
