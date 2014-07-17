@@ -30,6 +30,12 @@ json.features do
       json.category t.category if t.respond_to?(:category)
       json.address t.address if t.respond_to?(:address)
       json.linename t.linename if t.respond_to?(:linename)
+      if t.respond_to?(:has_images?) and t.has_images?
+        json.images do
+          json.thumbnails { json.array! t.thumbnails }
+          json.larges { json.array! t.larges }
+        end
+      end
     end
   end
 end
