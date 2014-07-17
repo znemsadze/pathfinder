@@ -12,8 +12,11 @@ end%>
 <% if @tower.has_images? %>
   <h4 class="page-header">ამ ანძის გამოსახულებები</h4>
   <div>
-    <% @tower.thumbnails.each do |thumb| %>
-      <img src="<%= thumb %>" alt="tower" class="img-thumbnail">
+    <%
+      larges = @tower.larges
+      @tower.thumbnails.each_with_index do |thumb, index|
+    %>
+      <a href="<%=larges[index]%>"><img src="<%= thumb %>" alt="tower" class="img-thumbnail"></a>
     <% end %>
   </div>
 <% end %>
