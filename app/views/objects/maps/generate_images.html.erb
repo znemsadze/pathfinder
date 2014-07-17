@@ -1,0 +1,11 @@
+<h3 class="page-header">
+  <i class="fa fa-image"></i>
+  <%= @title %>
+</h3>
+<% if params[:status] == 'ok' %>
+  <div class="alert alert-success alert-block">გამოსახულებები დაგენერირებულია!</div>
+<% else %>
+  <p>
+    <%= link_to 'გენერაციის დაწყება &rarr;'.html_safe, objects_generate_images_url, data: {confirm: 'ნამდვილად გინდათ გამოსახულებების გენერაცია?', method: 'post' }, class: ['btn', 'btn-danger'] %>
+  </p>
+<% end %>

@@ -49,7 +49,7 @@ class Objects::Tower
   def larges; self.images.map{ |x| "/uploads/#{self.id}/large/#{x}" } end
   def originals; self.images.map{ |x| "/uploads/#{self.id}/original/#{x}" } end
 
-  def process_images
+  def generate_images
     images = Dir.glob("#{Pathfinder::POLES_HOME}/#{self.linename.to_lat}/#{self.name}_*.jpg") if self.linename
     if images.present?
       images.each do |url|

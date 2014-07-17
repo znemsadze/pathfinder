@@ -18,6 +18,15 @@ class Objects::MapsController < ApplicationController
     end
   end
 
+  def generate_images
+    if request.post?
+      Objects::Tower.each { |x| x.generate_images }
+      redirect_to objects_generate_images_url(status: 'ok')
+    else
+      @title = 'გამოსახულებების გენერაცია'
+    end
+  end
+
   protected
   def nav
     @nav=super
