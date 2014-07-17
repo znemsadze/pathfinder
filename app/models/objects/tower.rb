@@ -55,14 +55,12 @@ class Objects::Tower
       images.each do |url|
         basename = File.basename(url)
         original = Magick::Image::read(url).first
-        large = original.scale(800,600).rotate(90)
-        thumb = large.scale(90,120) ; 
+        large = original.thumbnail(800,600).rotate(90)
+        thumb = original.thumbnail(80,60).rotate(90)
         dir1 = "#{Rails.root}/public/uploads/#{self.id}/thumb" ; FileUtils.mkdir_p(dir1)
         dir2 = "#{Rails.root}/public/uploads/#{self.id}/large" ; FileUtils.mkdir_p(dir2)
-        #dir3 = "#{Rails.root}/public/uploads/#{self.id}/original" ; FileUtils.mkdir_p(dir3)
         path1 = "#{dir1}/#{basename}"
         path2 = "#{dir2}/#{basename}"
-        # path3 = "#{dir3}/#{basename}"
         thumb.write(path1) ; large.write(path2) #; original.write(path3)
         thumb.destroy! ; large.destroy! ; original.destroy!
       end
