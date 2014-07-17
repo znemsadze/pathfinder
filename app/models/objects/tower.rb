@@ -40,4 +40,6 @@ class Objects::Tower
       obj.save
     end
   end
+
+  def images; Dir.glob("#{Pathfinder::POLES_HOME}/#{self.linename.to_lat}/#{self.name}_*.jpg") if self.linename end
 end
