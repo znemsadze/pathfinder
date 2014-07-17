@@ -64,6 +64,7 @@ class Objects::Tower
         path2 = "#{dir2}/#{basename}"
         # path3 = "#{dir3}/#{basename}"
         thumb.write(path1) ; large.write(path2) #; original.write(path3)
+        thumb.destroy! ; large.destroy! ; original.destroy!
       end
     end
     self.images = images.map{|x| File.basename(x) } ; self.save
