@@ -54,7 +54,7 @@ class Objects::Tower
     if images.present?
       images.each do |url|
         basename = File.basename(url)
-        original = Magick::Image::read(url).first
+        original = Magick::Image::read(url).first.auto_orient
         large = original.resize_to_fit(800,800) #.rotate(90)
         # large.orientation = Magick::OrientationType::TopLeftOrientation
         thumb = large.resize_to_fit(80,80)
