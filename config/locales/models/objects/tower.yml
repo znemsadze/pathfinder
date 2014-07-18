@@ -2,7 +2,7 @@ ka:
   models:
     objects_tower:
       kmlid: kmlID
-      name: "ანზის #"
+      name: "ანძის #"
       lat: განედი
       lng: გრძედი
       position: მდებარეობა
