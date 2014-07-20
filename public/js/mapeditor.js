@@ -357,6 +357,8 @@ var ui=require('./ui')
   , geo=require('./pages/geo')
   ;
 
+var editMode;
+
 var mapElement, sidebarElement, filterbarElement
   , defaultCenterLat, defaultCenterLng, defaultZoom
   , apikey, map, currentZoomLevel
@@ -375,6 +377,7 @@ exports.start=function(opts){
   defaultCenterLat=(opts&&opts.centerLat)||42.3;
   defaultCenterLng=(opts&&opts.centerLat)||43.8;
   defaultZoom=(opts&&opts.startZoom)||7;
+  editMode = opts && opts.editMode;
   window.onload=loadingGoogleMapsAsyncronously;
 };
 
@@ -512,7 +515,7 @@ var initMap=function(){
 
 var initRouter=function(){
   var filters={regionCombo:regionCombo, chkSubstation:chkSubstation, chkOffice:chkOffice, chkTower:chkTower, chkPath:chkPath, chkLine:chkLine};
-  app=router.initApplication({map:map, filters:filters, sidebar:sidebarElement});
+  app=router.initApplication({map:map, filters:filters, sidebar:sidebarElement, editMode: editMode});
 
   app.addPage('root', pages.home());
   app.addPage('edit_path', pages.edit_path());
@@ -566,9 +569,12 @@ var filterCheckbox=function(label,onchange){
   return field;
 };
 },{"./api":1,"./pages":23,"./pages/geo":21,"./router":26,"./ui":32}],11:[function(require,module,exports){
-var app=require('./app');
+var app = require('./app');
 
-app.start();
+app.start({
+  editMode: true
+});
+
 },{"./app":10}],12:[function(require,module,exports){
 var ui=require('../ui')
   , forms=require('./forms')
@@ -1384,7 +1390,7 @@ var MAIN=0    // main page
   , CONFIRM=1 // confirm page
   ;
 
-var map
+var map, editMode
   , uiInitialized=false, locked
   , layout, page1, page2, toolbar=ui.button.toolbar([])
   , featureInfo=ui.html.p('',{style:'margin:16px 0;'})
@@ -1405,6 +1411,7 @@ module.exports=function(){
     onEnter: function(){
       var self=this;
       locked=false;
+      editMode = self.editMode;
 
       if (!uiInitialized){
         initUI(self);
@@ -1462,7 +1469,7 @@ var initPage1=function(self){
 
   toolbar.addButton(btnSearch);
   toolbar.addButton(btnHome);
-  toolbar.addButton(newObjects);
+  if(editMode){ toolbar.addButton(newObjects); }
 
   // secondary actions
 
@@ -1550,8 +1557,10 @@ var resetFeatureInfo=function(){
     featureInfo.setHtml('მონიშნეთ ობიექტი რუკაზე მასზე ინფორმაციის მისაღებად.');
   } else{
     featureInfo.setHtml(geo.featureDescription(map,selectedFeature) + geo.featureImages(selectedFeature));
-    secondaryToolbar.addButton(btnEdit);
-    secondaryToolbar.addButton(btnDelete);
+    if(editMode) {
+      secondaryToolbar.addButton(btnEdit);
+      secondaryToolbar.addButton(btnDelete);
+    }
     if(geo.isPointlike(selectedFeature)){
       pathToolbar.addButton(btnAddToPath);
     }
@@ -1578,13 +1587,7 @@ var initMap=function(){
   });
 };
 
-var changeSelection=function(f){
-
-if(f.getId() == '53a2977c3bd04153fe004d85') {
-  console.log(f.images);
-}
-
-
+var changeSelection=function(f) {
   if(f==selectedFeature){
     f.selected=false;
     selectedFeature=null;
@@ -1977,12 +1980,17 @@ var map
   , filters
   , currentPage
   , pages={}
+  , editMode
   ;
 
 exports.initApplication=function(opts){
-  map=opts.map;
-  filters=opts.filters;
-  sidebar=opts.sidebar;
+  map = opts.map;
+  filters = opts.filters;
+  sidebar = opts.sidebar;
+  editMode = opts.editMode;
+
+console.log(opts.editMode);
+  
   return {
     addPage: addPage,
     openPage: openPage,
@@ -2019,18 +2027,17 @@ var openPage=function(name,params){
   // opening new page
   currentPage=pages[name];
 
-  currentPage.map=map;
-  currentPage.filters=filters;
+  currentPage.map = map;
+  currentPage.filters = filters;
 
-  if(currentPage){
-    currentPage.params=params;
-    if(currentPage.onEnter){
-      var pageLayout=currentPage.onEnter();
+  if (currentPage) {
+    currentPage.params = params;
+    currentPage.editMode = editMode;
+    if (currentPage.onEnter) {
+      var pageLayout = currentPage.onEnter();
       sidebar.appendChild(pageLayout);
     }
-    if(currentPage.onStart){
-      currentPage.onStart();
-    }
+    if (currentPage.onStart) { currentPage.onStart(); }
   }
 };
 

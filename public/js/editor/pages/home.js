@@ -7,7 +7,7 @@ var MAIN=0    // main page
   , CONFIRM=1 // confirm page
   ;
 
-var map
+var map, editMode
   , uiInitialized=false, locked
   , layout, page1, page2, toolbar=ui.button.toolbar([])
   , featureInfo=ui.html.p('',{style:'margin:16px 0;'})
@@ -28,6 +28,7 @@ module.exports=function(){
     onEnter: function(){
       var self=this;
       locked=false;
+      editMode = self.editMode;
 
       if (!uiInitialized){
         initUI(self);
@@ -85,7 +86,7 @@ var initPage1=function(self){
 
   toolbar.addButton(btnSearch);
   toolbar.addButton(btnHome);
-  toolbar.addButton(newObjects);
+  if(editMode){ toolbar.addButton(newObjects); }
 
   // secondary actions
 
@@ -173,8 +174,10 @@ var resetFeatureInfo=function(){
     featureInfo.setHtml('მონიშნეთ ობიექტი რუკაზე მასზე ინფორმაციის მისაღებად.');
   } else{
     featureInfo.setHtml(geo.featureDescription(map,selectedFeature) + geo.featureImages(selectedFeature));
-    secondaryToolbar.addButton(btnEdit);
-    secondaryToolbar.addButton(btnDelete);
+    if(editMode) {
+      secondaryToolbar.addButton(btnEdit);
+      secondaryToolbar.addButton(btnDelete);
+    }
     if(geo.isPointlike(selectedFeature)){
       pathToolbar.addButton(btnAddToPath);
     }
@@ -201,13 +204,7 @@ var initMap=function(){
   });
 };
 
-var changeSelection=function(f){
-
-if(f.getId() == '53a2977c3bd04153fe004d85') {
-  console.log(f.images);
-}
-
-
+var changeSelection=function(f) {
   if(f==selectedFeature){
     f.selected=false;
     selectedFeature=null;

@@ -3,12 +3,17 @@ var map
   , filters
   , currentPage
   , pages={}
+  , editMode
   ;
 
 exports.initApplication=function(opts){
-  map=opts.map;
-  filters=opts.filters;
-  sidebar=opts.sidebar;
+  map = opts.map;
+  filters = opts.filters;
+  sidebar = opts.sidebar;
+  editMode = opts.editMode;
+
+console.log(opts.editMode);
+  
   return {
     addPage: addPage,
     openPage: openPage,
@@ -45,17 +50,16 @@ var openPage=function(name,params){
   // opening new page
   currentPage=pages[name];
 
-  currentPage.map=map;
-  currentPage.filters=filters;
+  currentPage.map = map;
+  currentPage.filters = filters;
 
-  if(currentPage){
-    currentPage.params=params;
-    if(currentPage.onEnter){
-      var pageLayout=currentPage.onEnter();
+  if (currentPage) {
+    currentPage.params = params;
+    currentPage.editMode = editMode;
+    if (currentPage.onEnter) {
+      var pageLayout = currentPage.onEnter();
       sidebar.appendChild(pageLayout);
     }
-    if(currentPage.onStart){
-      currentPage.onStart();
-    }
+    if (currentPage.onStart) { currentPage.onStart(); }
   }
 };

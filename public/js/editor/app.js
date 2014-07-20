@@ -5,6 +5,8 @@ var ui=require('./ui')
   , geo=require('./pages/geo')
   ;
 
+var editMode;
+
 var mapElement, sidebarElement, filterbarElement
   , defaultCenterLat, defaultCenterLng, defaultZoom
   , apikey, map, currentZoomLevel
@@ -23,6 +25,7 @@ exports.start=function(opts){
   defaultCenterLat=(opts&&opts.centerLat)||42.3;
   defaultCenterLng=(opts&&opts.centerLat)||43.8;
   defaultZoom=(opts&&opts.startZoom)||7;
+  editMode = opts && opts.editMode;
   window.onload=loadingGoogleMapsAsyncronously;
 };
 
@@ -160,7 +163,7 @@ var initMap=function(){
 
 var initRouter=function(){
   var filters={regionCombo:regionCombo, chkSubstation:chkSubstation, chkOffice:chkOffice, chkTower:chkTower, chkPath:chkPath, chkLine:chkLine};
-  app=router.initApplication({map:map, filters:filters, sidebar:sidebarElement});
+  app=router.initApplication({map:map, filters:filters, sidebar:sidebarElement, editMode: editMode});
 
   app.addPage('root', pages.home());
   app.addPage('edit_path', pages.edit_path());
