@@ -16,9 +16,10 @@ module Objects::LengthProperty
     len
   end
 
-  # def length
-  #   @length || calc_length
-  # end
+  def calc_length!
+    self.length = calc_length
+    self.save
+  end
 
   private
   def on_before_lineable_save

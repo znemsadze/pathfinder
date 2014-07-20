@@ -51,6 +51,7 @@ class Objects::Line
         point.set_coordinate(coord)
         point.save
       end
+      obj.calc_length!
     end
   end
 end
