@@ -4,7 +4,17 @@ require 'zip'
 class Objects::SubstationsController < ApplicationController
   def index
     respond_to do |format|
-      format.html{ @title='ქვესადგურები'; @substations=Objects::Substation.asc(:kmlid).paginate(per_page:10, page: params[:page]) }
+      format.html do
+        @title='ქვესადგურები'
+        @search = search_params
+        rel = Objects::Substation
+        if @search.present?
+          rel = rel.where(name: @search[:name].mongonize) if @search[:name].present?
+          rel = rel.where(region_id: @search[:region]) if @search[:region].present?
+          rel = rel.where(kmlid: @search[:kmlid].mongonize) if @search[:kmlid].present?
+        end
+        @substations = rel.asc(:kmlid).paginate(per_page:10, page: params[:page])
+      end
       format.xlsx{ @substations=Objects::Substation.asc(:kmlid) }
     end
   end

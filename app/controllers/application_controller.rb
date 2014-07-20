@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 
   def render(*args); self.nav; super end
   def current_user; @_curr_user ||= (Sys::User.find(session[:user_id]) rescue nil) if session[:user_id] end
-  def search; params[:search] == 'clear' ? nil : params[:search] end
+  def search_params; params[:search] == 'clear' ? nil : params[:search] end
   helper_method :current_user
 
 

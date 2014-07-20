@@ -11,6 +11,8 @@ ka:
       updated_by: შემცვლელი
       updated_by_hint: "მომხმარებელი, რომელმაც ბოლომ შეცვლა ეს ობიექტი"
       general_properties: ძირითადი
+      search: ძებნა
+      search_clear: 'ფორმის გასუფთავება'
       system_properties: სისტემური
       _actions:
         save: შენახვა

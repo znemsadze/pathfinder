@@ -16,4 +16,5 @@ class Region
   def self.get_by_name(name); Region.where(name:name).first || Region.create(name:name) end
   def can_delete?; lines.empty? and  paths.empty? and towers.empty? and offices.empty? and substations.empty? end
   def towers_limited; self.towers.paginate(per_page:50) end
+  def to_s; self.name end
 end
