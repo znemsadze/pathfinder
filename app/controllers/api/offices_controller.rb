@@ -5,7 +5,6 @@ class Api::OfficesController < ApiController
   def new
     office=Objects::Office.create(office_params)
     render json:{id:office.id.to_s}
-
   end
 
   def edit

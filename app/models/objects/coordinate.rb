@@ -8,21 +8,21 @@ module Objects::Coordinate
 
   def set_coordinate(text)
     coords=text.split(',').map{|x| x.strip.to_f}
-    self.lng=coords[0]
-    self.lat=coords[1]
-    self.alt=coords[2]
+    self.lng=coords[0].to_f
+    self.lat=coords[1].to_f
+    self.alt=coords[2].to_f
   end
 
   def lng; self.location ? self.location[0] : 0 end
   def lng=(x)
     self.location=[0,0] if self.location.blank?
-    self.location[0]=x
+    self.location[0]=x.to_f
   end
 
   def lat; self.location ? self.location[1] : 0 end
   def lat=(x)
     self.location=[0,0] if self.location.blank?
-    self.location[1]=x
+    self.location[1]=x.to_f
   end
 
   def position_latitude; self.lat end
