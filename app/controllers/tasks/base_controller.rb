@@ -2,12 +2,19 @@
 class Tasks::BaseController < ApplicationController
   def open
     @title='ღია დავალებები'
-    @tasks = Task.open_tasks.desc(:_id).paginate(per_page: 25)
+    @tasks = Task.open_tasks.desc(:_id).paginate(page: params[:page], per_page: 10)
   end
 
   def all
     @title='ყველა დავალება'
-    @tasks = Task.desc(:_id).paginate(per_page: 25)
+    rel = Task
+    @search = search_params
+    if @search.present?
+      rel = rel.where(number: @search[:number]) if @search[:number].present?
+      rel = rel.where(assignee_id: @search[:assignee_id]) if @search[:assignee_id].present?
+      rel = rel.where(status: @search[:status]) if @search[:status].present?
+    end
+    @tasks = rel.desc(:_id).paginate(page: params[:page], per_page: 10)
   end
 
   def show
