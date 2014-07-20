@@ -1,8 +1,11 @@
 <%if current_user%>
 <div>
   <p style="padding-top: 48px;" class="text-center">
+    <a class="btn btn-success btn-lg" href="<%=objects_map_viewer_url%>" data-no-turbolink>
+      <i class="fa fa-globe"></i> ობიექტების რუკა
+    </a>
     <a class="btn btn-warning btn-lg" href="<%=objects_map_editor_url%>" data-no-turbolink>
-      <i class="fa fa-pencil"></i> რუკაზე ობიექტების რედაქტირება
+      <i class="fa fa-pencil"></i> ობიექტების რედაქტირება
     </a>
   </p>
 </div>
