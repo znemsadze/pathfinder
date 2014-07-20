@@ -3,3 +3,12 @@
  *= require forma
  *= require_tree .
  */
+
+@media print {
+  a[href]:after {
+    content: none !important;
+  }
+  #footer, #userbox {
+    display: none;
+  }
+}
