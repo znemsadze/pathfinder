@@ -59,13 +59,19 @@ class Objects::SubstationsController < ApplicationController
   def upload_xlsx(file)
     sheet=Roo::Spreadsheet.open(file.path, extension: 'xlsx')
     (2..sheet.last_row).each do |row|
-      id=sheet.cell('A',row) ; name=sheet.excelx_value('C',row).to_s ; regionname=sheet.cell('D',row).to_s
-      lat=sheet.cell('E',row).to_f; lng=sheet.cell('F',row).to_f
+      id = sheet.cell('A',row)
+      # B = KMLID
+      name = sheet.excelx_value('C',row).to_s
+      regionname = sheet.cell('D',row).to_s
+      lat = sheet.cell('E',row).to_f
+      lng = sheet.cell('F',row).to_f
+      description = sheet.cell('G', row).to_s
       region=Region.where(name:regionname).first
       region=Region.create(name:regionname) unless region.present?
       substation=Objects::Substation.find(id)
       substation.name=name ; substation.region=region
       substation.lat=lat ; substation.lng=lng
+      substation.description = description
       substation.save
     end
   end
