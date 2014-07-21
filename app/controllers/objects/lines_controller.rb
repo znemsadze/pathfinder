@@ -4,9 +4,16 @@ require 'roo'
 
 class Objects::LinesController < ApplicationController
   def index
+    rel = Objects::Line ; @search = search_params
+    if @search.present?
+      rel = rel.where(name: @search[:name].mongonize) if @search[:name].present?
+      rel = rel.where(region_id: @search[:region]) if @search[:region].present?
+      rel = rel.where(kmlid: @search[:kmlid].mongonize) if @search[:kmlid].present?
+      rel = rel.where(direction: @search[:direction].mongonize) if @search[:direction].present?
+    end
     respond_to do |format|
-      format.html { @title='ხაზები'; @lines=Objects::Line.asc(:kmlid).paginate(per_page:10, page: params[:page]) }
-      format.xlsx { @lines=Objects::Line.asc(:kmlid) }
+      format.html { @title='ხაზები'; @lines = rel.asc(:kmlid).paginate(per_page:10, page: params[:page]) }
+      format.xlsx { @lines = rel.asc(:kmlid) }
     end
   end
 
