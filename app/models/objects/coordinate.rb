@@ -27,4 +27,25 @@ module Objects::Coordinate
 
   def position_latitude; self.lat end
   def position_longitude; self.lng end
+
+  # metric coordinates
+
+  def easting
+    calculate_metric if @easting.nil?
+    @easting
+  end
+
+  def northing
+    calculate_metric if @northing.nil?
+    @northing
+  end
+
+  private
+
+  def calculate_metric
+    coordinate = GeoUtm::LatLon.new self.lat, self.lng
+    to_utm = coordinate.to_utm #(GeoUtm::Ellipsoid.lookup('clarke 1866'))
+    @easting = to_utm.e
+    @northing = to_utm.n
+  end
 end

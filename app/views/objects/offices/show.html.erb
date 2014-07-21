@@ -3,8 +3,10 @@
   f.text_field 'name'
   f.text_field 'address'
   f.text_field 'region.name', i18n: 'region', url: region_url(id:@office.region.id)
-  f.text_field 'lat'
-  f.text_field 'lng'
+  f.complex_field label: 'კოორდინატები' do |c|
+    c.text_field 'easting', tag: 'code', before: 'E:'
+    c.text_field 'northing', tag: 'code', before: 'N:'
+  end
   f.text_field 'description'
   f.map_field 'position'
 end%>

@@ -26,6 +26,7 @@ gem 'prawn_rails'
 gem 'axlsx_rails'
 gem 'roo'
 gem 'geokit'
+gem 'geoutm'
 
 gem 'shortest-path', path: '../shortest-path'
 gem 'rmagick'
