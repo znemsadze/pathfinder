@@ -45,6 +45,8 @@ class Objects::Tower
   end
 
   def has_images?; self.images.present? end
+  def thumb_dir; "#{Rails.root}/public/uploads/#{self.id}/thumb" end
+  def large_dir; "#{Rails.root}/public/uploads/#{self.id}/large" end
   def thumbnails; self.images.map{ |x| "/uploads/#{self.id}/thumb/#{x}" } end
   def larges; self.images.map{ |x| "/uploads/#{self.id}/large/#{x}" } end
   # def originals; self.images.map{ |x| "/uploads/#{self.id}/original/#{x}" } end
@@ -54,17 +56,20 @@ class Objects::Tower
     if images.present?
       images.each do |url|
         basename = File.basename(url)
-        original = Magick::Image::read(url).first
-        large = original.resize_to_fit(800,800).auto_orient
-        thumb = large.resize_to_fit(80,80)
-        dir1 = "#{Rails.root}/public/uploads/#{self.id}/thumb" ; FileUtils.mkdir_p(dir1)
-        dir2 = "#{Rails.root}/public/uploads/#{self.id}/large" ; FileUtils.mkdir_p(dir2)
-        path1 = "#{dir1}/#{basename}"
-        path2 = "#{dir2}/#{basename}"
-        thumb.write(path1) ; large.write(path2)
-        thumb.destroy! ; large.destroy! ; original.destroy!
+        generate_image_from_file(url, basename)
       end
     end
-    self.images = images.map{|x| File.basename(x) } ; self.save
+    # self.images = images.map{|x| File.basename(x) } ; self.save
+  end
+
+  def generate_images_from_file(filepath, basename)
+    original = Magick::Image::read(filepath).first
+    large = original.resize_to_fit(800,800).auto_orient
+    thumb = large.resize_to_fit(80,80)
+    FileUtils.mkdir_p(thumb_dir) ; FileUtils.mkdir_p(large_dir)
+    thumb.write("#{thumb_dir}/#{basename}") ; large.write("#{large_dir}/#{basename}")
+    thumb.destroy! ; large.destroy! ; original.destroy!
+    self.images << basename unless self.images.include?(basename)
+    self.save
   end
 end

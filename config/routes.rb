@@ -39,6 +39,7 @@ Pathfinder::Application.routes.draw do
       get '/', action: 'index', as: 'towers'
       get '/show/:id', action: 'show', as: 'tower'
       match '/upload', action: 'upload', via: ['get','post'], as: 'upload_towers'
+      match '/upload_photo/:id', action: 'upload_photo', via: ['get', 'post'], as: 'upload_tower_photo'
     end
     scope '/offices', controller: 'offices' do
       get '/', action: 'index', as: 'offices'

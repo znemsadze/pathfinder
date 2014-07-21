@@ -1,4 +1,5 @@
 <%=view_for @tower, title: @title, icon: '/icons/tower.png', collapsible: true do |f|
+  f.title_action objects_upload_tower_photo_url(id: @tower.id), label: 'ფოტოს დამატება', icon: '/icons/image--plus.png'
   f.text_field 'kmlid', tag: 'code'
   f.text_field 'name'
   f.text_field 'category'

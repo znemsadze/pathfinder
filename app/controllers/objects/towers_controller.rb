@@ -20,13 +20,24 @@ class Objects::TowersController < ApplicationController
   def upload
     @title='ფაილის ატვირთვა'
     if request.post?
-      f=params[:data].original_filename
+      f = params[:data].original_filename
       case File.extname(f).downcase
       when '.kmz' then upload_kmz(params[:data].tempfile)
       when '.kml' then upload_kml(params[:data].tempfile)
       when '.xlsx' then upload_xlsx(params[:data].tempfile)
       else raise 'არასწორი ფორმატი' end
       redirect_to objects_towers_url, notice: 'მონაცემები ატვირთულია'
+    end
+  end
+
+  def upload_photo
+    @title = 'გამოსახულების ატვირთვა'
+    @tower = Objects::Tower.find(params[:id])
+    if request.post?
+      file = params[:data].tempfile
+      filename = params[:data].original_filename
+      @tower.generate_images_from_file(file.path, filename)
+      redirect_to objects_tower_url(id: @tower.id), notice: 'გამოსახულედა დამატებულია'
     end
   end
 
@@ -39,6 +50,9 @@ class Objects::TowersController < ApplicationController
   def nav
     @nav=super
     @nav['ანძები']=objects_towers_url
+    if @tower
+      @nav[@tower.name] = objects_tower_url(id: @tower.id) unless ['show'].include?(action_name)
+    end
     @nav[@title]=nil unless ['index'].include?(action_name)
   end
 
