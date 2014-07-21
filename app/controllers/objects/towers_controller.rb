@@ -41,6 +41,12 @@ class Objects::TowersController < ApplicationController
     end
   end
 
+  def delete_photo
+    tower = Objects::Tower.find(params[:id])
+    tower.destroy_image(params[:basename])
+    redirect_to objects_tower_url(id: tower.id), notice: 'გამოსახულედა წაშლილია'
+  end
+
   def show
     @title='ანძის თვისებები'
     @tower=Objects::Tower.find(params[:id])

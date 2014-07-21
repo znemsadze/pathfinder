@@ -72,4 +72,11 @@ class Objects::Tower
     self.images << basename unless self.images.include?(basename)
     self.save
   end
+
+  def destroy_image(basename)
+    File.delete("#{large_dir}/#{basename}")
+    File.delete("#{thumb_dir}/#{basename}")
+    self.images.delete basename
+    self.save
+  end
 end
