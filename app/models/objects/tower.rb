@@ -56,7 +56,7 @@ class Objects::Tower
     if images.present?
       images.each do |url|
         basename = File.basename(url)
-        generate_image_from_file(url, basename)
+        generate_images_from_file(url, basename)
       end
     end
     # self.images = images.map{|x| File.basename(x) } ; self.save
