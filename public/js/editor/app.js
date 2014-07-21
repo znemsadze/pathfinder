@@ -193,26 +193,26 @@ var initFilterbar=function(){
   regionCombo=ui.form.comboField('filter_region', {collection_url: '/regions.json', text_property: 'name', empty: '-- ყველა რეგიონი --'});
   regionCombo.addChangeListener(resetMapStyle);
 
-  chkOffice=filterCheckbox('ოფისი', resetMapStyle);
-  chkSubstation=filterCheckbox('ქვესადგური', resetMapStyle);
-  chkTower=filterCheckbox('ანძა', resetMapStyle);
-  chkLine=filterCheckbox('გადამცემი ხაზი', resetMapStyle);
-  chkPath=filterCheckbox('მარშუტი', resetMapStyle);
+  chkOffice=filterCheckbox('ოფისი', { onchange: resetMapStyle, checked: true });
+  chkSubstation=filterCheckbox('ქვესადგური', { onchange: resetMapStyle, checked: true });
+  chkTower=filterCheckbox('ანძა', { onchange: resetMapStyle, checked: true });
+  chkLine=filterCheckbox('გადამცემი ხაზი', { onchange: resetMapStyle, checked: true });
+  chkPath=filterCheckbox('მარშუტი', { onchange: resetMapStyle, checked: false });
 
-  var d1=ui.html.el('div', [chkOffice, chkSubstation, chkTower]);
-  var d2=ui.html.el('div', [chkLine, chkPath]);
+  var div1 = ui.html.el('div', [ chkOffice, chkSubstation, chkTower ]);
+  var div2 = ui.html.el('div', [ chkLine, chkPath ]);
 
   filterbarElement.appendChild(regionCombo);
-  filterbarElement.appendChild(d1);
-  filterbarElement.appendChild(d2);
+  filterbarElement.appendChild(div1);
+  filterbarElement.appendChild(div2);
 };
 
-var filterCheckbox=function(label,onchange){
-  var input=ui.html.el('input', {type:'checkbox', checked: true});
+var filterCheckbox=function(label, opts){
+  var attrs = { type: 'checkbox' };
+  if(opts && opts.checked) { attrs.checked = true; }
+  var input=ui.html.el('input', attrs);
   var field=ui.html.el('label', {style:'padding: 0 10px;'}, [input, ' '+label]);
-  input.onchange=onchange;
-  field.isChecked=function(){
-    return input.checked;
-  };
+  input.onchange = opts && opts.onchange;
+  field.isChecked = function() { return input.checked; };
   return field;
 };
