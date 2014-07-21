@@ -1176,8 +1176,9 @@ var towerDescription=function(map,f){
     property('ტიპი',f.getProperty('category')),
     property('რეგიონი',f.getProperty('region')),
     property('ხაზი',f.getProperty('linename')),
-    property('განედი','<code>'+point.lat()+'</code>'),
-    property('გრძედი','<code>'+point.lng()+'</code>'),
+    //property('განედი','<code>'+point.lat()+'</code>'),
+    //property('გრძედი','<code>'+point.lng()+'</code>'),
+    property('კოორდინატი', 'E: <code>' + f.getProperty('easting') + '</code>; N: <code>' + f.getProperty('northing') + '</code>'),
     property('შენიშვნა',f.getProperty('description')),
   ].join('');
 };
@@ -1188,8 +1189,9 @@ var officeDescription=function(map,f){
     property('დასახელება',f.getProperty('name')),
     property('რეგიონი',f.getProperty('region')),
     property('მისამართი',f.getProperty('address')),
-    property('განედი','<code>'+point.lat()+'</code>'),
-    property('გრძედი','<code>'+point.lng()+'</code>'),
+    // property('განედი','<code>'+point.lat()+'</code>'),
+    // property('გრძედი','<code>'+point.lng()+'</code>'),
+    property('კოორდინატი', 'E: <code>' + f.getProperty('easting') + '</code>; N: <code>' + f.getProperty('northing') + '</code>'),
     property('შენიშვნა',f.getProperty('description')),
   ].join('');
 };
@@ -1199,8 +1201,9 @@ var substationDescription=function(map,f){
   return [
     property('დასახელება',f.getProperty('name')),
     property('რეგიონი',f.getProperty('region')),
-    property('განედი','<code>'+point.lat()+'</code>'),
-    property('გრძედი','<code>'+point.lng()+'</code>'),
+    // property('განედი','<code>'+point.lat()+'</code>'),
+    // property('გრძედი','<code>'+point.lng()+'</code>'),
+    property('კოორდინატი', 'E: <code>' + f.getProperty('easting') + '</code>; N: <code>' + f.getProperty('northing') + '</code>'),
     property('შენიშვნა',f.getProperty('description')),
   ].join('');
 };
