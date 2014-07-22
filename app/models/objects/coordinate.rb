@@ -44,8 +44,8 @@ module Objects::Coordinate
 
   def calculate_metric
     coordinate = GeoUtm::LatLon.new self.lat, self.lng
-    to_utm = coordinate.to_utm #(GeoUtm::Ellipsoid.lookup('clarke 1866'))
-    @easting = to_utm.e
-    @northing = to_utm.n
+    to_utm = coordinate.to_utm(zone: '38N') #(GeoUtm::Ellipsoid.lookup('clarke 1866'))
+    @easting = to_utm.e.round(2)
+    @northing = to_utm.n.round(2)
   end
 end
