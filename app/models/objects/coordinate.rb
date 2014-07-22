@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 module Objects::Coordinate
+  DEFAULT_ZONE = '38N'
+
   def self.included(base)
     base.field :location, type: Array
     base.field :alt, type: Float
@@ -44,7 +46,7 @@ module Objects::Coordinate
 
   def calculate_metric
     coordinate = GeoUtm::LatLon.new self.lat, self.lng
-    to_utm = coordinate.to_utm(zone: '38N') #(GeoUtm::Ellipsoid.lookup('clarke 1866'))
+    to_utm = coordinate.to_utm(zone: DEFAULT_ZONE)
     @easting = to_utm.e.round(2)
     @northing = to_utm.n.round(2)
   end
