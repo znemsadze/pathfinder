@@ -21,8 +21,10 @@ class Api::TowersController < ApiController
 
   def upload_photo
     tower = Objects::Tower.find(params[:id])
-    file = params[:file].tempfile
-    filename = params[:data].original_filename
+    filename = (0...8).map { (65 + rand(26)).chr }.join # generate random string (A..Z)*8
+    file = Tempfile.new(filename)
+    file.write(params[:file])
+    file.close
     tower.generate_images_from_file(file.path, filename)
     render json: {file: filename}
   end
