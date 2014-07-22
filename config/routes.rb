@@ -148,6 +148,7 @@ Pathfinder::Application.routes.draw do
       post '/new',  action: 'new'
       post '/edit', action: 'edit'
       post '/delete', action: 'delete'
+      post '/upload_photo', action: 'upload_photo'
     end
     scope 'offices', controller: 'offices' do
       get '/show', action: 'show'

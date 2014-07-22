@@ -5,7 +5,6 @@ class Api::TowersController < ApiController
   def new
     tower=Objects::Tower.create(tower_params)
     render json:{id:tower.id.to_s}
-
   end
 
   def edit
@@ -18,6 +17,14 @@ class Api::TowersController < ApiController
     tower=Objects::Tower.find(params[:id])
     tower.destroy
     render text:'ok'
+  end
+
+  def upload_photo
+    tower = Objects::Tower.find(params[:id])
+    file = params[:file].tempfile
+    filename = params[:data].original_filename
+    tower.generate_images_from_file(file.path, filename)
+    render json: {file: filename}
   end
 
   private
