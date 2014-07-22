@@ -18,10 +18,12 @@ class Objects::MapsController < ApplicationController
 
   def generate_images
     if request.post?
-      Objects::Tower.each { |x| x.generate_images }
+      Objects::Tower.where(linename: params[:dir].to_ka(:all)).each { |x| x.generate_images }
       redirect_to objects_generate_images_url(status: 'ok')
     else
       @title = 'გამოსახულებების გენერაცია'
+      @root = Pathfinder::POLES_HOME
+      @dirs = Dir.entries(@root).select {|entry| File.directory? File.join(@root) and !(entry =='.' || entry == '..') }
     end
   end
 

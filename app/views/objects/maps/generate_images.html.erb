@@ -6,6 +6,31 @@
   <div class="alert alert-success alert-block">გამოსახულებები დაგენერირებულია!</div>
 <% else %>
   <p>
-    <%= link_to 'გენერაციის დაწყება &rarr;'.html_safe, objects_generate_images_url, data: {confirm: 'ნამდვილად გინდათ გამოსახულებების გენერაცია?', method: 'post' }, class: ['btn', 'btn-danger'] %>
+    გამოსახულების ატვირთვა ხდება შემდეგი დირექტორიიდან:
+    <code><%= @root %></code>
   </p>
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>დირექტორია</th>
+        <th class="text-center" width="200"><i class="fa fa-cog"></i></th>
+      </tr>
+    </thead>
+    <% if @dirs.any? %>
+      <% @dirs.each do |d| %>
+        <tr>
+          <td><code><%= @root %>/<strong><%= d %></strong></code></td>
+          <td class="text-center">
+            <%= link_to 'გენერაცია &rarr;'.html_safe, objects_generate_images_url(dir: d), data: {confirm: 'ნამდვილად გინდათ გამოსახულებების გენერაცია?', method: 'post' }, class: ['btn', 'btn-danger', 'btn-xs'] %>
+          </td>
+        </tr>
+      <% end %>
+    <% else %>
+      <tr>
+        <td colspan="2" class="text-center" style="padding: 32px; background: #eee; color: #aaa;">
+          დირექტორია <code><%= @root %></code> ცარიელია! გთხოვთ დაამატოთ მასში ფაილები.
+        </td>
+      </tr>
+    <% end %>
+  </table>
 <% end %>
