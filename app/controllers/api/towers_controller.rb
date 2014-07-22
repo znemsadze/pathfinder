@@ -26,7 +26,7 @@ class Api::TowersController < ApiController
     file.write(params[:file])
     file.close
     tower.generate_images_from_file(file.path, filename)
-    render json: {file: filename}
+    render json: {file: "/uploads/#{tower.id}/large/#{filename}"}
   end
 
   private
