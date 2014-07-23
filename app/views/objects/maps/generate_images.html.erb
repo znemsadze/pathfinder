@@ -17,11 +17,17 @@
       </tr>
     </thead>
     <% if @dirs.any? %>
-      <% @dirs.each do |d| %>
+      <% @dirs.each do |dir| %>
         <tr>
-          <td><code><%= @root %>/<strong><%= d %></strong></code></td>
+          <td>
+            <code><%= @root %>/<strong><%= dir %></strong></code>
+            &rarr;
+            <span class="text-muted">
+              ნაპოვნია <code><%= Objects::Tower.where(linename: dir.to_ka(:all)).count %></code> ანძა
+            </span>
+          </td>
           <td class="text-center">
-            <%= link_to 'გენერაცია &rarr;'.html_safe, objects_generate_images_url(dir: d), data: {confirm: 'ნამდვილად გინდათ გამოსახულებების გენერაცია?', method: 'post' }, class: ['btn', 'btn-danger', 'btn-xs'] %>
+            <%= link_to 'გენერაცია &rarr;'.html_safe, objects_generate_images_url(dir: dir), data: {confirm: 'ნამდვილად გინდათ გამოსახულებების გენერაცია?', method: 'post' }, class: ['btn', 'btn-danger', 'btn-xs'] %>
           </td>
         </tr>
       <% end %>

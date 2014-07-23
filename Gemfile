@@ -30,3 +30,4 @@ gem 'geoutm'
 
 gem 'shortest-path', path: '../shortest-path'
 gem 'rmagick'
+gem 'resque'

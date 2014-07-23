@@ -1,5 +1,9 @@
 # -*- encoding : utf-8 -*-
+require 'resque/server'
+
 Pathfinder::Application.routes.draw do
+  mount Resque::Server.new, at: "/resque"
+
   scope controller: 'site' do
     get '/', action: 'index', as: 'home'
     match '/login', action: 'login', as: 'login', via: ['get','post']
