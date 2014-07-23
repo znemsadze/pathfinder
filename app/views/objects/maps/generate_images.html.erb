@@ -34,10 +34,19 @@
       <% @dirs.each do |dir| %>
         <tr>
           <td>
+            <% found = Objects::Tower.where(linename: dir.to_ka(:all)).any? %>
             <code><%= @root %>/<strong><%= dir %></strong></code>
             &rarr;
             <span class="text-muted">
-              ნაპოვნია <code><%= Objects::Tower.where(linename: dir.to_ka(:all)).count %></code> ანძა
+              <% if found %>
+                <span class="label label-success">
+                  <i class="fa fa-check"></i> ნაპოვნია
+                </span>
+              <% else %>
+                <span class="label label-danger">
+                  <i class="fa fa-times"></i> ვერ მოიძებნა
+                </span>
+              <% end %>
             </span>
           </td>
           <td class="text-center">
