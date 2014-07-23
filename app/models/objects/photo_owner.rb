@@ -18,6 +18,7 @@ module Objects::PhotoOwner
     FileUtils.mkdir_p(thumb_dir) ; FileUtils.mkdir_p(large_dir)
     thumb.write("#{thumb_dir}/#{basename}") ; large.write("#{large_dir}/#{basename}")
     thumb.destroy! ; large.destroy! ; original.destroy!
+    Objects::Photo.where(owner: self, filename: basename).destroy_all
     Objects::Photo.create(owner: self, filename: basename, confirmed: confirmed)
   end
 
