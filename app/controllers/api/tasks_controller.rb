@@ -45,7 +45,7 @@ class Api::TasksController < ApiController
 
   def add_note
     task = Task.find(params[:id]) ; detail = Objects::Path::Detail.find(params[:detail_id])
-    note = Objects::Note.create(task: task, detail: detail, lat: params[:lat].to_f, lng: params[:lng].to_f, note: params[:note])
+    note = Objects::Note.create(task: task, detail: detail, lat: params[:lat].to_f, lng: params[:lng].to_f, text: params[:note])
     render json: { status: 'ok' }
   end
 end
