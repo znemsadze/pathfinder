@@ -18,8 +18,7 @@ class Objects::MapsController < ApplicationController
 
   def generate_images
     if request.post?
-      # Objects::Tower.where(linename: params[:dir].to_ka(:all)).each { |x| x.generate_images }
-      Resque.enqueue(ImageConversion, params[:dir].to_ka(:all))
+      ImageConversion.perform_async(params[:dir].to_ka(:all))
       redirect_to objects_generate_images_url(status: 'ok')
     else
       @title = 'გამოსახულებების გენერაცია'

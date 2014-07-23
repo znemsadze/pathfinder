@@ -1,8 +1,10 @@
+# -*- encoding : utf-8 -*-
 class ImageConversion
-  @queue = :image_conversion
+  include Sidekiq::Worker
 
-  def self.perform(linename)
+  def perform(linename)
     Objects::Tower.where(linename: linename).each do |tower|
+      puts "#{tower.name}"
       tower.generate_images
     end
   end
