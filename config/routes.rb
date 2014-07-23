@@ -176,6 +176,7 @@ Pathfinder::Application.routes.draw do
       post '/begin_task', action: 'begin_task'
       post '/complete_task', action: 'complete_task'
       post '/cancel_task', action: 'cancel_task'
+      post '/add_note', action: 'add_note'
     end
   end
 
