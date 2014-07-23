@@ -1,5 +1,9 @@
 # -*- encoding : utf-8 -*-
+require 'sidekiq/web'
+
 Pathfinder::Application.routes.draw do
+  mount Sidekiq::Web => '/sidekiq'
+
   scope controller: 'site' do
     get '/', action: 'index', as: 'home'
     match '/login', action: 'login', as: 'login', via: ['get','post']
