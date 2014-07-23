@@ -22,4 +22,6 @@ class Api::PathsController < ApiController
     path.each{|x| x.destroy_path }
     render text:'ok'
   end
+
+  def details; @types = Objects::Path::Type.asc(:order_by) end
 end

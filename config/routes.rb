@@ -140,6 +140,7 @@ Pathfinder::Application.routes.draw do
       post '/new',  action: 'new'
       post '/edit', action: 'edit'
       post '/delete', action: 'delete'
+      get '/details', action: 'details'
     end
     scope '/lines', controller: 'lines' do
       get '/show', action: 'show'
