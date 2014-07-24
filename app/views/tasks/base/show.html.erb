@@ -11,9 +11,11 @@ var task_paths = [<%= @task.paths.map do |path|
     '['+ path.map { |point| "[#{point['lat']},#{point['lng']}]" }.join(',') +']'
   end.join(',') %>];
 var destinations = eval('<%= @task.normal_destinations.map { |dest| {name: dest.name, type: dest.class.name, lat: dest.lat, lng: dest.lng} }.to_json.html_safe %>');
+var notes = eval('<%= @task.notes.map{ |note| {text: note.text, detail: [note.detail.surface.type.name, note.detail.surface.name, note.detail.name], lat: note.lat, lng: note.lng, easting: note.easting, northing: note.northing, time: note.created_at.localtime.strftime('%d-%b-%Y %H:%M:%S')} }.to_json.html_safe %>');
 var onPostInitialize = function(map, bounds) {
   draw_paths({ map: map, data: task_paths, bounds: bounds, color: '#00AA00', direction: true, });
   drawDestinations(map, bounds);
+  drawNotes(map, bounds);
   map.fitBounds(bounds);
 };
 var drawDestinations = function(map, bounds) {
@@ -33,6 +35,29 @@ var drawDestinations = function(map, bounds) {
       map: map,
       title: dest.name,
       icon: icon,
+    });
+    bounds.extend(position);
+  }
+};
+var drawNotes = function(map, bounds) {
+  for (var i = 0, l = notes.length; i < l; i++) {
+    var note = notes[i];
+    var position = new google.maps.LatLng(note.lat, note.lng);
+    var icon = '/map/note.png';
+    var marker = new google.maps.Marker({
+      position: position,
+      map: map,
+      icon: icon,
+      title: note.text,
+    });
+    var infowindow = new google.maps.InfoWindow({
+      content: '<h4>'+note.time+'</h4><hr/>'
+        + '<p>' + note.detail.join(' &rarr; ') + '</p>'
+        + '<p>' + note.text + '</p>'
+        + '<p>E: <code>' + note.easting + '</code>; N: <code>' + note.northing + '</code></p>'
+    });
+    google.maps.event.addListener(marker, 'click', function() {
+      infowindow.open(map, marker);
     });
     bounds.extend(position);
   }
