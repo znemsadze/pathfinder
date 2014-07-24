@@ -17,7 +17,8 @@ module TasksHelper
   end
 
   def task_view(task, opts={})
-    view_for task, title: 'დავალების თვისებები', icon: '/icons/report-paper.png', collapsible: true do |f|
+    selected_tab = case opts[:tab] when 'sys' then 2 when 'notes' then 1 else 0 end
+    view_for task, title: 'დავალების თვისებები', icon: '/icons/report-paper.png', collapsible: true, selected_tab: selected_tab do |f|
       f.edit_action tasks_edit_task_url(id: task.id)
       f.delete_action tasks_delete_task_url(id: task.id), condition: ->(x){ x.can_delete? }
       f.tab title: 'ძირითადი', icon: '/icons/report-paper.png' do |f|
@@ -33,6 +34,22 @@ module TasksHelper
           f.text_field 'assignee.full_name'
         end
         f.text_field 'note'
+      end
+      f.tab title: 'შენიშვნები', icon: '/icons/sticky-note.png' do |t|
+        t.table_field 'notes', table: { title: 'შენიშვნები', icon: '/icons/sticky-note.png' } do |field|
+          field.table do |t|
+            t.text_field 'text'
+            t.complex_field label: 'საფარი' do |c|
+              c.text_field 'detail.surface.type.name', after: '&rarr;'.html_safe, url: ->(x){ objects_path_type_url(id: x.detail.surface.type.id) }
+              c.text_field 'detail.surface.name', after: '&rarr;'.html_safe, url: ->(x){ objects_path_surface_url(id: x.detail.surface.id) }
+              c.text_field 'detail.name', tag: 'strong', url: ->(x){ objects_path_detail_url(id: x.detail.id) }
+            end
+            t.complex_field label: 'კოორდინატები' do |c|
+              c.text_field 'easting', tag: 'code', before: 'E:'
+              c.text_field 'northing', tag: 'code', before: 'N:'
+            end
+          end
+        end
       end
       f.tab title: 'სისტემური',icon:'/icons/traffic-cone.png' do |f|
         f.timestamps
