@@ -40,24 +40,25 @@ var drawDestinations = function(map, bounds) {
   }
 };
 var drawNotes = function(map, bounds) {
+  var infowindow = new google.maps.InfoWindow({});
   for (var i = 0, l = notes.length; i < l; i++) {
     var note = notes[i];
     var position = new google.maps.LatLng(note.lat, note.lng);
     var icon = '/map/note.png';
+    var content = '<h4>'+note.time+'</h4><hr/>'
+        + '<p>' + note.detail.join(' &rarr; ') + '</p>'
+        + '<p>' + note.text + '</p>'
+        + '<p>E: <code>' + note.easting + '</code>; N: <code>' + note.northing + '</code></p>';
     var marker = new google.maps.Marker({
       position: position,
       map: map,
       icon: icon,
       title: note.text,
+      html: content,
     });
-    var infowindow = new google.maps.InfoWindow({
-      content: '<h4>'+note.time+'</h4><hr/>'
-        + '<p>' + note.detail.join(' &rarr; ') + '</p>'
-        + '<p>' + note.text + '</p>'
-        + '<p>E: <code>' + note.easting + '</code>; N: <code>' + note.northing + '</code></p>'
-    });
-    google.maps.event.addListener(marker, 'click', function() {
-      infowindow.open(map, marker);
+    google.maps.event.addListener(marker, 'click', function(evt) {
+      infowindow.setContent(this.html);
+      infowindow.open(map, this);
     });
     bounds.extend(position);
   }
