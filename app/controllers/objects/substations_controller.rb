@@ -61,7 +61,7 @@ class Objects::SubstationsController < ApplicationController
     (2..sheet.last_row).each do |row|
       id = sheet.cell('A',row)
       # B = KMLID
-      name = sheet.excelx_value('C',row).to_s
+      name = sheet.cell('C',row).to_s
       regionname = sheet.cell('D',row).to_s
       lat = sheet.cell('E',row).to_f
       lng = sheet.cell('F',row).to_f
