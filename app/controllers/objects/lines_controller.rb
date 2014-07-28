@@ -56,11 +56,6 @@ class Objects::LinesController < ApplicationController
     end
   end
 
-  def upload_kml(file)
-    KMLConverter.perform_async('Objects::Line', file.path.to_s)
-  end
-
-  def upload_xlsx(file)
-    XLSConverter.perform_async('Objects::Line', file.path.to_s)
-  end
+  def upload_kml(file); KMLConverter.perform_async('Objects::Line', file.path.to_s) end
+  def upload_xlsx(file); XLSConverter.perform_async('Objects::Line', file.path.to_s) end
 end

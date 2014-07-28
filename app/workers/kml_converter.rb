@@ -7,6 +7,7 @@ class KMLConverter
     case type
     when 'Objects::Path::Line' then Objects::Path::Line.from_kml(kml)
     when 'Objects::Line' then Objects::Line.from_kml(kml)
+    when 'Objects::Tower' then Objects::Tower.from_kml(kml)
     end
   end
 end
