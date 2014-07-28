@@ -2,21 +2,5 @@
 class Objects::Path::Point
   include Mongoid::Document
   include Objects::Coordinate
-  field :path_ids, type: Array, default:[]
-
-  def path_count; self.path_ids.size end
-  def route_count; self.neighbours.size end
-
-  def neighbours
-    points=[]
-    self.path_ids.each do |path_id|
-      path=Objects::Path::Line.find(path_id) rescue nil
-      if path
-        idx=path.point_ids.index(self.id)
-        points<<path.point_ids[idx-1] if (idx>0)
-        points<<path.point_ids[idx+1] if (idx<path.point_ids.size-1)
-      end
-    end
-    points.uniq
-  end
+  belongs_to :pathline, class_name: 'Objects::Path::Line'
 end
