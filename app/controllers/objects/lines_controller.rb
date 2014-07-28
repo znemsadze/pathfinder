@@ -61,13 +61,6 @@ class Objects::LinesController < ApplicationController
   end
 
   def upload_xlsx(file)
-    sheet=Roo::Spreadsheet.open(file.path, extension: 'xlsx')
-    (2..sheet.last_row).each do |row|
-      id=sheet.cell('A',row) ; name=sheet.cell('C',row) ; regionname=sheet.cell('D',row)
-      region=Region.where(name:regionname).first
-      region=Region.create(name:regionname) unless region.present?
-      line=Objects::Line.find(id)
-      line.name=name ; line.region=region ; line.save
-    end
+    XLSConverter.perform_async('Objects::Line', file.path.to_s)
   end
 end
