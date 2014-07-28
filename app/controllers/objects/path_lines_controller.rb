@@ -46,8 +46,6 @@ class Objects::PathLinesController < ApplicationController
   end
 
   def upload_kml(file)
-    # kml = File.read(file.path.to_s)
-    # Objects::Path::Line.from_kml(kml)
     KMLConverter.perform_async('Objects::Path::Line', file.path.to_s)
   end
 end
