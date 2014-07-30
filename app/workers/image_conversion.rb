@@ -4,7 +4,7 @@ class ImageConversion
 
   def perform(linename)
     Objects::Tower.where(linename: linename).each do |tower|
-      puts "#{Time.now}: generate image for: #{linename}, ##{tower.name}"
+      # puts "#{Time.now}: generate image for: #{linename}, ##{tower.name}"
       tower.generate_images
     end
   end

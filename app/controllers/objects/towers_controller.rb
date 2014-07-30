@@ -26,7 +26,7 @@ class Objects::TowersController < ApplicationController
       when '.kml' then upload_kml(params[:data].tempfile)
       when '.xlsx' then upload_xlsx(params[:data].tempfile)
       else raise 'არასწორი ფორმატი' end
-      redirect_to objects_towers_url, notice: 'მონაცემები ატვირთულია'
+        redirect_to objects_upload_towers_url(status: 'ok')
     end
   end
 
@@ -67,29 +67,15 @@ class Objects::TowersController < ApplicationController
   def upload_kmz(file)
     Zip::File.open file do |zip_file|
       zip_file.each do |entry|
-        upload_kml(entry) if 'kml'==entry.name[-3..-1]
+        if entry.name == 'doc.kml'
+          tempfile = Tempfile.new(entry.name)
+          zip_file.extract(entry, tempfile){ true }
+          upload_kml(tempfile)
+        end
       end
     end
   end
 
-  def upload_kml(file)
-    kml=file.get_input_stream.read
-    Objects::Tower.from_kml(kml)
-  end
-
-  def upload_xlsx(file)
-    sheet=Roo::Spreadsheet.open(file.path, extension: 'xlsx')
-    (2..sheet.last_row).each do |row|
-      id=sheet.cell('A',row) ; name=sheet.excelx_value('C',row).to_s ; category=sheet.cell('D', row)
-      regionname=sheet.cell('E',row).to_s
-      lat=sheet.cell('F',row).to_f; lng=sheet.cell('G',row).to_f
-      description=sheet.cell('H',row)
-      region=Region.where(name:regionname).first
-      region=Region.create(name:regionname) unless region.present?
-      tower=Objects::Tower.find(id)
-      tower.name=name ; tower.region=region ; tower.category=category
-      tower.lat=lat ; tower.lng=lng; tower.description=description
-      tower.save
-    end
-  end
+  def upload_kml(file); KMLConverter.perform_async('Objects::Tower', file.path.to_s) end
+  def upload_xlsx(file); XLSConverter.perform_async('Objects::Tower', file.path.to_s) end
 end

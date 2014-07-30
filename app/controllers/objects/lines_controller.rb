@@ -26,7 +26,7 @@ class Objects::LinesController < ApplicationController
       when '.kml' then upload_kml(params[:data].tempfile)
       when '.xlsx' then upload_xlsx(params[:data].tempfile)
       else raise 'არასწორი ფორმატი' end
-      redirect_to objects_lines_url, notice: 'მონაცემები ატვირთულია'
+      redirect_to objects_upload_lines_url(status: 'ok')
     end
   end
 
@@ -47,24 +47,15 @@ class Objects::LinesController < ApplicationController
   def upload_kmz(file)
     Zip::File.open file do |zip_file|
       zip_file.each do |entry|
-        upload_kml(entry) if 'kml'==entry.name[-3..-1]
+        if entry.name == 'doc.kml'
+          tempfile = Tempfile.new(entry.name)
+          zip_file.extract(entry, tempfile){ true }
+          upload_kml(tempfile)
+        end
       end
     end
   end
 
-  def upload_kml(file)
-    kml=file.get_input_stream.read
-    Objects::Line.from_kml(kml)
-  end
-
-  def upload_xlsx(file)
-    sheet=Roo::Spreadsheet.open(file.path, extension: 'xlsx')
-    (2..sheet.last_row).each do |row|
-      id=sheet.cell('A',row) ; name=sheet.cell('C',row) ; regionname=sheet.cell('D',row)
-      region=Region.where(name:regionname).first
-      region=Region.create(name:regionname) unless region.present?
-      line=Objects::Line.find(id)
-      line.name=name ; line.region=region ; line.save
-    end
-  end
+  def upload_kml(file); KMLConverter.perform_async('Objects::Line', file.path.to_s) end
+  def upload_xlsx(file); XLSConverter.perform_async('Objects::Line', file.path.to_s) end
 end

@@ -309,7 +309,7 @@ var clearPaths=function(){
 var getShortestPath=function() {
   clearPaths();
   if(pathPoints.length > 1) {
-    api.shortestpath.getShortestPath(pathPoints, function(err, data){
+    api.shortestpath.getShortestPath(pathPoints, function(err, data) {
       if(data) {
         for(var i=0,l=data.length;i<l;i++){
           var points=data[i].points;

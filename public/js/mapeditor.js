@@ -1991,9 +1991,6 @@ exports.initApplication=function(opts){
   filters = opts.filters;
   sidebar = opts.sidebar;
   editMode = opts.editMode;
-
-console.log(opts.editMode);
-  
   return {
     addPage: addPage,
     openPage: openPage,
