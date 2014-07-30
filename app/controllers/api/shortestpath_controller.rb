@@ -21,6 +21,46 @@ class Api::ShortestpathController < ApiController
 
   private
 
+  def build_graph(points)
+    graph = get_current_graph
+
+    points_by_path = points.group_by { |point| point.pathline_ids.first }
+
+    points_by_path.each do |line_id, split_by|
+      line = Objects::Path::Line.find(line_id)
+      point_ids = line.point_ids
+      remove_graph_edge(graph, point_ids.first, point_ids.last)
+      split_by = split_by.map{|x| x.id }.sort_by{ |id| point_ids.index(id) }
+      i1, p1 = [ 0, point_ids.first ]
+      split_by.each do |point_id|
+        p2 = point_id ; i2 = point_ids.index(point_id)
+        add_graph_edge(graph, p1, p2, line_length(line, i1, i2))
+        i1, p1 = [ i2, p2 ]
+      end
+      i2, p2 = [ point_ids.length - 1, point_ids.last ]
+      add_graph_edge(graph, p1, p2, line_length(line, i1, i2))
+    end
+
+    graph
+  end
+
+  def get_current_graph
+    $__graph = build_default_graph unless $__graph
+    graph = $__graph.clone
+    graph.edges = $__graph.edges.clone
+    graph
+  end
+
+  def build_default_graph
+    graph=Shortest::Path::Graph.new
+    Objects::Path::Line.each do |line|
+      point_ids = line.point_ids
+      p1 = point_ids.first ; p2 = point_ids.last
+      add_graph_edge(graph, p1, p2, line.length)
+    end
+    graph
+  end
+
   def add_graph_edge(graph, p1, p2, length)
     point1 = Objects::Path::Point.find(p1)
     point2 = Objects::Path::Point.find(p2)
@@ -29,29 +69,10 @@ class Api::ShortestpathController < ApiController
     graph.connect_mutually(point1, point2, length)
   end
 
-  def build_graph(points)
-    points_by_path = points.group_by { |point| point.pathline_ids.first }
-    graph=Shortest::Path::Graph.new
-    Objects::Path::Line.each do |line|
-      point_ids = line.point_ids
-      split_by = points_by_path[line.id]
-      if split_by.present?
-        split_by = split_by.map{|x| x.id }.sort_by{ |id| point_ids.index(id) }
-        i1, p1 = [ 0, point_ids.first ]
-        split_by.each do |point_id|
-          p2 = point_id ; i2 = point_ids.index(point_id)
-          add_graph_edge(graph, p1, p2, line_length(line, i1, i2))
-          i1, p1 = [ i2, p2 ]
-        end
-        i2, p2 = [ point_ids.length - 1, point_ids.last ]
-        add_graph_edge(graph, p1, p2, line_length(line, i1, i2))
-      else
-        p1 = point_ids.first ; p2 = point_ids.last
-        add_graph_edge(graph, p1, p2, line.length)
-      end
-    end
-
-    graph
+  def remove_graph_edge(graph, p1, p2)
+    point1 = Objects::Path::Point.find(p1)
+    point2 = Objects::Path::Point.find(p2)
+    graph.remove_edge(point1, point2)
   end
 
   def line_length(line, i1, i2)
