@@ -10,10 +10,7 @@ exports.initApplication=function(opts){
   map = opts.map;
   filters = opts.filters;
   sidebar = opts.sidebar;
-  editMode = opts.editMode;
-
-console.log(opts.editMode);
-  
+  editMode = opts.editMode;  
   return {
     addPage: addPage,
     openPage: openPage,

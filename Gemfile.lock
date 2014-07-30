@@ -1,7 +1,7 @@
 PATH
   remote: ../shortest-path
   specs:
-    shortest-path (0.0.2)
+    shortest-path (0.0.3)
 
 GEM
   remote: https://rubygems.org/
@@ -108,7 +108,7 @@ GEM
     origin (2.1.1)
     pdf-core (0.2.5)
     polyglot (0.3.5)
-    prawn (1.1.0)
+    prawn (1.2.1)
       pdf-core (~> 0.2.5)
       ttfunk (~> 1.2.0)
     prawn_rails (0.0.11)

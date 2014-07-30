@@ -167,7 +167,7 @@ var initPage2=function(self){
 
 var openPage=function(idx){ layout.showAt(idx); };
 
-var resetFeatureInfo=function(){
+var resetFeatureInfo = function(){
   secondaryToolbar.clearButtons();
   pathToolbar.clearButtons();
   if (!selectedFeature) {
@@ -178,7 +178,7 @@ var resetFeatureInfo=function(){
       secondaryToolbar.addButton(btnEdit);
       secondaryToolbar.addButton(btnDelete);
     }
-    if(geo.isPointlike(selectedFeature)){
+    if(geo.isPointlike(selectedFeature) && !pathCalculationInProgress){
       pathToolbar.addButton(btnAddToPath);
     }
   }
@@ -205,16 +205,16 @@ var initMap=function(){
 };
 
 var changeSelection=function(f) {
-  if(f==selectedFeature){
-    f.selected=false;
-    selectedFeature=null;
+  if (f === selectedFeature) {
+    f.selected = false;
+    selectedFeature = null;
   } else {
-    if(selectedFeature){
-      selectedFeature.selected=false;
+    if (selectedFeature) {
+      selectedFeature.selected = false;
       map.data.revertStyle(selectedFeature);
     }
-    selectedFeature=f;
-    f.selected=true;
+    selectedFeature = f;
+    f.selected = true;
   }
   map.data.revertStyle(f);
   resetFeatureInfo();
@@ -253,24 +253,30 @@ var resetPathInfo=function(){
         var tbar=ui.html.el('div',{class:['pull-right','btn-group']});
         pathInfo.appendChild(tbar);
         // move up action
-        if (i > 0) {
-          var btnUp=ui.html.el('button',{class:['btn','btn-xs','btn-default'], 'data-id':f.getId()});
-          btnUp.innerHTML='<i class="fa fa-arrow-up"></i>';
-          btnUp.onclick=movePathPointUp;
-          tbar.appendChild(btnUp);
+        if(!pathCalculationInProgress) {
+          if (i > 0) {
+            var btnUp=ui.html.el('button',{class:['btn','btn-xs','btn-default'], 'data-id':f.getId()});
+            btnUp.innerHTML='<i class="fa fa-arrow-up"></i>';
+            btnUp.onclick=movePathPointUp;
+            tbar.appendChild(btnUp);
+          }
         }
         // move down action
-        if (i != pathPoints.length-1) {
-          var btnDown=ui.html.el('button',{class:['btn','btn-xs','btn-default'], 'data-id':f.getId()});
-          btnDown.innerHTML='<i class="fa fa-arrow-down"></i>';
-          btnDown.onclick=movePathPointDown;
-          tbar.appendChild(btnDown);
+        if(!pathCalculationInProgress) {
+          if (i != pathPoints.length-1) {
+            var btnDown=ui.html.el('button',{class:['btn','btn-xs','btn-default'], 'data-id':f.getId()});
+            btnDown.innerHTML='<i class="fa fa-arrow-down"></i>';
+            btnDown.onclick=movePathPointDown;
+            tbar.appendChild(btnDown);
+          }
         }
         // delete action
-        var btnDelete=ui.html.el('button',{class:['btn','btn-xs','btn-danger'], 'data-id':f.getId()});
-        btnDelete.innerHTML='<i class="fa fa-trash-o"></i>';
-        btnDelete.onclick=deletePathPoint;
-        tbar.appendChild(btnDelete);
+        if(!pathCalculationInProgress) {
+          var btnDelete=ui.html.el('button',{class:['btn','btn-xs','btn-danger'], 'data-id':f.getId()});
+          btnDelete.innerHTML='<i class="fa fa-trash-o"></i>';
+          btnDelete.onclick=deletePathPoint;
+          tbar.appendChild(btnDelete);
+        }
 
         // content
 
@@ -287,15 +293,25 @@ var resetPathInfo=function(){
         }
       }
     }
-    if(pathPoints.length > 1){
+
+    // footer: summary
+    if (pathCalculationInProgress) {
+      var waiting = ui.html.el('div', {style: 'padding: 5px; background: #FFDDDD'});
+      waiting.innerHTML = '<img src="/images/wait20.gif"/> გთხოვთ დაელოდოთ...';
+      pathInfo.appendChild(waiting);
+    } else if(pathPoints.length > 1){
       var summary=ui.html.el('div', {style: 'padding: 5px; background: #DDFFDD'});
       summary.innerHTML='<strong>მანძილი სულ</strong>: <code>' + totalLength.toFixed(3) + '</code> კმ';
       pathInfo.appendChild(summary);
     }
+
+    // reset feature's actions
+    resetFeatureInfo();
   }
 };
 
 var paths=[];
+var pathCalculationInProgress = false;
 
 var clearPaths=function(){
   for(var i=0,l=paths.length; i < l; i++){
@@ -309,9 +325,13 @@ var clearPaths=function(){
 var getShortestPath=function() {
   clearPaths();
   if(pathPoints.length > 1) {
+    // show wait
+    pathCalculationInProgress = true;
+    resetPathInfo();
+
     api.shortestpath.getShortestPath(pathPoints, function(err, data) {
-      if(data) {
-        for(var i=0,l=data.length;i<l;i++){
+      if(data && typeof data === 'object') {
+        for(var i=0, l=data.length; i < l; i++) {
           var points=data[i].points;
           var path = new google.maps.Polyline({ geodesic: true, strokeColor: '#00FF00', strokeOpacity: 0.75, strokeWeight: 10 });
           path.length=data[i].length;
@@ -322,10 +342,11 @@ var getShortestPath=function() {
           path.setMap(map);
           paths.push(path);
         }
-        resetPathInfo();
       } else if(err) {
         console.log(err);
       }
+      pathCalculationInProgress = false;
+      resetPathInfo();
     });
   }
 };
