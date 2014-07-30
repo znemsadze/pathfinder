@@ -12,7 +12,7 @@ class Objects::Path::Line
   field :description, type: String
   field :kmlid, type: String
   belongs_to :region
-  has_many :points, class_name: 'Objects::Path::Point'
+  has_and_belongs_to_many :points, class_name: 'Objects::Path::Point'
 
   def self.from_kml(xml)
     parser=XML::Parser.string xml
@@ -39,9 +39,15 @@ class Objects::Path::Line
       line = Objects::Path::Line.where(kmlid: id).first || Objects::Path::Line.create(kmlid: id)
       line.name = name ; line.detail = detail ; line.region = region ; line.save
       line.points.destroy_all
-      coords.split(' ').each do |coord|
-        point=line.points.new(pathline: line)
-        point.set_coordinate(coord)
+      coord_strings = coords.split(' ')
+      coord_strings.each_with_index do |coord, index|
+        edge = ( index == 0 || index == coord_strings.length - 1 )
+        point = Objects::Path::Point.new(edge: edge) ; point.set_coordinate(coord)
+        if edge
+          existing = Objects::Path::Point.where(edge: true, lat: point.lat, lng: point.lng).first
+          point = existing if existing.present?
+        end
+        point.pathlines << line
         point.save
       end
       line.calc_length!
