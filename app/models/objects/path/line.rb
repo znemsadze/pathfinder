@@ -44,7 +44,7 @@ class Objects::Path::Line
         edge = ( index == 0 || index == coord_strings.length - 1 )
         point = Objects::Path::Point.new(edge: edge) ; point.set_coordinate(coord)
         if edge
-          existing = Objects::Path::Point.where(edge: true, lat: point.lat, lng: point.lng).first
+          existing = Objects::Path::Point.where(edge: true, location: [point.lng, point.lat]).first
           point = existing if existing.present?
         end
         point.pathline_ids << line.id
