@@ -18,6 +18,8 @@ class Objects::Path::Line
     doc=parser.parse ; root=doc.child
     kmlns="kml:#{KMLNS}"
     placemarks=doc.child.find '//kml:Placemark',kmlns
+    Objects::Path::Line.delete_all
+    Objects::Path::Point.delete_all
     placemarks.each do |placemark|
       id = placemark.attributes['id']
       name = placemark.find('./kml:name', kmlns).first.content
@@ -35,9 +37,8 @@ class Objects::Path::Line
       # end of description section
       detail = Objects::Path::Detail.first # XXX
       region = Region.first # XXX
-      line = Objects::Path::Line.where(kmlid: id).first || Objects::Path::Line.create(kmlid: id)
-      line.name = name ; line.detail = detail ; line.region = region ; line.save
-      line.points.destroy_all
+      line = Objects::Path::Line.create(kmlid: id)
+      line.name = name ; line.detail = detail ; line.region = region
       coord_strings = coords.split(' ')
       coord_strings.each_with_index do |coord, index|
         edge = ( index == 0 || index == coord_strings.length - 1 )
