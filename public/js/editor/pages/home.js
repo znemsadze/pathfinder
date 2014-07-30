@@ -330,8 +330,8 @@ var getShortestPath=function() {
     resetPathInfo();
 
     api.shortestpath.getShortestPath(pathPoints, function(err, data) {
-      if(data) {
-        for(var i=0,l=data.length;i<l;i++){
+      if(data && typeof data === 'object') {
+        for(var i=0, l=data.length; i < l; i++) {
           var points=data[i].points;
           var path = new google.maps.Polyline({ geodesic: true, strokeColor: '#00FF00', strokeOpacity: 0.75, strokeWeight: 10 });
           path.length=data[i].length;
