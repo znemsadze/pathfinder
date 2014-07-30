@@ -12,7 +12,6 @@ class Objects::Path::Line
   field :description, type: String
   field :kmlid, type: String
   belongs_to :region
-  has_and_belongs_to_many :points, class_name: 'Objects::Path::Point'
 
   def self.from_kml(xml)
     parser=XML::Parser.string xml
@@ -47,12 +46,15 @@ class Objects::Path::Line
           existing = Objects::Path::Point.where(edge: true, lat: point.lat, lng: point.lng).first
           point = existing if existing.present?
         end
-        point.pathlines << line
+        point.pathline_ids << line.id
         point.save
+        line.point_ids << point.id
       end
-      line.calc_length!
+      line.save ; line.calc_length!
     end
   end
+
+  def points; self.point_ids.map{|x|Objects::Path::Point.find(x)} end
 
   private
 
