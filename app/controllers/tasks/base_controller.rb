@@ -20,6 +20,10 @@ class Tasks::BaseController < ApplicationController
   def show
     @title='დავალების თვისებები'
     @task = Task.find(params[:id])
+    respond_to do |format|
+      format.html
+      format.kmz { send_data @task.to_kmz, filename: "task-##{@task.number}.kmz" }
+    end
   end
 
   def edit

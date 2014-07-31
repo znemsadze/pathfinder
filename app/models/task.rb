@@ -2,6 +2,7 @@
 class Task
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Kml
 
   START = 0
   CANCELED = 1
@@ -79,6 +80,20 @@ class Task
     when COMPLETED then I18n.t('models.task.statuses.completed')
     when CANCELED then I18n.t('models.task.statuses.canceled')
     else I18n.t('models.task.statuses.start')
+    end
+  end
+
+  def to_kml
+    kml_document do |xml|
+      xml.Document(id: "task-information") do |xml|
+        xml.name "task-information"
+        # xml.Snippet
+        xml.Folder(id: "FeatureLayer0") do
+          xml.name "task-information"
+          xml.Snippet
+          self.tracking_paths.each { |path| path.to_kml(xml) }
+        end
+      end
     end
   end
 

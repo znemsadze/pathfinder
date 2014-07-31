@@ -20,11 +20,7 @@ class Tasks::TrackingController < ApplicationController
         @title = "ტრეკი: #{@track.created_at.localtime.strftime('%d-%b-%Y %H:%M:%S')} / #{@track.updated_at.localtime.strftime('%d-%b-%Y %H:%M:%S')}"
       end
       format.kml { render text: @track.to_kml }
-      format.kmz {
-        # raise "#{@track.to_kmz.class.name}"
-        send_data @track.to_kmz, filename: "track-#{@track.user.username}-#{@track.created_at.strftime('%Y%m%d')}.kmz"
-        # render text: @track.to_kmz, filename: 'test.kmz'
-      }
+      format.kmz { send_data @track.to_kmz, filename: "track-#{@track.user.username}-#{@track.created_at.strftime('%Y%m%d')}.kmz" }
     end
   end
 
