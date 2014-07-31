@@ -65,6 +65,14 @@ var drawNotes = function(map, bounds) {
 };
 </script>
 <% if @task.tracking_paths.any? %>
-<h4 class="page-header">ინფორმაცია ტრეკების შესახებ</h4>
+<div class="page-header">
+  <div class="pull-right">
+    <a href="" class="btn btn-default btn-sm">
+      <i class="fa fa-download"></i>
+      KML ფორმატში
+    </a>
+  </div>
+  <h4>ინფორმაცია ტრეკების შესახებ</h4>
+</div>
 <%= render partial: '/tasks/tracking/tracks', locals: {tracks: @task.tracking_paths.desc(:_id)} %>
 <% end %>
