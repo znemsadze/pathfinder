@@ -1,7 +1,7 @@
 PATH
   remote: ../shortest-path
   specs:
-    shortest-path (0.0.3)
+    shortest-path (0.0.4)
 
 GEM
   remote: https://rubygems.org/
