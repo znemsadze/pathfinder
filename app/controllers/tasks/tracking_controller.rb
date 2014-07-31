@@ -17,7 +17,7 @@ class Tasks::TrackingController < ApplicationController
     respond_to do |format|
       format.html do
         @user = @track.user
-        @title = "ტრეკი: #{@track.created_at.localtime.strftime('%d-%b-%Y %H:%M:%S')} / #{@track.updated_at.localtime.strftime('%d-%b-%Y %H:%M:%S')}"
+        @title = @track.description
       end
       format.kml { render text: @track.to_kml }
       format.kmz { send_data @track.to_kmz, filename: "track-#{@track.user.username}-#{@track.created_at.strftime('%Y%m%d')}.kmz" }

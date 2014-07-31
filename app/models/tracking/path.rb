@@ -51,13 +51,16 @@ class Tracking::Path
     else kml_document { |xml| placemark(xml) } end
   end
 
+  def short; "#{self.user.username} - #{self.created_at.localtime.strftime('%Y%m%d')}" end
+  def description; "ტრეკი: #{self.created_at.localtime.strftime('%d-%b-%Y %H:%M:%S')} / #{self.updated_at.localtime.strftime('%d-%b-%Y %H:%M:%S')}" end
+
   private
 
   def placemark(xml)
     xml.Placemark(id: "ID_#{self.id.to_s}") do |xml|
-      xml.name self.id.to_s
+      xml.name self.short
       xml.Snippet
-      xml.description "no description"
+      xml.description self.description
       xml.MultiGeometry do |xml|
         xml.LineString do
           xml.extrude 0
