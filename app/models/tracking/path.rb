@@ -6,6 +6,7 @@ class Tracking::Path
 
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Kml
   belongs_to :user, class_name: 'Sys::User'
   belongs_to :task, class_name: 'Task'
   has_many :points, class_name: 'Tracking::Point'
@@ -23,9 +24,7 @@ class Tracking::Path
     point.save
   end
 
-  def self.open_tracks
-    Tracking::Path.where(open: true)
-  end
+  def self.open_tracks; Tracking::Path.where(open: true) end
 
   def self.get_path(user, lat, lng)
     path = Tracking::Path.where(user: user, open: true).last
@@ -46,4 +45,26 @@ class Tracking::Path
   end
 
   def self.close_paths(user); Tracking::Path.where(user: user, open: true).update_all(open: false) end
+
+  def to_kml(xml = nil)
+    if xml then placemark(xml)
+    else kml_document { |xml| placemark(xml) } end
+  end
+
+  private
+
+  def placemark(xml)
+    xml.Placemark(id: "ID_#{self.id.to_s}") do |xml|
+      xml.name self.id.to_s
+      xml.Snippet
+      xml.description "no description"
+      xml.MultiGeometry do |xml|
+        xml.LineString do
+          xml.extrude 0
+          xml.altitudeMode 'clampedToGround'
+          xml.coordinates ' ' + self.points.map{|p| [p.lng, p.lat, p.alt||0].join(',')}.join(' ')
+        end
+      end
+    end
+  end
 end
