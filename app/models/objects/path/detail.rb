@@ -10,6 +10,10 @@ class Objects::Path::Detail
   validates :name, presence: {message: 'ჩაწერეთ დასახელება'}
   validates :surface, presence: {message: 'აარჩიეთ გზის საფარი'}
 
+  def to_s
+    "#{self.surface.type.name } > #{self.surface.name} > #{self.name}"
+  end
+
   def self.numerate(surface)
     offset=0
     Objects::Path::Detail.where(surface: surface).ne(order_by: nil).asc(:order_by).each_with_index do |t,idx|

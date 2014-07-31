@@ -87,11 +87,13 @@ class Task
     kml_document do |xml|
       xml.Document(id: "task-information") do |xml|
         xml.name "task-information"
-        # xml.Snippet
-        xml.Folder(id: "FeatureLayer0") do
-          xml.name "task-information"
-          xml.Snippet
+        xml.Folder(id: "FeatureLayer0") do |xml|
+          xml.name "tracks"
           self.tracking_paths.each { |path| path.to_kml(xml) }
+        end
+        xml.Folder(id: "FeatureLayer1") do |xml|
+          xml.name "notes"
+          self.notes.each { |note| note.to_kml(xml) }
         end
       end
     end
