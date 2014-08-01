@@ -1680,7 +1680,7 @@ var resetPathInfo=function(){
     // footer: summary
     if (pathCalculationInProgress) {
       var waiting = ui.html.el('div', {style: 'padding: 5px; background: #FFDDDD'});
-      waiting.innerHTML = '<img src="/images/wait20.gif"/> გთხოვთ დაელოდოთ...';
+      waiting.innerHTML = '<i class="fa fa-circle-o-notch fa-spin"></i> გთხოვთ დაელოდოთ...';
       pathInfo.appendChild(waiting);
     } else if(pathPoints.length > 1 && paths.length > 0){
       var summary=ui.html.el('div', {style: 'padding: 5px; background: #DDFFDD'});
