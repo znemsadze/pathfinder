@@ -13,10 +13,10 @@ var map, editMode
   , featureInfo=ui.html.p('',{style:'margin:16px 0;'})
   , pathInfo=ui.html.el('div',{style: 'margin: 16px 0;'})
   , selectedFeature
-  , secondaryToolbar=ui.button.toolbar([]), pathToolbar=ui.button.toolbar([])
+  , secondaryToolbar=ui.button.toolbar([]), pathToolbar=ui.button.toolbar([]), taskToolbar=ui.button.toolbar([])
   , btnHome, btnSearch
   , btnNewPath, btnNewLine, btnNewTower, btnNewOffice, btnNewSubstation // new objects
-  , btnDelete, btnEdit, btnAddToPath, btnNewTask
+  , btnDelete, btnEdit, btnAddToPath, btnNewTask, btnShortestPath
   , confirmTitle=ui.html.p('საჭიროა დასტური',{class: 'page-header', style: 'font-weight:bold; font-size: 1.2em;'})
   , confirmText=ui.html.p('დაადასტურეთ, რომ ნამდვილად გინდათ მონიშნული ობიექტის წაშლა?',{class: 'text-danger'})
   , toolbar2=ui.button.toolbar([])
@@ -37,7 +37,7 @@ module.exports=function(){
 
       map=self.map;
       initMap();
-      resetFeatureInfo();
+      resetPathInfo();
 
       openPage(MAIN);
 
@@ -107,24 +107,30 @@ var initPage1=function(self){
   btnAddToPath=ui.button.actionButton('წერტილის დამატება', function(){
     if (pathPoints.indexOf(selectedFeature) == -1) {
       pathPoints.push(selectedFeature);
+      clearPaths();
       resetPathInfo();
-      resetFeatureInfo();
-      if (pathPoints.length > 1) { getShortestPath(); }
+      // if (pathPoints.length > 1) { getShortestPath(); }
     }
-  }, {icon: 'plus', type: 'success'});
+  }, {icon: 'plus'});
+
+  btnShortestPath = ui.button.actionButton('გზის აგება', function() {
+    if (pathPoints.length > 1 && !pathCalculationInProgress) {
+      getShortestPath();
+    }
+  }, { icon: 'road' });
 
   btnNewTask=ui.button.actionButton('დავალების შექმნა', function() {
     // if(paths.length > 0) {
       self.openPage('task', {destinations: pathPoints, paths: paths});
     // }
-  }, {icon: 'tasks'})
+  }, {icon: 'tasks', type: 'success'})
 
   // page1 layout
 
   var tabs = ui.html.el('div', {style: 'margin-top: 16px;'});
   tabs.innerHTML = ['<ul class="nav nav-tabs" role="tablist">',
     '<li class="active"><a href="#feature" role="tab" data-toggle="tab">ობიექტი</a></li>',
-    '<li><a href="#path" role="tab" data-toggle="tab">მარშუტი</a></li>',
+    '<li><a href="#path" role="tab" data-toggle="tab">დავალება</a></li>',
     '</ul>',
   ].join('');
   var tabContent = ui.html.el('div', {class: 'tab-content'});
@@ -133,18 +139,13 @@ var initPage1=function(self){
   t1.appendChild(secondaryToolbar);
   var t2 = ui.html.el(tabContent, 'div', {class: ['tab-pane'], id: 'path'});
   pathToolbar.style.marginTop="16px";
+  t2.appendChild(taskToolbar);
+  taskToolbar.style.marginBottom = taskToolbar.style.marginTop = '8px';
   t2.appendChild(pathInfo);
   t2.appendChild(pathToolbar);
   tabs.appendChild(tabContent);
-
-  var titleElement=ui.html.pageTitle('საწყისი');
-  page1=ui.layout.vertical({
-    children: [
-      titleElement,
-      toolbar,
-      tabs,
-    ]
-  });
+ 
+  page1=ui.layout.vertical({ children: [ toolbar, tabs, ] });
 };
 
 var initPage2=function(self){
@@ -170,6 +171,9 @@ var openPage=function(idx){ layout.showAt(idx); };
 var resetFeatureInfo = function(){
   secondaryToolbar.clearButtons();
   pathToolbar.clearButtons();
+
+  taskToolbar.appendChild(btnNewTask);
+
   if (!selectedFeature) {
     featureInfo.setHtml('მონიშნეთ ობიექტი რუკაზე მასზე ინფორმაციის მისაღებად.');
   } else{
@@ -181,9 +185,9 @@ var resetFeatureInfo = function(){
     if(geo.isPointlike(selectedFeature) && !pathCalculationInProgress){
       pathToolbar.addButton(btnAddToPath);
     }
-  }
-  if (pathPoints.length > 1) {
-    pathToolbar.appendChild(btnNewTask);
+    if(!pathCalculationInProgress && pathPoints.length > 1) {
+      pathToolbar.addButton(btnShortestPath);
+    }
   }
   openPage(MAIN);
 };
@@ -241,7 +245,7 @@ var deleteSelectedFeature=function(){
 
 var resetPathInfo=function(){
   pathInfo.innerText='';
-  if(pathPoints.length>0){
+  if(pathPoints.length > 0) {
     var titleEleemnt=ui.html.el('h4', {class: 'page-header'}, 'გზის პარამეტრები (' + pathPoints.length + ')');
     pathInfo.appendChild(titleEleemnt);
     var totalLength = 0;
@@ -299,27 +303,28 @@ var resetPathInfo=function(){
       var waiting = ui.html.el('div', {style: 'padding: 5px; background: #FFDDDD'});
       waiting.innerHTML = '<img src="/images/wait20.gif"/> გთხოვთ დაელოდოთ...';
       pathInfo.appendChild(waiting);
-    } else if(pathPoints.length > 1){
+    } else if(pathPoints.length > 1 && paths.length > 0){
       var summary=ui.html.el('div', {style: 'padding: 5px; background: #DDFFDD'});
       summary.innerHTML='<strong>მანძილი სულ</strong>: <code>' + totalLength.toFixed(3) + '</code> კმ';
       pathInfo.appendChild(summary);
     }
-
-    // reset feature's actions
-    resetFeatureInfo();
+  } else {
+    pathInfo.innerHTML = '<p class="text-muted">არც ერთი დანიშნულების წერიტილი არაა დამატებული.</p>';
   }
+
+  resetFeatureInfo();
 };
 
 var paths=[];
 var pathCalculationInProgress = false;
 
-var clearPaths=function(){
-  for(var i=0,l=paths.length; i < l; i++){
+var clearPaths=function() {
+  for(var i = 0, l = paths.length; i < l; i++) {
     var path = paths[i];
     path.getPath().clear();
     path.setMap(null);
   }
-  paths=[];
+  paths = [];
 };
 
 var getShortestPath=function() {
@@ -355,9 +360,8 @@ var deletePathPoint=function() {
   var id=this.getAttribute('data-id');
   var indexToRemove=pathPoints.map(function(x){ return x.getId() }).indexOf(id);
   pathPoints.splice(indexToRemove,1);
+  clearPaths();
   resetPathInfo();
-  resetFeatureInfo();
-  getShortestPath();
 };
 
 var movePathPointUp=function(){ movePathPoint(this.getAttribute('data-id'), true); };
