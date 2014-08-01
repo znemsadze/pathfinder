@@ -29,4 +29,14 @@ module Kml
       temp_file.unlink
     end
   end
+
+  def extended_data(xml, hash)
+    xml.ExtendedData do
+      hash.each do |k,v|
+        xml.Data(name = k) do
+          xml.value v.to_s
+        end
+      end
+    end
+  end
 end
