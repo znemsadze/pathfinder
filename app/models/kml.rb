@@ -33,7 +33,7 @@ module Kml
   def extended_data(xml, hash)
     xml.ExtendedData do
       hash.each do |k,v|
-        xml.Data(name = k) do
+        xml.Data('name' => k) do
           xml.value v.to_s
         end
       end
