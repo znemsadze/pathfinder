@@ -24,20 +24,32 @@ var initUI=function(){
   var saveAction=function(){
     form.clearErrors();
 
-    var model=form.getModel()
-      , paths = self.params.paths.map(function(x){ return x.getPath().getArray().map(function(x){ return {lat: x.lat(), lng: x.lng()}; }); })
-      , destinations = self.params.destinations.map(function(x){ return {id: x.getId(), type: geo.getType(x)}; })
-      ;
+    var model=form.getModel();
 
-    model.paths = paths;
-    model.destinations = destinations;
+    if (self.params.paths) {
+      model.paths = self.params.paths.map(function(x) {
+        return x.getPath().getArray().map(function(x) {
+          return {lat: x.lat(), lng: x.lng()};
+        });
+      });
+    }
+
+    if (self.params.destinations) {
+      model.destinations = self.params.destinations.map(function(x) {
+        return {id: x.getId(), type: geo.getType(x)};
+      });
+    }
 
     var callback=function(err,data){
       if(err){
         console.log(err);
       } else {
-        alert("დავალება გაგზავნილია: #" + data.number);
-        self.openPage('root');
+        if (data.number) {
+          alert("დავალება გაგზავნილია: #" + data.number);
+          self.openPage('root');
+        } else {
+          console.log(data);
+        }
       }
     };
 

@@ -10,8 +10,8 @@ class Api::TasksController < ApiController
 
   def new
     assignee = Sys::User.find(params[:assignee_id])
-    destinations = params[:destinations].map{|k,v| v}
-    paths = params[:paths].map{|k,v| v.map{|k,v| v }}
+    destinations = params[:destinations].map{|k,v| v} if params[:destinations]
+    paths = params[:paths].map{|k,v| v.map{|k,v| v }} if params[:paths]
     task = Task.create(assignee: assignee, note: params[:note], paths: paths, destinations: destinations)
     render json: {number: task.number}
   end
