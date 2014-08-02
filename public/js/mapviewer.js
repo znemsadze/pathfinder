@@ -1162,6 +1162,19 @@ var lineDescription=function(map,f){
   ].join('');
 };
 
+var pathDescription=function(map, f){
+  var detail = f.getProperty('detail');
+  var detailText = '';
+  if (detail) { detailText = [detail.type, detail.surface, detail.detail].join(' > '); }
+  return [
+    property('დასახელება',f.getProperty('name')),
+    property('გზის სახეობა', detailText),
+    property('სიგრძე','<code>'+exports.calcFeatureDistance(map,f).toFixed(3)+'</code> კმ'),
+    property('რეგიონი',f.getProperty('region')),
+    property('შენიშვნა',f.getProperty('description')),
+  ].join('');
+};
+
 var towerDescription=function(map,f){
   var point=f.getGeometry().get();
   return [
@@ -1206,11 +1219,11 @@ exports.featureDescription=function(map,f){
 
   var texts=['<div class="panel panel-default">'];
   texts.push('<div class="panel-heading"><h4 style="margin:0;padding:0;">',exports.typeName(f),'</h4></div>');
-  if(exports.isLine(f)){ bodyDescription=lineDescription(map,f); }
-  else if(exports.isPath(f)){ bodyDescription=lineDescription(map,f); }
-  else if(exports.isTower(f)){ bodyDescription=towerDescription(map,f); }
-  else if(exports.isOffice(f)){ bodyDescription=officeDescription(map,f); }
-  else if(exports.isSubstation(f)){ bodyDescription=substationDescription(map,f); }
+  if(exports.isLine(f)){ bodyDescription = lineDescription(map,f); }
+  else if(exports.isPath(f)){ bodyDescription = pathDescription(map,f); }
+  else if(exports.isTower(f)){ bodyDescription = towerDescription(map,f); }
+  else if(exports.isOffice(f)){ bodyDescription = officeDescription(map,f); }
+  else if(exports.isSubstation(f)){ bodyDescription = substationDescription(map,f); }
   texts.push('<div class="panel-body">',bodyDescription,'</div>');
   texts.push('</div>');
   return texts.join('');

@@ -40,6 +40,13 @@ json.features do
           json.larges { json.array! t.larges }
         end
       end
+      if t.respond_to?(:detail) and t.detail
+        json.detail do
+          json.detail  t.detail.name
+          json.surface t.detail.surface.name
+          json.type    t.detail.surface.type.name
+        end
+      end
     end
   end
 end
