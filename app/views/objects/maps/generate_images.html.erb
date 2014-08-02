@@ -34,14 +34,25 @@
       <% @dirs.each do |dir| %>
         <tr>
           <td>
-            <% found = Objects::Tower.where(linename: dir.to_ka(:all)).any? %>
-            <code><%= @root %>/<strong><%= dir %></strong></code>
+            <%
+              criteria = Objects::Tower.where(linename: dir.to_ka(:all))
+              total_count = criteria.count
+              without_image_count = 0 ; with_image_count = 0 ; found = total_count > 0
+              if found
+                without_image_count = criteria.where(images: []).count
+                with_image_count = total_count - without_image_count
+              end
+            %>
+            <code>/<strong><%= dir %></strong></code>
             &rarr;
             <span class="text-muted">
               <% if found %>
                 <span class="label label-success">
                   <i class="fa fa-check"></i> ნაპოვნია
-                </span>
+                </span> &nbsp;&nbsp;
+                სულ <code><%= total_count %></code> ანძა
+                <code>=</code> <code><%= with_image_count %></code> გამოსახულებით
+                + <code><%= without_image_count %></code> გამოსახულების გარეშე
               <% else %>
                 <span class="label label-danger">
                   <i class="fa fa-times"></i> ვერ მოიძებნა
