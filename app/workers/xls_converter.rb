@@ -14,10 +14,12 @@ class XLSConverter
 
   def lines_converter(sheet)
     (2..sheet.last_row).each do |row|
-      id=sheet.cell('A',row) ; name=sheet.cell('C',row) ; regionname=sheet.cell('D',row)
-      region = Region.get_by_name(regionname)
-      line = Objects::Line.find(id)
-      line.name = name ; line.region = region ; line.save
+      id = sheet.cell('A', row) ; line = Objects::Line.find(id)
+      name = sheet.cell('B', row) ; line.name = name
+      direction = sheet.cell('C', row) ; line.direction = direction
+      regionname = sheet.cell('D',row) ; line.region = Region.get_by_name(regionname)
+      description = sheet.cell('F', row) ; line.description = description
+      line.save
     end
   end
 

@@ -11,6 +11,7 @@ end %>
   t.item_action ->(x){objects_line_url(id:x.id)}, icon: '/icons/eye.png', turbolink: false
   t.text_field 'kmlid', tag: 'code'
   t.text_field 'name', url: ->(x){objects_line_url(id:x.id)}, turbolink: false
+  t.text_field 'direction'
   t.text_field 'region.name', i18n: 'region'
   t.number_field 'length', after: 'კმ'
   t.paginate records: 'ჩანაწერი'
