@@ -27,7 +27,7 @@
     <thead>
       <tr>
         <th>დირექტორია</th>
-        <th class="text-center" width="200"><i class="fa fa-cog"></i></th>
+        <th class="text-center" width="150"><i class="fa fa-cog"></i></th>
       </tr>
     </thead>
     <% if @dirs.any? %>
@@ -61,7 +61,7 @@
             </span>
           </td>
           <td class="text-center">
-            <%= link_to 'გენერაცია &rarr;'.html_safe, objects_generate_images_url(dir: dir), data: {confirm: 'ნამდვილად გინდათ გამოსახულებების გენერაცია?', method: 'post' }, class: ['btn', 'btn-danger', 'btn-xs'] %>
+            <%= link_to 'გენერაცია &rarr;'.html_safe, objects_generate_images_url(dir: dir), data: {confirm: 'ნამდვილად გინდათ გამოსახულებების გენერაცია?', method: 'post' }, class: ['btn', 'btn-danger', 'btn-xs', 'generate-images'] %>
           </td>
         </tr>
       <% end %>
@@ -74,3 +74,24 @@
     <% end %>
   </table>
 <% end %>
+<script type="text/javascript">
+$(function() {
+  $('.generate-images').click(function(event) {
+    var $this = $(this);
+    $this.toggleClass('disabled', true);
+    $this.text('იგზავნება...');
+    $.post($(this).attr('href'), function(resp, textStatus, xhr) {
+      if (xhr.status === 200) {
+        $this.toggleClass('btn-danger', false);
+        $this.toggleClass('btn-success', true);
+        $this.text('გაიგზავნა');
+      } else {
+        $this.text('შეცდომა: ' + xhr.status);
+      }
+    }).fail(function() {
+      $this.text('მოულოდნელი შეცდომა');
+    });
+    return false;
+  });
+});
+</script>
