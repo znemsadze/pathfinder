@@ -1,15 +1,16 @@
 wb = xlsx_package.workbook
 wb.add_worksheet(name: "substations") do |sheet|
-  sheet.add_row [ 'ID','kmlID','დასახელება','რეგიონი','განედი','გრძედი', 'აღწერილობა' ]
+  sheet.add_row [
+    'ID',
+    'დასახელება',
+    'რეგიონი',
+    'შენიშვნა' ]
   @substations.each do |substation|
     sheet.add_row [
-      substation.id.to_s,
-      substation.kmlid,
-      substation.name,
-      substation.region && substation.region.name,
-      substation.lat,
-      substation.lng,
-      substation.description
+      substation.id.to_s,     #A
+      substation.name,        #B
+      substation.region.to_s, #C
+      substation.description, #D
     ]
   end
 end
