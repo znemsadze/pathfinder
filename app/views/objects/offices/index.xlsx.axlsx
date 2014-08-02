@@ -1,8 +1,18 @@
 wb = xlsx_package.workbook
 wb.add_worksheet(name: "report") do |sheet|
-  sheet.add_row ['ID','kmlID','დასახელება','რეგიონი','მისამართი','განედი','გრძედი', 'შენიშვნა']
+  sheet.add_row [
+    'ID',
+    'დასახელება',
+    'რეგიონი',
+    'მისამართი',
+    'შენიშვნა']
   @offices.each do |office|
-    sheet.add_row [office.id.to_s, office.kmlid, office.name, office.region&&office.region.name,
-      office.address, office.lat, office.lng, office.description]
+    sheet.add_row [
+      office.id.to_s,    # A
+      office.name,       # B
+      office.region && office.region.name, # C
+      office.address,    # D
+      office.description # E
+    ]
   end
 end

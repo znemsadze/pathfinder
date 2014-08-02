@@ -53,14 +53,11 @@ class Objects::OfficesController < ApplicationController
   def upload_xlsx(file)
     sheet=Roo::Spreadsheet.open(file.path, extension: 'xlsx')
     (2..sheet.last_row).each do |row|
-      id=sheet.cell('A',row) ; name=sheet.cell('C',row) ; regionname=sheet.cell('D',row).to_s
-      address=sheet.cell('E',row) ; lat=sheet.cell('F',row).to_f; lng=sheet.cell('G',row).to_f
-      description=sheet.cell('H',row)
-      region=Region.get_by_name(regionname)
-      office=Objects::Office.find(id)
-      office.name=name ; office.region=region
-      office.address=address ; office.lat=lat ; office.lng=lng
-      office.description=description
+      id = sheet.cell('A',row) ; office = Objects::Office.find(id)
+      name = sheet.cell('B',row) ; office.name = name
+      regionname = sheet.cell('C',row).to_s ; region = Region.get_by_name(regionname) ; office.region = region
+      address = sheet.cell('D',row) ; office.address = address
+      description = sheet.cell('E',row) ; office.description = description
       office.save
     end
   end
