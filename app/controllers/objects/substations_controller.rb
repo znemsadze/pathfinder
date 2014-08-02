@@ -2,6 +2,8 @@
 require 'zip'
 
 class Objects::SubstationsController < ApplicationController
+  include Objects::Kml
+
   def index
     @search = search_params
     rel = Objects::Substation
@@ -13,6 +15,15 @@ class Objects::SubstationsController < ApplicationController
     respond_to do |format|
       format.html { @title='ქვესადგურები' ; @substations = rel.asc(:kmlid).paginate(per_page:10, page: params[:page]) }
       format.xlsx{ @substations = rel.asc(:kmlid) }
+      format.kmz do
+        @substations=rel
+        kml = kml_document do |xml|
+          xml.Document(id: 'substations') do
+            @substations.each { |substation| substation.to_kml(xml) }
+          end
+        end
+        send_data kml_to_kmz(kml), filename: 'substations.kmz'
+      end
     end
   end
 

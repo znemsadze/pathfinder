@@ -32,4 +32,14 @@ class Objects::Substation
       obj.save
     end
   end
+
+  def to_kml(xml)
+    descr = "<p><strong>#{self.name}</strong></p><p>#{self.description}</p>"
+    extra = extra_data(name: name, description: description, region: region.to_s)
+    xml.Placemark do
+      xml.name self.name
+      xml.description { xml.cdata! "#{ descr } <!-- #{ extra } -->" }
+      xml.Point { xml.coordinates "#{self.lng},#{self.lat},#{self.alt||0}" }
+    end
+  end
 end
