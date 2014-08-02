@@ -8,11 +8,11 @@ wb.add_worksheet(name: "report") do |sheet|
     'შენიშვნა']
   @offices.each do |office|
     sheet.add_row [
-      office.id.to_s,    # A
-      office.name,       # B
-      office.region && office.region.name, # C
-      office.address,    # D
-      office.description # E
+      office.id.to_s,     # A
+      office.name,        # B
+      office.region.to_s, # C
+      office.address,     # D
+      office.description  # E
     ]
   end
 end

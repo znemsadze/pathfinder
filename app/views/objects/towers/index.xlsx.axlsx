@@ -1,9 +1,19 @@
 wb = xlsx_package.workbook
 wb.add_worksheet(name: "report") do |sheet|
-  sheet.add_row ['ID','kmlID','ანძის#','ტიპი','რეგიონი','განედი','გრძედი','შენიშვნა']
+  sheet.add_row [
+    'ID',
+    'ანძის #',
+    'ანძის ტიპი',
+    'რეგიონი',
+    'შენიშვნა'
+  ]
   @towers.each do |tower|
-    sheet.add_row [tower.id.to_s, tower.kmlid, tower.name, tower.category,
-      tower.region&&tower.region.name,tower.lat,tower.lng,
-      tower.description]
+    sheet.add_row [
+      tower.id.to_s,     #A
+      tower.name,        #B
+      tower.category,    #С
+      tower.region.to_s, #D
+      tower.description  #E
+    ]
   end
 end
