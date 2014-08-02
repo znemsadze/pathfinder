@@ -2,7 +2,7 @@
 class Task
   include Mongoid::Document
   include Mongoid::Timestamps
-  include Kml
+  include Objects::Kml
 
   START = 0
   CANCELED = 1

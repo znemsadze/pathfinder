@@ -6,7 +6,7 @@ class Tracking::Path
 
   include Mongoid::Document
   include Mongoid::Timestamps
-  include Kml
+  include Objects::Kml
   belongs_to :user, class_name: 'Sys::User'
   belongs_to :task, class_name: 'Task'
   has_many :points, class_name: 'Tracking::Point'

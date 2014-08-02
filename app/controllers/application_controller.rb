@@ -8,7 +8,6 @@ class ApplicationController < ActionController::Base
   def search_params; params[:search] == 'clear' ? nil : params[:search] end
   helper_method :current_user
 
-
   protected
   def nav; @nav = {t('pages.site.index.title') => home_url} end
 

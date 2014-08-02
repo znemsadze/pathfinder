@@ -2,11 +2,22 @@
 require 'zip'
 
 class Objects::OfficesController < ApplicationController
+  include Objects::Kml
+
   def index
     rel=Objects::Office.asc(:kmlid)
     respond_to do |format|
       format.html{ @title='ოფისები'; @offices=rel.paginate(per_page:10, page: params[:page]) }
       format.xlsx{ @offices=rel }
+      format.kmz do
+        @offices=rel
+        kml = kml_document do |xml|
+          xml.Document(id: 'offices') do
+            @offices.each { |office| office.to_kml(xml) }
+          end
+        end
+        send_data kml_to_kmz(kml), filename: 'offices.kmz'
+      end
     end
   end
 
