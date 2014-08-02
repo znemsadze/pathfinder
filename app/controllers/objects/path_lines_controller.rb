@@ -1,8 +1,12 @@
 # -*- encoding : utf-8 -*-
 class Objects::PathLinesController < ApplicationController
   def index
-    @title='მარშუტები'
-    @lines=Objects::Path::Line.asc(:name).paginate(per_page: 10, page: params[:page])
+    @title = 'მარშუტები'
+    rel = Objects::Path::Line.asc(:name)
+    respond_to do |format|
+      format.html { @lines = rel.paginate(per_page: 10, page: params[:page]) }
+      format.xlsx { @lines = rel }
+    end
   end
 
   def show
