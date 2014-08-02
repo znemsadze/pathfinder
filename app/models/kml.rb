@@ -30,13 +30,11 @@ module Kml
     end
   end
 
-  def extended_data(xml, hash)
-    xml.ExtendedData do
-      hash.each do |k,v|
-        xml.Data('name' => k) do
-          xml.value v.to_s
-        end
-      end
+  def extra_data(hash)
+    xml = Builder::XmlMarkup.new
+    hash.each do |key, value|
+      xml.property(name: key) value.to_s
     end
+    xml.target!
   end
 end

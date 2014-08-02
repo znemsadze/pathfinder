@@ -8,7 +8,6 @@ class Objects::Office
   field :name, type: String
   field :description, type: String
   field :address, type: String
-  field :description, type: String
   belongs_to :region
 
   def self.from_kml(xml)
@@ -36,6 +35,16 @@ class Objects::Office
       obj.address=address
       obj.set_coordinate(coord)
       obj.save
+    end
+  end
+
+  def to_kml(xml)
+    descr = "<p><strong>#{self.region}</strong>, #{self.address}</p><p>#{self.description}</p>"
+    extra = extra_data(name: name, description: description, address: address, region: region.to_s)
+    xml.Placemark do
+      xml.name self.name
+      xml.description { xml.cdata! "#{ descr } <!-- #{ extra } -->" }
+      xml.Point { xml.coordinates "#{self.lng},#{self.lat},#{self.alt||0}" }
     end
   end
 end
