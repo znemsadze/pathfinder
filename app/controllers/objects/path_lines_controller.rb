@@ -21,7 +21,7 @@ class Objects::PathLinesController < ApplicationController
       case File.extname(f).downcase
       when '.kmz' then upload_kmz(params[:data].tempfile)
       when '.kml' then upload_kml(params[:data].tempfile)
-      # when '.xlsx' then upload_xlsx(params[:data].tempfile)
+      when '.xlsx' then upload_xlsx(params[:data].tempfile)
       else raise 'არასწორი ფორმატი' end
       redirect_to objects_upload_path_lines_url(status: 'ok')
     end
@@ -49,7 +49,6 @@ class Objects::PathLinesController < ApplicationController
     end
   end
 
-  def upload_kml(file)
-    KMLConverter.perform_async('Objects::Path::Line', file.path.to_s)
-  end
+  def upload_kml(file); KMLConverter.perform_async('Objects::Path::Line', file.path.to_s) end
+  def upload_xlsx(file); XLSConverter.perform_async('Objects::Path::Line', file.path.to_s) end
 end

@@ -21,6 +21,12 @@ class Objects::Path::Surface
     end
   end
 
+  def self.get_surface(type, name)
+    surface = Objects::Path::Surface.where(type: type, name: name).first
+    surface = Objects::Path::Surface.create(type: type, name: name, order_by: Objects::Path::Surface.where(type: type).count + 1) if surface.blank?
+    surface
+  end
+
   def up
     if self.order_by>1
       surface=Objects::Path::Surface.where(type: self.type, order_by:self.order_by-1).first

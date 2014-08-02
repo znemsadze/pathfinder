@@ -24,6 +24,12 @@ class Objects::Path::Detail
     end
   end
 
+  def self.get_detail(surface, name)
+    detail = Objects::Path::Detail.where(surface: surface, name: name).first
+    detail = Objects::Path::Detail.create(surface: surface, name: name, order_by: Objects::Path::Detail.where(surface: surface).count + 1) if detail.blank?
+    detail
+  end
+
   def up
     if self.order_by>1
       detail=Objects::Path::Detail.where(surface: self.surface, order_by:self.order_by-1).first

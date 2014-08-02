@@ -19,6 +19,12 @@ class Objects::Path::Type
     end
   end
 
+  def self.get_type(name)
+    type = Objects::Path::Type.where(name: name).first
+    type = Objects::Path::Type.create(name: name, order_by: Objects::Path::Type.count + 1) if type.blank?
+    type
+  end
+
   def up
     if self.order_by>1
       type=Objects::Path::Type.where(order_by:self.order_by-1).first
