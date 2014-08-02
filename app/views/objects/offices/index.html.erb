@@ -1,6 +1,7 @@
 <%=table_for @offices, title: @title, icon: '/icons/office.png', collapsible: true do |t|
   t.title_action objects_upload_offices_url, label: 'ფაილის ატვირთვა', icon: '/icons/upload-cloud.png'
   t.title_action objects_offices_url(format:'xlsx'), label: 'Excel ფორმატში', icon: '/icons/document-excel.png'
+  t.title_action objects_offices_url(format:'kmz'), label: 'KMZ ფორმატში', icon: '/icons/kmz.png'
   t.item_action ->(x){objects_office_url(id:x.id)}, icon: '/icons/eye.png'
   t.text_field 'kmlid', tag: 'code'
   t.text_field 'name', url: ->(x){objects_office_url(id:x.id)}
