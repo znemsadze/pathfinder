@@ -2,6 +2,8 @@
 require 'zip'
 
 class Objects::TowersController < ApplicationController
+  include Objects::Kml
+
   def index
     rel = Objects::Tower
     @search = search_params
@@ -14,6 +16,15 @@ class Objects::TowersController < ApplicationController
     respond_to do |format|
       format.html { @title='ანძები' ; @towers=rel.asc(:kmlid).paginate(per_page:10, page: params[:page]) }
       format.xlsx{ @towers= rel.asc(:kmlid) }
+      format.kmz do
+        @towers=rel
+        kml = kml_document do |xml|
+          xml.Document(id: 'towers') do
+            @towers.each { |tower| tower.to_kml(xml) }
+          end
+        end
+        send_data kml_to_kmz(kml), filename: 'towers.kmz'
+      end
     end
   end
 

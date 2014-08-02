@@ -51,4 +51,14 @@ class Objects::Tower
       images.each { |url|  generate_images_from_file(url, File.basename(url)) }
     end
   end
+
+  def to_kml(xml)
+    descr = "<p>#<strong>#{self.name}</strong>, #{self.linename}</p><p>#{self.description}</p>"
+    extra = extra_data(number: name, category: category, description: description, linename: linename, region: region.to_s)
+    xml.Placemark do
+      xml.name self.name
+      xml.description { xml.cdata! "#{ descr } <!-- #{ extra } -->" }
+      xml.Point { xml.coordinates "#{self.lng},#{self.lat},#{self.alt||0}" }
+    end
+  end
 end
