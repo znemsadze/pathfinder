@@ -57,6 +57,21 @@ class Objects::Path::Line
 
   def points; self.point_ids.map{|x|Objects::Path::Point.find(x)} end
 
+  def to_kml(xml)
+    extra = extra_data(name: name, description: description, region: region.to_s, length: length, detail: self.detail.name, surface: self.detail.surface.name, type: self.detail.surface.type.name)
+    xml.Placemark(id: "ID_#{self.id.to_s}") do |xml|
+      xml.name self.name
+      xml.description "<p>#{self.name}, #{self.detail.to_s}</p> <!-- #{extra} -->"
+      xml.MultiGeometry do |xml|
+        xml.LineString do
+          xml.extrude 0
+          xml.altitudeMode 'clampedToGround'
+          xml.coordinates ' ' + self.points.map{|p| [p.lng, p.lat, p.alt||0].join(',')}.join(' ')
+        end
+      end
+    end
+  end
+
   private
 
   def splitat(point)

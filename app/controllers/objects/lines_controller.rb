@@ -23,7 +23,7 @@ class Objects::LinesController < ApplicationController
             @lines.each { |line| line.to_kml(xml) }
           end
         end
-        send_data kml_to_kmz(kml), filename: 'line.kmz'
+        send_data kml_to_kmz(kml), filename: 'lines.kmz'
       end
     end
   end

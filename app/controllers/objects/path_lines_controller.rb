@@ -1,11 +1,22 @@
 # -*- encoding : utf-8 -*-
 class Objects::PathLinesController < ApplicationController
+  include Objects::Kml
+
   def index
     @title = 'მარშუტები'
     rel = Objects::Path::Line.asc(:name)
     respond_to do |format|
       format.html { @lines = rel.paginate(per_page: 10, page: params[:page]) }
       format.xlsx { @lines = rel }
+      format.kmz do
+        @lines = rel
+        kml = kml_document do |xml|
+          xml.Document(id: 'pathlines') do
+            @lines.each { |line| line.to_kml(xml) }
+          end
+        end
+        send_data kml_to_kmz(kml), filename: 'pathlines.kmz'
+      end
     end
   end
 
