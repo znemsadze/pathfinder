@@ -54,6 +54,21 @@ class Objects::Line
       obj.calc_length!
     end
   end
+
+  def to_kml(xml)
+    extra = extra_data(name: name, direction: direction, description: description, region: region.to_s, length: length)
+    xml.Placemark(id: "ID_#{self.id.to_s}") do |xml|
+      xml.name self.name
+      xml.description "<p>#{self.name}, #{self.direction}</p> <!-- #{extra} -->"
+      xml.MultiGeometry do |xml|
+        xml.LineString do
+          xml.extrude 0
+          xml.altitudeMode 'clampedToGround'
+          xml.coordinates ' ' + self.points.map{|p| [p.lng, p.lat, p.alt||0].join(',')}.join(' ')
+        end
+      end
+    end
+  end
 end
 
 class Objects::LinePoint
