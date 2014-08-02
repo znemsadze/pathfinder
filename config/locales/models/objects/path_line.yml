@@ -2,6 +2,6 @@ ka:
   models:
     objects_path_line:
       name: დასახელება
-      description: აღწერილობა
-      points: კვანძები
+      description: შენიშვნა
+      points: კვანძების რაოდ.
       length: 'სიგრძე'

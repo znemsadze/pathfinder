@@ -16,7 +16,7 @@ module Objects::PathSurfaceHelper
 
   def pathsurface_view(surface,opts={})
     idx=case opts[:tab] when 'sys' then 2 when 'details' then 1 else 0 end
-    view_for surface, title: 'სახეობის თვისება', icon: '/icons/car.png', collapsible: true, selected_tab: idx do |f|
+    view_for surface, title: 'გზის საფარის თვისებები', icon: '/icons/car.png', collapsible: true, selected_tab: idx do |f|
       f.edit_action objects_edit_path_surface_url(id:surface.id)
       f.delete_action objects_delete_path_surface_url(id:surface.id)
       f.tab title: 'ძირითადი', icon: '/icons/car.png' do |f|

@@ -2,7 +2,11 @@
   t.title_action objects_upload_path_lines_url, label: 'ფაილის ატვირთვა', icon: '/icons/upload-cloud.png'
   t.item_action ->(x){objects_path_line_url(id:x.id)}, icon: '/icons/eye.png', turbolink: false
   t.text_field 'name', url: ->(x){objects_path_line_url(id:x.id)}, turbolink: false
-  t.text_field 'description'
+  t.complex_field label: 'საფარის დეტალები' do |c|
+    c.text_field 'detail.surface.type.name', tag: 'code'
+    c.text_field 'detail.surface.name', before: '&rarr;'.html_safe, tag: 'code'
+    c.text_field 'detail.name', before: '&rarr;'.html_safe, tag: 'code'
+  end
   t.number_field 'length', after: 'კმ'
   t.paginate records: 'ჩანაწერი'
 end%>
