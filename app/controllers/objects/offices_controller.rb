@@ -59,6 +59,7 @@ class Objects::OfficesController < ApplicationController
   def upload_kml(file)
     kml=file.get_input_stream.read
     Objects::Office.from_kml(kml)
+    clear_cache
   end
 
   def upload_xlsx(file)
@@ -71,5 +72,6 @@ class Objects::OfficesController < ApplicationController
       description = sheet.cell('E',row) ; office.description = description
       office.save
     end
+    clear_cache
   end
 end

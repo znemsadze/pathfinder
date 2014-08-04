@@ -65,6 +65,7 @@ class Objects::SubstationsController < ApplicationController
   def upload_kml(file)
     kml=file.get_input_stream.read
     Objects::Substation.from_kml(kml)
+    clear_cache
   end
 
   def upload_xlsx(file)
@@ -76,5 +77,6 @@ class Objects::SubstationsController < ApplicationController
       description = sheet.cell('D', row).to_s ; substation.description = description
       substation.save
     end
+    clear_cache
   end
 end

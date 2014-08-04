@@ -3,12 +3,13 @@ class XLSConverter
   include Sidekiq::Worker
 
   def perform(type, path)
-    sheet=Roo::Spreadsheet.open(path, extension: 'xlsx')
+    sheet = Roo::Spreadsheet.open(path, extension: 'xlsx')
     case type
     when 'Objects::Line' then lines_converter(sheet)
     when 'Objects::Tower' then towers_converter(sheet)
     when 'Objects::Path::Line' then pathlines_converter(sheet)
     end
+    Sys::Cache.clear_map_objects
   end
 
   private
