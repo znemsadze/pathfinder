@@ -103,6 +103,7 @@ Pathfinder::Application.routes.draw do
     scope '/photos', controller: 'photos' do
       get '/', action: 'index', as: 'photos'
       get '/all', action: 'all', as: 'all_photos'
+      post '/confirm/:id', action: 'confirm', as: 'confirm_photo'
     end
   end
 

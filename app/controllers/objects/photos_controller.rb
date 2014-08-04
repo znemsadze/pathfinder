@@ -10,6 +10,12 @@ class Objects::PhotosController < ApplicationController
     @photos = Objects::Photo.asc(:_id).paginate(page: params[:page], per_page: 30)
   end
 
+  def confirm
+    photo = Objects::Photo.find(params[:id])
+    photo.confirmed = true ; photo.save
+    redirect_to params[:return_url], notice: 'ფოტო დადასტურებულია!'
+  end
+
   protected
   def nav
     @nav = super
