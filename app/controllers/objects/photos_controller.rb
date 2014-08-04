@@ -6,7 +6,7 @@ class Objects::PhotosController < ApplicationController
   end
 
   def all
-    @title = ' ყველა ფოტო'
+    @title = 'ყველა ფოტო'
     @photos = Objects::Photo.asc(:_id).paginate(page: params[:page], per_page: 30)
   end
 
@@ -19,6 +19,7 @@ class Objects::PhotosController < ApplicationController
   protected
   def nav
     @nav = super
+    @nav['დაუდასტურებელი ფოტოები'] = objects_photos_url if 'all' == action_name
     @nav[@title] = nil
   end
 
