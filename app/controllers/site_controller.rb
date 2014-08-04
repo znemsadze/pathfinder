@@ -20,7 +20,9 @@ class SiteController < ApplicationController
 
   protected
   def nav
-    @nav=super
-    @nav[@title]=nil unless action_name == 'index'
+    @nav = super
+    @nav[@title] = nil unless action_name == 'index'
   end
+
+  def login_required; ['index'].include?(action_name) end
 end
