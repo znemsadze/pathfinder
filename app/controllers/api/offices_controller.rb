@@ -4,19 +4,19 @@ class Api::OfficesController < ApiController
 
   def new
     office=Objects::Office.create(office_params)
-    render json:{id:office.id.to_s}
+    render json:{id:office.id.to_s} ; clear_cache
   end
 
   def edit
     office=Objects::Office.find(params[:id])
     office.update_attributes(office_params)
-    render json:{id:office.id.to_s}
+    render json:{id:office.id.to_s} ; clear_cache
   end
 
   def delete
     office=Objects::Office.find(params[:id])
     office.destroy
-    render text:'ok'
+    render text:'ok' ; clear_cache
   end
 
   private

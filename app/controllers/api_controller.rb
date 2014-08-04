@@ -14,6 +14,8 @@ class ApiController < ActionController::Base
     end
   end
 
+  def clear_cache; Sys::Cache.clear_map_objects end
+
   private
 
   def api_error(ex)

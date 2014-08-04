@@ -4,7 +4,7 @@ class Sys::Cache
   field :name, type: String
   field :content, type: String
 
-  index(name: 1)
+  index({name: 1}, {unique: true})
 
   def self.get_map_objects
     cache = Sys::Cache.where(name: 'map-all-objects').first
@@ -15,5 +15,9 @@ class Sys::Cache
     cache = Sys::Cache.where(name: 'map-all-objects').first || Sys::Cache.new(name: 'map-all-objects')
     cache.content = text
     cache.save
+  end
+
+  def self.clear_map_objects
+    Sys::Cache.where(name: 'map-all-objects').destroy_all
   end
 end
