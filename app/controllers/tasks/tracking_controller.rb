@@ -31,4 +31,6 @@ class Tasks::TrackingController < ApplicationController
     @nav[@track.user.full_name]=tasks_tracking_user_url(id:@track.user) if @track
     @nav[@title]=nil unless ['index'].include?(action_name)
   end
+
+  def login_required; true end
 end

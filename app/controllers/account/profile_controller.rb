@@ -41,4 +41,6 @@ class Account::ProfileController < ApplicationController
     @nav[@title]=request.url
     @nav
   end
+
+  def login_required; true end
 end

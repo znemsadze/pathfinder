@@ -52,6 +52,8 @@ class RegionsController < ApplicationController
     end
   end
 
+  def login_required; true end
+
   private
   def region_params; params.require(:region).permit(:name,:description) end
 end

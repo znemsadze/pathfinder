@@ -68,6 +68,8 @@ class Objects::PathTypesController < ApplicationController
     end
   end
 
+  def login_required; true end
+
   private
   def type_params; params.require(:objects_path_type).permit(:name) end
 end

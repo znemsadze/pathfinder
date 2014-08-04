@@ -86,4 +86,6 @@ class Tasks::BaseController < ApplicationController
       @nav[@title]=nil
     end
   end
+
+  def login_required; true end
 end

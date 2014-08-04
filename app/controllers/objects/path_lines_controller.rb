@@ -48,6 +48,8 @@ class Objects::PathLinesController < ApplicationController
     end
   end
 
+  def login_required; true end
+
   def upload_kmz(file)
     Zip::File.open file do |zip_file|
       zip_file.each do |entry|

@@ -19,4 +19,6 @@ class Objects::MapsController < ApplicationController
     @nav=super
     @nav[@title]=nil
   end
+
+  def login_required; true end
 end

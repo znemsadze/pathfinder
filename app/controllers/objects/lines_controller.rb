@@ -53,6 +53,8 @@ class Objects::LinesController < ApplicationController
     @nav[@title]=nil unless ['index'].include?(action_name)
   end
 
+  def login_required; true end
+
   private
 
   def upload_kmz(file)
