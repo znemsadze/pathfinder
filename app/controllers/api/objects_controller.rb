@@ -3,13 +3,17 @@ class Api::ObjectsController < ApiController
   MAX_TOWERS=100_000
 
   def index
-    page = Sys::Cache.get_map_objects
-    if page.blank?
-      @objects = get_towers + get_offices + get_substations + get_lines + get_paths
-      page = render_to_string
-      Sys::Cache.set_map_objects(page)
+    if params[:id].blank?
+      page = Sys::Cache.get_map_objects
+      if page.blank?
+        @objects = get_all_objects
+        page = render_to_string
+        Sys::Cache.set_map_objects(page)
+      end
+      render text: page
+    else
+      @objects = get_all_objects
     end
-    render text: page
   end
 
   def lines; @objects = get_lines ; render action: 'index' end
@@ -19,6 +23,8 @@ class Api::ObjectsController < ApiController
   def towers; @objects = Objects::Tower.paginate(per_page: 500, page: params[:page]) ; render action: 'index' end
 
   private
+
+  def get_all_objects; get_towers + get_offices + get_substations + get_lines + get_paths end
 
   def get_towers
     if params[:type].blank?
