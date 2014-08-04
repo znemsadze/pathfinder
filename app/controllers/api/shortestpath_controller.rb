@@ -45,7 +45,16 @@ class Api::ShortestpathController < ApiController
   end
 
   def get_current_graph
-    $__graph = build_default_graph unless $__graph
+    # check graph caching
+    build_graph = ( $__graph.blank? || ($__graph_date < Objects::Path::Point.first.created_at) )
+
+    # re-create graph, if necessary
+    if build_graph
+      $__graph = build_default_graph
+      $__graph_date = Time.now
+    end
+
+    # prepare search graph
     graph = $__graph.clone
     graph.edges = $__graph.edges.clone
     graph
