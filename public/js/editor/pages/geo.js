@@ -169,15 +169,16 @@ var substationDescription=function(map,f){
 exports.featureDescription=function(map,f){
   var bodyDescription;
 
-  var texts=['<div class="panel panel-default">'];
-  texts.push('<div class="panel-heading"><h4 style="margin:0;padding:0;">',exports.typeName(f),'</h4></div>');
+  //var texts=['<div class="panel panel-default">'];
+  //texts.push('<div class="panel-heading"><h4 style="margin:0;padding:0;">',exports.typeName(f),'</h4></div>');
   if(exports.isLine(f)){ bodyDescription = lineDescription(map,f); }
   else if(exports.isPath(f)){ bodyDescription = pathDescription(map,f); }
   else if(exports.isTower(f)){ bodyDescription = towerDescription(map,f); }
   else if(exports.isOffice(f)){ bodyDescription = officeDescription(map,f); }
   else if(exports.isSubstation(f)){ bodyDescription = substationDescription(map,f); }
-  texts.push('<div class="panel-body">',bodyDescription,'</div>');
-  texts.push('</div>');
+  //texts.push('<div class="panel-body">',bodyDescription,'</div>');
+  //texts.push('</div>');
+  var texts = ['<div><h4 class="page-header">',exports.typeName(f),'</h4>', bodyDescription,'</div>'];
   return texts.join('');
 };
 

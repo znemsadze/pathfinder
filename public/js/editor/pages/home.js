@@ -7,7 +7,7 @@ var MAIN=0    // main page
   , CONFIRM=1 // confirm page
   ;
 
-var map, editMode
+var map, editMode, infowindow
   , uiInitialized=false, locked
   , layout, page1, page2, toolbar=ui.button.toolbar([])
   , featureInfo=ui.html.p('',{style:'margin:16px 0;'})
@@ -176,8 +176,22 @@ var resetFeatureInfo = function(){
 
   if (!selectedFeature) {
     featureInfo.setHtml('მონიშნეთ ობიექტი რუკაზე მასზე ინფორმაციის მისაღებად.');
-  } else{
+  } else {
+
+    if(!infowindow) { infowindow = new google.maps.InfoWindow(); }
+
+    var point;
+    if (geo.isPointlike(selectedFeature)) {
+      point = selectedFeature.getGeometry().get();
+    } else {
+      point = selectedFeature.getGeometry().getAt(Math.floor( selectedFeature.getGeometry().getLength() / 2 ));
+    }
+    infowindow.setContent(geo.featureDescription(map, selectedFeature));
+    infowindow.setPosition(point);
+    infowindow.open(map);
+
     featureInfo.setHtml(geo.featureDescription(map,selectedFeature) + geo.featureImages(selectedFeature));
+    
     if(editMode) {
       secondaryToolbar.addButton(btnEdit);
       secondaryToolbar.addButton(btnDelete);
@@ -249,9 +263,9 @@ var resetPathInfo=function(){
     var titleEleemnt=ui.html.el('h4', {class: 'page-header'}, 'გზის პარამეტრები (' + pathPoints.length + ')');
     pathInfo.appendChild(titleEleemnt);
     var totalLength = 0;
-    for(var i=0,l=pathPoints.length; i<l; i++){
-      var f=pathPoints[i];
-      if(f){
+    for(var i = 0, l = pathPoints.length; i < l; i++){
+      var f = pathPoints[i];
+      if(f) {
         // toolbar
 
         var tbar=ui.html.el('div',{class:['pull-right','btn-group']});
@@ -259,40 +273,40 @@ var resetPathInfo=function(){
         // move up action
         if(!pathCalculationInProgress) {
           if (i > 0) {
-            var btnUp=ui.html.el('button',{class:['btn','btn-xs','btn-default'], 'data-id':f.getId()});
-            btnUp.innerHTML='<i class="fa fa-arrow-up"></i>';
-            btnUp.onclick=movePathPointUp;
+            var btnUp = ui.html.el('button',{class:['btn','btn-xs','btn-default'], 'data-id':f.getId()});
+            btnUp.innerHTML = '<i class="fa fa-arrow-up"></i>';
+            btnUp.onclick = movePathPointUp;
             tbar.appendChild(btnUp);
           }
         }
         // move down action
         if(!pathCalculationInProgress) {
           if (i != pathPoints.length-1) {
-            var btnDown=ui.html.el('button',{class:['btn','btn-xs','btn-default'], 'data-id':f.getId()});
-            btnDown.innerHTML='<i class="fa fa-arrow-down"></i>';
-            btnDown.onclick=movePathPointDown;
+            var btnDown = ui.html.el('button',{class:['btn','btn-xs','btn-default'], 'data-id':f.getId()});
+            btnDown.innerHTML = '<i class="fa fa-arrow-down"></i>';
+            btnDown.onclick = movePathPointDown;
             tbar.appendChild(btnDown);
           }
         }
         // delete action
         if(!pathCalculationInProgress) {
-          var btnDelete=ui.html.el('button',{class:['btn','btn-xs','btn-danger'], 'data-id':f.getId()});
-          btnDelete.innerHTML='<i class="fa fa-trash-o"></i>';
-          btnDelete.onclick=deletePathPoint;
+          var btnDelete = ui.html.el('button',{class:['btn','btn-xs','btn-danger'], 'data-id':f.getId()});
+          btnDelete.innerHTML = '<i class="fa fa-trash-o"></i>';
+          btnDelete.onclick = deletePathPoint;
           tbar.appendChild(btnDelete);
         }
 
         // content
 
         var d1=ui.html.el('div',{class:'search-result','data-id':f.getId()});
-        d1.innerHTML=geo.featureShortDescritpion(map,f);
-        d1.onclick=pathPointSelected;
+        d1.innerHTML = geo.featureShortDescritpion(map, f);
+        d1.onclick = pathPointSelected;
         pathInfo.appendChild(d1);
         if(pathPoints.length > 1 && paths[i]){
           var d2 = ui.html.el('div', {style: 'padding: 5px; background: #FFFFDD'});
           var length = paths[i].length;
           totalLength += length;
-          d2.innerHTML='მონაკვეთი <strong>' + (i+1) + '</strong>: <code>' + length.toFixed(3) + '</code> კმ';
+          d2.innerHTML = 'მონაკვეთი <strong>' + (i+1) + '</strong>: <code>' + length.toFixed(3) + '</code> კმ';
           pathInfo.appendChild(d2);
         }
       }
@@ -304,8 +318,8 @@ var resetPathInfo=function(){
       waiting.innerHTML = '<i class="fa fa-circle-o-notch fa-spin"></i> გთხოვთ დაელოდოთ...';
       pathInfo.appendChild(waiting);
     } else if(pathPoints.length > 1 && paths.length > 0){
-      var summary=ui.html.el('div', {style: 'padding: 5px; background: #DDFFDD'});
-      summary.innerHTML='<strong>მანძილი სულ</strong>: <code>' + totalLength.toFixed(3) + '</code> კმ';
+      var summary = ui.html.el('div', {style: 'padding: 5px; background: #DDFFDD'});
+      summary.innerHTML = '<strong>მანძილი სულ</strong>: <code>' + totalLength.toFixed(3) + '</code> კმ';
       pathInfo.appendChild(summary);
     }
   } else {
@@ -385,6 +399,6 @@ var movePathPoint=function(id, up){
 };
 
 var pathPointSelected=function(){
-  var f=map.data.getFeatureById(this.getAttribute('data-id'));
+  var f = map.data.getFeatureById(this.getAttribute('data-id'));
   changeSelection(f);
 };
