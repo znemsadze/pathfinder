@@ -26,8 +26,14 @@
       <p>
         <i class="fa fa-tasks"></i>
         <%= link_to 'დავალებები', tasks_open_url %>
-        <span class="label label-info"><%=Task.open_tasks.count%></span>
-        <span class="label label-danger"><%=Task.count%></span>
+        <span class="label label-info"><%= Task.open_tasks.count %></span>
+        <span class="label label-danger"><%= Task.count %></span>
+      </p>
+      <p>
+        <i class="fa fa-image"></i>
+        <%=link_to 'ფოტოგალერეა', objects_photos_url, data: { 'no-turbolink' => true }%>
+        <span class="label label-info"><%= Objects::Photo.not_confirmed.count %></span>
+        <span class="label label-danger"><%= Objects::Photo.count %></span>
       </p>
       <p>
         <i class="fa fa-users"></i>

@@ -5,4 +5,6 @@ class Objects::Photo
   belongs_to :owner, polymorphic: true
   field :filename, type: String
   field :confirmed, type: Mongoid::Boolean
+
+  def self.not_confirmed; Objects::Photo.where(confirmed: false) end
 end

@@ -100,6 +100,9 @@ Pathfinder::Application.routes.draw do
         post '/down/:id', action: 'down', as: 'down_path_detail'
       end
     end
+    scope '/photos', controller: 'photos' do
+      get '/', action: 'index', as: 'photos'
+    end
   end
 
   namespace 'tasks' do
