@@ -52,7 +52,7 @@ class Api::ShortestpathController < ApiController
   end
 
   def build_default_graph
-    graph=Shortest::Path::Graph.new
+    graph = Shortest::Path::Graph.new
     Objects::Path::Line.each do |line|
       point_ids = line.point_ids
       p1 = point_ids.first ; p2 = point_ids.last

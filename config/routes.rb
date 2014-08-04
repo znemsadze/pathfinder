@@ -64,7 +64,6 @@ Pathfinder::Application.routes.draw do
     scope '/maps', controller: 'maps' do
       get '/editor', action: 'editor', as: 'map_editor'
       get '/viewer', action: 'viewer', as: 'map_viewer'
-      match 'clear_cache', action: 'clear_cache', as: 'clear_cache', via: ['get', 'post']
       match 'generate_images', action: 'generate_images', as: 'generate_images', via: ['get', 'post']
     end
     scope '/path' do
