@@ -53,6 +53,7 @@ class RegionsController < ApplicationController
   end
 
   def login_required; true end
+  def permission_required; not current_user.admin? end
 
   private
   def region_params; params.require(:region).permit(:name,:description) end

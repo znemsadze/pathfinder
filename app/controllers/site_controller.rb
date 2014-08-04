@@ -25,4 +25,5 @@ class SiteController < ApplicationController
   end
 
   def login_required; ['index'].include?(action_name) end
+  def permission_required; false end
 end

@@ -33,4 +33,5 @@ class Tasks::TrackingController < ApplicationController
   end
 
   def login_required; true end
+  def permission_required; false end
 end

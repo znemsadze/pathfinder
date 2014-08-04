@@ -69,4 +69,5 @@ class Objects::PathDetailsController < ApplicationController
   end
 
   def login_required; true end
+  def permission_required; not current_user.admin? end
 end

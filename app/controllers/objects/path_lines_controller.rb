@@ -49,6 +49,7 @@ class Objects::PathLinesController < ApplicationController
   end
 
   def login_required; true end
+  def permission_required; not current_user.admin? end
 
   def upload_kmz(file)
     Zip::File.open file do |zip_file|

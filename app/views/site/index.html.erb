@@ -3,9 +3,11 @@
     <a class="btn btn-success btn-lg" href="<%=objects_map_viewer_url%>" data-no-turbolink>
       <i class="fa fa-globe"></i> ობიექტების რუკა
     </a>
-    <a class="btn btn-warning btn-lg" href="<%=objects_map_editor_url%>" data-no-turbolink>
-      <i class="fa fa-pencil"></i> ობიექტების რედაქტირება
-    </a>
+    <% if current_user.editor %>
+      <a class="btn btn-warning btn-lg" href="<%=objects_map_editor_url%>" data-no-turbolink>
+        <i class="fa fa-pencil"></i> ობიექტების რედაქტირება
+      </a>
+    <% end %>
   </p>
 </div>
 <div class="row">

@@ -59,6 +59,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def login_required; true end
+  def permission_required; not current_user.admin? end
 
   private
   def user_params; params.require(:sys_user).permit(:username, :password, :first_name, :last_name, :mobile, :active, :admin, :editor, :all_regions) end

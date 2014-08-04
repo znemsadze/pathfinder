@@ -21,4 +21,9 @@ class Objects::MapsController < ApplicationController
   end
 
   def login_required; true end
+  def permission_required
+    if ['generate_images'].include?(action_name) then not current_user.admin?
+    elsif ['editor'].include?(action_name) then not current_user.editor
+    else false end
+  end
 end

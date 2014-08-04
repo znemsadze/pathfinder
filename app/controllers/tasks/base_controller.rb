@@ -88,4 +88,5 @@ class Tasks::BaseController < ApplicationController
   end
 
   def login_required; true end
+  def permission_required; false end
 end
