@@ -4,7 +4,7 @@
 <%end%>
 <div class="row">
   <div class="col-sm-4">
-    <%=form_tag request.url do%>
+    <%= form_tag request.url do %>
       <div class="form-group">
         <%=label_tag :username, t('models.sys_user.username')%>
         <%=text_field_tag :username, params[:username], autofocus:true, class:'form-control'%>
@@ -16,6 +16,6 @@
       <div class="form-group">
         <%=submit_tag t('pages.site.login.action'), class:['btn','btn-primary']%>
       </div>
-    <%end%>
+    <% end %>
   </div>
 </div>

@@ -12,6 +12,28 @@ class Account::ProfileController < ApplicationController
     end
   end
 
+  def change_password
+    @title = 'პაროლის შეცვლა'
+    if request.post?
+      user = Sys::User.authenticate(current_user.username, params[:password_old])
+      if user
+        password = params[:password]
+        password_confirmation = params[:password_confirmation]
+        if password.blank?
+          @error = 'ჩაწერეთ ახალი პაროლი'
+        elsif password_confirmation != password
+          @error = 'პაროლი არ ემთხვევა დადასტურებას'
+        elsif user.update_attributes(password: password, password_confirmation: password_confirmation)
+          redirect_to account_profile_url, notice: 'პაროლი შეცვლილია'
+        else
+          @error = user.errors.full_messages.join(', ')
+        end
+      else
+        @error = 'თქვენი ძველი პაროლი არაა სწორი'
+      end
+    end
+  end
+
   protected
   def nav
     @nav=super
