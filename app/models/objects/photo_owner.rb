@@ -7,9 +7,11 @@ module Objects::PhotoOwner
   def has_images?; self.photos.any? end
   def thumb_dir; "#{Rails.root}/public/uploads/#{self.id}/thumb" end
   def large_dir; "#{Rails.root}/public/uploads/#{self.id}/large" end
+  def thumb_url; "/uploads/#{self.id}/thumb" end
+  def large_url; "/uploads/#{self.id}/large" end
 
-  def thumbnails; self.photos.all.map{ |x| "/uploads/#{self.id}/thumb/#{x.filename}" } end
-  def larges; self.photos.all.map{ |x| "/uploads/#{self.id}/large/#{x.filename}" } end
+  def thumbnails; self.photos.all.map{ |x| "#{thumb_url}/#{x.filename}" } end
+  def larges; self.photos.all.map{ |x| "#{large_url}/#{x.filename}" } end
 
   def generate_images_from_file(filepath, basename, confirmed=true)
     original = Magick::Image::read(filepath).first

@@ -2,13 +2,17 @@
 class Objects::PhotosController < ApplicationController
   def index
     @title = 'დაუდასტურებელი ფოტოები'
-    @photos = Objects::Photo.where(confirmed: false)
+    @photos = Objects::Photo.not_confirmed.asc(:_id)
+  end
+
+  def all
+    @title = ' ყველა ფოტო'
+    @photos = Objects::Photo.asc(:_id).paginate(page: params[:page], per_page: 30)
   end
 
   protected
   def nav
     @nav = super
-    @na
     @nav[@title] = nil
   end
 

@@ -1,0 +1,3 @@
+<h2 class="page-header"><%= @title %></h2>
+<%= render partial: 'objects/photos/gallery', locals: { photos: @photos } %>
+<%= will_paginate @photos %>

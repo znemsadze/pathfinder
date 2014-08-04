@@ -102,6 +102,7 @@ Pathfinder::Application.routes.draw do
     end
     scope '/photos', controller: 'photos' do
       get '/', action: 'index', as: 'photos'
+      get '/all', action: 'all', as: 'all_photos'
     end
   end
 

@@ -1,4 +1,14 @@
 <% if photos.any? %>
+  <div class="row">
+    <% @photos.each do |photo| %>
+      <div class="col-sm-2">
+        <div class="thumbnail">
+          <img src="<%= photo.thumbnail_url %>" />
+          <p class="text-center">ანძა #<%= link_to photo.owner.name, objects_tower_url(id: photo.owner.id) %></p>
+        </div>
+      </div>
+    <% end %>
+  </div>
 <% else %>
   <div class="well" style="padding: 32px; text-align: center; color: #aaa;">
     ამ გალერეაში არც ერთი გამოსახულება არაა

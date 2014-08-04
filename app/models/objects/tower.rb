@@ -13,7 +13,6 @@ class Objects::Tower
   field :category, type: String
   field :description, type: String
   field :linename, type: String
-  field :images, type: Array, default: []
   belongs_to :region
 
   def self.from_kml(xml)
