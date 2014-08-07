@@ -6,7 +6,10 @@
         <div class="col-sm-2">
           <div class="thumbnail">
             <img src="<%= photo.thumbnail_url %>" />
-            <p class="text-center">ანძა #<%= link_to photo.owner.name, objects_tower_url(id: photo.owner.id) %></p>
+            <p class="text-center" style="padding: 4px 0 0 0;">
+              <strong><%= photo.owner.linename %></strong><br/>
+              ანძა #<%= link_to photo.owner.name, objects_tower_url(id: photo.owner.id) %>
+            </p>
             <% unless photo.confirmed? %>
               <p class="text-center">
                 <%= link_to '<i class="fa fa-check">დადასტურება</i>'.html_safe, objects_confirm_photo_url(id: photo.id, return_url: request.url), data: { method: 'post', confirm: 'ნამდვილად ადასტურებთ ამ ფოტოს?' }%>
