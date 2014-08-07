@@ -1,6 +1,6 @@
 <%= task_view(@task, title: @title, tab: params[:tab]) %>
 
-<% unless @task.destinations.blank? and @task.paths.blank? %>
+<% unless @task.destinations.blank? and @task.paths.blank? and @task.notes.blank? %>
   <h4 class="page-header">დავალების რუკა</h4>
   <p>
     <strong style="color: green;">მწვანე ფრად</strong> მონიშნულია დავალების
