@@ -25,7 +25,7 @@ class Api::TowersController < ApiController
     file = Tempfile.new(filename)
     file.write(params[:file])
     file.close
-    tower.generate_images_from_file(file.path, filename)
+    tower.generate_images_from_file(file.path, filename, false)
     render json: {file: "/uploads/#{tower.id}/large/#{filename}"} ; clear_cache
   end
 
