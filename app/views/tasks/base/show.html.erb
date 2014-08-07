@@ -15,11 +15,11 @@
       end.join(',')
     %> ];
     <% if @task.destinations.present? %>
-      var destinations = eval('<%= @task.normal_destinations.map { |dest| {name: dest.name, type: dest.class.name, lat: dest.lat, lng: dest.lng} }.to_json.html_safe %>');
+      var destinations = <%= raw @task.normal_destinations.map { |dest| {name: dest.name, type: dest.class.name, lat: dest.lat, lng: dest.lng} }.to_json %>;
     <% else %>
       var destinations = [];
     <% end %>
-    var notes = eval('<%= @task.notes.map{ |note| {text: note.text, detail: [note.detail.surface.type.name, note.detail.surface.name, note.detail.name], lat: note.lat, lng: note.lng, easting: note.easting, northing: note.northing, time: note.created_at.localtime.strftime('%d-%b-%Y %H:%M:%S')} }.to_json.html_safe %>');
+    var notes = <%= raw @task.notes.map{ |note| {text: note.text, detail: [note.detail.surface.type.name, note.detail.surface.name, note.detail.name], lat: note.lat, lng: note.lng, easting: note.easting, northing: note.northing, time: note.created_at.localtime.strftime('%d-%b-%Y %H:%M:%S')} }.to_json %>;
     var onPostInitialize = function(map, bounds) {
       draw_paths({ map: map, data: task_paths, bounds: bounds, color: '#00AA00', direction: true, });
       drawDestinations(map, bounds);

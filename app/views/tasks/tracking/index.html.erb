@@ -6,7 +6,7 @@
 </h3>
 <%= render partial: '/layouts/paths', locals: {paths: @last_tracks, direction: true} %>
 <script type="text/javascript">
-  var users = eval('<%= @last_tracks.map { |track| last=track.points.last; {username: track.user.username, full_name: track.user.full_name, lat: last.lat, lng: last.lng} if last }.compact.to_json.html_safe %>');
+  var users = <%= raw @last_tracks.map { |track| last=track.points.last; {username: track.user.username, full_name: track.user.full_name, lat: last.lat, lng: last.lng} if last }.compact.to_json %>;
   var onPostInitialize = function(map, bounds) {
     for(var i = 0, l = users.length; i < l; i++) {
       var user = users[i];
