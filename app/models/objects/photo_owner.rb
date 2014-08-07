@@ -1,6 +1,7 @@
 module Objects::PhotoOwner
   def self.included(base)
     base.has_many :photos, class_name: 'Objects::Photo', as: :owner
+    base.field :has_photos, type: Mongoid::Boolean, default: false
   end
 
   def images; self.photos.all.map{ |x| x.filename } end
@@ -22,11 +23,13 @@ module Objects::PhotoOwner
     thumb.destroy! ; large.destroy! ; original.destroy!
     Objects::Photo.where(owner: self, filename: basename).destroy_all
     Objects::Photo.create(owner: self, filename: basename, confirmed: confirmed)
+    self.has_photos = self.has_images? ; self.save
   end
 
   def destroy_image(basename)
     File.delete("#{large_dir}/#{basename}")
     File.delete("#{thumb_dir}/#{basename}")
     self.photos.where(filename: basename).destroy_all
+    self.has_photos = self.has_images? ; self.save
   end
 end

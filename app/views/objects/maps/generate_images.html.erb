@@ -39,8 +39,8 @@
               total_count = criteria.count
               without_image_count = 0 ; with_image_count = 0 ; found = total_count > 0
               if found
-                without_image_count = criteria.where(images: []).count
-                with_image_count = total_count - without_image_count
+                with_image_count = criteria.where(has_photos: true).count
+                without_image_count = total_count - with_image_count
               end
             %>
             <code>/<strong><%= dir %></strong></code>
