@@ -35,7 +35,10 @@ class Objects::Substation
 
   def to_kml(xml)
     descr = "<p><strong>#{self.name}</strong></p><p>#{self.description}</p>"
-    extra = extra_data(name: name, description: description, region: region.to_s)
+    extra = extra_data('დასახელება' => name,
+      'შენიშვნა' => description,
+      'რეგიონი' => region.to_s
+    )
     xml.Placemark do
       xml.name self.name
       xml.description { xml.cdata! "#{ descr } <!-- #{ extra } -->" }
