@@ -56,7 +56,12 @@ class Objects::Line
   end
 
   def to_kml(xml)
-    extra = extra_data(name: name, direction: direction, description: description, region: region.to_s, length: length)
+    extra = extra_data('დასახელება' => name,
+      'მიმართულება' => direction,
+      'შენიშვნა' => description,
+      'რეგიონი' => region.to_s,
+      'სიგრძე' => length
+    )
     xml.Placemark(id: "ID_#{self.id.to_s}") do |xml|
       xml.name self.name
       xml.description "<p>#{self.name}, #{self.direction}</p> <!-- #{extra} -->"
