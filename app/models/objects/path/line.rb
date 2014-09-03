@@ -25,20 +25,32 @@ class Objects::Path::Line
       name = placemark.find('./kml:name', kmlns).first.content
       coords = placemark.find('./kml:MultiGeometry/kml:LineString/kml:coordinates', kmlns).first.content
       # description content
-      # descr=placemark.find('./kml:description',kmlns).first.content
-      # s1='<td>რეგიონი</td>'
-      # s2='<td>მიმართულება</td>'
-      # idx1=descr.index(s1)+s1.length
-      # idx2=descr.index(s2)+s2.length
-      # regname=descr[idx1..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
-      # direction=descr[idx2..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
-      # region=Region.where(name:regname).first
-      # region=Region.create(name:regname) if region.blank?
+      descr=placemark.find('./kml:description',kmlns).first.content
+      s1='<td>რეგიონი</td>'
+      s2='<td>შენიშვნა</td>'
+      s3='<td>გზის_სახეობა</td>'
+      s4='<td>გზის_საფარი</td>'
+      s5='<td>საფარის_დეტალები</td>'
+      idx1 = descr.index(s1) + s1.length
+      idx2 = descr.index(s2) + s2.length
+      idx3 = descr.index(s3) + s3.length
+      idx4 = descr.index(s4) + s4.length
+      idx5 = descr.index(s5) + s5.length
+
+      regname = descr[idx1..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
+      line_description = descr[idx2..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
+      path_type = descr[idx3..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
+      path_surface = descr[idx4..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
+      path_detail = descr[idx5..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
+
+      region = Region.get_by_name(regname)
+      type = Objects::Path::Type.get_type(path_type)
+      surface = Objects::Path::Surface.get_surface(type, path_surface)
+      detail = Objects::Path::Detail.get_detail(surface, path_detail)
       # end of description section
-      detail = Objects::Path::Detail.first # XXX
-      region = Region.first # XXX
+
       line = Objects::Path::Line.create(kmlid: id)
-      line.name = name ; line.detail = detail ; line.region = region
+      line.name = name ; line.detail = detail ; line.region = region ; line.description = line_description
       coord_strings = coords.split(' ')
       coord_strings.each_with_index do |coord, index|
         edge = ( index == 0 || index == coord_strings.length - 1 )
@@ -58,13 +70,13 @@ class Objects::Path::Line
   def points; self.point_ids.map{|x|Objects::Path::Point.find(x)} end
 
   def to_kml(xml)
-    extra = extra_data('დასახელება' => name,
-      'შენიშვნა' => description,
-      'რეგიონი' => region.to_s,
+    extra = extra_data('რეგიონი' => region.to_s,
       'სიგრძე' => length,
-      'საფარის დეტალები' => self.detail.name,
-      'საფარი' => self.detail.surface.name,
-      'სახეობა' => self.detail.surface.type.name
+      'შენიშვნა' => description,
+      'დასახელება' => name,
+      'გზის_სახეობა' => self.detail.surface.type.name,
+      'გზის_საფარი' => self.detail.surface.name,
+      'საფარის_დეტალები' => self.detail.name,
     )
     xml.Placemark(id: "ID_#{self.id.to_s}") do |xml|
       xml.name self.name

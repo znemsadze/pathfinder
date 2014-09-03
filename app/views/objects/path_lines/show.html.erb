@@ -1,5 +1,6 @@
 <%=view_for @line, title: @title, icon: '/icons/arrow-switch.png', collapsible: true do |f|
   f.text_field 'name'
+  f.text_field 'region'
   f.complex_field label: 'საფარის დეტალები' do |c|
     c.text_field 'detail.surface.type.name', url: objects_path_type_url(id: @line.detail.surface.type.id)
     c.text_field 'detail.surface.name', url: objects_path_surface_url(id: @line.detail.surface.id), before: '&rarr;'.html_safe
