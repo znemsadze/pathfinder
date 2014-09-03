@@ -80,7 +80,7 @@ class Objects::Path::Line
     )
     xml.Placemark(id: "ID_#{self.id.to_s}") do |xml|
       xml.name self.name
-      xml.description "<p>#{self.name}, #{self.detail.to_s}</p> <!-- #{extra} -->"
+      xml.description { xml.cdata! "<p>#{self.name}, #{self.detail.to_s}</p> <!-- #{ extra } -->" }
       xml.MultiGeometry do |xml|
         xml.LineString do
           xml.extrude 0
