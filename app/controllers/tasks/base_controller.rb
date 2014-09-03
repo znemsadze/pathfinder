@@ -22,7 +22,7 @@ class Tasks::BaseController < ApplicationController
     @task = Task.find(params[:id])
     respond_to do |format|
       format.html
-      format.kmz { send_data @task.to_kmz, filename: "task-##{@task.number}.kmz" }
+      format.kmz { send_data @task.to_kmz(as: params[:as]), filename: "task-#{params[:as]}-##{@task.number}.kmz" }
     end
   end
 

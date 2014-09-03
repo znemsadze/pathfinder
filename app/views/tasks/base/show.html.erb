@@ -76,9 +76,13 @@
   <% if @task.tracking_paths.any? %>
     <div class="page-header">
       <div class="pull-right">
-        <a href="<%= tasks_task_url(id:@task.id, format: 'kmz') %>" class="btn btn-default btn-sm">
+        <a href="<%= tasks_task_url(id:@task.id, format: 'kmz', as: 'tracks') %>" class="btn btn-default btn-sm">
           <i class="fa fa-download"></i>
-          KMZ ფორმატში
+          ტრეკი (KMZ ფორმატი)
+        </a>
+        <a href="<%= tasks_task_url(id:@task.id, format: 'kmz', as: 'notes') %>" class="btn btn-default btn-sm">
+          <i class="fa fa-download"></i>
+          შენიშვნები (KMZ ფორმატი)
         </a>
       </div>
       <h4>ინფორმაცია ტრეკების შესახებ</h4>

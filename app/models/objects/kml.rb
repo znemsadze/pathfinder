@@ -18,7 +18,7 @@ module Objects::Kml
     xml.target!
   end
 
-  def to_kmz; kml_to_kmz(self.to_kml) end
+  def to_kmz(opts={}); kml_to_kmz(self.to_kml(opts)) end
 
   def extra_data(hash)
     xml = Builder::XmlMarkup.new
