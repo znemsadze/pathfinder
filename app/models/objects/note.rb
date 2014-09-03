@@ -13,8 +13,12 @@ class Objects::Note
     xml.Placemark do
       xml.name "#{task.assignee.username} - #{self.created_at.strftime('%d-%b-%Y')}"
       xml.description "<p>#{self.text}</p> <p>#{self.detail.to_s}</p>"
-      # extended_data(xml, type: self.detail.surface.type.name, surface: self.detail.surface.name, detail: self.detail.name)
+      extra = extra_data('გზის_სახეობა' => self.detail.surface.type.name,
+        'გზის_საფარი' => self.detail.surface.name,
+        'საფარის_დეტალები' => self.detail.name,
+      )
       xml.Point do
+        xml.description { xml.cdata! "<!-- #{ extra } -->" }
         xml.coordinates "#{self.lng},#{self.lat},#{self.alt||0}"
       end
     end
