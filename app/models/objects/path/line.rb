@@ -31,17 +31,17 @@ class Objects::Path::Line
       s3='<td>გზის_სახეობა</td>'
       s4='<td>გზის_საფარი</td>'
       s5='<td>საფარის_დეტალები</td>'
-      idx1 = descr.index(s1) + s1.length
-      idx2 = descr.index(s2) + s2.length
-      idx3 = descr.index(s3) + s3.length
-      idx4 = descr.index(s4) + s4.length
-      idx5 = descr.index(s5) + s5.length
+      idx1 = descr.index(s1) + s1.length rescue nil
+      idx2 = descr.index(s2) + s2.length rescue nil
+      idx3 = descr.index(s3) + s3.length rescue nil
+      idx4 = descr.index(s4) + s4.length rescue nil
+      idx5 = descr.index(s5) + s5.length rescue nil
 
-      regname = descr[idx1..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
-      line_description = descr[idx2..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
-      path_type = descr[idx3..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
-      path_surface = descr[idx4..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
-      path_detail = descr[idx5..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
+      regname = descr[idx1..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip          if idx1
+      line_description = descr[idx2..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip if idx2
+      path_type = descr[idx3..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip        if idx3
+      path_surface = descr[idx4..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip     if idx4
+      path_detail = descr[idx5..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip      if idx5
 
       region = Region.get_by_name(regname)
       type = Objects::Path::Type.get_type(path_type)
