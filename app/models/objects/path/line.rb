@@ -5,7 +5,7 @@ class Objects::Path::Line
   include Mongoid::Document
   include Objects::LengthProperty
   include Objects::Kml
-
+  include Mongoid::Timestamps
   belongs_to :detail, class_name: 'Objects::Path::Detail'
   field :point_ids, type: Array, default:[]
   field :name, type: String

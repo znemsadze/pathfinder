@@ -3,7 +3,6 @@ class Objects::Path::Detail
   include Mongoid::Document
   include Mongoid::Timestamps
   include Sys::Userstamps
-
   field :name, type: String
   field :order_by, type: Integer
   belongs_to :surface, class_name: 'Objects::Path::Surface'
