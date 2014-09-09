@@ -46,7 +46,6 @@ class Api::ShortestpathController < ApiController
 
   def get_current_graph
     # check graph caching
-    # raise "#{Objects::Path::Point.where(:created_at.ne => nil).count}"
     build_graph = ( $__graph.blank? || ($__graph_date < Objects::Path::Point.first.created_at) )
 
     # re-create graph, if necessary
