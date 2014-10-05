@@ -1,8 +1,16 @@
 # -*- encoding : utf-8 -*-
 class Api::ShortestpathController < ApiController
   def index
-    origins = params[:ids].map{|x| a=x.split('/'); a[0].constantize.find(a[1]) }
-    closest_points = origins.map{|x| Objects::Path::Point.geo_near(x.location).spherical.first }
+    origins = ( if params[:from] and params[:to]
+      from = params[:from].split(':').map{ |x| x.to_f }
+      to = params[:to].split(':').map{ |x| x.to_f }
+      [ from, to ]
+    else
+      params[:ids].map{|x| a=x.split('/'); a[0].constantize.find(a[1]).location }
+    end )
+
+    closest_points = origins.map{|x| Objects::Path::Point.geo_near(x).spherical.first }
+
     dist = heur = ->(p1,p2){ distance_between(p1,p2) }
     if closest_points.length > 1
       p1 = p2 = closest_points[0]
