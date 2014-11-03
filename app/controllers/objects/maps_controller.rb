@@ -2,6 +2,7 @@
 class Objects::MapsController < ApplicationController
   def editor; @title='ობიექტების რედაქტირება' ; render layout: 'map' end
   def viewer; @title='ობიექტების რუკა' ; render layout: 'map' end
+  def viewer2; @title = ' ობიექტების რუკა' ; render layout: 'map' end
 
   def generate_images
     if request.post?

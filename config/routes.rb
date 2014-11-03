@@ -64,6 +64,7 @@ Pathfinder::Application.routes.draw do
     scope '/maps', controller: 'maps' do
       get '/editor', action: 'editor', as: 'map_editor'
       get '/viewer', action: 'viewer', as: 'map_viewer'
+      get '/viewer2', action: 'viewer2'
       match 'generate_images', action: 'generate_images', as: 'generate_images', via: ['get', 'post']
     end
     scope '/path' do
