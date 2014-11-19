@@ -1,0 +1,150 @@
+<h1 class="page-header"><%= @title %></h1>
+
+<p>აქ მოყვანილია პროგრამა Pathfinder-ის ადმინისტრირებისთვის საჭირო მასალები.</p>
+
+<h2 class="page-header">საწყისი კოდი</h2>
+
+<p>
+  Pathfinder-ის საწყისი კოდი განთავსებულია შემდეგ მისამართზე:
+  <a href="https://github.com/georgian-se/pathfinder">https://github.com/georgian-se/pathfinder</a>.
+  საწყისი კოდის მისაღებად გამოიყენეთ ვერსიათა კონტროლის სისტემა <a href="http://www.git-scm.com/">Git</a>.
+  მას შემდეგ რაც Git დაყენებილია თქვენს სისტემაზე, პროგრამის საწყისი კოდის მიღება შეგიძლიათ შემდეგი
+  ბრძანების მეშვეობით:
+</p>
+
+<pre>
+  mkdir /www
+  cd /www
+  git clone https://github.com/georgian-se/pathfinder.git
+</pre>
+
+<p>
+  მოცემულ მაგალითში, <code>git</code> ბრძანების დასრულების შემდეგ, შეიქმენება საქაღალდე
+  <code>/www/pathfinder</code>. სურვილის შემთხვევაში, თქვენ შეგიძლიათ სხვა დირექტორიის
+  გამოყენება. თუმცა ახლა სიმარტივისთვის, ჩავთვლით, რომ პროგრამის საწყისი კოდი
+  <code>/www/pathfinder</code> მისამართზე იმყოფება.
+</p>
+
+<h2 class="page-header">დამატებითი პროგრამული უზრუნველყოფა</h2>
+
+<p>
+  პროგრამის გამართულად მუშაობისთვის საჭიროა შემდეგი პროგრამული უზრუნველყოფის დაყენება:
+</p>
+
+<ul>
+  <li>პროგრამირების ენა <a href="http://ruby-lang.org">Ruby</a>-ს ინტერპრეტატორი.
+    მინიმალური ვერსია <code>1.9.3</code></code>.
+    სასურველია დააყენოთ ვერსია <code>&gt; 2.1</code>.
+  </li>
+  <li>
+    არარელაციური მონაცემთა ბაზა <a href="https://www.mongodb.org/downloads">MongoDB</a>.
+    მინიმალური ვერსია <code>2.4</code>.
+  </li>
+  <li>
+    არარელაციური მონაცემთა ბაზა <a href="http://redis.io/download">Redis</a>.
+    მინიმალური ვერსია <code>2.7</code>.
+  </li>
+  <li>
+    ვებ-სერვერი. მაგალითებში გამოვიყენებთ Apache ვებ-სერვერს, თუმცა შეგიძლიათ განსხვავებული
+    სერვერის გამოყენება.
+  </li>
+</ul>
+
+<h2 class="page-header">კონფიგურაცია</h2>
+
+<h3>MongoDB</h3>
+
+<p>
+  MongoDB ბაზასთან დასაკავშირებლად, პროგრამა იყენებს <code>/www/pathfinder/config/mongoid.yml</code>
+  ფაილის მონაცემებს. შეამოწმეთ, რომ ამ ფაილში იყოს შემდეგი სახის შინაარსი:
+</p>
+
+<pre>
+  production:
+    sessions:
+      default:
+        database: pathfinder
+        hosts:
+          - localhost:27017
+</pre>
+
+<p>
+  საჭიროების შემთხვევაში შეგიძლიათ სერვერის მისამართის და პორტის, ასევე მონაცემთა ბაზის სახელის ცვლილება.
+</p>
+
+<h3>გამოსახულების დირექტორია</h3>
+
+<p>
+  გამოსახულების დირექტორია განსაზღვრა ხდება ფაილში <code>/www/pathfinder/config/initializers/poles.rb</code>:
+</p>
+
+<pre>
+  module Pathfinder
+    POLES_HOME='/home/gse/poles'
+  end
+</pre>
+
+<h3>Apache კონფიგურაცია</h3>
+
+<p>
+  Apache-სთან სამუშაოდ დააყენეთ <a href="https://www.phusionpassenger.com/">modrails</a>.
+  შემდეგ გაწერეთ ჩვენი პროგრამის მისამართი საკონფიგურაციო ფაილში
+  <code>/etc/httpd/conf.d/passenger.conf</code>:
+</p>
+
+<pre>
+  &lt;VirtualHost *:80&gt;
+      ServerName 213.157.197.227
+      DocumentRoot /www/pathfinder/public
+      &lt;Directory /www/pathfinder/public&gt;
+          Options FollowSymLinks
+          AllowOverride None
+          Order allow,deny
+          Allow from all
+          Options -MultiViews
+      &lt;/Directory&gt;
+  &lt;/VirtualHost&gt;
+</pre>
+
+<h2 class="page-header">პროგრამის გაშვება</h2>
+
+<p>
+  სწორი კონფიგურაციის შემთხვევაში პროგრამის გაშვება შემდეგი სერვისების გაშვებით უნდა
+  იყოს შესაძლებელი:
+</p>
+
+<pre>
+  /etc/init.d/mongod start <span class="text-muted"># mondodb-ს გაშვება</span>
+  /etc/init.d/redis start <span class="text-muted"># redis-ს გაშვება</span>
+  /etc/init.d/httpd start <span class="text-muted"># Apache-ს გაშვება</span>
+</pre>
+
+<h2 class="page-header">მონაცემთა ბაზის backup</h2>
+
+<p>
+  Pathfinder-ის ძირითადი მონაცემები ინახება MongoDB ბაზაში. MongoDB მონაცემთა ბაზის
+  backup-ის შესახებ დაწვრილებით ნახეთ აქ:
+  <a href="http://docs.mongodb.org/manual/core/backups/">http://docs.mongodb.org/manual/core/backups/</a>.
+  ჩვენ მხოლოდ "pathfinder" ბაზის შენახვით ვართ დაინტერესებულები:
+</p>
+
+<pre>
+  mongodump --db pathfinder --out /backup-path
+</pre>
+
+<p>
+  აღსადგენად კი საკმარისია:
+</p>
+
+<pre>
+  cd /backup-path
+  mongorestore --db pathfinder
+</pre>
+
+<h2 class="page-header">სხვა მონაცემების backup</h2>
+
+<p>
+  ბოძების გამოსახულებები იტვირთება დირექტორიაში:
+  <code>/www/pathfinder/public/uploads</code>. ამიტომ
+  სასურველია ამ დირექტორიის backup რეგულარულად გაკეთება.
+</p>

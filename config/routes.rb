@@ -28,6 +28,9 @@ Pathfinder::Application.routes.draw do
       match '/add_region/:id', action: 'add_region', as: 'user_add_region', via: ['get', 'post']
       delete '/remove_region/:id', action: 'remove_region', as: 'user_remove_region'
     end
+    scope 'help', controller: 'help' do
+      get '/', action: 'index', as: 'help'
+    end
   end
 
   scope '/regions', controller: 'regions' do
