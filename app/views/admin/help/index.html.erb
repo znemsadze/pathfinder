@@ -148,3 +148,61 @@
   <code>/www/pathfinder/public/uploads</code>. ამიტომ
   სასურველია ამ დირექტორიის backup რეგულარულად გაკეთება.
 </p>
+
+
+<h2 class="page-header">ავტომატური განახლების სკრიპტი</h2>
+
+<p>
+  ქვემოთ მოყვანილია ავტომატური განახლების სკრიპტი Pathfinder-სთვის.
+  შეგიძლიათ თქვენი საჭიროების მიხედვით შეცვალოთ ის.
+</p>
+
+<pre>
+#!/bin/sh
+
+TEMP_DIR=/www/tmp/pathfinder
+HOME_DIR=/www/pathfinder
+
+echo 'Create temporary directory: ' ${TEMP_DIR}
+mkdir -p ${TEMP_DIR}
+
+echo 'Save config files into temporary directory'
+cp ${HOME_DIR}/Gemfile ${TEMP_DIR}/Gemfile
+cp ${HOME_DIR}/config/database.yml ${TEMP_DIR}/database.yml
+cp ${HOME_DIR}/config/environments/production.rb ${TEMP_DIR}/production.rb
+cp ${HOME_DIR}/config/mongoid.yml ${TEMP_DIR}/mongoid.yml
+cp ${HOME_DIR}/config/initializers/poles.rb ${TEMP_DIR}/poles.rb
+
+echo 'Update from github'
+cd ${HOME_DIR}
+git stash
+git pull
+
+echo 'Retrive config files from temporary directory'
+cp ${TEMP_DIR}/Gemfile ${HOME_DIR}/Gemfile
+cp ${TEMP_DIR}/database.yml ${HOME_DIR}/config/database.yml
+cp ${TEMP_DIR}/production.rb ${HOME_DIR}/config/environments/production.rb
+cp ${TEMP_DIR}/mongoid.yml ${HOME_DIR}/config/mongoid.yml
+cp ${TEMP_DIR}/poles.rb ${HOME_DIR}/config/initializers/poles.rb
+
+cd ${HOME_DIR}
+
+bundle update
+
+echo 'Create indexes'
+RAILS_ENV=production bundle exec rake db:mongoid:create_indexes
+
+echo 'Precompile assets'
+RAILS_ENV=production bundle exec rake assets:precompile
+
+echo 'Restart Passenger'
+mkdir -p tmp
+touch 'tmp/restart.txt'
+
+echo 'Restart Sidekiq'
+sidekiqctl stop tmp/sidekiq.pid
+nohup `RAILS_ENV=production bundle exec sidekiq --pidfile tmp/sidekiq.pid` &
+
+echo 'Change main folder permissions'
+chmod 777 -R ${HOME_DIR}
+</pre>
