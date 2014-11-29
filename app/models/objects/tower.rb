@@ -7,6 +7,7 @@ class Objects::Tower
   include Objects::Coordinate
   include Objects::Kml
   include Objects::PhotoOwner
+  include Objects::GeoJson
 
   field :kmlid, type: String
   field :name, type: String
@@ -14,6 +15,9 @@ class Objects::Tower
   field :description, type: String
   field :linename, type: String
   belongs_to :region
+
+  def geo_type(opts={}); 'Point' end
+  def geo_coordinates(opts={}); [self.lng, self.lat] end
 
   def self.from_kml(xml)
     parser=XML::Parser.string xml

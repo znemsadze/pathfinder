@@ -5,6 +5,7 @@ class Objects::Line
   include Mongoid::Document
   include Objects::Kml
   include Objects::LengthProperty
+  include Objects::GeoJson
 
   field :kmlid, type: String
   field :name, type: String
@@ -12,6 +13,9 @@ class Objects::Line
   field :description, type: String
   belongs_to :region
   embeds_many :points, class_name: 'Objects::LinePoint'
+
+  def geo_type(opts={}); 'LineString' end
+  def geo_coordinates(opts={}); self.points.map{ |p| [p.lng,p.lat] } end
 
   def set_points(points)
     self.points.destroy_all

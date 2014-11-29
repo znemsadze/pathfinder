@@ -5,7 +5,9 @@ class Objects::Path::Line
   include Mongoid::Document
   include Objects::LengthProperty
   include Objects::Kml
+  include Objects::GeoJson
   include Mongoid::Timestamps
+
   belongs_to :detail, class_name: 'Objects::Path::Detail'
   field :point_ids, type: Array, default:[]
   field :name, type: String
@@ -67,7 +69,17 @@ class Objects::Path::Line
     end
   end
 
-  def points; self.point_ids.map{|x|Objects::Path::Point.find(x)} end
+  def points; self.point_ids.map{ |x| Objects::Path::Point.find(x) } end
+
+  def geo_type(opts={}); 'LineString' end
+  def geo_coordinates(opts={})
+    pathpoints = opts[:pathpoints]
+    if pathpoints.present?
+      self.point_ids.map{ |pid| p = pathpoints[pid.to_s] ; [ p[1], p[0] ] }
+    else
+      self.points.map{ |p| [ p.lng, p.lat ] } 
+    end
+  end
 
   def to_kml(xml)
     extra = extra_data('რეგიონი' => region.to_s,
