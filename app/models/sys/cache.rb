@@ -1,36 +1,28 @@
-class Sys::Cache
-  include Mongoid::Document
-
-  field :name, type: String
-  field :content, type: String
-  field :content_hash, type: Hash
-
-  index({ name: 1 }, { unique: true })
-
+module Sys::Cache
   def self.pathpoints
-    cache = Sys::Cache.where(name: 'pathpoints').first
-    if cache.blank?
-      content_hash = Hash[ Objects::Path::Point.all.to_a.map{ |x| [ x.id.to_s, [x.lat,x.lng] ] } ]
-      Sys::Cache.create(name: 'pathpoints', content_hash: content_hash)
-      content_hash
-    else
-      cache.content_hash
+    pathpoints = Rails.cache.read('pathpoints')
+    if pathpoints.blank?
+      pathpoints = Hash[ Objects::Path::Point.all.to_a.map{ |x| [ x.id.to_s, [x.lat,x.lng] ] } ]
+      Rails.cache.write('pathpoints', pathpoints)
     end
+    return pathpoints
   end
 
-  def self.get_map_objects
-    cache = Sys::Cache.where(name: 'map-all-objects').first
-    cache.content if cache
-  end
-
-  def self.set_map_objects(text)
-    cache = Sys::Cache.where(name: 'map-all-objects').first || Sys::Cache.new(name: 'map-all-objects')
-    cache.content = text
-    cache.save
+  def self.map_objects
+    json = Rails.cache.read('mapobjects')
+    if json.blank?
+      objects = Objects::Office.all + Objects::Tower.all + Objects::Substation.all + Objects::Line.all + Objects::Path::Line.all
+      pathpoints = Sys::Cache.pathpoints
+      regions = Hash[ Region.all.to_a.map{ |x| [ x.id.to_s, x ] } ]
+      details = Hash[ Objects::Path::Detail.all.to_a.map{ |x| [ x.id.to_s, x ] } ]
+      json = Objects::GeoJson.geo_json(objects, { regions: regions, details: details, pathpoints: pathpoints })
+      Rails.cache.write('mapobjects', json)
+    end
+    return json
   end
 
   def self.clear_map_objects
-    Sys::Cache.where(name: 'map-all-objects').destroy_all
-    Sys::Cache.where(name: 'pathpoints').destroy_all
+    Rails.cache.delete('pathpoints')
+    Rails.cache.delete('mapobjects')
   end
 end

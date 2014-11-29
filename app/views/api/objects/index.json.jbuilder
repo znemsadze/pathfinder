@@ -26,7 +26,8 @@ json.features do
       json.name t.name
       json.description t.description if t.respond_to?(:description)
       if t.region_id.present?
-        json.region @regions[t.region_id.to_s].name
+        region = @regions.present? ? @regions[t.region_id.to_s] : t.region
+        json.region region.name
       end
       json.direction t.direction if t.respond_to?(:direction)
       json.category t.category if t.respond_to?(:category)
@@ -43,7 +44,7 @@ json.features do
       #   end
       # end
       if t.respond_to?(:detail) and t.detail_id
-        det = @details[ t.detail_id.to_s ]
+        det = @details.present? ? @details[ t.detail_id.to_s ] : t.detail
         json.detail do
           json.detail  det.name
           json.surface det.surface.name
