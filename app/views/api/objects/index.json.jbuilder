@@ -14,10 +14,10 @@ json.features do
         json.coordinates [t.lng,t.lat]
       elsif t.is_a?(Objects::Line)
         json.type 'LineString'
-        json.coordinates t.points.map{|p| [p.lng,p.lat] }
+        json.coordinates t.points.map{ |p| [p.lng,p.lat] }
       elsif t.is_a?(Objects::Path::Line)
         json.type 'LineString'
-        json.coordinates t.points.map{|p| [p.lng,p.lat] }
+        json.coordinates t.point_ids.map{ |pid| p = @pathpoints[pid.to_s] ; [ p[1], p[0] ] }
       end
     end
     json.id t.id.to_s
@@ -25,7 +25,9 @@ json.features do
       json.class t.class.name
       json.name t.name
       json.description t.description if t.respond_to?(:description)
-      json.region t.region.name if t.region.present?
+      if t.region_id.present?
+        json.region @regions[t.region_id.to_s].name
+      end
       json.direction t.direction if t.respond_to?(:direction)
       json.category t.category if t.respond_to?(:category)
       json.address t.address if t.respond_to?(:address)
@@ -34,17 +36,18 @@ json.features do
         json.northing t.northing
         json.easting t.easting
       end
-      if t.respond_to?(:has_images?) and t.has_images?
-        json.images do
-          json.thumbnails { json.array! t.thumbnails }
-          json.larges { json.array! t.larges }
-        end
-      end
-      if t.respond_to?(:detail) and t.detail
+      # if t.respond_to?(:has_images?) and t.has_images?
+      #   json.images do
+      #     json.thumbnails { json.array! t.thumbnails }
+      #     json.larges { json.array! t.larges }
+      #   end
+      # end
+      if t.respond_to?(:detail) and t.detail_id
+        det = @details[ t.detail_id.to_s ]
         json.detail do
-          json.detail  t.detail.name
-          json.surface t.detail.surface.name
-          json.type    t.detail.surface.type.name
+          json.detail  det.name
+          json.surface det.surface.name
+          json.type    det.surface.type.name
         end
       end
     end

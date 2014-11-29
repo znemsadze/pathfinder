@@ -5,6 +5,8 @@ module Objects::Coordinate
   def self.included(base)
     base.field :location, type: Array
     base.field :alt, type: Float
+    base.field :easting, type: Float
+    base.field :northing, type: Float
     base.index({ location: "2dsphere" }, { min: -200, max: 200 })
   end
 
@@ -13,6 +15,7 @@ module Objects::Coordinate
     self.lng=coords[0].to_f
     self.lat=coords[1].to_f
     self.alt=coords[2].to_f
+    calculate_metric
   end
 
   def lng; self.location ? self.location[0] : 0 end
@@ -33,12 +36,12 @@ module Objects::Coordinate
   # metric coordinates
 
   def easting
-    calculate_metric if @easting.nil?
+    calculate_metric if @easting.blank?
     @easting
   end
 
   def northing
-    calculate_metric if @northing.nil?
+    calculate_metric if @northing.blank?
     @northing
   end
 

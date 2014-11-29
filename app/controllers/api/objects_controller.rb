@@ -4,12 +4,19 @@ class Api::ObjectsController < ApiController
 
   def index
     if params[:id].blank?
-      page = Sys::Cache.get_map_objects
-      if page.blank?
-        @objects = get_all_objects
-        page = render_to_string
-        Sys::Cache.set_map_objects(page)
-      end
+      # page = Sys::Cache.get_map_objects
+      # if page.blank?
+      #   @objects = get_all_objects
+      #   page = render_to_string
+      #   Sys::Cache.set_map_objects(page)
+      # end
+      # render text: page
+
+      @objects = get_all_objects
+      @pathpoints = Sys::Cache.pathpoints
+      @regions = Hash[ Region.all.to_a.map{ |x| [ x.id.to_s, x ] } ]
+      @details = Hash[ Objects::Path::Detail.all.to_a.map{ |x| [ x.id.to_s, x ] } ]
+      page = render_to_string
       render text: page
     else
       @objects = get_all_objects
@@ -24,7 +31,9 @@ class Api::ObjectsController < ApiController
 
   private
 
-  def get_all_objects; get_towers + get_offices + get_substations + get_lines + get_paths end
+  def get_all_objects
+    get_towers + get_offices + get_substations + get_lines + get_paths
+  end
 
   def get_towers
     if params[:type].blank?
