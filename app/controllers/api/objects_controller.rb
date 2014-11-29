@@ -4,19 +4,15 @@ class Api::ObjectsController < ApiController
 
   def index
     if params[:id].blank?
-      # page = Sys::Cache.get_map_objects
-      # if page.blank?
-      #   @objects = get_all_objects
-      #   page = render_to_string
-      #   Sys::Cache.set_map_objects(page)
-      # end
-      # render text: page
-
-      @objects = get_all_objects
-      @pathpoints = Sys::Cache.pathpoints
-      @regions = Hash[ Region.all.to_a.map{ |x| [ x.id.to_s, x ] } ]
-      @details = Hash[ Objects::Path::Detail.all.to_a.map{ |x| [ x.id.to_s, x ] } ]
-      page = render_to_string
+      page = Sys::Cache.get_map_objects
+      if page.blank?
+        @objects = get_all_objects
+        @pathpoints = Sys::Cache.pathpoints
+        @regions = Hash[ Region.all.to_a.map{ |x| [ x.id.to_s, x ] } ]
+        @details = Hash[ Objects::Path::Detail.all.to_a.map{ |x| [ x.id.to_s, x ] } ]
+        page = render_to_string
+        Sys::Cache.set_map_objects(page)
+      end
       render text: page
     else
       @objects = get_all_objects
