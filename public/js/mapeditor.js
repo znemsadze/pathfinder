@@ -113,37 +113,6 @@ var utils=require('./utils')
 
 var BASE_PATH='/api/paths';
 
-exports.newPath=function(model,callback){
-  utils.clearErrors(model);
-
-  var path=model.path
-    , name=model.name
-    , detail_id=model.detail_id
-    , description=model.description
-    , region_id=model.region_id
-    ;
-
-  if(path.getLength()>1){
-    if(!detail_id){
-      utils.addError(model,'detail_id','აარჩიეთ საფარის დეტალი');
-      return false;
-    }
-    if(!region_id){
-      utils.addError(model,'region_id','აარჩიეთ რეგიონი');
-      return false;
-    }
-    var points=utils.pointsFromPath(path);
-    var params={points:points, detail_id:detail_id, name:name, description:description, region_id:region_id};
-    $.post(BASE_PATH+'/new',params,function(data){
-      if(callback){ callback(null, data); }
-    }).fail(function(err){
-      if(callback){ callback(err, null); }
-    });
-    return true;
-  }
-  return false;
-};
-
 exports.editPath=function(id,model,callback){
   utils.clearErrors(model);
 
@@ -154,25 +123,21 @@ exports.editPath=function(id,model,callback){
     , region_id=model.region_id
     ;
 
-  if(path.getLength()>1){
-    if(!detail_id){
-      utils.addError(model,'detail_id','აარჩიეთ საფარის დეტალი');
-      return false;
-    }
-    if(!region_id){
-      utils.addError(model,'region_id','აარჩიეთ რეგიონი');
-      return false;
-    }
-    var points=utils.pointsFromPath(path);
-    var params={id:id, points:points, detail_id:detail_id, name:name, description:description, region_id:region_id};
-    $.post(BASE_PATH+'/edit',params,function(data){
-      if(callback){ callback(null, data); }
-    }).fail(function(err){
-      if(callback){ callback(err, null); }
-    });
-    return true;
+  if(!detail_id){
+    utils.addError(model,'detail_id','აარჩიეთ საფარის დეტალი');
+    return false;
   }
-  return false;
+  if(!region_id){
+    utils.addError(model,'region_id','აარჩიეთ რეგიონი');
+    return false;
+  }
+  var params={ id: id, detail_id: detail_id, name: name, description: description, region_id: region_id };
+  $.post(BASE_PATH+'/edit',params,function(data){
+    if(callback){ callback(null, data); }
+  }).fail(function(err){
+    if(callback){ callback(err, null); }
+  });
+  return true;
 };
 
 exports.deletePath=function(id,callback){
@@ -183,6 +148,7 @@ exports.deletePath=function(id,callback){
   });;
   return true;
 };
+
 },{"./utils":9}],5:[function(require,module,exports){
 var BASE_PATH='/api/shortestpath';
 
@@ -593,10 +559,14 @@ module.exports=function(){
     onEnter: function(){
       self=this;
 
-      if (!uiInitialized){ initUI(self); }
+      if (!uiInitialized) {
+        initUI(self);
+      }
 
       map=self.map;
-      initMap();
+      if ( geo.isLine(getType()) ) {
+        initMap();
+      }
 
       resetLayout();
       canEdit=true;
@@ -616,9 +586,9 @@ var getForm=function(){ return  formLayout.selected(); };
 
 var getType=function(){
   var feature=getFeature();
-  if(feature){
+  if (feature) {
     return geo.getType(feature);
-  } else{
+  } else {
     return self.params.type;
   }
 };
@@ -641,13 +611,15 @@ var initUI=function(self){
     form.clearErrors();
 
     var model=form.getModel();
-    model.path=path.getPath();
+    if (path) {
+      model.path=path.getPath();
+    }
 
     var callback=function(err,data){
       if(err){
         console.log(err);
       } else {
-        path.setMap(null);
+        if (path) { path.setMap(null); }
         map.loadData({id:data.id, type:getType()});
         self.openPage('root');
       }
@@ -658,7 +630,8 @@ var initUI=function(self){
       if(isNewMode()){ sent=api.line.newLine(model, callback); }
       else { sent=api.line.editLine(getId(), model, callback); }
     } else{
-      if(isNewMode()){ sent=api.path.newPath(model, callback); }
+      // if(isNewMode()){ sent=api.path.newPath(model, callback); }
+      if(isNewMode()){ /* nothing!!! */ }
       else { sent=api.path.editPath(getId(), model, callback); }
     }
 
@@ -667,7 +640,7 @@ var initUI=function(self){
   };
 
   var cancelAction=function(){
-    path.setMap(null);
+    if (path) { path.setMap(null); }
     var feature=getFeature();
     if(feature){ map.data.add(feature); }
     self.openPage('root', {selectedFeature: getFeature()});

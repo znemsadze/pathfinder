@@ -15,10 +15,14 @@ module.exports=function(){
     onEnter: function(){
       self=this;
 
-      if (!uiInitialized){ initUI(self); }
+      if (!uiInitialized) {
+        initUI(self);
+      }
 
       map=self.map;
-      initMap();
+      if ( geo.isLine(getType()) ) {
+        initMap();
+      }
 
       resetLayout();
       canEdit=true;
@@ -38,9 +42,9 @@ var getForm=function(){ return  formLayout.selected(); };
 
 var getType=function(){
   var feature=getFeature();
-  if(feature){
+  if (feature) {
     return geo.getType(feature);
-  } else{
+  } else {
     return self.params.type;
   }
 };
@@ -63,13 +67,15 @@ var initUI=function(self){
     form.clearErrors();
 
     var model=form.getModel();
-    model.path=path.getPath();
+    if (path) {
+      model.path=path.getPath();
+    }
 
     var callback=function(err,data){
       if(err){
         console.log(err);
       } else {
-        path.setMap(null);
+        if (path) { path.setMap(null); }
         map.loadData({id:data.id, type:getType()});
         self.openPage('root');
       }
@@ -80,7 +86,8 @@ var initUI=function(self){
       if(isNewMode()){ sent=api.line.newLine(model, callback); }
       else { sent=api.line.editLine(getId(), model, callback); }
     } else{
-      if(isNewMode()){ sent=api.path.newPath(model, callback); }
+      // if(isNewMode()){ sent=api.path.newPath(model, callback); }
+      if(isNewMode()){ /* nothing!!! */ }
       else { sent=api.path.editPath(getId(), model, callback); }
     }
 
@@ -89,7 +96,7 @@ var initUI=function(self){
   };
 
   var cancelAction=function(){
-    path.setMap(null);
+    if (path) { path.setMap(null); }
     var feature=getFeature();
     if(feature){ map.data.add(feature); }
     self.openPage('root', {selectedFeature: getFeature()});
