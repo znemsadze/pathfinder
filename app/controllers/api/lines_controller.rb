@@ -6,7 +6,8 @@ class Api::LinesController < ApiController
     line = Objects::Line.create(line_params)
     parameter_points = params[:points].map{|k,v| [v['lat'].to_f,v['lng'].to_f]}
     line.set_points(parameter_points)
-    render json: { id: line.id.to_s } ; clear_cache
+    Sys::Cache.add_object(line)
+    render json: { id: line.id.to_s }
   end
 
   def edit
@@ -14,13 +15,15 @@ class Api::LinesController < ApiController
     parameter_points=params[:points].map{|k,v| [v['lat'].to_f,v['lng'].to_f]}
     line.set_points(parameter_points); line.save
     line.update_attributes(line_params)
-    render json: { id:line.id.to_s } ; clear_cache
+    Sys::Cache.replace_object(line)
+    render json: { id:line.id.to_s }
   end
 
   def delete
-    line=Objects::Line.in(id: params[:id])
+    line = Objects::Line.find(id: params[:id])
     line.destroy
-    render text:'ok' ; clear_cache
+    Sys::Cache.remove_object(line)
+    render text:'ok'
   end
 
   private
