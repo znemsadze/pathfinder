@@ -38,7 +38,8 @@ module Sys::Cache
   def remove_object(object)
     json = map_objects
     features = json[:features]
-    filtered = features.select{|x| x[:id] == object.id.to_s }
+    id = object.respond_to?(:id) ? object.id.to_s : object.to_s
+    filtered = features.select{|x| x[:id] == id }
     features.delete(filtered.first) if filtered.any?
     Rails.cache.write(MAPOBJECTS, json)
   end

@@ -20,9 +20,9 @@ class Api::LinesController < ApiController
   end
 
   def delete
-    line = Objects::Line.find(id: params[:id])
+    line = Objects::Line.find(params[:id])
     line.destroy
-    Sys::Cache.remove_object(line)
+    Sys::Cache.remove_object(params[:id])
     render text:'ok'
   end
 
