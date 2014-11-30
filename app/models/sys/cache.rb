@@ -2,7 +2,7 @@ module Sys::Cache
   PATHPOINTS = 'pathpoints'
   MAPOBJECTS = 'mapobjects'
 
-  def self.pathpoints
+  def pathpoints
     pathpoints = Rails.cache.read(PATHPOINTS)
     if pathpoints.blank?
       pathpoints = Hash[ Objects::Path::Point.all.to_a.map{ |x| [ x.id.to_s, [x.lat,x.lng] ] } ]
@@ -11,7 +11,7 @@ module Sys::Cache
     return pathpoints
   end
 
-  def self.map_objects
+  def map_objects
     json = Rails.cache.read(MAPOBJECTS)
     if json.blank?
       objects = Objects::Office.all + Objects::Tower.all + Objects::Substation.all + Objects::Line.all + Objects::Path::Line.all
@@ -24,11 +24,34 @@ module Sys::Cache
     return json
   end
 
-  def self.clear_map_objects
+  def clear_map_objects
     Rails.cache.delete(PATHPOINTS)
     Rails.cache.delete(MAPOBJECTS)
   end
 
-  def replace
+  def add_object(object)
+    json = map_objects
+    json[:features].push(object.geo_json)
+    Rails.cache.write(MAPOBJECTS, json)
+  end
 
+  def remove_object(object)
+    json = map_objects
+    features = json[:features]
+    filtered = features.select{|x| x[:id] == object.id.to_s }
+    features.delete(filtered.first) if filtered.any?
+    Rails.cache.write(MAPOBJECTS, json)
+  end
+
+  def replace_object(object)
+    remove_object(object)
+    add_object(object)
+  end
+
+  module_function :pathpoints
+  module_function :map_objects
+  module_function :clear_map_objects
+  module_function :add_object
+  module_function :remove_object
+  module_function :replace_object
 end
