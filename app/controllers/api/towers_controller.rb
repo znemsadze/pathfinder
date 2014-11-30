@@ -4,19 +4,22 @@ class Api::TowersController < ApiController
 
   def new
     tower=Objects::Tower.create(tower_params)
-    render json:{id:tower.id.to_s} ; clear_cache
+    Sys::Cache.add_object(tower)
+    render json: { id: tower.id.to_s }
   end
 
   def edit
     tower=Objects::Tower.find(params[:id])
     tower.update_attributes(tower_params)
-    render json:{id:tower.id.to_s} ; clear_cache
+    Sys::Cache.replace_object(tower)
+    render json: { id: tower.id.to_s }
   end
 
   def delete
     tower=Objects::Tower.find(params[:id])
     tower.destroy
-    render text:'ok' ; clear_cache
+    Sys::Cache.remove_object(tower)
+    render text:'ok'
   end
 
   def upload_photo
@@ -26,7 +29,8 @@ class Api::TowersController < ApiController
     file.write(params[:file])
     file.close
     tower.generate_images_from_file(file.path, filename, false)
-    render json: {file: "/uploads/#{tower.id}/large/#{filename}"} ; clear_cache
+    Sys::Cache.replace_object(tower)
+    render json: { file: "/uploads/#{tower.id}/large/#{filename}" }
   end
 
   private
