@@ -15,7 +15,7 @@ var map, editMode, infowindow
   , selectedFeature
   , secondaryToolbar=ui.button.toolbar([]), pathToolbar=ui.button.toolbar([]), taskToolbar=ui.button.toolbar([])
   , btnHome, btnSearch
-  , btnNewPath, btnNewLine, btnNewTower, btnNewOffice, btnNewSubstation // new objects
+  , btnNewLine, btnNewTower, btnNewOffice, btnNewSubstation // new objects
   , btnDelete, btnEdit, btnAddToPath, btnNewTask, btnShortestPath
   , confirmTitle=ui.html.p('საჭიროა დასტური',{class: 'page-header', style: 'font-weight:bold; font-size: 1.2em;'})
   , confirmText=ui.html.p('დაადასტურეთ, რომ ნამდვილად გინდათ მონიშნული ობიექტის წაშლა?',{class: 'text-danger'})
@@ -65,9 +65,9 @@ var initPage1=function(self){
   btnHome=ui.button.actionButton('', function(){ window.location='/'; }, {icon:'home'});
   btnSearch=ui.button.actionButton('ძებნა', function(){ self.openPage('search'); }, {icon: 'search'});
 
-  btnNewPath=ui.button.actionLink('მარშუტი', function(){
-    if(!locked){ self.openPage('edit_path',{type:geo.TYPE_PATH}); }
-  });
+  // btnNewPath=ui.button.actionLink('მარშუტი', function(){
+  //   if(!locked){ self.openPage('edit_path',{type:geo.TYPE_PATH}); }
+  // });
   btnNewLine=ui.button.actionLink('გადამცემი ხაზი', function(){
     if(!locked){ self.openPage('edit_path',{type:geo.TYPE_LINE}); }
   });
@@ -81,7 +81,7 @@ var initPage1=function(self){
     if(!locked){ self.openPage('edit_point',{type:geo.TYPE_SUBSTATION}); }
   });
 
-  var buttons=[btnNewPath,btnNewLine,{divider:true},btnNewOffice,btnNewSubstation,btnNewTower];
+  var buttons=[btnNewLine,{divider:true},btnNewOffice,btnNewSubstation,btnNewTower];
   var newObjects=ui.button.dropdown('ახალი ობიექტი',buttons, {type:'success'});  
 
   toolbar.addButton(btnSearch);
