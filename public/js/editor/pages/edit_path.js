@@ -71,12 +71,12 @@ var initUI=function(self){
       model.path=path.getPath();
     }
 
-    var callback=function(err,data){
+    var callback=function(err, data){
       if(err){
         console.log(err);
       } else {
         if (path) { path.setMap(null); }
-        map.loadData({id:data.id, type:getType()});
+        map.loadData({ id: data.id, type: getType() });
         self.openPage('root');
       }
     };

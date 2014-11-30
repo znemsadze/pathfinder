@@ -6,7 +6,7 @@ class Api::PathsController < ApiController
     path = Objects::Path::Line.find(params[:id])
     path.update_attributes(path_params)
     Sys::Cache.replace_object(path)
-    render json:{ id: path.id }
+    render json:{ id: path.id.to_s }
   end
 
   def delete
