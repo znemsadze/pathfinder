@@ -8,6 +8,7 @@ Pathfinder::Application.routes.draw do
     get '/', action: 'index', as: 'home'
     match '/login', action: 'login', as: 'login', via: ['get','post']
     get '/logout', action: 'logout'
+    post '/generate', action: 'generate', as: 'generate_cache'
   end
 
   namespace 'account' do

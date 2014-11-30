@@ -18,6 +18,12 @@ class SiteController < ApplicationController
     redirect_to root_url
   end
 
+  def generate
+    Sys::Cache.clear_map_objects
+    CacheGeneration.perform_async
+    redirect_to home_url, notice: 'კეშის გენერაცია დაწყებულია: იხილეთ მიმდინარე დავალებები.'
+  end
+
   protected
   def nav
     @nav = super
