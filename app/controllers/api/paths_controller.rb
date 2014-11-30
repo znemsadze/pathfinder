@@ -2,26 +2,23 @@
 class Api::PathsController < ApiController
   def show; @path=Objects::Path::Line.find(params[:id]) end
 
-  def new
-    parameter_points=params[:points].map{|k,v| [v['lat'].to_f,v['lng'].to_f]}
-    path=Objects::Path::Line.new_path(parameter_points,params)
-    path.splitjoin
-    render json:{id:path.neighbours.join(',')} ; clear_cache
-  end
-
   def edit
-    parameter_points=params[:points].map{|k,v| [v['lat'].to_f,v['lng'].to_f]}
-    path=Objects::Path::Line.find(params[:id])
-    path.update_path(parameter_points,params)
-    path.splitjoin
-    render json:{id:path.neighbours.join(',')} ; clear_cache
+    path = Objects::Path::Line.find(params[:id])
+    path.update_attributes(path_params)
+    Sys::Cache.replace_object(path)
+    render json:{ id: path.id }
   end
 
   def delete
-    path=Objects::Path::Line.in(id: params[:id].split(','))
-    path.each{|x| x.destroy_path }
-    render text:'ok' ; clear_cache
+    path=Objects::Path::Line.find(params[:id])
+    Objects::Path::Point.where(line_id: path.id).destroy_all
+    path.destroy
+    Sys::Cache.remove_object(params[:id])
+    render text: 'ok'
   end
 
   def details; @types = Objects::Path::Type.asc(:order_by) end
+
+  private
+  def path_params; params.permit(:detail_id, :name, :description, :region_id) end
 end
