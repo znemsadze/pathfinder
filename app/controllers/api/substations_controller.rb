@@ -4,20 +4,22 @@ class Api::SubstationsController < ApiController
 
   def new
     substation=Objects::Substation.create(substation_params)
-    render json:{id:substation.id.to_s} ; clear_cache
-
+    Sys::Cache.add_object(substation)
+    render json: { id: substation.id.to_s }
   end
 
   def edit
     substation=Objects::Substation.find(params[:id])
     substation.update_attributes(substation_params)
-    render json:{id:substation.id.to_s} ; clear_cache
+    Sys::Cache.replace_object(substation)
+    render json: { id: substation.id.to_s }
   end
 
   def delete
     substation=Objects::Substation.find(params[:id])
     substation.destroy
-    render text:'ok' ; clear_cache
+    Sys::Cache.remove_object(substation)
+    render text:'ok'
   end
 
   private
