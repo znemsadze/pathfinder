@@ -1,6 +1,7 @@
 module Sys::Cache
   PATHPOINTS = 'pathpoints'
   MAPOBJECTS = 'mapobjects'
+  PHOTOS = 'photos'
 
   def pathpoints
     pathpoints = Rails.cache.read(PATHPOINTS)
@@ -11,11 +12,21 @@ module Sys::Cache
     return pathpoints
   end
 
+  def photos
+    photos = Rails.cache.read(PHOTOS)
+    if photos.blank?
+      photos = Hash[ Objects::Photo.all.to_a.map{ |x| [ x.id.to_s, [ x.thumbnail_url, x.large_url ] ] } ]
+      Rails.cache.write(PHOTOS, photos)
+    end
+    return photos
+  end
+
   def map_objects
     json = Rails.cache.read(MAPOBJECTS)
     if json.blank?
       objects = Objects::Office.all + Objects::Tower.all + Objects::Substation.all + Objects::Line.all + Objects::Path::Line.all
       pathpoints = Sys::Cache.pathpoints
+      photos = Sys::Cache.photos
       regions = Hash[ Region.all.to_a.map{ |x| [ x.id.to_s, x ] } ]
       details = Hash[ Objects::Path::Detail.all.to_a.map{ |x| [ x.id.to_s, x ] } ]
       json = Objects::GeoJson.geo_json(objects, { regions: regions, details: details, pathpoints: pathpoints })
