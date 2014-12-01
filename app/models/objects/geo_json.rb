@@ -31,14 +31,29 @@ module Objects::GeoJson
       det = details.present? ? details[ self.detail_id.to_s ] : self.detail
       properties[:detail] = { detail: det.name, surface: det.surface.name, type: det.surface.type.name }
     end
-    ## XXX: add this to properties !!
-    # if t.respond_to?(:has_images?) and t.has_images?
-    #   json.images do
-    #     json.thumbnails { json.array! t.thumbnails }
-    #     json.larges { json.array! t.larges }
-    #   end
-    # end
-
+    if self.respond_to?(:has_images?) and self.has_images?
+      thumbs = [] ; larges = []
+      photos = opts[:photos]
+      self.photo_ids.each do |id|
+        if photos.present?
+          urls = photos[id.to_s]
+          if urls.present?
+            thumbs.push(urls[0])
+            larges.push(urls[1])
+          end
+        else
+          photo = Objects::Photo.find(id)
+          thumbs.push(photo.thumbnail_url)
+          larges.push(photo.large_url)
+        end
+      end
+      if thumbs.any?
+        properties[:images] = {
+          thumbnails: thumbs,
+          larges: larges
+        }
+      end
+    end
     {
       type: 'Feature',
       id: self.id.to_s,

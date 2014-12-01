@@ -29,7 +29,7 @@ module Sys::Cache
       photos = Sys::Cache.photos
       regions = Hash[ Region.all.to_a.map{ |x| [ x.id.to_s, x ] } ]
       details = Hash[ Objects::Path::Detail.all.to_a.map{ |x| [ x.id.to_s, x ] } ]
-      json = Objects::GeoJson.geo_json(objects, { regions: regions, details: details, pathpoints: pathpoints })
+      json = Objects::GeoJson.geo_json(objects, { regions: regions, details: details, pathpoints: pathpoints, photos: photos })
       Rails.cache.write(MAPOBJECTS, json)
     end
     return json
@@ -38,6 +38,7 @@ module Sys::Cache
   def clear_map_objects
     Rails.cache.delete(PATHPOINTS)
     Rails.cache.delete(MAPOBJECTS)
+    Rails.cache.delete(PHOTOS)
   end
 
   def add_object(object)
@@ -66,4 +67,5 @@ module Sys::Cache
   module_function :add_object
   module_function :remove_object
   module_function :replace_object
+  module_function :photos
 end
