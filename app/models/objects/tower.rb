@@ -57,8 +57,8 @@ class Objects::Tower
 
   def to_kml(xml)
     descr = "<p>#<strong>#{self.name}</strong>, #{self.linename}</p><p>#{self.description}</p>"
-    extra = extra_data('ანძის #' => name,
-      'ანძის ტიპი' => category,
+    extra = extra_data('ანძის ტიპი' => category,
+      'ანძის ნომერი' => name,
       'შენიშვნა' => description,
       'გადამცემი ხაზი' => linename,
       'რეგიონი' => region.to_s
