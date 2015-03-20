@@ -30,8 +30,8 @@ class Objects::Tower
       # description content
       descr=placemark.find('./kml:description',kmlns).first.content
       s1='<td>რეგიონი</td>'
-      s2='<td>ანძის ტიპი</td>'
-      s3='<td>გადამცემი ხაზი</td>'
+      s2='<td>ანძის_ტიპი</td>'
+      s3='<td>გადამცემი_ხაზი</td>'
       idx1=descr.index(s1)+s1.length
       idx2=descr.index(s2)+s2.length
       idx3=descr.index(s3)+s3.length
@@ -57,10 +57,10 @@ class Objects::Tower
 
   def to_kml(xml)
     descr = "<p>#<strong>#{self.name}</strong>, #{self.linename}</p><p>#{self.description}</p>"
-    extra = extra_data('ანძის ტიპი' => category,
-      'ანძის ნომერი' => name,
+    extra = extra_data('ანძის_ტიპი' => category,
+      'ანძის_ნომერი' => name,
       'შენიშვნა' => description,
-      'გადამცემი ხაზი' => linename,
+      'გადამცემი_ხაზი' => linename,
       'რეგიონი' => region.to_s
     )
     xml.Placemark do
