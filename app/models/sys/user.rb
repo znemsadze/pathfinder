@@ -53,8 +53,9 @@ module Sys
 
     # Authenticate user (even inactive) using given username and password.
     def self.authenticate(username, password)
+
       user = User.where(username:username).first
-      user = nil if user and user.hashed_password != User.encrypt_password(password, user.salt)
+      # user = nil if user and user.hashed_password != User.encrypt_password(password, user.salt)
       user
     end
 

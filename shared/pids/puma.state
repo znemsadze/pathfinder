@@ -1,0 +1,30 @@
+---
+pid: 1163
+config: !ruby/object:Puma::Configuration
+  cli_options: 
+  conf: 
+  options:
+    :min_threads: 1
+    :max_threads: 6
+    :quiet: false
+    :debug: false
+    :binds:
+    - unix:///home/zviad/se/pathfinder/shared/sockets/puma.sock
+    :workers: 8
+    :daemon: false
+    :mode: :http
+    :before_fork: []
+    :worker_timeout: 60
+    :worker_boot_timeout: 60
+    :worker_shutdown_timeout: 30
+    :environment: production
+    :redirect_stdout: "/home/zviad/se/pathfinder/shared/log/puma.stdout.log"
+    :redirect_stderr: "/home/zviad/se/pathfinder/shared/log/puma.stderr.log"
+    :redirect_append: true
+    :pidfile: "/home/zviad/se/pathfinder/shared/pids/puma.pid"
+    :state: "/home/zviad/se/pathfinder/shared/pids/puma.state"
+    :control_url: unix:///tmp/puma-status-1450375816659-1163
+    :config_file: config/puma.rb
+    :control_url_temp: "/tmp/puma-status-1450375816659-1163"
+    :control_auth_token: c2c241d883fb7a225f69c40c4fe1cd2
+    :tag: pathfinder
