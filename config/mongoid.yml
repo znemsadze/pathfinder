@@ -3,7 +3,7 @@ development:
     default:
       database: pathfinder_development
       hosts:
-        - localhost:27017
+        - 10.1.20.80:27017
       options:
   options:
 test:
@@ -11,4 +11,4 @@ test:
     default:
       database: pathfinder_test
       hosts:
-        - localhost:27017
+        - 10.1.20.80:27017
