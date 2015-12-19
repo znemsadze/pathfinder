@@ -1,5 +1,5 @@
 ---
-pid: 1163
+pid: 7751
 config: !ruby/object:Puma::Configuration
   cli_options: 
   conf: 
@@ -23,8 +23,8 @@ config: !ruby/object:Puma::Configuration
     :redirect_append: true
     :pidfile: "/home/zviad/se/pathfinder/shared/pids/puma.pid"
     :state: "/home/zviad/se/pathfinder/shared/pids/puma.state"
-    :control_url: unix:///tmp/puma-status-1450375816659-1163
+    :control_url: unix:///tmp/puma-status-1450516249892-7751
     :config_file: config/puma.rb
-    :control_url_temp: "/tmp/puma-status-1450375816659-1163"
-    :control_auth_token: c2c241d883fb7a225f69c40c4fe1cd2
+    :control_url_temp: "/tmp/puma-status-1450516249892-7751"
+    :control_auth_token: 1fefa098f5f57151ad37c6be25309cfe
     :tag: pathfinder

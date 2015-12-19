@@ -1,36 +1,56 @@
-=== puma startup: 2015-12-17 21:40:19 +0400 ===
-[8147] * Starting control server on unix:///tmp/puma-status-1450374019559-8147
-[8147] - Worker 7 (pid: 8247) booted, phase: 0
-[8147] - Worker 3 (pid: 8231) booted, phase: 0
-[8147] - Worker 6 (pid: 8243) booted, phase: 0
-[8147] - Worker 5 (pid: 8239) booted, phase: 0
-[8147] - Worker 0 (pid: 8219) booted, phase: 0
-[8147] - Worker 2 (pid: 8227) booted, phase: 0
-[8147] - Worker 1 (pid: 8223) booted, phase: 0
-[8147] - Worker 4 (pid: 8235) booted, phase: 0
-[8147] - Gracefully shutting down workers...
-[8147] === puma shutdown: 2015-12-17 22:07:09 +0400 ===
-[8147] - Goodbye!
-=== puma startup: 2015-12-17 22:08:50 +0400 ===
-[1093] * Starting control server on unix:///tmp/puma-status-1450375730360-1093
-[1093] - Worker 3 (pid: 1999) booted, phase: 0
-[1093] - Worker 6 (pid: 2011) booted, phase: 0
-[1093] - Worker 1 (pid: 1991) booted, phase: 0
-[1093] - Worker 5 (pid: 2007) booted, phase: 0
-[1093] - Worker 7 (pid: 2015) booted, phase: 0
-[1093] - Worker 0 (pid: 1987) booted, phase: 0
-[1093] - Worker 4 (pid: 2003) booted, phase: 0
-[1093] - Worker 2 (pid: 1995) booted, phase: 0
-[1093] - Gracefully shutting down workers...
-[1093] === puma shutdown: 2015-12-17 22:09:14 +0400 ===
-[1093] - Goodbye!
-=== puma startup: 2015-12-17 22:10:16 +0400 ===
-[1163] * Starting control server on unix:///tmp/puma-status-1450375816659-1163
-[1163] - Worker 7 (pid: 2058) booted, phase: 0
-[1163] - Worker 5 (pid: 2050) booted, phase: 0
-[1163] - Worker 2 (pid: 2038) booted, phase: 0
-[1163] - Worker 3 (pid: 2042) booted, phase: 0
-[1163] - Worker 1 (pid: 2034) booted, phase: 0
-[1163] - Worker 4 (pid: 2046) booted, phase: 0
-[1163] - Worker 6 (pid: 2054) booted, phase: 0
-[1163] - Worker 0 (pid: 2030) booted, phase: 0
+ 
+[1109] - Gracefully shutting down workers...
+[1109] === puma shutdown: 2015-12-19 12:45:14 +0400 ===
+[1109] - Goodbye!
+=== puma startup: 2015-12-19 12:45:20 +0400 ===
+[6520] * Starting control server on unix:///tmp/puma-status-1450514720815-6520
+[6520] - Worker 0 (pid: 6591) booted, phase: 0
+[6520] - Worker 2 (pid: 6599) booted, phase: 0
+[6520] - Worker 7 (pid: 6617) booted, phase: 0
+[6520] - Worker 6 (pid: 6615) booted, phase: 0
+[6520] - Worker 5 (pid: 6611) booted, phase: 0
+[6520] - Worker 1 (pid: 6595) booted, phase: 0
+[6520] - Worker 3 (pid: 6603) booted, phase: 0
+[6520] - Worker 4 (pid: 6607) booted, phase: 0
+[6520] - Gracefully shutting down workers...
+[6520] === puma shutdown: 2015-12-19 12:56:19 +0400 ===
+[6520] - Goodbye!
+=== puma startup: 2015-12-19 12:56:31 +0400 ===
+[6899] * Starting control server on unix:///tmp/puma-status-1450515391685-6899
+[6899] - Worker 1 (pid: 6974) booted, phase: 0
+[6899] - Worker 7 (pid: 6996) booted, phase: 0
+[6899] - Worker 0 (pid: 6970) booted, phase: 0
+[6899] - Worker 3 (pid: 6982) booted, phase: 0
+[6899] - Worker 5 (pid: 6990) booted, phase: 0
+[6899] - Worker 6 (pid: 6994) booted, phase: 0
+[6899] - Worker 4 (pid: 6986) booted, phase: 0
+[6899] - Worker 2 (pid: 6978) booted, phase: 0
+[6899] - Gracefully shutting down workers...
+[6899] === puma shutdown: 2015-12-19 12:57:27 +0400 ===
+[6899] - Goodbye!
+=== puma startup: 2015-12-19 12:57:31 +0400 ===
+[7107] * Starting control server on unix:///tmp/puma-status-1450515451340-7107
+[7107] - Worker 1 (pid: 7182) booted, phase: 0
+[7107] - Worker 0 (pid: 7178) booted, phase: 0
+[7107] - Worker 3 (pid: 7190) booted, phase: 0
+[7107] - Worker 5 (pid: 7196) booted, phase: 0
+[7107] - Worker 2 (pid: 7186) booted, phase: 0
+[7107] - Worker 4 (pid: 7194) booted, phase: 0
+[7107] - Worker 7 (pid: 7206) booted, phase: 0
+[7107] - Worker 6 (pid: 7200) booted, phase: 0
+[7107] - Gracefully shutting down workers...
+[7107] === puma shutdown: 2015-12-19 13:10:35 +0400 ===
+[7107] - Goodbye!
+=== puma startup: 2015-12-19 13:10:49 +0400 ===
+[7751] * Starting control server on unix:///tmp/puma-status-1450516249892-7751
+[7751] - Worker 2 (pid: 7831) booted, phase: 0
+[7751] - Worker 3 (pid: 7835) booted, phase: 0
+[7751] - Worker 1 (pid: 7827) booted, phase: 0
+[7751] - Worker 6 (pid: 7847) booted, phase: 0
+[7751] - Worker 5 (pid: 7841) booted, phase: 0
+[7751] - Worker 7 (pid: 7851) booted, phase: 0
+[7751] - Worker 4 (pid: 7839) booted, phase: 0
+[7751] - Worker 0 (pid: 7823) booted, phase: 0
+[7751] - Gracefully shutting down workers...
+[7751] === puma shutdown: 2015-12-19 13:21:31 +0400 ===
+[7751] - Goodbye!

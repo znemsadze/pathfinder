@@ -33,4 +33,6 @@ gem 'rmagick'
 gem 'sidekiq'
 gem 'sinatra', '>= 1.3.0', :require => nil
 gem 'foreman'
-gem 'puma'
+# gem 'puma'
+gem "passenger"
+gem 'therubyracer',  platforms: :ruby
