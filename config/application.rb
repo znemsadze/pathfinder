@@ -31,5 +31,10 @@ module Pathfinder
     config.after_initialize do
       CacheGeneration.perform_async
     end
+    config.generators do |g|
+      g.orm :mongoid
+    end
   end
 end
+
+
