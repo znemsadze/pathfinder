@@ -24,6 +24,7 @@ class Objects::Tower
     doc=parser.parse ; root=doc.child
     kmlns="kml:#{KMLNS}"
     placemarks=doc.child.find '//kml:Placemark',kmlns
+    Objects::Tower.delete_all
     placemarks.each do |placemark|
       id=placemark.attributes['id']
       name=placemark.find('./kml:name',kmlns).first.content
@@ -35,19 +36,9 @@ class Objects::Tower
       idx1=descr.index(s1)+s1.length
       idx2=descr.index(s2)+s2.length
       idx3=descr.index(s3)+s3.length
-      puts "================================================"
-      puts idx1
-      puts idx2
-      puts idx3
-      puts "================================================"
       regname=descr[idx1..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
       category=descr[idx2..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
       linename=descr[idx3..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
-
-      puts regname
-
-      puts "==============================================="
-
       region=Region.get_by_name(regname)
       # end of description section
       coord=placemark.find('./kml:Point/kml:coordinates',kmlns).first.content

@@ -32,6 +32,7 @@ class Objects::Line
     doc=parser.parse ; root=doc.child
     kmlns="kml:#{KMLNS}"
     placemarks=doc.child.find '//kml:Placemark',kmlns
+    Objects::Line.delete_all
     placemarks.each do |placemark|
       id=placemark.attributes['id']
       name=placemark.find('./kml:name',kmlns).first.content
