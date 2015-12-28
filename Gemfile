@@ -17,6 +17,7 @@ gem 'will_paginate_mongoid'
 gem 'forma', '~>0.1'
 gem 'bootstrap-will_paginate'
 gem 'ka'
+ 
 
 gem 'libxml-ruby'
 gem 'rubyzip'

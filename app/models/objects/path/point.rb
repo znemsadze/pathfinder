@@ -9,4 +9,7 @@ class Objects::Path::Point
 
   # graph caching in A* requires this...
   def ==(another_point); self.id == another_point.id end
+  def hash
+    self.id.hash # XOR
+  end
 end

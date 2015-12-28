@@ -2,6 +2,7 @@ module Sys::Cache
   PATHPOINTS = 'pathpoints'
   MAPOBJECTS = 'mapobjects'
   PHOTOS = 'photos'
+  EDGEPOINTS='edgepoints'
 
   def pathpoints
     pathpoints = Rails.cache.read(PATHPOINTS)
@@ -11,6 +12,22 @@ module Sys::Cache
     end
     return pathpoints
   end
+
+
+  def edgepoints
+    edgepoints = Rails.cache.read(EDGEPOINTS)
+    if edgepoints.blank?
+      edgepoints = Hash[ Objects::Path::Point.where(edge:true).to_a.map{ |x| [ x.id, x ] } ]
+      Rails.cache.write(EDGEPOINTS, pathpoints)
+    end
+    return edgepoints
+  end
+
+
+
+
+
+
 
   def photos
     photos = Rails.cache.read(PHOTOS)
@@ -26,11 +43,13 @@ module Sys::Cache
     if json.blank?
       objects = Objects::Office.all + Objects::Tower.all + Objects::Substation.all + Objects::Line.all + Objects::Path::Line.all
       pathpoints = Sys::Cache.pathpoints
+      edgepoints=Sys::Cache.edgepoints
       photos = Sys::Cache.photos
       regions = Hash[ Region.all.to_a.map{ |x| [ x.id.to_s, x ] } ]
       details = Hash[ Objects::Path::Detail.all.to_a.map{ |x| [ x.id.to_s, x ] } ]
       json = Objects::GeoJson.geo_json(objects, { regions: regions, details: details, pathpoints: pathpoints, photos: photos })
       Rails.cache.write(MAPOBJECTS, json)
+
     end
     return json
   end
@@ -68,4 +87,7 @@ module Sys::Cache
   module_function :remove_object
   module_function :replace_object
   module_function :photos
+  module_function :edgepoints
+
+
 end

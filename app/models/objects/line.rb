@@ -11,6 +11,7 @@ class Objects::Line
   field :name, type: String
   field :direction, type: String
   field :description, type: String
+
   belongs_to :region
   embeds_many :points, class_name: 'Objects::LinePoint'
 
