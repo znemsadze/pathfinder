@@ -35,6 +35,7 @@ class Api::ShortestpathController < ApiController
   private
 
   def build_graph(points)
+    @edgePoint=Sys::Cache::edgepoints;
      graph = get_current_graph
      points_by_path = points.group_by { |point| point.pathline_ids.first }
      points_by_path.each do |line_id, split_by|
@@ -73,42 +74,41 @@ class Api::ShortestpathController < ApiController
 
   def build_default_graph
     graph = Shortest::Path::Graph.new
-    @edgePoint=   Hash[ Objects::Path::Point.where(edge:true).to_a.map{ |x| [ x.id, x ] } ]
+    # @edgePoint=   Hash[ Objects::Path::Point.where(edge:true).to_a.map{ |x| [ x.id, x ] } ]
 
 
-    
+
     Objects::Path::Line.each do |line|
       point_ids = line.point_ids
       p1 = point_ids.first ; p2 = point_ids.last
-      # puts " ===================="+ p1+" "+p2
       add_graph_edgefast(graph, p1, p2, line.length)
-
     end
-    # puts @edgePoint
     graph
   end
 
   def add_graph_edge(graph, p1, p2, length)
-    point1 = Objects::Path::Point.find(p1)
-    point2 = Objects::Path::Point.find(p2)
+    # point1 = Objects::Path::Point.find(p1)
+    # point2 = Objects::Path::Point.find(p2)
+    point1=@edgePoint[p1]# Sys::Cache::edgepoints[p1];
+    point2=@edgePoint[p1]# Sys::Cache::edgepoints[p2];
+
     # graph << point1 unless graph.include?(point1)
     # graph << point2 unless graph.include?(point2)
     graph.connect_mutually(point1, point2, length)
   end
 
   def add_graph_edgefast(graph, p1, p2, length)
-    # point1 = Objects::Path::Point.find(p1)
-    # point2 = Objects::Path::Point.find(p2)
-    point1=@edgePoint[p1];
-    point2=@edgePoint[p2];
-    # graph << point1 unless graph.include?(point1)
-    # graph << point2 unless graph.include?(point2)
+    point1=@edgePoint[p1]
+    point2=@edgePoint[p2]
     graph.connect_mutually(point1, point2, length)
   end
 
   def remove_graph_edge(graph, p1, p2)
-    point1 = Objects::Path::Point.find(p1)
-    point2 = Objects::Path::Point.find(p2)
+    # point1 = Objects::Path::Point.find(p1)
+    # point2 = Objects::Path::Point.find(p2)
+    point1= @edgePoint[p1]#Sys::Cache::edgepoints[p1];
+    point2= @edgePoint[p1]#Sys::Cache::edgepoints[p2];
+
     graph.remove_edge(point1, point2)
   end
 
@@ -124,21 +124,24 @@ class Api::ShortestpathController < ApiController
   end
 
   def extract_path(points)
+ 
     p1 = p2 = points[0]
     new_points=[]
     length=0
+     # @points=Sys::Cache::allpoints
     (1..points.length-1).each do |idx|
       p2 = points[idx]
       line=Objects::Path::Line.all(point_ids: [p1.id, p2.id]).first
       i1=line.point_ids.index(p1.id) ; i2=line.point_ids.index(p2.id)
+      @points=   Hash[ Objects::Path::Point.find(line.point_ids).to_a.map{ |x| [ x.id, x ] }]
       if i1 < i2
-        (i1..i2).each do |i|
-          new_points << Objects::Path::Point.find(line.point_ids[i])
+       (i1..i2).each do |i|
+          new_points << @points[line.point_ids[i]]#  Objects::Path::Point.find(line.point_ids[i])
         end
       else
         ary=[]
         (i2..i1).each do |i|
-          ary << Objects::Path::Point.find(line.point_ids[i])
+          ary << @points[line.point_ids[i]]# Objects::Path::Point.find(line.point_ids[i])
         end
         ary.reverse.each do |p|
           new_points << p

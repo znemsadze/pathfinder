@@ -3,6 +3,7 @@ module Sys::Cache
   MAPOBJECTS = 'mapobjects'
   PHOTOS = 'photos'
   EDGEPOINTS='edgepoints'
+  ALLPOINTS='allpoints'
 
   def pathpoints
     pathpoints = Rails.cache.read(PATHPOINTS)
@@ -16,15 +17,21 @@ module Sys::Cache
 
   def edgepoints
     edgepoints = Rails.cache.read(EDGEPOINTS)
-    if edgepoints.blank?
+        if edgepoints.blank?
       edgepoints = Hash[ Objects::Path::Point.where(edge:true).to_a.map{ |x| [ x.id, x ] } ]
-      Rails.cache.write(EDGEPOINTS, pathpoints)
-    end
+      Rails.cache.write(EDGEPOINTS, edgepoints)
+        end
     return edgepoints
   end
 
-
-
+  def allpoints
+    allpoints = Rails.cache.read(ALLPOINTS)
+    if allpoints.blank?
+      allpoints = Hash[ Objects::Path::Point.all.to_a.map{ |x| [ x.id, x ] } ]
+      Rails.cache.write(ALLPOINTS, allpoints)
+    end
+    return allpoints
+  end
 
 
 
@@ -88,6 +95,6 @@ module Sys::Cache
   module_function :replace_object
   module_function :photos
   module_function :edgepoints
-
+  module_function :allpoints
 
 end
