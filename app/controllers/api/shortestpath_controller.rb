@@ -129,9 +129,32 @@ class Api::ShortestpathController < ApiController
 
   def extract_path(points)
 
+# p1 = p2 = points[0]
+#         @lineids =[]
+#         length=0
+#         (1..points.length-1).each do |idx|
+#           p2 = points[idx]
+#
+#           pathline_id = 0
+#           p1.pathline_ids.each do |p1_path|
+#             p2.pathline_ids.each do |p2_path|
+#               if p1_path == p2_path
+#                 pathline_id = p1_path
+#                 @lineids<<pathline_id
+#                 break
+#               end
+#             end
+#             if pathline_id != 0
+#               break
+#             end
+#           end
+#           p1=p2
+#           end;
+
     p1 = p2 = points[0]
     new_points=[]
     length=0
+        # @points=   Hash[ Objects::Path::Point.all(pathline_ids:@lineids ).to_a.map{ |x| [ x.id, x ] }]
     # @points=Sys::Cache::allpoints
     (1..points.length-1).each do |idx|
       p2 = points[idx]
@@ -149,11 +172,13 @@ class Api::ShortestpathController < ApiController
         end
       end
 
+
       #line=Objects::Path::Line.all(point_ids: [p1.id, p2.id]).first
       line=Objects::Path::Line.find(pathline_id)
 
       i1=line.point_ids.index(p1.id) ; i2=line.point_ids.index(p2.id)
       @points=   Hash[ Objects::Path::Point.find(line.point_ids).to_a.map{ |x| [ x.id, x ] }]
+      # @points=   Hash[ Objects::Path::Point.all(pathline_ids:[line.id]).to_a.map{ |x| [ x.id, x ] }]
       if i1 < i2
         (i1..i2).each do |i|
           new_points << @points[line.point_ids[i]]#  Objects::Path::Point.find(line.point_ids[i])
