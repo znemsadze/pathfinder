@@ -1863,7 +1863,7 @@ var initUI=function(self){
 
   search=ui.form.textField('search',{placeholder: 'ჩაწერეთ საკვანძო სიტყვა', autofocus: true});
   search.getTextField().onkeyup=function(){
-    searching(search.getValue());
+      searchbox_change(search.getValue());
   };
 
   results=ui.html.el('div',{style: 'position:absolute; top:90px; bottom: 0; left:0; right: 0; overflow: auto; background: #fafafa;'});
@@ -1876,19 +1876,47 @@ var research=function(){ // search again!
   searching(currText);
 };
 
-var searching=function(text){
-  currText=text;
-  var selected=[];
-  if(text){
-    var words=text.split(' ');
-    map.data.forEach(function(f){
-      if(isVisible(f)&&geo.searchHit(f,words)){
-        selected.push(f);
-      }
-    });
-  }
-  displaySearchResults(selected);
-};
+    var searchTimer = 0;
+    var ItemsLimitReachedException = {};
+    var searchbox_change = function (text) {
+        // cancel any previously-set timer
+        if (searchTimer) {
+            clearTimeout(searchTimer);
+        }
+        searchTimer = setTimeout(function () {
+                searching(text);
+            }
+            , 500);
+    }
+
+    var searching = function (text) {
+        currText = text;
+        var selected = [];
+        if (text) {
+            var trimmedText = text.trim();
+            if(trimmedText)
+            {
+                var words = trimmedText.split(' ');
+                if(words.length != 0)
+                {
+                    try {
+                        map.data.forEach(function (f) {
+                            if (selected.length > 20)
+                                throw ItemsLimitReachedException;
+                            if (isVisible(f) && geo.searchHit(f, words)) {
+                                selected.push(f);
+                            }
+                        });
+                    }
+                    catch (e) {
+                        if (e != ItemsLimitReachedException)
+                            throw e;
+                    }
+                }
+            }
+            displaySearchResults(selected);
+        }
+    };
 
 var displaySearchResults=function(features){
   if(features.length>0){
