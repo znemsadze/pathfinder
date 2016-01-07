@@ -128,14 +128,30 @@ class Api::ShortestpathController < ApiController
   end
 
   def extract_path(points)
- 
+
     p1 = p2 = points[0]
     new_points=[]
     length=0
      # @points=Sys::Cache::allpoints
     (1..points.length-1).each do |idx|
       p2 = points[idx]
-      line=Objects::Path::Line.all(point_ids: [p1.id, p2.id]).first
+
+      pathline_id = 0
+      p1.pathline_ids.each do |p1_path|
+        p2.pathline_ids.each do |p2_path|
+          if p1_path == p2_path
+            pathline_id = p1_path
+            break
+          end
+        end
+        if pathline_id != 0
+          break
+        end
+      end
+
+      #line=Objects::Path::Line.all(point_ids: [p1.id, p2.id]).first
+      line=Objects::Path::Line.find(pathline_id)
+
       i1=line.point_ids.index(p1.id) ; i2=line.point_ids.index(p2.id)
       @points=   Hash[ Objects::Path::Point.find(line.point_ids).to_a.map{ |x| [ x.id, x ] }]
       if i1 < i2
