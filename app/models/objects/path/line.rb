@@ -69,7 +69,9 @@ class Objects::Path::Line
     end
   end
 
-  def points; self.point_ids.map{ |x| Objects::Path::Point.find(x) } end
+  def points;
+    #self.point_ids.map{ |x| Objects::Path::Point.find(x) } end#
+    Objects::Path::Point.find(self.point_ids).map{ |x| x } end
 
   def geo_type(opts={}); 'LineString' end
   def geo_coordinates(opts={})
