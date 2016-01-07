@@ -1886,7 +1886,7 @@ var research=function(){ // search again!
         searchTimer = setTimeout(function () {
                 searching(text);
             }
-            , 500);
+            , 300);
     }
 
     var searching = function (text) {
