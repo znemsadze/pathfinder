@@ -1,4 +1,5 @@
 development:
+  logger: false
   sessions:
     default:
       database: pathfinder_development
@@ -7,8 +8,10 @@ development:
       options:
   options:
 test:
+  logger: false
   sessions:
     default:
       database: pathfinder_test
+
       hosts:
         - localhost:27017

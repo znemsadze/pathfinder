@@ -24,5 +24,7 @@ module Mongoid
         save(user:user)
       end
     end
+
   end
+
 end

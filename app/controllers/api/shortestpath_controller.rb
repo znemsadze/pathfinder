@@ -132,7 +132,7 @@ class Api::ShortestpathController < ApiController
     p1 = p2 = points[0]
     new_points=[]
     length=0
-     # @points=Sys::Cache::allpoints
+    # @points=Sys::Cache::allpoints
     (1..points.length-1).each do |idx|
       p2 = points[idx]
 
@@ -155,7 +155,7 @@ class Api::ShortestpathController < ApiController
       i1=line.point_ids.index(p1.id) ; i2=line.point_ids.index(p2.id)
       @points=   Hash[ Objects::Path::Point.find(line.point_ids).to_a.map{ |x| [ x.id, x ] }]
       if i1 < i2
-       (i1..i2).each do |i|
+        (i1..i2).each do |i|
           new_points << @points[line.point_ids[i]]#  Objects::Path::Point.find(line.point_ids[i])
         end
       else
@@ -172,6 +172,75 @@ class Api::ShortestpathController < ApiController
     end
     {points: new_points, length: length}
   end
+
+
+
+#   def extract_path(points)
+#
+#     p1 = p2 = points[0]
+#     new_points=[]
+#     @lineids =[]
+#     @lines=[]
+#     length=0
+#     (1..points.length-1).each do |idx|
+#       p2 = points[idx]
+#
+#       pathline_id = 0
+#       p1.pathline_ids.each do |p1_path|
+#         p2.pathline_ids.each do |p2_path|
+#           if p1_path == p2_path
+#             pathline_id = p1_path
+#             @lineids<<pathline_id
+#             break
+#           end
+#         end
+#         if pathline_id != 0
+#           break
+#         end
+#       end
+#       p1=p2
+#       end;
+#
+#     @lines=Objects::Path::Line.find(@lineids);
+#
+#     @pointids=[]
+#      (0..@lines.length-1).each do |ndx|
+#        @pointids.concat @lines[ndx].point_ids
+#      end
+#     @linesMap=Hash[@lines.to_a.map{|x| [ x.id, x ]}]
+#
+#     @allPoints=   Hash[ Objects::Path::Point.find(@pointids).to_a.map{ |x| [ x.id, x ] }]
+#      # @points=Sys::Cache::allpoints
+#
+#
+# #   path start node points
+#     pstart=points[0]
+#     pend=points[points.length-1]
+#     line=@linesMap[@lineids[0]]
+#     i1= line.point_ids.index( pstart.id)
+#     i2= line.point_ids.length-1
+#     (i1..i2).each do |i|
+#       new_points << @allPoints[line.point_ids[i]]#  Objects::Path::Point.find(line.point_ids[i])
+#     end
+# #   path midle points
+#    (1..@lineids.length-2).each do |ndx|
+#       line=@linesMap[@lineids[ndx]]
+#       i1=0 ;      i2= line.point_ids.length-1
+#        (i1..i2).each do |i|
+#           new_points << @allPoints[line.point_ids[i]]#  Objects::Path::Point.find(line.point_ids[i])
+#         end
+#       length += line.length  # distance_between(p1, p2)
+#    end
+# #   path end node  points
+#     line=@linesMap[@lineids[@lineids.length-1]]
+#     i1=0
+#     i2= line.point_ids.index( pend.id)
+#     (i1..i2).each do |i|
+#       new_points << @allPoints[line.point_ids[i]]#  Objects::Path::Point.find(line.point_ids[i])
+#     end
+#
+#     {points: new_points, length: length}
+#   end
 
   def distance_between(p1,p2)
     # return 1;
