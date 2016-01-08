@@ -149,8 +149,48 @@ p1 = p2 = points[0]
               break
             end
           end
+<<<<<<< HEAD
           p1=p2
           end;
+=======
+        end
+        if pathline_id != 0
+          break
+        end
+      end
+
+      line=@lines[pathline_id]
+
+      #line=Objects::Path::Line.find(pathline_id)
+
+      i1=line.point_ids.index(p1.id) ; i2=line.point_ids.index(p2.id)
+
+      if i1 < i2
+        (i1..i2).each do |i|
+          new_points << @points[line.point_ids[i].to_s]#  Objects::Path::Point.find(line.point_ids[i])
+        end
+      else
+        ary=[]
+        (i2..i1).each do |i|
+          ary << @points[line.point_ids[i].to_s]# Objects::Path::Point.find(line.point_ids[i])
+        end
+        ary.reverse.each do |p|
+          new_points << p
+        end
+      end
+      length += line.length
+      p1 = p2
+    end
+
+    puts "extract end"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
+
+    {points: new_points, length: length}
+
+  end
+
+  def extract_path_p(points)
+    puts "extract  started"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
+>>>>>>> 53a77a5290c32ccd8058820df973fbdb0173114e
 
     p1 = p2 = points[0]
     new_points=[]
