@@ -4,6 +4,8 @@ module Sys::Cache
   PHOTOS = 'photos'
   EDGEPOINTS='edgepoints'
   ALLPOINTS='allpoints'
+  PATHLINES='pathlines'
+  PATHLINESSMALL='pathlinessmall'
 
   def pathpoints
     pathpoints = Rails.cache.read(PATHPOINTS)
@@ -14,13 +16,30 @@ module Sys::Cache
     return pathpoints
   end
 
+  def pathlines
+    pathlines = Rails.cache.read(PATHLINES)
+    if pathlines.blank?
+      pathlines = Hash[ Objects::Path::Line.all.to_a.map{ |x| [ x.id, x ] } ]
+      Rails.cache.write(PATHLINES, pathlines)
+    end
+    return pathlines
+  end
+
+  def pathlinessmall
+    pathlinessmall = Rails.cache.read(PATHLINESSMALL)
+    if pathlinessmall.blank?
+      pathlinessmall = Hash[ Objects::Path::Line.all.to_a.map{ |x| [ x.id, [x.point_ids, x.length] ] } ]
+      Rails.cache.write(PATHLINESSMALL, pathlinessmall)
+    end
+    return pathlinessmall
+  end
 
   def edgepoints
     edgepoints = Rails.cache.read(EDGEPOINTS)
-        if edgepoints.blank?
+    if edgepoints.blank?
       edgepoints = Hash[ Objects::Path::Point.where(edge:true).to_a.map{ |x| [ x.id, x ] } ]
       Rails.cache.write(EDGEPOINTS, edgepoints)
-        end
+    end
     return edgepoints
   end
 
@@ -63,6 +82,7 @@ module Sys::Cache
 
   def clear_map_objects
     Rails.cache.delete(PATHPOINTS)
+    Rails.cache.delete(PATHLINES)
     Rails.cache.delete(MAPOBJECTS)
     Rails.cache.delete(PHOTOS)
   end
@@ -96,6 +116,8 @@ module Sys::Cache
   module_function :photos
   module_function :edgepoints
   module_function :allpoints
+  module_function :pathlines
+  module_function :pathlinessmall
 
 end
 
