@@ -98,3 +98,4 @@ module Sys::Cache
   module_function :allpoints
 
 end
+
