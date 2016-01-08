@@ -13,18 +13,28 @@ class Api::ShortestpathController < ApiController
     closest_points = origins.map{|x| Objects::Path::Point.geo_near(x).spherical.first }
     dist = heur = ->(p1,p2){ distance_between(p1,p2) }
 
+    #Sys::Cache::clear_map_objects
+    @points=Sys::Cache::pathpoints;
+    @lines=Sys::Cache::pathlines;
+    #@lines=Sys::Cache::pathlinessmall;
+
+    puts "cache get end"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
+
     if closest_points.length > 1
       p1 = p2 = closest_points[0]
         puts "build_graph started"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
        graph = build_graph(closest_points)
-        puts "build_graph started"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
+        puts "build_graph end"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
       @responses = []
+
+
       (1..closest_points.length-1).each do |idx|
         p2 = closest_points[idx]
-        puts "astart started"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
+        puts "astar started"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
         path = Shortest::Path.astar(dist, heur, graph, p1, p2)
-        puts "astart ended"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
-         @responses << extract_path(path)
+        puts "astar ended"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
+
+        @responses << extract_path(path)
         p1 = p2
       end
     else
@@ -46,11 +56,11 @@ class Api::ShortestpathController < ApiController
       i1, p1 = [ 0, point_ids.first ]
       split_by.each do |point_id|
         p2 = point_id ; i2 = point_ids.index(point_id)
-        add_graph_edge_slow(graph, p1, p2, line_length(line, i1, i2))
+        add_graph_edge_slow(graph, p1, p2, line_length2(line, i1, i2))
         i1, p1 = [ i2, p2 ]
       end
       i2, p2 = [ point_ids.length - 1, point_ids.last ]
-       add_graph_edge_slow(graph, p1, p2, line_length(line, i1, i2))
+       add_graph_edge_slow(graph, p1, p2, line_length2(line, i1, i2))
     end
 
     graph
@@ -127,12 +137,134 @@ class Api::ShortestpathController < ApiController
     len
   end
 
+  def line_length2(line, i1, i2)
+    len = 0; points = line.point_ids
+    (i1 + 1 .. i2).each do |idx|
+      p1 = @points[points[idx-1].to_s] ; p2=@points[points[idx].to_s]
+      a1 = Geokit::LatLng.new(p1[0], p1[1])
+      a2 = Geokit::LatLng.new(p2[0], p2[1])
+      len += a1.distance_to(a2)
+    end
+    len
+  end
+
+
   def extract_path(points)
+
+    puts "extract  started"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
 
     p1 = p2 = points[0]
     new_points=[]
     length=0
-    # @points=Sys::Cache::allpoints
+
+    (1..points.length-1).each do |idx|
+      p2 = points[idx]
+
+      pathline_id = 0
+      p1.pathline_ids.each do |p1_path|
+        p2.pathline_ids.each do |p2_path|
+          if p1_path == p2_path
+            pathline_id = p1_path
+            break
+          end
+        end
+        if pathline_id != 0
+          break
+        end
+      end
+
+      line=@lines[pathline_id]
+      #line=Objects::Path::Line.find(pathline_id)
+
+      i1=line.point_ids.index(p1.id) ; i2=line.point_ids.index(p2.id)
+
+      if i1 < i2
+        (i1..i2).each do |i|
+          new_points << @points[line.point_ids[i].to_s]#  Objects::Path::Point.find(line.point_ids[i])
+        end
+      else
+        ary=[]
+        (i2..i1).each do |i|
+          ary << @points[line.point_ids[i].to_s]# Objects::Path::Point.find(line.point_ids[i])
+        end
+        ary.reverse.each do |p|
+          new_points << p
+        end
+      end
+      length += line.length
+      p1 = p2
+    end
+
+    puts "extract end"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
+
+    {points: new_points, length: length}
+
+  end
+
+  def extract_path_p(points)
+    puts "extract  started"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
+
+    p1 = p2 = points[0]
+    new_points=[]
+    length=0
+    #@points=Sys::Cache::pathpoints;
+
+    puts "extract cache get "+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
+
+    (1..points.length-1).each do |idx|
+      p2 = points[idx]
+
+      pathline_id = 0
+      p1.pathline_ids.each do |p1_path|
+        p2.pathline_ids.each do |p2_path|
+          if p1_path == p2_path
+            pathline_id = p1_path
+            break
+          end
+        end
+        if pathline_id != 0
+          break
+        end
+      end
+
+      line=Objects::Path::Line.find(pathline_id)
+
+      i1=line.point_ids.index(p1.id) ; i2=line.point_ids.index(p2.id)
+
+      if i1 < i2
+        (i1..i2).each do |i|
+          po = Objects::Path::Point.find(line.point_ids[i])
+          new_points << [po.lat, po.lng]
+        end
+      else
+        ary=[]
+        (i2..i1).each do |i|
+          po = Objects::Path::Point.find(line.point_ids[i])
+          ary <<  [po.lat, po.lng]# Objects::Path::Point.find(line.point_ids[i])
+        end
+        ary.reverse.each do |p|
+          new_points << p
+        end
+      end
+      length += line.length
+      p1 = p2
+    end
+
+    puts "extract end"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
+
+    {points: new_points, length: length}
+
+  end
+
+  def extract_path2(points)
+    puts "extract  started"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
+
+    p1 = p2 = points[0]
+    new_points=[]
+    length=0
+
+    puts "extract cache get "+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
+
     (1..points.length-1).each do |idx|
       p2 = points[idx]
 
@@ -150,29 +282,37 @@ class Api::ShortestpathController < ApiController
       end
 
       #line=Objects::Path::Line.all(point_ids: [p1.id, p2.id]).first
-      line=Objects::Path::Line.find(pathline_id)
+      #line=Objects::Path::Line.find(pathline_id)
 
-      i1=line.point_ids.index(p1.id) ; i2=line.point_ids.index(p2.id)
-      @points=   Hash[ Objects::Path::Point.find(line.point_ids).to_a.map{ |x| [ x.id, x ] }]
+      line=@lines[pathline_id];
+
+
+      i1=line[0].index(p1.id) ; i2=line[0].index(p2.id)
+
+
+      #@points=   Hash[ Objects::Path::Point.find(line.point_ids).to_a.map{ |x| [ x.id, x ] }]
       if i1 < i2
         (i1..i2).each do |i|
-          new_points << @points[line.point_ids[i]]#  Objects::Path::Point.find(line.point_ids[i])
+          new_points << @points[line[0][i].to_s]#  Objects::Path::Point.find(line.point_ids[i])
         end
       else
         ary=[]
         (i2..i1).each do |i|
-          ary << @points[line.point_ids[i]]# Objects::Path::Point.find(line.point_ids[i])
+          ary << @points[line[0][i].to_s]# Objects::Path::Point.find(line.point_ids[i])
         end
         ary.reverse.each do |p|
           new_points << p
         end
       end
-      length += line.length  # distance_between(p1, p2)
+      length += line[1]  # distance_between(p1, p2)
       p1 = p2
     end
-    {points: new_points, length: length}
-  end
 
+    puts "extract end"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
+
+    {points: new_points, length: length}
+
+  end
 
 
 #   def extract_path(points)
