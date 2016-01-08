@@ -10,6 +10,7 @@ class Api::ShortestpathController < ApiController
       params[:ids].map{|x| a=x.split('/'); a[0].constantize.find(a[1]).location }
                 end )
 
+
     closest_points = origins.map{|x| Objects::Path::Point.geo_near(x).spherical.first }
     dist = heur = ->(p1,p2){ distance_between(p1,p2) }
 
