@@ -129,27 +129,27 @@ class Api::ShortestpathController < ApiController
 
   def extract_path(points)
 
-# p1 = p2 = points[0]
-#         @lineids =[]
-#         length=0
-#         (1..points.length-1).each do |idx|
-#           p2 = points[idx]
-#
-#           pathline_id = 0
-#           p1.pathline_ids.each do |p1_path|
-#             p2.pathline_ids.each do |p2_path|
-#               if p1_path == p2_path
-#                 pathline_id = p1_path
-#                 @lineids<<pathline_id
-#                 break
-#               end
-#             end
-#             if pathline_id != 0
-#               break
-#             end
-#           end
-#           p1=p2
-#           end;
+p1 = p2 = points[0]
+        @lineids =[]
+        length=0
+        (1..points.length-1).each do |idx|
+          p2 = points[idx]
+
+          pathline_id = 0
+          p1.pathline_ids.each do |p1_path|
+            p2.pathline_ids.each do |p2_path|
+              if p1_path == p2_path
+                pathline_id = p1_path
+                @lineids<<pathline_id
+                break
+              end
+            end
+            if pathline_id != 0
+              break
+            end
+          end
+          p1=p2
+          end;
 
     p1 = p2 = points[0]
     new_points=[]
