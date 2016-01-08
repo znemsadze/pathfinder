@@ -6,7 +6,11 @@ Pathfinder::Application.configure do
   # every request. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = false
+<<<<<<< HEAD
 
+=======
+  config.cache_store = :memory_store, { size: 256.megabytes }
+>>>>>>> 3cc398523bf1be437f5f53e7394dfc6e5b04e719
   # Do not eager load code on boot.
   config.eager_load = false
 
