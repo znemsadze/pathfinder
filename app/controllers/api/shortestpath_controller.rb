@@ -175,6 +175,7 @@ class Api::ShortestpathController < ApiController
       end
 
       line=@lines[pathline_id]
+
       #line=Objects::Path::Line.find(pathline_id)
 
       i1=line.point_ids.index(p1.id) ; i2=line.point_ids.index(p2.id)
