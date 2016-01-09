@@ -6,6 +6,7 @@ module Sys::Cache
   ALLPOINTS='allpoints'
   PATHLINES='pathlines'
   PATHLINESSMALL='pathlinessmall'
+  PATHCOLORS='pathcolors'
 
   def pathpoints
     pathpoints = Rails.cache.read(PATHPOINTS)
@@ -52,7 +53,15 @@ module Sys::Cache
     return allpoints
   end
 
+def pathColors
+  pathColors = Rails.cache.read(PATHCOLORS)
+  if pathColors.blank?
+    pathColors = {"გრუნტი"=>"#ffbf00","ასფალტი"=>"3333ff","ძირითადი"=>"#ff3399","ბეტონი"=>"#a38f8f","unknown"=>"#b94646"}
+    Rails.cache.write(PATHCOLORS, pathColors)
+  end
+  return pathColors
 
+end
 
 
   def photos
@@ -118,6 +127,8 @@ module Sys::Cache
   module_function :allpoints
   module_function :pathlines
   module_function :pathlinessmall
+  module_function :pathColors
+
 
 end
 

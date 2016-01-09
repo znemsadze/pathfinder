@@ -1695,13 +1695,13 @@ var resetPathInfo=function(){
         d1.innerHTML = geo.featureShortDescritpion(map, f);
         d1.onclick = pathPointSelected;
         pathInfo.appendChild(d1);
-        if(pathPoints.length > 1 && paths[i]){
-          var d2 = ui.html.el('div', {style: 'padding: 5px; background: #FFFFDD'});
-          var length = paths[i].length;
-          totalLength += length;
-          d2.innerHTML = 'მონაკვეთი <strong>' + (i+1) + '</strong>: <code>' + length.toFixed(3) + '</code> კმ';
-          pathInfo.appendChild(d2);
-        }
+        //if(pathPoints.length > 1 && paths[i]){
+        //  var d2 = ui.html.el('div', {style: 'padding: 5px; background: #FFFFDD'});
+        //  var length = paths[i].length;
+        //  totalLength += length;
+        //  d2.innerHTML = 'მონაკვეთი <strong>' + (i+1) + '</strong>: <code>' + length.toFixed(3) + '</code> კმ';
+        //  pathInfo.appendChild(d2);
+        //}
       }
     }
 
@@ -1712,6 +1712,11 @@ var resetPathInfo=function(){
       pathInfo.appendChild(waiting);
     } else if(pathPoints.length > 1 && paths.length > 0){
       var summary = ui.html.el('div', {style: 'padding: 5px; background: #DDFFDD'});
+      totalLength=0;
+      for(var i=0;i<paths.length;i++){
+        totalLength+=paths[i].length;
+      }
+
       summary.innerHTML = '<strong>მანძილი სულ</strong>: <code>' + totalLength.toFixed(3) + '</code> კმ';
       pathInfo.appendChild(summary);
     }
@@ -1745,7 +1750,7 @@ var getShortestPath=function() {
       if(data && typeof data === 'object') {
         for(var i=0, l=data.length; i < l; i++) {
           var points=data[i].points;
-          var path = new google.maps.Polyline({ geodesic: true, strokeColor: '#00FF00', strokeOpacity: 0.75, strokeWeight: 10 });
+          var path = new google.maps.Polyline({ geodesic: true, strokeColor: data[i].pathcolor, strokeOpacity: 0.75, strokeWeight: 10 });
           path.length=data[i].length;
           for(var j=0, k=points.length; j < k; j++){
             var point=points[j];

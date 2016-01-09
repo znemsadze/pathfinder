@@ -17,6 +17,7 @@ class Api::ShortestpathController < ApiController
     #Sys::Cache::clear_map_objects
     @points=Sys::Cache::pathpoints;
     @lines=Sys::Cache::pathlines;
+    @pathcolor=Sys::Cache::pathColors;
     #@lines=Sys::Cache::pathlinessmall;
 
     puts "cache get end"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
@@ -34,8 +35,7 @@ class Api::ShortestpathController < ApiController
         puts "astar started"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
         path = Shortest::Path.astar(dist, heur, graph, p1, p2)
         puts "astar ended"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
-
-        @responses << extract_path(path)
+        @responses.concat extract_path(path)
         p1 = p2
       end
     else
@@ -47,6 +47,7 @@ class Api::ShortestpathController < ApiController
 
   def build_graph(points)
     @edgePoint=Sys::Cache::edgepoints;
+
     graph = get_current_graph
     points_by_path = points.group_by { |point| point.pathline_ids.first }
     points_by_path.each do |line_id, split_by|
@@ -154,12 +155,14 @@ class Api::ShortestpathController < ApiController
 
     puts "extract  started"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
 
-    p1 = p2 = points[0]
-    new_points=[]
-    length=0
 
+    p1 = p2 = points[0]
+
+    length=0
+    result_arr=[]
     (1..points.length-1).each do |idx|
       p2 = points[idx]
+      new_points=[]
 
       pathline_id = 0
       p1.pathline_ids.each do |p1_path|
@@ -176,31 +179,35 @@ class Api::ShortestpathController < ApiController
 
       line=@lines[pathline_id]
 
+
       #line=Objects::Path::Line.find(pathline_id)
 
       i1=line.point_ids.index(p1.id) ; i2=line.point_ids.index(p2.id)
 
       if i1 < i2
         (i1..i2).each do |i|
-          new_points << @points[line.point_ids[i].to_s]#  Objects::Path::Point.find(line.point_ids[i])
+          new_points << @points[line.point_ids[i].to_s]
         end
       else
         ary=[]
         (i2..i1).each do |i|
-          ary << @points[line.point_ids[i].to_s]# Objects::Path::Point.find(line.point_ids[i])
+          ary << @points[line.point_ids[i].to_s]
         end
         ary.reverse.each do |p|
           new_points << p
         end
       end
-      length += line.length
+      # length += line.length
       p1 = p2
+      pathcl=@pathcolor[line.detail.surface.name ]
+      if(pathcl==nil)
+        pathcl=@pathcolor["unknown"]
+      end
+      result_arr<< {points: new_points, length: line.length,line_name: line.detail.name,
+          surface_name:line.detail.surface.name,path_color:pathcl }
     end
-
     puts "extract end"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
-
-    {points: new_points, length: length}
-
+    return result_arr
   end
 
   def extract_path_p(points)
