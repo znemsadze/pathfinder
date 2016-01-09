@@ -203,10 +203,12 @@ class Api::ShortestpathController < ApiController
       if(pathcl==nil)
         pathcl=@pathcolor["unknown"]
       end
+puts pathcl;
       result_arr<< {points: new_points, length: line.length,line_name: line.detail.name,
           surface_name:line.detail.surface.name,path_color:pathcl }
     end
     puts "extract end"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
+
     return result_arr
   end
 

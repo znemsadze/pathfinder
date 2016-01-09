@@ -56,7 +56,7 @@ module Sys::Cache
 def pathColors
   pathColors = Rails.cache.read(PATHCOLORS)
   if pathColors.blank?
-    pathColors = {"გრუნტი"=>"#ffbf00","ასფალტი"=>"3333ff","ძირითადი"=>"#ff3399","ბეტონი"=>"#a38f8f","unknown"=>"#b94646"}
+    pathColors = {"გრუნტი"=>"#ffbf00","ასფალტი"=>"#3333ff","ძირითადი"=>"#ff3399","ბეტონი"=>"#a38f8f","unknown"=>"#b94646"}
     Rails.cache.write(PATHCOLORS, pathColors)
   end
   return pathColors
