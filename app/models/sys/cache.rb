@@ -8,6 +8,9 @@ module Sys::Cache
   PATHLINESSMALL='pathlinessmall'
   PATHCOLORS='pathcolors'
 
+  MAPJSON='mapjson'
+
+
   def pathpoints
     pathpoints = Rails.cache.read(PATHPOINTS)
     if pathpoints.blank?

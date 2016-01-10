@@ -4,11 +4,17 @@ class Api::ObjectsController < ApiController
 
   def index
     if params[:id].blank?
-      json = Sys::Cache.map_objects
+
+      s = Rails.cache.fetch(Sys::Cache::MAPJSON) do
+        json = Sys::Cache.map_objects
+        render_to_string( template: 'api/objects/index.json.jbuilder', json: json )
+      end
+
+      render :json => s
     else
       json = Objects::GeoJson.geo_json(get_all_objects)
+      render json: json
     end
-    render json: json
   end
 
   def lines; @objects = get_lines ; render action: 'index' end
