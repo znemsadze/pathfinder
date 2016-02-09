@@ -2,7 +2,10 @@
 class Api::ShortestpathController < ApiController
   def index
     origins = ( if params[:from] and params[:to]
+
                   from = params[:from].split(':').map{ |x| x.to_f }
+                  # from = "492602.72:4613854.84".split(':').map{ |x| x.to_f }
+                  from=[44.76730613200004,41.73799084100006]
                   to = params[:to].split(':').map{ |x| x.to_f }
 
                   [ from, to ]
@@ -203,9 +206,9 @@ class Api::ShortestpathController < ApiController
       if(pathcl==nil)
         pathcl=@pathcolor["unknown"]
       end
-puts pathcl;
-      result_arr<< {points: new_points, length: line.length,line_name: line.detail.name,
-          surface_name:line.detail.surface.name,path_color:pathcl }
+      puts pathcl;
+      result_arr<< {points: new_points, length: line.length,line_type: line.detail.name,
+          surface_name:line.detail.surface.name,path_color:pathcl ,path_description:line.description,line_name:line.name}
     end
     puts "extract end"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
 
