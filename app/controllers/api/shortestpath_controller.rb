@@ -5,7 +5,7 @@ class Api::ShortestpathController < ApiController
 
                   from = params[:from].split(':').map{ |x| x.to_f }
                   # from = "492602.72:4613854.84".split(':').map{ |x| x.to_f }
-                  from=[44.76730613200004,41.73799084100006]
+                  # from=[44.76730613200004,41.73799084100006]
                   to = params[:to].split(':').map{ |x| x.to_f }
 
                   [ from, to ]
