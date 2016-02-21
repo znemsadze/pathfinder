@@ -47,12 +47,13 @@ class Objects::Path::Line
       path_surface = descr[idx4..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip     if idx4
       path_detail = descr[idx5..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip      if idx5
       path_length= descr[idx6..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip      if idx5
+      path_length=(path_length.to_f/1000).to_s;
       region = Region.get_by_name(regname)
       type = Objects::Path::Type.get_type(path_type)
       surface = Objects::Path::Surface.get_surface(type, path_surface)
       detail = Objects::Path::Detail.get_detail(surface, path_detail)
       # end of description section
-      puts('path_length='+path_length)
+      puts('path_length='+path_length )
       line = Objects::Path::Line.create(kmlid: id)
       line.name = name ; line.detail = detail ; line.region = region ; line.description = line_description;line.set_legth(path_length);
       coord_strings = coords.split(' ')
