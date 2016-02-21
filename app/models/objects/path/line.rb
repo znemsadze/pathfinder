@@ -13,6 +13,7 @@ class Objects::Path::Line
   field :name, type: String
   field :description, type: String
   field :kmlid, type: String
+
   belongs_to :region
 
   def self.from_kml(xml)
@@ -33,26 +34,27 @@ class Objects::Path::Line
       s3='<td>გზის_სახეობა</td>'
       s4='<td>გზის_საფარი</td>'
       s5='<td>საფარის_დეტალები</td>'
+      s6='<td>სიგრძე</td>'
       idx1 = descr.index(s1) + s1.length rescue nil
       idx2 = descr.index(s2) + s2.length rescue nil
       idx3 = descr.index(s3) + s3.length rescue nil
       idx4 = descr.index(s4) + s4.length rescue nil
       idx5 = descr.index(s5) + s5.length rescue nil
-
+      idx6 = descr.index(s6) + s6.length rescue nil
       regname = descr[idx1..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip          if idx1
       line_description = descr[idx2..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip if idx2
       path_type = descr[idx3..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip        if idx3
       path_surface = descr[idx4..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip     if idx4
       path_detail = descr[idx5..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip      if idx5
-
+      path_length= descr[idx6..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip      if idx5
       region = Region.get_by_name(regname)
       type = Objects::Path::Type.get_type(path_type)
       surface = Objects::Path::Surface.get_surface(type, path_surface)
       detail = Objects::Path::Detail.get_detail(surface, path_detail)
       # end of description section
-
+      puts('path_length='+path_length)
       line = Objects::Path::Line.create(kmlid: id)
-      line.name = name ; line.detail = detail ; line.region = region ; line.description = line_description
+      line.name = name ; line.detail = detail ; line.region = region ; line.description = line_description;line.set_legth(path_length);
       coord_strings = coords.split(' ')
       coord_strings.each_with_index do |coord, index|
         edge = ( index == 0 || index == coord_strings.length - 1 )
@@ -65,7 +67,8 @@ class Objects::Path::Line
         point.save
         line.point_ids << point.id
       end
-      line.save ; line.calc_length!
+      line.save ;
+      # line.calc_length!
     end
   end
 

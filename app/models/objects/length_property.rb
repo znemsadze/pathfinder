@@ -2,7 +2,7 @@
 module Objects::LengthProperty
   def self.included(base)
     base.field :length, type: Float
-    base.before_save :on_before_lineable_save
+    #base.before_save :on_before_lineable_save
   end
 
   def calc_length
@@ -16,6 +16,11 @@ module Objects::LengthProperty
     len
   end
 
+  def set_legth(p_length)
+     self.length=p_length
+  end
+
+
   def calc_length!
     self.length = calc_length
     self.save
@@ -23,6 +28,6 @@ module Objects::LengthProperty
 
   private
   def on_before_lineable_save
-    self.length=self.calc_length
+    # self.length=self.calc_length
   end
 end
