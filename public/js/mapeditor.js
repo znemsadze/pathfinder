@@ -1729,7 +1729,7 @@ var getShortestPath=function() {
       if(data && typeof data === 'object') {
         for(var i=0, l=data.length; i < l; i++) {
           var points=data[i].points;
-          var path = new google.maps.Polyline({ geodesic: true, strokeColor: data[i].pathcolor, strokeOpacity: 0.75, strokeWeight: 10 });
+          var path = new google.maps.Polyline({ geodesic: true, strokeColor: data[i].pathcolor, strokeOpacity: 0.75, strokeWeight: 10, zIndex: -1 });
           path.length=data[i].length;
           for(var j=0, k=points.length; j < k; j++){
             var point=points[j];
