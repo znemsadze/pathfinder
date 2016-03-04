@@ -37,3 +37,4 @@ gem 'foreman'
 # gem 'puma'
 gem "passenger"
 gem 'therubyracer',  platforms: :ruby
+gem 'redis-rails'
