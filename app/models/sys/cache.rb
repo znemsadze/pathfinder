@@ -93,6 +93,7 @@ end
   end
 
   def clear_map_objects
+    Sidekiq.redis { |conn| conn.flushall }
     Rails.cache.delete(PATHPOINTS)
     Rails.cache.delete(PATHLINES)
     Rails.cache.delete(MAPOBJECTS)
