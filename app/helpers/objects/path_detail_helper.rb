@@ -9,6 +9,7 @@ module Objects::PathDetailHelper
     forma_for detail, title: title, collapsible: true, icon: icon do |f|
       f.combo_field 'surface_id', collection: pathsurface_collection, empty: false, required: true, i18n: 'surface', readonly: (not detail.new_record?)
       f.text_field 'name', required: true, autofocus: true
+      f.number_field 'coefficient', required: true
       f.submit 'შენახვა'
       f.cancel_button cancel_url
     end
@@ -24,6 +25,7 @@ module Objects::PathDetailHelper
         f.text_field 'surface.type.name', i18n: 'type', required: true, url: objects_path_type_url(id:detail.surface.type.id)
         f.text_field 'surface.name', i18n: 'surface', required: true, url: objects_path_surface_url(id:detail.surface_id)
         f.text_field 'name', required: true
+        f.number_field 'coefficient', required: true
       end
       f.tab title: 'სისტემური', icon: '/icons/traffic-cone.png' do |f|
         f.timestamps

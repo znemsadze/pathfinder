@@ -2,6 +2,7 @@ ka:
   models:
     objects_path_detail:
       name: დასახელება
+      coefficient: კოეფიციენტი
       surface: გზის საფარი
       type: გზის სახეობა
       order_by: '#'

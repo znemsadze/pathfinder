@@ -5,9 +5,11 @@ class Objects::Path::Detail
   include Sys::Userstamps
   field :name, type: String
   field :order_by, type: Integer
+  field :coefficient, type: Integer
   belongs_to :surface, class_name: 'Objects::Path::Surface'
   validates :name, presence: {message: 'ჩაწერეთ დასახელება'}
   validates :surface, presence: {message: 'აარჩიეთ გზის საფარი'}
+  validates :coefficient, presence: {message: 'მიუთითეთ კოეფიციენტი'}
 
   def to_s
     "#{self.surface.type.name } > #{self.surface.name} > #{self.name}"
