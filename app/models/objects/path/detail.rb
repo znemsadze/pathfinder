@@ -9,7 +9,7 @@ class Objects::Path::Detail
   belongs_to :surface, class_name: 'Objects::Path::Surface'
   validates :name, presence: {message: 'ჩაწერეთ დასახელება'}
   validates :surface, presence: {message: 'აარჩიეთ გზის საფარი'}
-  validates :coefficient, presence: {message: 'მიუთითეთ კოეფიციენტი'}
+  validates :coefficient, :numericality => {:only_integer => true, message: 'კოეფიციენტი არასწორია'}, presence: {message: 'მიუთითეთ კოეფიციენტი'}
 
   def to_s
     "#{self.surface.type.name } > #{self.surface.name} > #{self.name}"

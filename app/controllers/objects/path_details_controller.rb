@@ -11,7 +11,7 @@ class Objects::PathDetailsController < ApplicationController
   def new
     @title='საფარის ახალი დეტალი'
     if request.post?
-      detail_params=params.require(:objects_path_detail).permit(:surface_id, :name)
+      detail_params=params.require(:objects_path_detail).permit(:surface_id, :name, :coefficient)
       @detail=Objects::Path::Detail.new(detail_params)
       if @detail.save(user:current_user)
         Objects::Path::Detail.numerate(@detail.surface)
@@ -26,7 +26,7 @@ class Objects::PathDetailsController < ApplicationController
     @title='საფარის დეტალის რედაქტირება'
     @detail=Objects::Path::Detail.find(params[:id])
     if request.post?
-      detail_params=params.require(:objects_path_detail).permit(:name)
+      detail_params=params.require(:objects_path_detail).permit(:name, :coefficient)
       @detail.update_attributes(detail_params.merge(user:current_user))
       redirect_to objects_path_detail_url(id:@detail.id), notice: 'საფარის დეტალი შეცვლილია'
     end
