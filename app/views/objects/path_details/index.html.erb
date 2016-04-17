@@ -15,6 +15,7 @@
       t.text_field 'name', url: ->(x){objects_path_detail_url(id:x.id)}
       t.text_field 'surface.type.name', i18n: 'type'
       t.text_field 'surface.name', i18n: 'surface'
+      t.number_field 'coefficient', i18n: 'coefficient'
     end%>
   <%end%>
 <%end%>
