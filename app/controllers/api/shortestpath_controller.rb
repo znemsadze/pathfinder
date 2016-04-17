@@ -31,8 +31,6 @@ class Api::ShortestpathController < ApiController
       graph = build_graph(closest_points)
       puts "build_graph end"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
       @responses = []
-
-
       (1..closest_points.length-1).each do |idx|
         p2 = closest_points[idx]
         puts "astar started"+  Time.now.strftime("%d/%m/%Y %H:%M:%S")
@@ -61,11 +59,11 @@ class Api::ShortestpathController < ApiController
       i1, p1 = [ 0, point_ids.first ]
       split_by.each do |point_id|
         p2 = point_id ; i2 = point_ids.index(point_id)
-        add_graph_edge_slow(graph, p1, p2, line_length2(line, i1, i2))
+        add_graph_edge_slow(graph, p1, p2, line_length2(line, i1, i2) )
         i1, p1 = [ i2, p2 ]
       end
       i2, p2 = [ point_ids.length - 1, point_ids.last ]
-      add_graph_edge_slow(graph, p1, p2, line_length2(line, i1, i2))
+      add_graph_edge_slow(graph, p1, p2, line_length2(line, i1, i2) )
     end
 
     graph
@@ -96,7 +94,8 @@ class Api::ShortestpathController < ApiController
     Objects::Path::Line.each do |line|
       point_ids = line.point_ids
       p1 = point_ids.first ; p2 = point_ids.last
-      add_graph_edgefast(graph, p1, p2, line.length)
+      add_graph_edgefast(graph, p1, p2, line.length
+      )
     end
     graph
   end
@@ -112,14 +111,14 @@ class Api::ShortestpathController < ApiController
 
     # graph << point1 unless graph.include?(point1)
     # graph << point2 unless graph.include?(point2)
-    graph.connect_mutually(point1, point2, length)
+    graph.connect_mutually(point1, point2, length,0)
   end
 
 
   def add_graph_edgefast(graph, p1, p2, length)
     point1=@edgePoint[p1]
     point2=@edgePoint[p2]
-    graph.connect_mutually(point1, point2, length)
+    graph.connect_mutually(point1, point2, length,0 )
   end
 
   def remove_graph_edge(graph, p1, p2)
