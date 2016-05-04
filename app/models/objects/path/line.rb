@@ -68,16 +68,20 @@ class Objects::Path::Line
       surface = Objects::Path::Surface.get_surface(type, path_surface)
       detail = Objects::Path::Detail.get_detail(surface, path_detail)
       # end of description section
-      puts('path_length='+path_length )
+      # puts('path_length='+path_length )
       line = Objects::Path::Line.create(kmlid: id)
       line.name = name ; line.detail = detail ; line.region = region ; line.description = line_description;line.set_legth(path_length);
       coord_strings = coords.split(' ')
+      do_reverse=0;
       if(x_start!="&lt;Null&gt;" )
           line.directed=1
+          coordsSP=coord_strings[0].split(',').map{|x| x.strip.to_s }
+           if((x_start[0,10] !=coordsSP[0][0,10]) ||(y_start!=coordsSP[1][0,10]))
+             coord_strings= coord_strings.reverse
+           end
       else
           line.directed=0;
       end
-
         coord_strings.each_with_index do |coord, index|
           edge = ( index == 0 || index == coord_strings.length - 1 )
           point = Objects::Path::Point.new(edge: edge) ; point.set_coordinate(coord)

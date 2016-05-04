@@ -13,7 +13,17 @@ class Region
   has_and_belongs_to_many :users, class_name: 'Sys::User'
   validates :name, presence: {message: 'ჩაწერეთ სახელი'}
 
-  def self.get_by_name(name); Region.where(name:name).first || Region.create(name:name) end
+  def self.get_by_name(name);
+
+  region=Region.where(name:name).first
+  if(region.blank?)
+    Region.create(name:name)
+    puts "region_name="+name
+    region.save
+  end
+  region
+
+  end
   def can_delete?; lines.empty? and  paths.empty? and towers.empty? and offices.empty? and substations.empty? end
   def towers_limited; self.towers.paginate(per_page:50) end
   def to_s; self.name end

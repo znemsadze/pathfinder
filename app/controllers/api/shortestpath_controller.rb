@@ -59,11 +59,11 @@ class Api::ShortestpathController < ApiController
       i1, p1 = [ 0, point_ids.first ]
       split_by.each do |point_id|
         p2 = point_id ; i2 = point_ids.index(point_id)
-        add_graph_edge_slow(graph, p1, p2, line_length2(line, i1, i2)*((line.detail.coefficient==nil)?1:line.detail.coefficient ))
+        add_graph_edge_slow(graph, p1, p2, line_length2(line, i1, i2)*((line.detail==nil||line.detail.coefficient==nil)?1:line.detail.coefficient ),line.directed)
         i1, p1 = [ i2, p2 ]
       end
       i2, p2 = [ point_ids.length - 1, point_ids.last ]
-      add_graph_edge_slow(graph, p1, p2, line_length2(line, i1, i2)*((line.detail.coefficient==nil)?1:line.detail.coefficient ) )
+      add_graph_edge_slow(graph, p1, p2, line_length2(line, i1, i2)*((line.detail==nil||line.detail.coefficient==nil)?1:line.detail.coefficient ),line.directed )
     end
 
     graph
@@ -94,7 +94,7 @@ class Api::ShortestpathController < ApiController
     Objects::Path::Line.each do |line|
       point_ids = line.point_ids
       p1 = point_ids.first ; p2 = point_ids.last
-      add_graph_edgefast(graph, p1, p2, line.length*((line.detail.coefficient==nil)?1:line.detail.coefficient ))
+      add_graph_edgefast(graph, p1, p2, line.length*((line.detail==nil|| line.detail.coefficient==nil)?1:line.detail.coefficient ),line.directed)
     end
     graph
   end
@@ -102,7 +102,7 @@ class Api::ShortestpathController < ApiController
 
 
 
-  def add_graph_edge_slow(graph, p1, p2, length)
+  def add_graph_edge_slow(graph, p1, p2, length,direction)
     point1 = Objects::Path::Point.find(p1)
     point2 = Objects::Path::Point.find(p2)
     # point1=@edgePoint[p1]# Sys::Cache::edgepoints[p1];
@@ -110,14 +110,14 @@ class Api::ShortestpathController < ApiController
 
     # graph << point1 unless graph.include?(point1)
     # graph << point2 unless graph.include?(point2)
-    graph.connect_mutually(point1, point2, length,0)
+    graph.connect_mutually(point1, point2, length,direction)
   end
 
 
-  def add_graph_edgefast(graph, p1, p2, length)
+  def add_graph_edgefast(graph, p1, p2, length,direction)
     point1=@edgePoint[p1]
     point2=@edgePoint[p2]
-    graph.connect_mutually(point1, point2, length,0 )
+    graph.connect_mutually(point1, point2, length,direction )
   end
 
   def remove_graph_edge(graph, p1, p2)
@@ -200,6 +200,7 @@ class Api::ShortestpathController < ApiController
       end
       # length += line.length
       p1 = p2
+
       pathcl=@pathcolor[line.detail.surface.name ]
       if(pathcl==nil)
         pathcl=@pathcolor["unknown"]

@@ -29,6 +29,8 @@ module Objects::GeoJson
     if self.respond_to?(:detail) and self.detail_id
       details = opts[:details]
       det = details.present? ? details[ self.detail_id.to_s ] : self.detail
+      puts "self.id="+self.id
+      puts "self.detail_id.to_s="+self.detail_id.to_s
       properties[:detail] = { detail: det.name, surface: det.surface.name, type: det.surface.type.name }
     end
     if self.respond_to?(:has_images?) and self.has_images?

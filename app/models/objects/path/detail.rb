@@ -27,7 +27,12 @@ class Objects::Path::Detail
 
   def self.get_detail(surface, name)
     detail = Objects::Path::Detail.where(surface: surface, name: name).first
-    detail = Objects::Path::Detail.create(surface: surface, name: name, order_by: Objects::Path::Detail.where(surface: surface).count + 1) if detail.blank?
+    if (detail.blank?)
+    detail = Objects::Path::Detail.create!(surface: surface, name: name, order_by: Objects::Path::Detail.where(surface: surface).count + 1)
+        puts("detail_id"+detail.id)
+        puts("surface="+surface.type.name.to_s+" "+surface.name.to_s);
+        puts("name="+name.to_s);
+    end;
     detail
   end
 
