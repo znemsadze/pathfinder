@@ -21,8 +21,11 @@ class Objects::Path::Surface
   end
 
   def self.get_surface(type, name)
+    if(name==nil||name=="")
+    name="უცნობი"
+    end
     surface = Objects::Path::Surface.where(type: type, name: name).first
-    surface = Objects::Path::Surface.create(type: type, name: name, order_by: Objects::Path::Surface.where(type: type).count + 1) if surface.blank?
+    surface = Objects::Path::Surface.create!(type: type, name: name, order_by: Objects::Path::Surface.where(type: type).count + 1) if surface.blank?
     surface
   end
 

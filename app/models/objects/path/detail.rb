@@ -26,12 +26,16 @@ class Objects::Path::Detail
   end
 
   def self.get_detail(surface, name)
+    if(name==nil||name=="")
+      name="უცნობი"
+    end
     detail = Objects::Path::Detail.where(surface: surface, name: name).first
+
     if (detail.blank?)
-    detail = Objects::Path::Detail.create!(surface: surface, name: name, order_by: Objects::Path::Detail.where(surface: surface).count + 1)
-        puts("detail_id"+detail.id)
-        puts("surface="+surface.type.name.to_s+" "+surface.name.to_s);
-        puts("name="+name.to_s);
+      puts "detail_name====="+name
+      puts("surface="+surface.type.name.to_s+" "+surface.name.to_s);
+      puts("name="+name.to_s);
+    detail = Objects::Path::Detail.create!(surface: surface, name: name, coefficient:1, order_by: Objects::Path::Detail.where(surface: surface).count + 1)
     end;
     detail
   end

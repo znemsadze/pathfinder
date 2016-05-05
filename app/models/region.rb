@@ -17,9 +17,9 @@ class Region
 
   region=Region.where(name:name).first
   if(region.blank?)
-    Region.create(name:name)
+    Region.create!(name:name)
     puts "region_name="+name
-    region.save
+
   end
   region
 

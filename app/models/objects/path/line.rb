@@ -61,6 +61,7 @@ class Objects::Path::Line
       x_end= descr[idx9..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip      if idx9
       y_end= descr[idx10..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip      if idx10
 
+
       path_length=(path_length.to_f/1000).to_s;
 
       region = Region.get_by_name(regname)
@@ -69,7 +70,7 @@ class Objects::Path::Line
       detail = Objects::Path::Detail.get_detail(surface, path_detail)
       # end of description section
       # puts('path_length='+path_length )
-      line = Objects::Path::Line.create(kmlid: id)
+      line = Objects::Path::Line.create!(kmlid: id)
       line.name = name ; line.detail = detail ; line.region = region ; line.description = line_description;line.set_legth(path_length);
       coord_strings = coords.split(' ')
       do_reverse=0;

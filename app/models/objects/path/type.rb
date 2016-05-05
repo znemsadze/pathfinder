@@ -19,8 +19,14 @@ class Objects::Path::Type
   end
 
   def self.get_type(name)
+    if(name==nil||name=="")
+      name="უცნობი"
+    end
     type = Objects::Path::Type.where(name: name).first
-    type = Objects::Path::Type.create(name: name, order_by: Objects::Path::Type.count + 1) if type.blank?
+    if(type.blank?)
+      puts "path_type======================="+name;
+    end
+    type = Objects::Path::Type.create!(name: name, order_by: Objects::Path::Type.count + 1) if type.blank?
     type
   end
 
