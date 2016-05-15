@@ -21,6 +21,7 @@ var utils=require('./utils')
 
 var BASE_PATH='/api/lines';
 
+
 var save=function(id,model,callback){
   utils.clearErrors(model);
 
@@ -187,7 +188,16 @@ exports.deletePath=function(id,callback){
 var BASE_PATH='/api/shortestpath';
 
 exports.getShortestPath=function(features,callback){
-  var ids=features.map(function(x){ return x.getProperty('class') +"/" + x.getId(); });
+  var ids=features.map(function(x){
+      var id = x.getId();
+      if( x.getProperty('class') == 'Objects::Marker')
+      {
+          var point = x.getGeometry().get();
+          id = point.lng() + "|" + point.lat();
+      }
+
+      return x.getProperty('class') +"/" + id;
+  });
 
   $.get(BASE_PATH, {ids: ids}, function(data) {
 
@@ -417,6 +427,7 @@ var styleFunction=function(f) {
     if(isSelected){ strokeColor='#AA0000'; strokeWeight=10; }
     else if(isHovered){ strokeColor='#FF5555'; strokeWeight=10; }
     else{ strokeColor='#FF0000'; strokeWeight=1; }
+
     return {
       strokeColor: strokeColor,
       strokeWeight: strokeWeight,
@@ -483,6 +494,45 @@ var initMap=function(){
   };
 
   map=new google.maps.Map(mapElement, mapOptions);
+
+    ///////////////////////////////////////////
+  /*
+    google.maps.event.addListener(map.data, 'addfeature', function(e) {
+//        if (e.feature.getGeometry().getType() === 'GeometryCollection') {
+//            var geometry = e.feature.getGeometry().getArray();
+//            for (var i = 0; i < geometry.length; i++) {
+//                if (geometry[i].getType() === 'Point') {
+//                    map.setCenter(geometry[i].get());
+//                    new google.maps.Marker({
+//                        map: map,
+//                        position: geometry[i].get()
+//                    });
+//                } else
+            if (e.feature.getGeometry().getType() === 'LineString') {
+                    new google.maps.Polyline({
+                        map: map,
+                        path: e.feature.getGeometry().getArray(),
+                        // make the polyline dashed. From the example in the documentation:
+                        // https://developers.google.com/maps/documentation/javascript/examples/overlay-symbol-dashed
+                        //strokeOpacity: 0,
+                      icons: [{
+                          icon: {
+                             path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                              scale: 2
+                            },
+                          offset: '20px',
+                          repeat: '200px'
+                        }],
+                    })
+                }
+      //          }
+      //  }
+        //map.data.setMap(null);
+    });
+    */
+    ///////////////////////////////////////////
+
+
 
   map.loadData=function(opts){
     var url='/api/objects.json?';
@@ -1113,6 +1163,7 @@ exports.TYPE_LINE='Objects::Line';
 exports.TYPE_TOWER='Objects::Tower';
 exports.TYPE_OFFICE='Objects::Office';
 exports.TYPE_SUBSTATION='Objects::Substation';
+exports.TYPE_MARKER='Objects::Marker';
 
 exports.getType=function(f){ return f.getProperty('class'); };
 
@@ -1131,7 +1182,9 @@ exports.isLinelike=function(f){ return exports.isLine(f) || exports.isPath(f); }
 exports.isTower=function(f){ return typed(f,function(type){ return exports.TYPE_TOWER==type; }); }
 exports.isOffice=function(f){ return typed(f,function(type){ return exports.TYPE_OFFICE==type; }); }
 exports.isSubstation=function(f){ return typed(f,function(type){ return exports.TYPE_SUBSTATION==type; }); }
-exports.isPointlike=function(f){ return exports.isTower(f) || exports.isOffice(f) || exports.isSubstation(f); }
+exports.isMarker=function(f){ return typed(f,function(type){ return exports.TYPE_MARKER==type; }); }
+
+exports.isPointlike=function(f){ return exports.isTower(f) || exports.isOffice(f) || exports.isSubstation(f) || exports.isMarker(f); }
 
 exports.typeName=function(f){
   return typed(f,function(type){
@@ -1140,6 +1193,7 @@ exports.typeName=function(f){
     else if(exports.TYPE_TOWER==type){ return 'ანძა'; }
     else if(exports.TYPE_OFFICE==type){ return 'ოფისი'; }
     else if(exports.TYPE_SUBSTATION==type){ return 'ქვესადგური'; }
+    else if(exports.TYPE_MARKER==type){ return 'მარკერი'; }
     return type;
   });
 };
@@ -1214,6 +1268,19 @@ var substationDescription=function(map,f){
   ].join('');
 };
 
+    var markerDescription=function(map,f){
+        var point=f.getGeometry().get();
+        return [
+            property('დასახელება',f.getProperty('name')),
+            //property('რეგიონი',f.getProperty('region')),
+            //property('მისამართი',f.getProperty('address')),
+            // property('განედი','<code>'+point.lat()+'</code>'),
+            // property('გრძედი','<code>'+point.lng()+'</code>'),
+            //property('კოორდინატი', 'E: <code>' + f.getProperty('easting') + '</code>; N: <code>' + f.getProperty('northing') + '</code>'),
+            //property('შენიშვნა',f.getProperty('description')),
+        ].join('');
+    };
+
 exports.featureDescription=function(map,f){
   var bodyDescription;
 
@@ -1224,6 +1291,7 @@ exports.featureDescription=function(map,f){
   else if(exports.isTower(f)){ bodyDescription = towerDescription(map,f); }
   else if(exports.isOffice(f)){ bodyDescription = officeDescription(map,f); }
   else if(exports.isSubstation(f)){ bodyDescription = substationDescription(map,f); }
+  else if(exports.isMarker(f)){ bodyDescription = markerDescription(map,f); }
   //texts.push('<div class="panel-body">',bodyDescription,'</div>');
   //texts.push('</div>');
   var texts = ['<div><h4 class="page-header">',exports.typeName(f),'</h4>', bodyDescription,'</div>'];
@@ -1282,6 +1350,19 @@ var lineShortDescription=function(map,f){
     // property('შენიშვნა',f.getProperty('description')),
   ].join('');
 };
+    var markerShortDescription=function(map,f){
+        var point=f.getGeometry().get();
+        return [
+            '<p><img src="/icons/marker.png"/> <strong>',f.getProperty('name'),'</strong> ',
+            '<span class="text-muted">',f.getProperty('address'),'</span></p>',
+            '<p>',f.getProperty('region'),'</p>',
+            // property('მისამართი',f.getProperty('address')),
+            // property('განედი','<code>'+point.lat()+'</code>'),
+            // property('გრძედი','<code>'+point.lng()+'</code>'),
+            // property('შენიშვნა',f.getProperty('description')),
+        ].join('');
+    };
+
 
 exports.featureShortDescritpion=function(map,f){
   if(exports.isTower(f)){ return towerShortDescription(map,f); }
@@ -1289,6 +1370,7 @@ exports.featureShortDescritpion=function(map,f){
   else if(exports.isOffice(f)){ return officeShortDescription(map,f); }
   else if(exports.isPath(f)){ return pathShortDescription(map,f); }
   else if(exports.isLine(f)){ return lineShortDescription(map,f); }
+  else if(exports.isMarker(f)){ return markerShortDescription(map,f); }
   return '--';
 };
 
@@ -1409,11 +1491,12 @@ var map, editMode, infowindow
   , secondaryToolbar=ui.button.toolbar([]), pathToolbar=ui.button.toolbar([]), taskToolbar=ui.button.toolbar([])
   , btnHome, btnSearch
   , btnNewPath, btnNewLine, btnNewTower, btnNewOffice, btnNewSubstation // new objects
-  , btnDelete, btnEdit, btnAddToPath, btnNewTask, btnShortestPath
+  , btnDelete, btnEdit, btnAddToPath, btnNewTask, btnShortestPath, btnClearMarkers
   , confirmTitle=ui.html.p('საჭიროა დასტური',{class: 'page-header', style: 'font-weight:bold; font-size: 1.2em;'})
   , confirmText=ui.html.p('დაადასტურეთ, რომ ნამდვილად გინდათ მონიშნული ობიექტის წაშლა?',{class: 'text-danger'})
   , toolbar2=ui.button.toolbar([])
   , pathPoints=[]
+    ,markers = []
   ;
 
 module.exports=function(){
@@ -1518,6 +1601,17 @@ var initPage1=function(self){
     // }
   }, {icon: 'tasks', type: 'success'})
 
+  btnClearMarkers=ui.button.actionButton('მარკერების გასუფთავება', function() {
+    // if(paths.length > 0) {
+    for (var i = 0; i < markers.length; i++) {
+        deletePathPointById(markers[i]);
+        map.data.remove(map.data.getFeatureById(markers[i]));
+        //markers[i].setMap(null);
+    }
+    markers = [];
+    // }
+  }, {icon: 'tasks'})
+
   // page1 layout
 
   var tabs = ui.html.el('div', {style: 'margin-top: 16px;'});
@@ -1595,6 +1689,10 @@ var resetFeatureInfo = function(){
     if(!pathCalculationInProgress && pathPoints.length > 1) {
       pathToolbar.addButton(btnShortestPath);
     }
+    if(!pathCalculationInProgress && markers.length > 0) {
+      pathToolbar.addButton(btnClearMarkers);
+    }
+
   }
   openPage(MAIN);
 };
@@ -1613,7 +1711,47 @@ var initMap=function(){
   map.data.addListener('click', function(evt){
     changeSelection(evt.feature);
   });
+
+  map.addListener('rightclick', function(event) {
+    var marker = addMarker(event.latLng);
+    changeSelection(marker);
+  });
 };
+  function addMarker(location) {
+//    var marker = new google.maps.Marker({
+//      position: location,
+//      map: null
+//    });
+
+      var ind = markers.length;
+
+      var markerId= "Marker" + ind;
+      markers.push(markerId);
+
+      var jsonNew={
+          "type":"Feature",
+          "id":markerId,
+          "geometry":{
+              "type":"Point",
+              "coordinates":[
+                  location.lng(),
+                  location.lat()
+              ]
+          },
+          "properties":{
+              "class":"Objects::Marker",
+              "name":"Marker " + ind,
+              "description":null,
+              "address":"",
+              "northing":"",
+              "easting":"",
+              "region":""
+          }
+      }
+
+      var fea = map.data.addGeoJson(jsonNew);
+    return fea[0];
+  }
 
 var changeSelection=function(f) {
   if (f === selectedFeature) {
@@ -1750,7 +1888,23 @@ var getShortestPath=function() {
       if(data && typeof data === 'object') {
         for(var i=0, l=data.length; i < l; i++) {
           var points=data[i].points;
-          var path = new google.maps.Polyline({ geodesic: true, strokeColor: data[i].pathcolor, strokeOpacity: 0.75, strokeWeight: 10 , zIndex: -1});
+          var path = new google.maps.Polyline(
+              {
+                  geodesic: true,
+                  strokeColor: data[i].pathcolor,
+                  strokeOpacity: 0.75,
+                  strokeWeight: 5 ,
+                  zIndex: -1,
+                //icons: [{
+                //    icon: {
+                //       path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                //        scale: 2
+                //      },
+                //    offset: '20px',
+                //    repeat: '200px'
+                //  }],
+          }
+          );
           path.length=data[i].length;
           for(var j=0, k=points.length; j < k; j++){
             var point=points[j];
@@ -1768,13 +1922,19 @@ var getShortestPath=function() {
   }
 };
 
+
+
 var deletePathPoint=function() {
   var id=this.getAttribute('data-id');
-  var indexToRemove=pathPoints.map(function(x){ return x.getId() }).indexOf(id);
-  pathPoints.splice(indexToRemove,1);
-  clearPaths();
-  resetPathInfo();
+    deletePathPointById(id);
 };
+
+    var deletePathPointById=function(id) {
+        var indexToRemove=pathPoints.map(function(x){ return x.getId() }).indexOf(id);
+        pathPoints.splice(indexToRemove,1);
+        clearPaths();
+        resetPathInfo();
+    };
 
 var movePathPointUp=function(){ movePathPoint(this.getAttribute('data-id'), true); };
 var movePathPointDown=function(){ movePathPoint(this.getAttribute('data-id'), false); };

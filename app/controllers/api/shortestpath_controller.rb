@@ -10,9 +10,9 @@ class Api::ShortestpathController < ApiController
 
                   [ from, to ]
                 else
-                  params[:ids].map{|x| a=x.split('/'); a[0].constantize.find(a[1]).location }
-                end )
 
+                  params[:ids].map{|x| a=x.split('/'); a[0] == 'Objects::Marker' ? a[1].split('|').map{ |x| x.to_f } : a[0].constantize.find(a[1]).location }
+                end )
 
     closest_points = origins.map{|x| Objects::Path::Point.geo_near(x).spherical.first }
     dist = heur = ->(p1,p2){ distance_between(p1,p2) }
