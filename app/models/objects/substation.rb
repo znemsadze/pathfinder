@@ -18,14 +18,16 @@ class Objects::Substation
     doc=parser.parse ; root=doc.child
     kmlns="kml:#{KMLNS}"
     placemarks=doc.child.find '//kml:Placemark',kmlns
+    Objects::Substation.delete_all
     placemarks.each do |placemark|
       id=placemark.attributes['id']
       name=placemark.find('./kml:name',kmlns).first.content
       # description content
       descr=placemark.find('./kml:description',kmlns).first.content
-      s1='<td>რეგიონი</td>'
-      idx1=descr.index(s1)+s1.length
-      regname=descr[idx1..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
+      # s1='<td>რეგიონი</td>'
+      # idx1=descr.index(s1)+s1.length
+      # regname=descr[idx1..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
+      regname="---"
       region=Region.get_by_name(regname)
       # end of description section
       coord=placemark.find('./kml:Point/kml:coordinates',kmlns).first.content

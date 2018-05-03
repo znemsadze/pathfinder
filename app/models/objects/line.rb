@@ -44,7 +44,8 @@ class Objects::Line
       s2='<td>მიმართულება</td>'
       idx1=descr.index(s1)+s1.length
       idx2=descr.index(s2)+s2.length
-      regname=descr[idx1..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
+      # regname=descr[idx1..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
+      regname="---"
       direction=descr[idx2..-1].match(/<td>([^<])*<\/td>/)[0][4..-6].strip
       region=Region.where(name:regname).first
       region=Region.create(name:regname) if region.blank?
